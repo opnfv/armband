@@ -1,0 +1,23 @@
+Project Name: ARM Band
+Repo name: armband
+Project Category: integration and testing 
+Lifecycle State: Incubation
+Primary Contact: Bob Monkman
+Project Lead: Bob Monkman
+Jira Project Name: ARM Band 
+Jira Project Prefix: [ARMBAND] 
+mailing list tag [armband] 
+Committers: 
+Bob Monkman (bob.monkman@arm.com)
+Rob Dimond (robert.dimond@arm.com)
+Jerin Jacob (Jerin.Jacob@caviumnetworks.com)
+Vinita Gupta (Vinita.Gupta@caviumnetworks.com)
+Santosh Shukla (sshukla@mvista.com)
+Samta Rangare (srangare@mvista.com)
+Joe Kidder (joe.kidder@enea.com)
+Bin Hu (bh526r@att.com)
+Aiguo Cui (ag.cui@huawei.com)
+Lauri Leukkenen (lauri.leukkunen@huawei.com)
+
+Link to TSC approval: http://meetbot.opnfv.org/meetings/opnfv-meeting/2015/opnfv-meeting.2015-09-08-13.59.html 
+Link to approval of additional submitters: TBD 
