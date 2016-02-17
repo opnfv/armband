@@ -1,0 +1,16 @@
+[submodule "opnfv-fuel"]
+	path = upstream/fuel
+	url = https://gerrit.opnfv.org/gerrit/fuel
+	branch = stable/brahmaputra
+[submodule "fuel-main"]
+	path = upstream/fuel-main
+	url = git@github.com:openstack/fuel-main.git
+	branch = stable/8.0
+[submodule "fuel-library"]
+	path = upstream/fuel-library
+	url = git@github.com:openstack/fuel-library.git
+	branch = stable/8.0
+[submodule "fuel-web"]
+	path = upstream/fuel-web
+	url = git@github.com:openstack/fuel-web.git
+	branch = stable/8.0
