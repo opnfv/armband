@@ -14,3 +14,7 @@
 	path = upstream/fuel-web
 	url = git@github.com:openstack/fuel-web.git
 	branch = stable/8.0
+[submodule "fuel-agent"]
+	path = upstream/fuel-agent
+	url = git@github.com:openstack/fuel-agent.git
+	branch = stable/8.0
