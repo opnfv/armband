@@ -10,7 +10,10 @@ The standard workflow should look as follows:
 
 1. Clone the repository. All the sub-projects are registered as submodules,
 2. Apply patches from `patches/*` to respective submodules via `make patches-import`,
-3. Modify sub-projects for whatever you need,
+3. Modify sub-projects for whatever you need
+4. Temporarily commit patches with `make patches-commit`
+5. Build with `make build`
+6. Revert patches from commited state with `make patches-uncommit`
 4. Re-create patches via `make patches-export`
 
 Sub-projects
