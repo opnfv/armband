@@ -1,8 +1,8 @@
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index f9c8ab6..ae660dc 100644
+index f9c8ab6..566f3ca 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -2079,3 +2079,101 @@
+@@ -2079,3 +2079,110 @@
                uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_amd64-boot.img.gz"
                format: "ext2"
                container: "gzip"
@@ -18,7 +18,7 @@ index f9c8ab6..ae660dc 100644
 +      editable:
 +        kernel_params:
 +          kernel:
-+            value: "console=ttyAMA0 net.ifnames=0 biosdevname=0 rootdelay=90 nomodeset"
++            value: "console=ttyAMA0,115200 console=ttyS0,115200 net.ifnames=0 biosdevname=0 rootdelay=90 nomodeset"
 +        repo_setup:
 +          metadata:
 +            label: "Repositories"
@@ -34,6 +34,13 @@ index f9c8ab6..ae660dc 100644
 +              Please make sure your Fuel master node has Internet access to the repository before attempting to create a mirror.
 +              For more details, please refer to the documentation (https://docs.mirantis.com/openstack/fuel/fuel-8.0/operations.html#external-ubuntu-ops).
 +            value:
++              # first repository on the list is used for downloading the kernel and initrd
++              - type: "deb"
++                name: "ubuntu"
++                uri: "https://YARMOUTH_PPA_USERNAME:YARMOUTH_PPA_PASSWORD@private-ppa.launchpad.net/yarmouth-team/ppa/"
++                suite: "trusty"
++                section: "main"
++                priority: null
 +              - type: "deb"
 +                name: "ubuntu"
 +                uri: "http://ports.ubuntu.com/"
@@ -54,34 +61,32 @@ index f9c8ab6..ae660dc 100644
 +                priority: null
 +              - type: "deb"
 +                name: "mos"
-+                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/arm64"
++                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0"
-+                section: "main restricted"
++                #TODO: was "main restricted"
++                section: "main"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-updates"
 +                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0-updates"
-+                section: "main restricted"
++                #TODO: was "main restricted"
++                section: "main"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-security"
 +                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0-security"
-+                section: "main restricted"
++                #TODO: was "main restricted"
++                section: "main"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-holdback"
 +                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0-holdback"
-+                section: "main restricted"
++                #TODO: was "main restricted"
++                section: "main"
 +                priority: 1100
-+              - type: "deb"
-+                name: "Auxiliary"
-+                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/auxiliary"
-+                suite: "auxiliary"
-+                section: "main restricted"
-+                priority: 1150
 +      generated:
 +        repo_setup:
 +          installer_kernel:
@@ -92,15 +97,19 @@ index f9c8ab6..ae660dc 100644
 +            local: "/var/www/nailgun/ubuntu/arm64/images/initrd.gz"
 +        cobbler:
 +          profile:
-+            generator_arg: "ubuntu_1404_x86_64"
++            generator_arg: "ubuntu_1404_arm64"
 +        provision:
 +          codename: "trusty"
 +          image_data:
 +            /:
-+              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_amd64.img.gz"
++              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64.img.gz"
 +              format: "ext4"
 +              container: "gzip"
 +            /boot:
-+              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_amd64-boot.img.gz"
++              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64-boot.img.gz"
 +              format: "ext2"
++              container: "gzip"
++            /boot/efi:
++              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64-boot-efi.img.gz"
++              format: "vfat"
 +              container: "gzip"
