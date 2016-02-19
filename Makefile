@@ -29,8 +29,14 @@ patches-commit: submodules-init
 patches-uncommit: submodules-init
 	@git submodule -q foreach 'echo "$(git log -n 1 --oneline)" | grep --quiet "armband-fuel build commit" && git reset HEAD~1'
 
-# In order for this to work, the patches will have to 
+# In order for this to work, the patches will have to be commited first
+# (i.e. via make patches-commit).
+build: YARMOUTH_PPA_USERNAME:=changeme
+build: YARMOUTH_PPA_PASSWORD:=changeme
 build: submodules-init patches-import
+	grep -r -l YARMOUTH_PPA_USERNAME ${root}/upstream | xargs \
+		sed -i -e "s/YARMOUTH_PPA_USERNAME/${YARMOUTH_PPA_USERNAME}" \
+			-e "s/YARMOUTH_PPA_PASSWORD/${YARMOUTH_PPA_PASSWORD}"
 	cd ${root}/upstream/fuel/build && \
 		make \
 			FUEL_MAIN_REPO=${root}/upstream/fuel-main \
