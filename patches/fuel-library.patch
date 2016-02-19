@@ -12,7 +12,7 @@ index a70568a..1588186 100644
  
    newparam(:ksmeta) do
 diff --git a/deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp b/deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp
-index e69de29..e6c841d 100644
+index e69de29..dcb20fa 100644
 --- a/deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp
 +++ b/deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp
 @@ -0,0 +1,97 @@
@@ -32,7 +32,7 @@ index e69de29..e6c841d 100644
 +
 +
 +class cobbler::distro::ubuntu_1404_arm64(
-+  $http_iso = 'http://archive.ubuntu.com/ubuntu/dists/trusty-updates/main/installer-amd64/current/images/netboot/mini.iso',
++  $http_iso = 'https://YARMOUTH_PPA_USERNAME:YARMOUTH_PPA_PASSWORD@private-ppa.launchpad.net/yarmouth-team/ppa/ubuntu/dists/trusty/main/installer-arm64/current/images/netboot/mini.iso',
 +  $ks_url   = 'http://us.archive.ubuntu.com/ubuntu',
 +  ){
 +
