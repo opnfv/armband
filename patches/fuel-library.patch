@@ -293,7 +293,7 @@ index fd6dda3..2770808 100644
  in-target apt-get -y install linux-image-3.11 linux-headers-3.11; \
  #end if
 diff --git a/deployment/puppet/nailgun/manifests/cobbler.pp b/deployment/puppet/nailgun/manifests/cobbler.pp
-index a11498c..be8c1ac 100644
+index a11498c..fe48d25 100644
 --- a/deployment/puppet/nailgun/manifests/cobbler.pp
 +++ b/deployment/puppet/nailgun/manifests/cobbler.pp
 @@ -43,7 +43,7 @@ class nailgun::cobbler(
@@ -310,7 +310,7 @@ index a11498c..be8c1ac 100644
          menu      => true,
          kickstart => '',
 -        kopts     => extend_kopts($bootstrap_meta['extend_kopts'], "console=ttyS0,9600 console=tty0 panic=60 ethdevice-timeout=${bootstrap_ethdevice_timeout} boot=live toram components fetch=http://${server}:8080/bootstraps/active_bootstrap/root.squashfs biosdevname=0 url=${nailgun_api_url} mco_user=${mco_user} mco_pass=${mco_pass}"),
-+        kopts     => extend_kopts($bootstrap_meta['extend_kopts'], "console=ttyAMA0,115200 console=tty0 panic=60 ethdevice-timeout=${bootstrap_ethdevice_timeout} boot=live toram components fetch=http://${server}:8080/bootstraps/active_bootstrap/root.squashfs biosdevname=0 url=${nailgun_api_url} mco_user=${mco_user} mco_pass=${mco_pass}"),
++        kopts     => extend_kopts($bootstrap_meta['extend_kopts'], "console=ttyAMA0,115200 console=ttyS0,115200 panic=60 ethdevice-timeout=${bootstrap_ethdevice_timeout} boot=live toram components fetch=http://${server}:8080/bootstraps/active_bootstrap/root.squashfs biosdevname=0 url=${nailgun_api_url} mco_user=${mco_user} mco_pass=${mco_pass}"),
          ksmeta    => '',
          server    => $real_server,
          require   => Cobbler_distro['ubuntu_bootstrap'],
