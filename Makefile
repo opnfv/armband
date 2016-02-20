@@ -23,13 +23,13 @@ patches-import: submodules-init
 	@git submodule -q foreach 'patch -p1 -s -N < \
 		${root}/patches/$$name.patch || true'
 
-patches-commit: submodules-init
+patches-commit:
 	@git submodule -q foreach 'git add *; \
 		test -z "$$(git diff-index --name-only HEAD)" || \
 		git commit -q -m "armband-fuel build commit"'
 
-patches-uncommit: submodules-init
-	git submodule -q foreach 'echo "$$(git log -n 1 --oneline)" \
+patches-uncommit:
+	@git submodule -q foreach 'echo "$$(git log -n 1 --oneline)" \
 		| grep --quiet "armband-fuel build commit" \
 		&& git reset HEAD~1 || true'
 
