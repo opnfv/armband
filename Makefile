@@ -24,10 +24,14 @@ patches-import: submodules-init
 		${root}/patches/$$name.patch || true'
 
 patches-commit: submodules-init
-	@git submodule -q foreach 'git add *; git commit -q -m "armband-fuel build commit"'
+	@git submodule -q foreach 'git add *; \
+		test -z "$$(git diff-index --name-only HEAD)" || \
+		git commit -q -m "armband-fuel build commit"'
 
 patches-uncommit: submodules-init
-	@git submodule -q foreach 'echo "$(git log -n 1 --oneline)" | grep --quiet "armband-fuel build commit" && git reset HEAD~1'
+	git submodule -q foreach 'echo "$$(git log -n 1 --oneline)" \
+		| grep --quiet "armband-fuel build commit" \
+		&& git reset HEAD~1 || true'
 
 # In order for this to work, the patches will have to be commited first
 # (i.e. via make patches-commit).

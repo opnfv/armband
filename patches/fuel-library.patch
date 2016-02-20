@@ -292,8 +292,38 @@ index fd6dda3..2770808 100644
  #else
  in-target apt-get -y install linux-image-3.11 linux-headers-3.11; \
  #end if
+diff --git a/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp b/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
+index 41a2570..720943d 100644
+--- a/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
++++ b/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
+@@ -48,17 +48,21 @@ class nailgun::auxiliaryrepos(
+ 
+   exec { 'create_ubuntu_repo_dirs':
+     path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+-    command => "bash -c \"mkdir -p ${ubuntu_dir}/pool/{main,restricted} ${ubuntu_dir}/dists/auxiliary/{main,restricted}/binary-amd64/\"",
++    command => "bash -c \"mkdir -p ${ubuntu_dir}/pool/{main,restricted} ${ubuntu_dir}/dists/auxiliary/{main,restricted}/binary-{amd64,arm64}/\"",
+     unless => "test -d ${ubuntu_dir}/pool && \
+       test -d ${ubuntu_dir}/dists/auxiliary/main/binary-amd64 && \
+-      test -d ${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64",
++      test -d ${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64 && \
++      test -d ${ubuntu_dir}/dists/auxiliary/main/binary-arm64 && \
++      test -d ${ubuntu_dir}/dists/auxiliary/restricted/binary-arm64",
+   }
+ 
+   exec { 'create_ubuntu_repo_Packages':
+     path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+-    command => "bash -c \"touch ${ubuntu_dir}/dists/auxiliary/{main,restricted}/binary-amd64/Packages\"",
++    command => "bash -c \"touch ${ubuntu_dir}/dists/auxiliary/{main,restricted}/binary-{amd64,arm64}/Packages\"",
+     unless  => "test -f ${ubuntu_dir}/dists/auxiliary/main/binary-amd64/Packages && \
+-      test -f ${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64/Packages",
++      test -f ${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64/Packages && \
++      test -f ${ubuntu_dir}/dists/auxiliary/main/binary-arm64/Packages && \
++      test -f ${ubuntu_dir}/dists/auxiliary/restricted/binary-arm64/Packages",
+   }
+ 
+   file { $release_files:
 diff --git a/deployment/puppet/nailgun/manifests/cobbler.pp b/deployment/puppet/nailgun/manifests/cobbler.pp
-index a11498c..fe48d25 100644
+index a11498c..6601369 100644
 --- a/deployment/puppet/nailgun/manifests/cobbler.pp
 +++ b/deployment/puppet/nailgun/manifests/cobbler.pp
 @@ -43,7 +43,7 @@ class nailgun::cobbler(
@@ -305,7 +335,64 @@ index a11498c..fe48d25 100644
    }
  
    if $::osfamily == 'RedHat' {
-@@ -205,7 +205,7 @@ class nailgun::cobbler(
+@@ -133,12 +133,10 @@ class nailgun::cobbler(
+         require   => Class['::cobbler::server'],
+       }
+ 
+-      file { '/var/lib/cobbler/kickstarts/ubuntu-amd64.preseed':
+-        content => template('cobbler/preseed/ubuntu-1404.preseed.erb'),
+-        owner   => 'root',
+-        group   => 'root',
+-        mode    => '0644',
+-        require => Class['::cobbler::server'],
++      class { "nailgun::cobbler::preseed":
++        path                =>'/var/lib/cobbler/kickstarts/ubuntu-amd64.preseed',
++        arch                => "x86_64",
++        linux_kernel_flavor => "generic-lts-trusty",
+       } ->
+ 
+       cobbler_distro { 'ubuntu_1404_x86_64':
+@@ -151,6 +149,22 @@ class nailgun::cobbler(
+         require   => Class['::cobbler::server'],
+       }
+ 
++      class { 'nailgun::cobbler::preseed':
++        path                => '/var/lib/cobbler/kickstarts/ubuntu-arm64.preseed',
++        arch                => "arm64",
++        linux_kernel_flavor => "thunder",
++      } ->
++
++      cobbler_distro { 'ubuntu_1404_arm64':
++        kernel    => "${repo_root}/ubuntu/arm64/images/linux",
++        initrd    => "${repo_root}/ubuntu/arm64/images/initrd.gz",
++        arch      => 'arm64',
++        breed     => 'ubuntu',
++        osversion => 'trusty',
++        ksmeta    => '',
++        require   => Class['::cobbler::server'],
++      }
++
+       cobbler_profile { 'centos-x86_64':
+         kickstart => '/var/lib/cobbler/kickstarts/centos-x86_64.ks',
+         kopts     => 'biosdevname=0 sshd=1 dhcptimeout=120',
+@@ -171,6 +185,16 @@ class nailgun::cobbler(
+         require   => Cobbler_distro['ubuntu_1404_x86_64'],
+       }
+ 
++      cobbler_profile { 'ubuntu_1404_arm64':
++        kickstart => '/var/lib/cobbler/kickstarts/ubuntu-arm64.preseed',
++        kopts     => 'net.ifnames=0 biosdevname=0 netcfg/choose_interface=eth0 netcfg/dhcp_timeout=120 netcfg/link_detection_timeout=20',
++        distro    => 'ubuntu_1404_arm64',
++        ksmeta    => '',
++        menu      => false,
++        server    => $real_server,
++        require   => Cobbler_distro['ubuntu_1404_arm64'],
++      }
++
+       cobbler_distro { 'bootstrap':
+         kernel    => "${repo_root}/bootstrap/linux",
+         initrd    => "${repo_root}/bootstrap/initramfs.img",
+@@ -205,7 +229,7 @@ class nailgun::cobbler(
          distro    => 'ubuntu_bootstrap',
          menu      => true,
          kickstart => '',
@@ -314,3 +401,22 @@ index a11498c..fe48d25 100644
          ksmeta    => '',
          server    => $real_server,
          require   => Cobbler_distro['ubuntu_bootstrap'],
+diff --git a/deployment/puppet/nailgun/manifests/cobbler/preseed.pp b/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
+index e69de29..8ce65a2 100644
+--- a/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
++++ b/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
+@@ -0,0 +1,14 @@
++class nailgun::cobbler::preseed(
++  $path,
++  $arch                = "x86_64",
++  $linux_kernel_flavor = "generic-lts-trusty"
++) {
++
++  file { $path:
++    content => template('cobbler/preseed/ubuntu-1404.preseed.erb'),
++    owner   => 'root',
++    group   => 'root',
++    mode    => '0644',
++    require => Class['::cobbler::server'],
++  }
++}
