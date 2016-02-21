@@ -1,3 +1,29 @@
+From ced7869e41947869fd95017fce3f35212fd641bb Mon Sep 17 00:00:00 2001
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Sun, 21 Feb 2016 16:29:52 +0100
+Subject: [PATCH] Add arm64 templates to cobbler and nailgun
+
+---
+ .../cobbler/lib/puppet/type/cobbler_distro.rb      |  2 +-
+ .../cobbler/manifests/distro/ubuntu_1404_arm64.pp  | 97 ++++++++++++++++++++++
+ .../cobbler/manifests/profile/ubuntu_1404_arm64.pp | 68 +++++++++++++++
+ .../manifests/profile/ubuntu_1404_x86_64.pp        |  2 +
+ .../puppet/cobbler/templates/dnsmasq.template.erb  |  2 +
+ .../cobbler/templates/efidefault.template.erb      |  5 ++
+ .../cobbler/templates/grubprofile.template.erb     | 12 +++
+ .../cobbler/templates/grubsystem.template.erb      | 12 +++
+ .../templates/preseed/ubuntu-1404.preseed.erb      | 10 +--
+ .../puppet/nailgun/manifests/auxiliaryrepos.pp     | 12 ++-
+ deployment/puppet/nailgun/manifests/cobbler.pp     | 40 +++++++--
+ .../puppet/nailgun/manifests/cobbler/preseed.pp    | 14 ++++
+ 12 files changed, 258 insertions(+), 18 deletions(-)
+ create mode 100644 deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp
+ create mode 100644 deployment/puppet/cobbler/manifests/profile/ubuntu_1404_arm64.pp
+ create mode 100644 deployment/puppet/cobbler/templates/efidefault.template.erb
+ create mode 100644 deployment/puppet/cobbler/templates/grubprofile.template.erb
+ create mode 100644 deployment/puppet/cobbler/templates/grubsystem.template.erb
+ create mode 100644 deployment/puppet/nailgun/manifests/cobbler/preseed.pp
+
 diff --git a/deployment/puppet/cobbler/lib/puppet/type/cobbler_distro.rb b/deployment/puppet/cobbler/lib/puppet/type/cobbler_distro.rb
 index a70568a..1588186 100644
 --- a/deployment/puppet/cobbler/lib/puppet/type/cobbler_distro.rb
@@ -12,8 +38,9 @@ index a70568a..1588186 100644
  
    newparam(:ksmeta) do
 diff --git a/deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp b/deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp
-index e69de29..dcb20fa 100644
---- a/deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp
+new file mode 100644
+index 0000000..dcb20fa
+--- /dev/null
 +++ b/deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp
 @@ -0,0 +1,97 @@
 +#    Copyright 2013 Mirantis, Inc.
@@ -114,8 +141,9 @@ index e69de29..dcb20fa 100644
 +
 +}
 diff --git a/deployment/puppet/cobbler/manifests/profile/ubuntu_1404_arm64.pp b/deployment/puppet/cobbler/manifests/profile/ubuntu_1404_arm64.pp
-index e69de29..152a64c 100644
---- a/deployment/puppet/cobbler/manifests/profile/ubuntu_1404_arm64.pp
+new file mode 100644
+index 0000000..152a64c
+--- /dev/null
 +++ b/deployment/puppet/cobbler/manifests/profile/ubuntu_1404_arm64.pp
 @@ -0,0 +1,68 @@
 +#    Copyright 2013 Mirantis, Inc.
@@ -212,8 +240,9 @@ index 3a96ac1..8d3e753 100644
  dhcp-option=6,<%= @name_server %>
  $insert_cobbler_system_definitions
 diff --git a/deployment/puppet/cobbler/templates/efidefault.template.erb b/deployment/puppet/cobbler/templates/efidefault.template.erb
-index e69de29..af09eb8 100644
---- a/deployment/puppet/cobbler/templates/efidefault.template.erb
+new file mode 100644
+index 0000000..af09eb8
+--- /dev/null
 +++ b/deployment/puppet/cobbler/templates/efidefault.template.erb
 @@ -0,0 +1,5 @@
 +set default=1
@@ -222,10 +251,11 @@ index e69de29..af09eb8 100644
 +
 +$grub_menu_items
 diff --git a/deployment/puppet/cobbler/templates/grubprofile.template.erb b/deployment/puppet/cobbler/templates/grubprofile.template.erb
-index e69de29..daa92ea 100644
---- a/deployment/puppet/cobbler/templates/grubprofile.template.erb
+new file mode 100644
+index 0000000..eb7557c
+--- /dev/null
 +++ b/deployment/puppet/cobbler/templates/grubprofile.template.erb
-@@ -0,0 +1,13 @@
+@@ -0,0 +1,12 @@
 +menuentry '$profile_name' {
 +    echo 'Network status:'
 +    net_ls_cards
@@ -238,12 +268,12 @@ index e69de29..daa92ea 100644
 +    initrd (tftp)$initrd_path
 +    echo 'Booting bootstrap image ...'
 +}
-+
 diff --git a/deployment/puppet/cobbler/templates/grubsystem.template.erb b/deployment/puppet/cobbler/templates/grubsystem.template.erb
-index e69de29..daa92ea 100644
---- a/deployment/puppet/cobbler/templates/grubsystem.template.erb
+new file mode 100644
+index 0000000..eb7557c
+--- /dev/null
 +++ b/deployment/puppet/cobbler/templates/grubsystem.template.erb
-@@ -0,0 +1,13 @@
+@@ -0,0 +1,12 @@
 +menuentry '$profile_name' {
 +    echo 'Network status:'
 +    net_ls_cards
@@ -256,7 +286,6 @@ index e69de29..daa92ea 100644
 +    initrd (tftp)$initrd_path
 +    echo 'Booting bootstrap image ...'
 +}
-+
 diff --git a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb b/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
 index fd6dda3..2770808 100644
 --- a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
@@ -402,8 +431,9 @@ index a11498c..6601369 100644
          server    => $real_server,
          require   => Cobbler_distro['ubuntu_bootstrap'],
 diff --git a/deployment/puppet/nailgun/manifests/cobbler/preseed.pp b/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
-index e69de29..8ce65a2 100644
---- a/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
+new file mode 100644
+index 0000000..8ce65a2
+--- /dev/null
 +++ b/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
 @@ -0,0 +1,14 @@
 +class nailgun::cobbler::preseed(
@@ -420,3 +450,6 @@ index e69de29..8ce65a2 100644
 +    require => Class['::cobbler::server'],
 +  }
 +}
+-- 
+1.9.1
+

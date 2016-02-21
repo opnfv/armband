@@ -8,36 +8,33 @@ submodules-init:
 	@git submodule -q sync
 	@git submodule -q update
 
+# Cleans any changes made to submodules
 submodules-clean:
 	@git submodule -q foreach \
-		'git reset -q --hard HEAD; git clean -qxdf'
+		'git checkout -q armband-workbench-root; \
+		git branch -q -D armband-workbench; \
+		git tag -d armband-workbench-root; \
+		git reset -q --hard HEAD; git clean -qxdf'
 
 .PHONY: patches-export patches-import
 # Generate patches from submodules
-patches-export: submodules-init
-	@git submodule -q foreach 'git add -N *; git diff > \
-		${root}/patches/$$name.patch'
+patches-export:
+	@git submodule -q foreach 'mkdir -p ${root}/patches/$$name'
+	@git submodule -q foreach 'git format-patch \
+		-o ${root}/patches/$$name -N armband-workbench-root'
 
 # apply patches from patches/* to respective submodules
-patches-import: submodules-init
-	@git submodule -q foreach 'patch -p1 -s -N < \
-		${root}/patches/$$name.patch || true'
+patches-import:
+	@git submodule -q foreach 'git tag armband-workbench-root'
+	@git submodule -q foreach 'git checkout -q -b armband-workbench'
+	git submodule -q foreach \
+		'for p in $$(ls ${root}/patches/$$name/); do \
+			git am ${root}/patches/$$name/$$p; \
+		done'
 
-patches-commit:
-	@git submodule -q foreach 'git add *; \
-		test -z "$$(git diff-index --name-only HEAD)" || \
-		git commit -q -m "armband-fuel build commit"'
-
-patches-uncommit:
-	@git submodule -q foreach 'echo "$$(git log -n 1 --oneline)" \
-		| grep --quiet "armband-fuel build commit" \
-		&& git reset HEAD~1 || true'
-
-# In order for this to work, the patches will have to be commited first
-# (i.e. via make patches-commit).
 build: YARMOUTH_PPA_USERNAME:=changeme
 build: YARMOUTH_PPA_PASSWORD:=changeme
-build: submodules-init patches-import
+build:
 	grep -r -l YARMOUTH_PPA_USERNAME ${root}/upstream | xargs \
 		sed -i -e "s/YARMOUTH_PPA_USERNAME/${YARMOUTH_PPA_USERNAME}" \
 			-e "s/YARMOUTH_PPA_PASSWORD/${YARMOUTH_PPA_PASSWORD}"

@@ -1,0 +1,25 @@
+From 152923a177d69ded6ee98d56659a603a1693f391 Mon Sep 17 00:00:00 2001
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Sun, 21 Feb 2016 16:28:02 +0100
+Subject: [PATCH] Allow customizing Fuel commit
+
+---
+ build/config.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/config.mk b/build/config.mk
+index e11d033..2a81027 100644
+--- a/build/config.mk
++++ b/build/config.mk
+@@ -9,7 +9,7 @@
+ ##############################################################################
+ 
+ FUEL_MAIN_REPO := https://github.com/openstack/fuel-main
+-FUEL_MAIN_TAG = a365f05b903368225da3fea9aa42afc1d50dc9b4
++FUEL_MAIN_TAG :=
+ MOS_VERSION = 8.0
+ OPENSTACK_VERSION = liberty-8.0
+ 
+-- 
+1.9.1
+

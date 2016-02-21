@@ -9,12 +9,12 @@ Workflow
 The standard workflow should look as follows:
 
 1. Clone the repository. All the sub-projects are registered as submodules,
-2. Apply patches from `patches/*` to respective submodules via `make patches-import`,
-3. Modify sub-projects for whatever you need
-4. Temporarily commit patches with `make patches-commit`
-5. Build with `make build`
-6. Revert patches from commited state with `make patches-uncommit`
-4. Re-create patches via `make patches-export`
+2. Apply patches from `patches/sub-project/*` to respective submodules via `make patches-import`. This will result in creation of a tag `armband-workbench-root` at the `HEAD` of the submodule and creation of a new branch `armband-workbench` which will hold all the armband related work. Then each patch is applied on this new branch with `git-am`.
+3. Modify sub-projects for whatever you need. Commit your changes when you want them taken into account in the build.
+4. Build with `make build`
+5. Re-create patches via `make patches-export`. Each commit on `armband-workbench` branch of each subproject will be exported to the `patches/subproject/` via `git format-patch`. Remember to commit them!
+6. Clean workbench branches and tags with `make submodules-clean`.
+
 
 Sub-projects
 ------------
