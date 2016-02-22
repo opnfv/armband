@@ -1,17 +1,17 @@
-From d46cdc802957a6947e40c19de6a45cb8341b7984 Mon Sep 17 00:00:00 2001
+From c37ee675b1002847ede29ca5fe27c3326f52bba2 Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Sun, 21 Feb 2016 16:30:43 +0100
 Subject: [PATCH] Add arm64 fixture
 
 ---
- nailgun/nailgun/fixtures/openstack.yaml | 107 ++++++++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
+ nailgun/nailgun/fixtures/openstack.yaml | 103 ++++++++++++++++++++++++++++++++
+ 1 file changed, 103 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index f9c8ab6..566f3ca 100644
+index f9c8ab6..985025d 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -2079,3 +2079,110 @@
+@@ -2079,3 +2079,106 @@
                uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_amd64-boot.img.gz"
                format: "ext2"
                container: "gzip"
@@ -72,29 +72,25 @@ index f9c8ab6..566f3ca 100644
 +                name: "mos"
 +                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0"
-+                #TODO: was "main restricted"
-+                section: "main"
++                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-updates"
 +                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0-updates"
-+                #TODO: was "main restricted"
-+                section: "main"
++                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-security"
 +                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0-security"
-+                #TODO: was "main restricted"
-+                section: "main"
++                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-holdback"
 +                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0-holdback"
-+                #TODO: was "main restricted"
-+                section: "main"
++                section: "main restricted"
 +                priority: 1100
 +      generated:
 +        repo_setup:

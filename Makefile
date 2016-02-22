@@ -25,9 +25,10 @@ patches-export:
 
 # apply patches from patches/* to respective submodules
 patches-import:
+	@git submodule -q foreach 'mkdir -p ${root}/patches/$$name'
 	@git submodule -q foreach 'git tag armband-workbench-root'
 	@git submodule -q foreach 'git checkout -q -b armband-workbench'
-	git submodule -q foreach \
+	@git submodule -q foreach \
 		'for p in $$(ls ${root}/patches/$$name/); do \
 			git am ${root}/patches/$$name/$$p; \
 		done'
@@ -36,14 +37,14 @@ build: YARMOUTH_PPA_USERNAME:=changeme
 build: YARMOUTH_PPA_PASSWORD:=changeme
 build:
 	grep -r -l YARMOUTH_PPA_USERNAME ${root}/upstream | xargs \
-		sed -i -e "s/YARMOUTH_PPA_USERNAME/${YARMOUTH_PPA_USERNAME}" \
-			-e "s/YARMOUTH_PPA_PASSWORD/${YARMOUTH_PPA_PASSWORD}"
+		sed -i -e "s/YARMOUTH_PPA_USERNAME/${YARMOUTH_PPA_USERNAME}/" \
+			-e "s/YARMOUTH_PPA_PASSWORD/${YARMOUTH_PPA_PASSWORD}/"
 	cd ${root}/upstream/fuel/build && \
 		make \
 			FUEL_MAIN_REPO=${root}/upstream/fuel-main \
 			FUEL_MAIN_TAG= \
 			UBUNTU_ARCH=arm64 \
-			SEPARATE_IMAGES=/boot,ext2 /,ext4 /boot/efi,vfat \
+			SEPARATE_IMAGES="/boot,ext2 /,ext4 /boot/efi,vfat" \
 			FUELLIB_REPO=${root}/upstream/fuel-library \
 			NAILGUN_REPO=${root}/upstream/fuel-web \
 			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
