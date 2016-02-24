@@ -1,0 +1,123 @@
+From 6be694a614d6d76a42cf24c41d5c96b43a135df6 Mon Sep 17 00:00:00 2001
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Wed, 24 Feb 2016 20:08:24 +0100
+Subject: [PATCH] Make TestVM creation architecture aware
+
+This depends on cirros-testvm package to contain both amd64 and arm64
+images.
+---
+ deployment/puppet/openstack/manifests/img/cirros.pp           |  8 ++++++--
+ .../puppet/osnailyfacter/modular/generate_vms/generate_vms.pp | 11 +++++++++++
+ deployment/puppet/osnailyfacter/templates/vm_libvirt.erb      |  5 ++++-
+ files/fuel-migrate/fuel-migrate                               |  5 ++++-
+ 4 files changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/deployment/puppet/openstack/manifests/img/cirros.pp b/deployment/puppet/openstack/manifests/img/cirros.pp
+index 84e202e..57ae256 100644
+--- a/deployment/puppet/openstack/manifests/img/cirros.pp
++++ b/deployment/puppet/openstack/manifests/img/cirros.pp
+@@ -9,6 +9,10 @@ class openstack::img::cirros (
+   $img_name = 'cirros',
+   $os_name = 'cirros',
+ ) {
++  $arch = $::architecture ? {
++      'arm64', 'aarch64' => 'aarch64',
++      default => 'x86_64',
++  }
+ 
+   package { 'cirros-testvm':
+     ensure => "present"
+@@ -17,14 +21,14 @@ class openstack::img::cirros (
+ case $::osfamily {
+   'RedHat': {
+   exec { 'upload-img':
+-    command => "/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} add name=${img_name} is_public=${public} container_format=${container_format} disk_format=${disk_format} distro=${os_name} < /opt/vm/cirros-x86_64-disk.img",
++    command => "/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} add name=${img_name} is_public=${public} container_format=${container_format} disk_format=${disk_format} distro=${os_name} < /opt/vm/cirros-${arch}-disk.img",
+     unless => "/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} index && (/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} index | grep ${img_name})",
+ 
+     }
+   }
+   'Debian': {
+   exec { 'upload-img':
+-    command => "/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} add name=${img_name} is_public=${public} container_format=${container_format} disk_format=${disk_format} distro=${os_name} < /usr/share/cirros-testvm/cirros-x86_64-disk.img",
++    command => "/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} add name=${img_name} is_public=${public} container_format=${container_format} disk_format=${disk_format} distro=${os_name} < /usr/share/cirros-testvm/cirros-${arch}-disk.img",
+     unless => "/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} index && (/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} index | grep ${img_name})",
+ 
+     }
+diff --git a/deployment/puppet/osnailyfacter/modular/generate_vms/generate_vms.pp b/deployment/puppet/osnailyfacter/modular/generate_vms/generate_vms.pp
+index 6d5426a..da5954e 100644
+--- a/deployment/puppet/osnailyfacter/modular/generate_vms/generate_vms.pp
++++ b/deployment/puppet/osnailyfacter/modular/generate_vms/generate_vms.pp
+@@ -11,6 +11,17 @@ define vm_config {
+   $details = $name
+   $id = $details['id']
+ 
++  case $::architecture {
++    'arm64', 'aarch64': {
++      $machine_arch = 'aarch64'
++      $machine_type = 'virt'
++    }
++    default: {
++      $machine_arch = 'x86_64'
++      $machine_type = 'pc-i440fx-trusty'
++    }
++  }
++
+   file { "${template_dir}/template_${id}_vm.xml":
+     owner   => 'root',
+     group   => 'root',
+diff --git a/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb b/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
+index ae2ba5b..decf3ab 100644
+--- a/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
++++ b/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
+@@ -3,7 +3,7 @@
+   <memory unit='GiB'><%= @details['mem'] %></memory>
+   <vcpu placement='static'><%= @details['cpu'] %></vcpu>
+   <os>
+-    <type arch='x86_64' machine='pc-i440fx-trusty'>hvm</type>
++    <type arch='<%= @machine_arch %>' machine='<%= @machine_type %>'>hvm</type>
+     <boot dev='network'/>
+     <boot dev='hd'/>
+   </os>
+@@ -11,6 +11,9 @@
+     <acpi/>
+     <apic/>
+     <pae/>
++  <% if $machine_arch == 'arm64' { %>
++    <gic version='3' />
++  <% } %>
+   </features>
+   <clock offset='utc'/>
+   <on_poweroff>destroy</on_poweroff>
+diff --git a/files/fuel-migrate/fuel-migrate b/files/fuel-migrate/fuel-migrate
+index fad9436..667d4a7 100755
+--- a/files/fuel-migrate/fuel-migrate
++++ b/files/fuel-migrate/fuel-migrate
+@@ -175,6 +175,8 @@ create_vm(){
+             exit 1
+         fi
+     fi
++    # figure out atchitecture of the destination
++    arch="$(virsh -c "${dkvm_uri}" nodeinfo | awk '/CPU model:/ { print $3}')"
+     # create disk
+     ssh "${dkvm_ip}" qemu-img create -f raw "${dkvm_folder}/${fvm_name}.img" "${fvm_disk_size}"
+     # make template for virsh
+@@ -184,13 +186,14 @@ create_vm(){
+   <memory unit='MiB'>${fvm_ram}</memory>
+   <vcpu >${fvm_cpu}</vcpu>
+   <os>
+-    <type arch='x86_64' >hvm</type>
++    <type arch='${arch}' >hvm</type>
+     <boot dev='hd'/>
+     <boot dev='network'/>
+  </os>
+   <features>
+     <acpi/>
+     <apic/>
++    ${arch/aarch64/<gic version='3'\/>}
+   </features>
+   <clock offset='utc'/>
+   <on_poweroff>destroy</on_poweroff>
+-- 
+1.9.1
+

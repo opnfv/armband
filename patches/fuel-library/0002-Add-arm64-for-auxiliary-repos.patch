@@ -1,0 +1,40 @@
+From 8adcbc0909882e564c99204880de300295d8562a Mon Sep 17 00:00:00 2001
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Wed, 24 Feb 2016 20:05:25 +0100
+Subject: [PATCH] Add arm64 for auxiliary repos
+
+---
+ deployment/puppet/nailgun/files/Release-auxiliary     | 2 +-
+ deployment/puppet/nailgun/manifests/auxiliaryrepos.pp | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/deployment/puppet/nailgun/files/Release-auxiliary b/deployment/puppet/nailgun/files/Release-auxiliary
+index 2d5ce58..03f84b8 100644
+--- a/deployment/puppet/nailgun/files/Release-auxiliary
++++ b/deployment/puppet/nailgun/files/Release-auxiliary
+@@ -3,6 +3,6 @@ Label: auxiliary
+ Suite: auxiliary
+ Codename: auxiliary
+ Date: Mon, 15 Apr 2015 00:00:01 UTC
+-Architectures: amd64
++Architectures: amd64 arm64
+ Components: main restricted
+ Description: Auxiliary
+diff --git a/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp b/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
+index 720943d..91adb3e 100644
+--- a/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
++++ b/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
+@@ -40,7 +40,9 @@ class nailgun::auxiliaryrepos(
+   $release_files = [
+     "${ubuntu_dir}/dists/auxiliary/Release",
+     "${ubuntu_dir}/dists/auxiliary/main/binary-amd64/Release",
+-    "${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64/Release"]
++    "${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64/Release",
++    "${ubuntu_dir}/dists/auxiliary/main/binary-arm64/Release",
++    "${ubuntu_dir}/dists/auxiliary/restricted/binary-arm64/Release"]
+ 
+   Exec['create_ubuntu_repo_dirs'] ->
+     Exec['create_ubuntu_repo_Packages'] ->
+-- 
+1.9.1
+
