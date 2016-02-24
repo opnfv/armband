@@ -1,0 +1,95 @@
+From 2068632b81e2debb8a75dd269d04add94b6f78ba Mon Sep 17 00:00:00 2001
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Wed, 24 Feb 2016 20:11:54 +0100
+Subject: [PATCH] Add arch to nailgun release
+
+Thsi is required so that the TestVM image is created using a cirros
+image that is compatible with the architecture of the deployment setup.
+---
+ nailgun/nailgun/consts.py                              | 5 +++++
+ nailgun/nailgun/db/sqlalchemy/models/release.py        | 8 ++++++++
+ nailgun/nailgun/fixtures/openstack.yaml                | 3 +++
+ nailgun/nailgun/orchestrator/deployment_serializers.py | 4 +++-
+ 4 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/nailgun/nailgun/consts.py b/nailgun/nailgun/consts.py
+index bb69168..11f5247 100644
+--- a/nailgun/nailgun/consts.py
++++ b/nailgun/nailgun/consts.py
+@@ -38,6 +38,11 @@ RELEASE_OS = Enum(
+     )
+ )
+ 
++RELEASE_ARCHS = Enum(
++    'x86_64',
++    'aarch64'
++)
++
+ CLUSTER_MODES = Enum(
+     'multinode',
+     'ha_full',
+diff --git a/nailgun/nailgun/db/sqlalchemy/models/release.py b/nailgun/nailgun/db/sqlalchemy/models/release.py
+index 96cf2ed..c2426d2 100644
+--- a/nailgun/nailgun/db/sqlalchemy/models/release.py
++++ b/nailgun/nailgun/db/sqlalchemy/models/release.py
+@@ -38,6 +38,14 @@ class Release(Base):
+     id = Column(Integer, primary_key=True)
+     name = Column(Unicode(100), nullable=False)
+     version = Column(String(30), nullable=False)
++    arch = Column(
++        Enum(
++            *consts.RELEASE_STATES,
++            name='arch'
++        ),
++        nullable=False,
++        default=consts.RELEASE_ARCHS.x86_64
++    )
+     can_update_from_versions = Column(JSON, default=[],
+                                       nullable=False, server_default='[]')
+     description = Column(Unicode)
+diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
+index 985025d..b252fbf 100644
+--- a/nailgun/nailgun/fixtures/openstack.yaml
++++ b/nailgun/nailgun/fixtures/openstack.yaml
+@@ -1913,6 +1913,7 @@
+     name: "Liberty on CentOS 6.5"
+     state: "unavailable"
+     version: "liberty-8.0"
++    arch: "x86_64"
+     can_update_from_versions: []
+     operating_system: "CentOS"
+     description: "This option will install the OpenStack Liberty packages using a CentOS based operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+@@ -1986,6 +1987,7 @@
+   fields:
+     name: "Liberty on Ubuntu 14.04"
+     version: "liberty-8.0"
++    arch: "x86_64"
+     can_update_from_versions: []
+     operating_system: "Ubuntu"
+     description: "This option will install the OpenStack Liberty packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+@@ -2084,6 +2086,7 @@
+   fields:
+     name: "Liberty on Ubuntu 14.04 (aarch64)"
+     version: "liberty-8.0"
++    arch: "aarch64"
+     can_update_from_versions: []
+     operating_system: "Ubuntu"
+     description: "This option will install the OpenStack Liberty packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/nailgun/orchestrator/deployment_serializers.py
+index 375a1ce..344aa0c 100644
+--- a/nailgun/nailgun/orchestrator/deployment_serializers.py
++++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
+@@ -291,7 +291,9 @@ class DeploymentMultinodeSerializer(object):
+             img_dir = '/usr/share/cirros-testvm/'
+         else:
+             img_dir = '/opt/vm/'
+-        image_data['img_path'] = '{0}cirros-x86_64-disk.img'.format(img_dir)
++        release = self.current_release(node.cluster)
++        image_data['img_path'] = '{0}cirros-{1}-disk.img'.format(img_dir,
++            release.arch)
+ 
+         glance_properties = []
+ 
+-- 
+1.9.1
+

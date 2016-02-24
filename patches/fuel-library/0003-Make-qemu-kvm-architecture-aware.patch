@@ -1,0 +1,34 @@
+From 1f1aa9c9d33f1cceda845f064827315255fca31b Mon Sep 17 00:00:00 2001
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Wed, 24 Feb 2016 20:07:06 +0100
+Subject: [PATCH] Make qemu-kvm architecture aware
+
+---
+ deployment/puppet/openstack/manifests/compute.pp | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/deployment/puppet/openstack/manifests/compute.pp b/deployment/puppet/openstack/manifests/compute.pp
+index b2339bc..4f380b8 100644
+--- a/deployment/puppet/openstack/manifests/compute.pp
++++ b/deployment/puppet/openstack/manifests/compute.pp
+@@ -169,10 +169,15 @@ class openstack::compute (
+         before  => Augeas['libvirt-conf'],
+       }
+ 
++      # Guard against some exotic distros with their `uname -m`
++      $arch = $::architecture ? {
++        'arm64', 'aarch64' => 'aarch64',
++        default => 'x86_64',
++      }
+       # From legacy libvirt.pp
+       exec { 'symlink-qemu-kvm':
+-        command => '/bin/ln -sf /usr/libexec/qemu-kvm /usr/bin/qemu-system-x86_64',
+-        creates => '/usr/bin/qemu-system-x86_64',
++        command => "/bin/ln -sf /usr/libexec/qemu-kvm /usr/bin/qemu-system-${arch}",
++        creates => "/usr/bin/qemu-system-${arch}",
+       }
+ 
+       package { 'avahi':
+-- 
+1.9.1
+
