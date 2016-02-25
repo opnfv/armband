@@ -1,8 +1,9 @@
-From 865ae830b705d44c5d49309d70ad24b097bab1c3 Mon Sep 17 00:00:00 2001
+From e45bd34255d696c6500814ae29232d20cf02b2b1 Mon Sep 17 00:00:00 2001
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Thu, 25 Feb 2016 16:01:18 +0100
 Subject: [PATCH] Add FLASH_KERNEL_SKIP=true.
 
+FIXME: Add nice description of the issue at hand.
 ---
  fuel_agent/utils/build.py | 1 +
  1 file changed, 1 insertion(+)
