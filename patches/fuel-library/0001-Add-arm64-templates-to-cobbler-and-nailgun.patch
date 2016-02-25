@@ -1,4 +1,3 @@
-From ced7869e41947869fd95017fce3f35212fd641bb Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Sun, 21 Feb 2016 16:29:52 +0100
 Subject: [PATCH] Add arm64 templates to cobbler and nailgun

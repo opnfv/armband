@@ -1,4 +1,3 @@
-From e84450711c5aecbc48c5dc16af7360ec48f7cedc Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Thu, 25 Feb 2016 13:38:14 +0100
 Subject: [PATCH] Use qemu-debootstrap for image creation

@@ -1,4 +1,3 @@
-From 1618f5ef08626fda29622dbbc9660cf630ef2fb2 Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Wed, 24 Feb 2016 20:04:03 +0100
 Subject: [PATCH] Add arm64 deb repositories setup

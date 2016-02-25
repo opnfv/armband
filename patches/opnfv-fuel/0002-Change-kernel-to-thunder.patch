@@ -1,4 +1,3 @@
-From 3dad71793cfb005ab5e6c48dcd6930d7e0aaecbb Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Sun, 21 Feb 2016 16:28:25 +0100
 Subject: [PATCH] Change kernel to thunder
