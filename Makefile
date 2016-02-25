@@ -51,7 +51,7 @@ build:
 			PRODUCT_VERSION=8.0 \
 			PRODUCT_NAME=mos \
 			CENTOS_MAJOR=7 \
-			MIRROR_FUEL=http://linux.enea.com/repo/mirantis/mos-repos/centos/mos8.0-centos7-fuel/ \
+			MIRROR_FUEL=http://linux.enea.com/repo/opnfv/armband/mos-repos/centos/mos8.0-centos7-fuel/os/x86_64/ \
 			MIRROR_UBUNTU=https://linux.enea.com/repo/opnfv/armband \
 			LATEST_MIRROR_ID_URL=https://linux.enea.com/repo/opnfv/armband \
 			JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_arm64.deb \
