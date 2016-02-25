@@ -1,4 +1,3 @@
-From e45bd34255d696c6500814ae29232d20cf02b2b1 Mon Sep 17 00:00:00 2001
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Thu, 25 Feb 2016 16:01:18 +0100
 Subject: [PATCH] Add FLASH_KERNEL_SKIP=true.

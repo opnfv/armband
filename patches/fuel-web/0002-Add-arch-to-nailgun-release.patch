@@ -1,4 +1,3 @@
-From 2068632b81e2debb8a75dd269d04add94b6f78ba Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Wed, 24 Feb 2016 20:11:54 +0100
 Subject: [PATCH] Add arch to nailgun release

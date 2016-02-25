@@ -1,4 +1,3 @@
-From 152923a177d69ded6ee98d56659a603a1693f391 Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Sun, 21 Feb 2016 16:28:02 +0100
 Subject: [PATCH] Allow customizing Fuel commit

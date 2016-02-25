@@ -1,4 +1,3 @@
-From 8adcbc0909882e564c99204880de300295d8562a Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Wed, 24 Feb 2016 20:05:25 +0100
 Subject: [PATCH] Add arm64 for auxiliary repos
