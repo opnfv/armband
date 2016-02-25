@@ -1,0 +1,33 @@
+From 761fafba10fc202c54d08034cacf717ddfd40cc4 Mon Sep 17 00:00:00 2001
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Thu, 25 Feb 2016 13:35:39 +0100
+Subject: [PATCH] Update docs for qemu-debootstrap
+
+---
+ docs/develop/env.rst | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/docs/develop/env.rst b/docs/develop/env.rst
+index 227549c..3a6ca54 100644
+--- a/docs/develop/env.rst
++++ b/docs/develop/env.rst
+@@ -110,11 +110,11 @@ your Fuel ISO build environment on Ubuntu 14.04:
+     sudo apt-get install software-properties-common python-software-properties
+     sudo add-apt-repository -y ppa:chris-lea/node.js
+     sudo apt-get update
+-    sudo apt-get install build-essential make git ruby ruby-dev rubygems debootstrap createrepo \
+-    python-setuptools yum yum-utils libmysqlclient-dev isomd5sum \
+-    python-nose libvirt-bin python-ipaddr python-paramiko python-yaml \
+-    python-pip kpartx extlinux unzip genisoimage nodejs multistrap \
+-    lrzip python-daemon
++    sudo apt-get install build-essential make git ruby ruby-dev rubygems \
++    qemu-user-static createrepo python-setuptools yum yum-utils \
++    libmysqlclient-dev isomd5sum python-nose libvirt-bin python-ipaddr \
++    python-paramiko python-yaml python-pip kpartx extlinux unzip \
++    genisoimage nodejs multistrap lrzip python-daemon
+     sudo gem install bundler -v 1.2.1
+     sudo gem install builder
+     sudo pip install xmlbuilder jinja2
+-- 
+1.9.1
+
