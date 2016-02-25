@@ -1,0 +1,57 @@
+From 1b057f2bc86c9701e3c2966fe4de7c6ae3556dee Mon Sep 17 00:00:00 2001
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Thu, 25 Feb 2016 13:31:19 +0100
+Subject: [PATCH] Use qemu-debootstrap to support multi-arch
+
+---
+ prepare-build-env.sh | 4 ++--
+ requirements-rpm.txt | 2 +-
+ sandbox.mk           | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/prepare-build-env.sh b/prepare-build-env.sh
+index 194e528..7858307 100755
+--- a/prepare-build-env.sh
++++ b/prepare-build-env.sh
+@@ -107,8 +107,8 @@ fi
+ 
+ # Install software
+ sudo apt-get update
+-sudo apt-get -y install build-essential make git $GEMPKG debootstrap createrepo \
+-  python-setuptools yum yum-utils libmysqlclient-dev isomd5sum bc \
++sudo apt-get -y install build-essential make git $GEMPKG qemu-user-static \
++  createrepo python-setuptools yum yum-utils libmysqlclient-dev isomd5sum bc \
+   python-nose libvirt-bin python-ipaddr python-paramiko python-yaml \
+   python-pip kpartx extlinux unzip genisoimage syslinux debmirror \
+   lrzip python-daemon python-dev libparse-debcontrol-perl reprepro devscripts \
+diff --git a/requirements-rpm.txt b/requirements-rpm.txt
+index e0aa9ba..e0e8c4b 100644
+--- a/requirements-rpm.txt
++++ b/requirements-rpm.txt
+@@ -17,7 +17,7 @@ cronie-anacron
+ crontabs
+ Cython
+ daemonize
+-debootstrap
++qemu-user-static
+ deltarpm
+ dhcp
+ dnsmasq
+diff --git a/sandbox.mk b/sandbox.mk
+index 3c65cc6..cf3704b 100644
+--- a/sandbox.mk
++++ b/sandbox.mk
+@@ -182,8 +182,8 @@ mkdir -p $(SANDBOX_UBUNTU)/etc/init.d
+ touch $(SANDBOX_UBUNTU)/etc/init.d/.legacy-bootordering
+ mkdir -p $(SANDBOX_UBUNTU)/usr/sbin
+ cp -a $(BUILD_DIR)/policy-rc.d $(SANDBOX_UBUNTU)/usr/sbin
+-echo "Running debootstrap"
+-sudo debootstrap --no-check-gpg --include=ca-certificates --arch=$(UBUNTU_ARCH) $(MIRROR_UBUNTU_SUITE) $(SANDBOX_UBUNTU) $(MIRROR_UBUNTU_METHOD)://$(MIRROR_UBUNTU)$(MIRROR_UBUNTU_ROOT)
++echo "Running qemu-debootstrap"
++sudo qemu-debootstrap --no-check-gpg --include=ca-certificates --arch=$(UBUNTU_ARCH) $(MIRROR_UBUNTU_SUITE) $(SANDBOX_UBUNTU) $(MIRROR_UBUNTU_METHOD)://$(MIRROR_UBUNTU)$(MIRROR_UBUNTU_ROOT)
+ if [ -e $(SANDBOX_UBUNTU)/etc/resolv.conf ]; then sudo cp -a $(SANDBOX_UBUNTU)/etc/resolv.conf $(SANDBOX_UBUNTU)/etc/resolv.conf.orig; fi
+ sudo cp /etc/resolv.conf $(SANDBOX_UBUNTU)/etc/resolv.conf
+ if [ -e $(SANDBOX_UBUNTU)/etc/hosts ]; then sudo cp -a $(SANDBOX_UBUNTU)/etc/hosts $(SANDBOX_UBUNTU)/etc/hosts.orig; fi
+-- 
+1.9.1
+
