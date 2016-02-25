@@ -56,5 +56,5 @@ build:
 			MIRROR_UBUNTU=https://linux.enea.com \
 			LATEST_MIRROR_ID_URL=https://linux.enea.com \
 			JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_arm64.deb \
-			iso
+			iso 2>&1 | tee ${root}/build.log
 
