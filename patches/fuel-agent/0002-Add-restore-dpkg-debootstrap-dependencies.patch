@@ -1,0 +1,41 @@
+From 20f09b691b6f60b044501eba6cf60be663d7e24b Mon Sep 17 00:00:00 2001
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 25 Feb 2016 15:40:20 +0100
+Subject: [PATCH] Add/restore dpkg,debootstrap dependencies.
+
+FIXME: squash to previous patch.
+---
+ debian/control        | 2 ++
+ specs/fuel-agent.spec | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/debian/control b/debian/control
+index e7cb0cb..189dc00 100644
+--- a/debian/control
++++ b/debian/control
+@@ -35,7 +35,9 @@ Section: python
+ Pre-Depends: dpkg (>= 1.15.6~)
+ Depends: bzip2,
+          cloud-utils,
++	 debootstrap,
+ 	 qemu-user-static,
++	 binfmt-support,
+ 	 dmidecode,
+ 	 ethtool,
+ 	 gdisk,
+diff --git a/specs/fuel-agent.spec b/specs/fuel-agent.spec
+index 2f56ff1..a43f693 100644
+--- a/specs/fuel-agent.spec
++++ b/specs/fuel-agent.spec
+@@ -49,6 +49,8 @@ Requires:    genisoimage
+ Requires:    xfsprogs
+ Requires:    pciutils
+ Requires:    ethtool
++Requires:    debootstrap
++Requires:    dpkg
+ Requires:    qemu-user-static
+ Requires:    xz
+ Requires:    coreutils
+-- 
+1.9.1
+
