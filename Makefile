@@ -22,6 +22,7 @@ patches-export:
 	@git submodule -q foreach 'mkdir -p ${root}/patches/$$name'
 	@git submodule -q foreach 'git format-patch \
 		-o ${root}/patches/$$name -N armband-workbench-root'
+	@find ${root}/patches -name '*.patch' --exec sed -i -e '1d' {} \;
 
 # apply patches from patches/* to respective submodules
 patches-import:
