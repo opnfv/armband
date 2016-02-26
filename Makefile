@@ -52,9 +52,9 @@ build:
 			PRODUCT_VERSION=8.0 \
 			PRODUCT_NAME=mos \
 			CENTOS_MAJOR=7 \
-			MIRROR_FUEL=http://linux.enea.com/mos-repos/centos/mos8.0-centos7-fuel/os/x86_64/ \
-			MIRROR_UBUNTU=https://linux.enea.com \
-			LATEST_MIRROR_ID_URL=https://linux.enea.com \
+			MIRROR_FUEL=http://10.0.2.6/mos-repos/centos/mos8.0-centos7-fuel/os/x86_64/ \
+			MIRROR_UBUNTU_URL=http://10.0.2.6/repo/ubuntu \
+			LATEST_MIRROR_ID_URL=http://10.0.2.6/ \
 			JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_arm64.deb \
 			iso 2>&1 | tee ${root}/build.log
 
