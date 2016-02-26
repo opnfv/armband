@@ -14,6 +14,11 @@ List of missing features and things to do
 * [arm64-master] [fuel-agent] --kernel-flavor override in fuel_bootstrap based on arch [2]
 * [arm64-master] [fuel-agent] Package and repo update for arm64 in [3] (?)
 * [arm64-master] [fuel-agent] (?) Update image build tests for arm64 in [4] (+efi?)
+* [arm64-master] Factor out 10.0.2.6 local mirrors and switch to HTTPS for MOS mirror
+* [armband-deb-repo] Re-compile mixed-binaries (all+arch) debs for amd64 (e.g. ceph)
+* [ohai] ThunderX network card speed reported as N/A
+* [fuel?] Disabling rx-vlan-filter from Fuel WebUI is not applied during netcheck
+* [fuel?] Gray out vCenter & co for archs other than x86
 
 [1] https://github.com/openstack/fuel-agent/blob/master/fuel_agent/drivers/nailgun.py#L687-L693
 [2] https://github.com/openstack/fuel-agent/blob/master/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py#L107 
