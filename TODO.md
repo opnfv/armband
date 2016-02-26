@@ -9,3 +9,13 @@ List of missing features and things to do
 * [arm64-master] Fix license in ubuntu_1404_arm64.pp
 * [arm64-master] Remove/replace mini.iso with own kernel/initrd
 * [arm64-master] Look into default ubuntu_debootstrap change in cobbler.pp
+* [arm64-master] Add Cobbler aarch64 loader
+* [arm64-master] [fuel-agent] Custom package selection for arm64 in [1] or from above
+* [arm64-master] [fuel-agent] --kernel-flavor override in fuel_bootstrap based on arch [2]
+* [arm64-master] [fuel-agent] Package and repo update for arm64 in [3] (?)
+* [arm64-master] [fuel-agent] (?) Update image build tests for arm64 in [4] (+efi?)
+
+[1] https://github.com/openstack/fuel-agent/blob/master/fuel_agent/drivers/nailgun.py#L687-L693
+[2] https://github.com/openstack/fuel-agent/blob/master/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py#L107 
+[3] https://github.com/openstack/fuel-agent/blob/master/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample#L19
+[4] https://github.com/openstack/fuel-agent/blob/master/fuel_agent/tests/test_nailgun_build_image.py#L26
