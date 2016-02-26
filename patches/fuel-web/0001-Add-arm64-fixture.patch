@@ -1,4 +1,3 @@
-From c37ee675b1002847ede29ca5fe27c3326f52bba2 Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Sun, 21 Feb 2016 16:30:43 +0100
 Subject: [PATCH] Add arm64 fixture
@@ -8,7 +7,7 @@ Subject: [PATCH] Add arm64 fixture
  1 file changed, 103 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index f9c8ab6..985025d 100644
+index f9c8ab6..8391f2b 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
 @@ -2079,3 +2079,106 @@
@@ -70,25 +69,25 @@ index f9c8ab6..985025d 100644
 +                priority: null
 +              - type: "deb"
 +                name: "mos"
-+                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-updates"
-+                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0-updates"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-security"
-+                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0-security"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-holdback"
-+                uri: "https://linux.enea.com/repo/opnfv/armband/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
 +                suite: "mos8.0-holdback"
 +                section: "main restricted"
 +                priority: 1100
