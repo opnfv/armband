@@ -37,7 +37,7 @@ patches-import:
 build: YARMOUTH_PPA_USERNAME:=changeme
 build: YARMOUTH_PPA_PASSWORD:=changeme
 build:
-	grep -r -l YARMOUTH_PPA_USERNAME ${root}/upstream | xargs \
+	grep -r -l YARMOUTH_PPA_USERNAME ${root}/upstream | xargs -r \
 		sed -i -e "s/YARMOUTH_PPA_USERNAME/${YARMOUTH_PPA_USERNAME}/" \
 			-e "s/YARMOUTH_PPA_PASSWORD/${YARMOUTH_PPA_PASSWORD}/"
 	cd ${root}/upstream/fuel/build && \
