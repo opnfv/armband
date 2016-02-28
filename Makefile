@@ -41,7 +41,7 @@ build:
 		sed -i -e "s/YARMOUTH_PPA_USERNAME/${YARMOUTH_PPA_USERNAME}/" \
 			-e "s/YARMOUTH_PPA_PASSWORD/${YARMOUTH_PPA_PASSWORD}/"
 	cd ${root}/upstream/fuel/build && \
-		make \
+		time make \
 			FUEL_MAIN_REPO=${root}/upstream/fuel-main \
 			FUEL_MAIN_TAG= \
 			OVSNFV_DPDK_CHANGE=refs/changes/81/10881/1 \
