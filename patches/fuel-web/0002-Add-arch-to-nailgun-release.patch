@@ -47,7 +47,7 @@ index 96cf2ed..c2426d2 100644
                                        nullable=False, server_default='[]')
      description = Column(Unicode)
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index 985025d..b252fbf 100644
+index 8391f2b..6ab5779 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
 @@ -1913,6 +1913,7 @@
