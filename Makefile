@@ -50,6 +50,9 @@ build:
 			FUELLIB_REPO=${root}/upstream/fuel-library \
 			NAILGUN_REPO=${root}/upstream/fuel-web \
 			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
+			FUELLIB_COMMIT=HEAD \
+			NAILGUN_COMMIT=HEAD \
+			FUEL_AGENT_COMMIT=HEAD \
 			PRODUCT_VERSION=8.0 \
 			PRODUCT_NAME=mos \
 			CENTOS_MAJOR=7 \
