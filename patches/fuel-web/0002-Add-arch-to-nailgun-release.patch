@@ -5,11 +5,13 @@ Subject: [PATCH] Add arch to nailgun release
 Thsi is required so that the TestVM image is created using a cirros
 image that is compatible with the architecture of the deployment setup.
 ---
- nailgun/nailgun/consts.py                              | 5 +++++
- nailgun/nailgun/db/sqlalchemy/models/release.py        | 8 ++++++++
- nailgun/nailgun/fixtures/openstack.yaml                | 3 +++
- nailgun/nailgun/orchestrator/deployment_serializers.py | 4 +++-
- 4 files changed, 19 insertions(+), 1 deletion(-)
+ nailgun/nailgun/consts.py                          |  5 +++
+ .../alembic_migrations/versions/armband.py         | 47 ++++++++++++++++++++++
+ nailgun/nailgun/db/sqlalchemy/models/release.py    |  8 ++++
+ nailgun/nailgun/fixtures/openstack.yaml            |  3 ++
+ .../nailgun/orchestrator/deployment_serializers.py |  4 +-
+ 5 files changed, 66 insertions(+), 1 deletion(-)
+ create mode 100644 nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
 
 diff --git a/nailgun/nailgun/consts.py b/nailgun/nailgun/consts.py
 index bb69168..11f5247 100644
@@ -27,8 +29,61 @@ index bb69168..11f5247 100644
  CLUSTER_MODES = Enum(
      'multinode',
      'ha_full',
+diff --git a/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py b/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
+new file mode 100644
+index 0000000..03cd1c2
+--- /dev/null
++++ b/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
+@@ -0,0 +1,47 @@
++#    Copyright 2016 Mirantis, Inc.
++#
++#    Licensed under the Apache License, Version 2.0 (the "License"); you may
++#    not use this file except in compliance with the License. You may obtain
++#    a copy of the License at
++#
++#         http://www.apache.org/licenses/LICENSE-2.0
++#
++#    Unless required by applicable law or agreed to in writing, software
++#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++#    License for the specific language governing permissions and limitations
++#    under the License.
++
++"""Armband patches
++
++Revision ID: f9b7fd91ac19
++Revises: 43b2cb64dae6
++Create Date: 2016-03-01 23:18:58.712617
++
++"""
++
++# revision identifiers, used by Alembic.
++revision = 'f9b7fd91ac19'
++down_revision = '43b2cb64dae6'
++
++from alembic import op
++import sqlalchemy as sa
++from sqlalchemy.dialects import postgresql
++
++ENUMS = (
++    'arch')
++
++def upgrade():
++    add_release_arch()
++
++def downgrade():
++    remove_release_arch()
++    map(drop_enum, ENUMS)
++
++def add_release_arch():
++    arch_enum = sa.Enum('x86_64', 'aarch64', name='release_arch')
++    arch_enum.create(op.get_bind(), checkfirst=False)
++    op.add_column('releases', sa.Column('arch', arch_enum, nullable=False))
++
++def remove_release_arch():
++    op.drop_column('releases', 'arch')
 diff --git a/nailgun/nailgun/db/sqlalchemy/models/release.py b/nailgun/nailgun/db/sqlalchemy/models/release.py
-index 96cf2ed..c2426d2 100644
+index 96cf2ed..f17cc88 100644
 --- a/nailgun/nailgun/db/sqlalchemy/models/release.py
 +++ b/nailgun/nailgun/db/sqlalchemy/models/release.py
 @@ -38,6 +38,14 @@ class Release(Base):
@@ -37,8 +92,8 @@ index 96cf2ed..c2426d2 100644
      version = Column(String(30), nullable=False)
 +    arch = Column(
 +        Enum(
-+            *consts.RELEASE_STATES,
-+            name='arch'
++            *consts.RELEASE_ARCHS,
++            name='release_arch'
 +        ),
 +        nullable=False,
 +        default=consts.RELEASE_ARCHS.x86_64
