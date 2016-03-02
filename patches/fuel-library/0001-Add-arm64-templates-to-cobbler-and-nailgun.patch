@@ -5,17 +5,17 @@ Subject: [PATCH] Add arm64 templates to cobbler and nailgun
 ---
  .../cobbler/lib/puppet/type/cobbler_distro.rb      |  2 +-
  .../cobbler/manifests/distro/ubuntu_1404_arm64.pp  | 97 ++++++++++++++++++++++
- .../cobbler/manifests/profile/ubuntu_1404_arm64.pp | 68 +++++++++++++++
+ .../cobbler/manifests/profile/ubuntu_1404_arm64.pp | 67 +++++++++++++++
  .../manifests/profile/ubuntu_1404_x86_64.pp        |  2 +
  .../puppet/cobbler/templates/dnsmasq.template.erb  |  2 +
  .../cobbler/templates/efidefault.template.erb      |  5 ++
  .../cobbler/templates/grubprofile.template.erb     | 12 +++
  .../cobbler/templates/grubsystem.template.erb      | 12 +++
- .../templates/preseed/ubuntu-1404.preseed.erb      | 10 +--
+ .../templates/preseed/ubuntu-1404.preseed.erb      |  8 +-
  .../puppet/nailgun/manifests/auxiliaryrepos.pp     | 12 ++-
- deployment/puppet/nailgun/manifests/cobbler.pp     | 40 +++++++--
- .../puppet/nailgun/manifests/cobbler/preseed.pp    | 14 ++++
- 12 files changed, 258 insertions(+), 18 deletions(-)
+ deployment/puppet/nailgun/manifests/cobbler.pp     | 38 +++++++--
+ .../puppet/nailgun/manifests/cobbler/preseed.pp    | 13 +++
+ 12 files changed, 253 insertions(+), 17 deletions(-)
  create mode 100644 deployment/puppet/cobbler/manifests/distro/ubuntu_1404_arm64.pp
  create mode 100644 deployment/puppet/cobbler/manifests/profile/ubuntu_1404_arm64.pp
  create mode 100644 deployment/puppet/cobbler/templates/efidefault.template.erb
@@ -141,10 +141,10 @@ index 0000000..dcb20fa
 +}
 diff --git a/deployment/puppet/cobbler/manifests/profile/ubuntu_1404_arm64.pp b/deployment/puppet/cobbler/manifests/profile/ubuntu_1404_arm64.pp
 new file mode 100644
-index 0000000..152a64c
+index 0000000..dd48cd8
 --- /dev/null
 +++ b/deployment/puppet/cobbler/manifests/profile/ubuntu_1404_arm64.pp
-@@ -0,0 +1,68 @@
+@@ -0,0 +1,67 @@
 +#    Copyright 2013 Mirantis, Inc.
 +#
 +#    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -182,7 +182,6 @@ index 0000000..152a64c
 +  ],
 +
 +  $ks_system_timezone = "America/Los_Angeles",
-+  $linux_kernel_flavor = "thunder",
 +  $arch = "arm64",
 +
 +  # default password is 'r00tme'
@@ -286,18 +285,9 @@ index 0000000..eb7557c
 +    echo 'Booting bootstrap image ...'
 +}
 diff --git a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb b/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
-index fd6dda3..2770808 100644
+index fd6dda3..a8cde67 100644
 --- a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
 +++ b/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
-@@ -31,7 +31,7 @@ $SNIPPET('ubuntu_partition')
- 
- #set fuel_version=$getVar('fuel_version', '')
- #if $fuel_version >= '6.0'
--d-i base-installer/kernel/image string linux-image-generic-lts-trusty
-+d-i base-installer/kernel/image string linux-image-<%= @linux_kernel_flavor %>
- #else
- d-i base-installer/kernel/image string linux-image-3.11
- #end if
 @@ -66,9 +66,9 @@ d-i apt-setup/mirror/error select Retry
  # Use network mirror
  d-i apt-setup/use_mirror boolean true
@@ -351,7 +341,7 @@ index 41a2570..720943d 100644
  
    file { $release_files:
 diff --git a/deployment/puppet/nailgun/manifests/cobbler.pp b/deployment/puppet/nailgun/manifests/cobbler.pp
-index a11498c..6601369 100644
+index a11498c..df7f6d4 100644
 --- a/deployment/puppet/nailgun/manifests/cobbler.pp
 +++ b/deployment/puppet/nailgun/manifests/cobbler.pp
 @@ -43,7 +43,7 @@ class nailgun::cobbler(
@@ -363,7 +353,7 @@ index a11498c..6601369 100644
    }
  
    if $::osfamily == 'RedHat' {
-@@ -133,12 +133,10 @@ class nailgun::cobbler(
+@@ -133,12 +133,9 @@ class nailgun::cobbler(
          require   => Class['::cobbler::server'],
        }
  
@@ -376,18 +366,16 @@ index a11498c..6601369 100644
 +      class { "nailgun::cobbler::preseed":
 +        path                =>'/var/lib/cobbler/kickstarts/ubuntu-amd64.preseed',
 +        arch                => "x86_64",
-+        linux_kernel_flavor => "generic-lts-trusty",
        } ->
  
        cobbler_distro { 'ubuntu_1404_x86_64':
-@@ -151,6 +149,22 @@ class nailgun::cobbler(
+@@ -151,6 +148,21 @@ class nailgun::cobbler(
          require   => Class['::cobbler::server'],
        }
  
 +      class { 'nailgun::cobbler::preseed':
 +        path                => '/var/lib/cobbler/kickstarts/ubuntu-arm64.preseed',
 +        arch                => "arm64",
-+        linux_kernel_flavor => "thunder",
 +      } ->
 +
 +      cobbler_distro { 'ubuntu_1404_arm64':
@@ -403,7 +391,7 @@ index a11498c..6601369 100644
        cobbler_profile { 'centos-x86_64':
          kickstart => '/var/lib/cobbler/kickstarts/centos-x86_64.ks',
          kopts     => 'biosdevname=0 sshd=1 dhcptimeout=120',
-@@ -171,6 +185,16 @@ class nailgun::cobbler(
+@@ -171,6 +183,16 @@ class nailgun::cobbler(
          require   => Cobbler_distro['ubuntu_1404_x86_64'],
        }
  
@@ -420,7 +408,7 @@ index a11498c..6601369 100644
        cobbler_distro { 'bootstrap':
          kernel    => "${repo_root}/bootstrap/linux",
          initrd    => "${repo_root}/bootstrap/initramfs.img",
-@@ -205,7 +229,7 @@ class nailgun::cobbler(
+@@ -205,7 +227,7 @@ class nailgun::cobbler(
          distro    => 'ubuntu_bootstrap',
          menu      => true,
          kickstart => '',
@@ -431,14 +419,13 @@ index a11498c..6601369 100644
          require   => Cobbler_distro['ubuntu_bootstrap'],
 diff --git a/deployment/puppet/nailgun/manifests/cobbler/preseed.pp b/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
 new file mode 100644
-index 0000000..8ce65a2
+index 0000000..7409e3d
 --- /dev/null
 +++ b/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,13 @@
 +class nailgun::cobbler::preseed(
 +  $path,
 +  $arch                = "x86_64",
-+  $linux_kernel_flavor = "generic-lts-trusty"
 +) {
 +
 +  file { $path:
