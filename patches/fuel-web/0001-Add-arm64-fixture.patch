@@ -3,14 +3,14 @@ Date: Sun, 21 Feb 2016 16:30:43 +0100
 Subject: [PATCH] Add arm64 fixture
 
 ---
- nailgun/nailgun/fixtures/openstack.yaml | 103 ++++++++++++++++++++++++++++++++
- 1 file changed, 103 insertions(+)
+ nailgun/nailgun/fixtures/openstack.yaml | 97 +++++++++++++++++++++++++++++++++
+ 1 file changed, 97 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index f9c8ab6..8391f2b 100644
+index f9c8ab6..b87b42b 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -2079,3 +2079,106 @@
+@@ -2079,3 +2079,100 @@
                uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_amd64-boot.img.gz"
                format: "ext2"
                container: "gzip"
@@ -43,12 +43,6 @@ index f9c8ab6..8391f2b 100644
 +              For more details, please refer to the documentation (https://docs.mirantis.com/openstack/fuel/fuel-8.0/operations.html#external-ubuntu-ops).
 +            value:
 +              # first repository on the list is used for downloading the kernel and initrd
-+              - type: "deb"
-+                name: "ubuntu"
-+                uri: "https://YARMOUTH_PPA_USERNAME:YARMOUTH_PPA_PASSWORD@private-ppa.launchpad.net/yarmouth-team/ppa/"
-+                suite: "trusty"
-+                section: "main"
-+                priority: null
 +              - type: "deb"
 +                name: "ubuntu"
 +                uri: "http://ports.ubuntu.com/"
@@ -94,10 +88,10 @@ index f9c8ab6..8391f2b 100644
 +      generated:
 +        repo_setup:
 +          installer_kernel:
-+            remote_relative: "dists/trusty/main/installer-arm64/current/images/netboot/ubuntu-installer/arm64/linux"
++            remote_relative: "dists/trusty/main/installer-arm64/current/images/generic/netboot/vmlinuz"
 +            local: "/var/www/nailgun/ubuntu/arm64/images/linux"
 +          installer_initrd:
-+            remote_relative: "dists/trusty/main/installer-arm64/current/images/netboot/ubuntu-installer/arm64/initrd.gz"
++            remote_relative: "dists/trusty/main/installer-arm64/current/images/generic/netboot/initrd.gz"
 +            local: "/var/www/nailgun/ubuntu/arm64/images/initrd.gz"
 +        cobbler:
 +          profile:
