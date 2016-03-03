@@ -18,3 +18,7 @@
 	path = upstream/fuel-agent
 	url = git@github.com:openstack/fuel-agent.git
 	branch = stable/8.0
+[submodule "fuel-mirror"]
+	path = upstream/fuel-mirror
+	url = git@github.com:openstack/fuel-mirror.git
+	branch = stable/8.0
