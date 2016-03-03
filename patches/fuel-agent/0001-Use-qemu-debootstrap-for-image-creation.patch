@@ -7,13 +7,48 @@ This commit adds qemu-debootstrap support and a command line argument
 the image for. The architecture detection from environment settings is
 not yet implemented.
 ---
- debian/control                       |  2 ++
- fuel_agent/manager.py                | 12 +++++++++++-
- fuel_agent/tests/test_build_utils.py |  4 ++--
- fuel_agent/utils/build.py            |  2 +-
- specs/fuel-agent.spec                |  2 ++
- 5 files changed, 18 insertions(+), 4 deletions(-)
+ .../fuel_bootstrap_cli/fuel_bootstrap/commands/build.py     |  8 ++++++++
+ .../fuel_bootstrap/utils/bootstrap_image.py                 |  3 ++-
+ debian/control                                              |  2 ++
+ fuel_agent/manager.py                                       | 13 ++++++++++++-
+ fuel_agent/tests/test_build_utils.py                        |  4 ++--
+ fuel_agent/utils/build.py                                   |  2 +-
+ specs/fuel-agent.spec                                       |  2 ++
+ 7 files changed, 29 insertions(+), 5 deletions(-)
 
+diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
+index ca2d3e1..79a1ccf 100644
+--- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
++++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
+@@ -166,6 +166,14 @@ class BuildCommand(command.Command):
+                  " files",
+             action='append'
+         )
++        parser.add_argument(
++            '--target_arch',
++            type=str,
++            choices=['arm64', 'amd64'],
++            help="Choose the target architecture for which image is built",
++            default="x86_64"
++        )
++
+         return parser
+ 
+     def take_action(self, parsed_args):
+diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/utils/bootstrap_image.py b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/utils/bootstrap_image.py
+index 0219961..1387cf9 100644
+--- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/utils/bootstrap_image.py
++++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/utils/bootstrap_image.py
+@@ -172,7 +172,8 @@ def make_bootstrap(data):
+ 
+     LOG.info("Try to build image with data:\n%s", yaml.safe_dump(bootdata))
+ 
+-    opts = ['--data_driver', 'bootstrap_build_image']
++    opts = ['--data_driver', 'bootstrap_build_image', 
++            '--target_arch', data['target_arch']]
+     if data.get('image_build_dir'):
+         opts.extend(['--image_build_dir', data['image_build_dir']])
+ 
 diff --git a/debian/control b/debian/control
 index 0a6f947..189dc00 100644
 --- a/debian/control
@@ -28,7 +63,7 @@ index 0a6f947..189dc00 100644
  	 ethtool,
  	 gdisk,
 diff --git a/fuel_agent/manager.py b/fuel_agent/manager.py
-index 15cc5d8..528bb0a 100644
+index 15cc5d8..f613aef 100644
 --- a/fuel_agent/manager.py
 +++ b/fuel_agent/manager.py
 @@ -18,6 +18,7 @@ import shutil
@@ -48,20 +83,21 @@ index 15cc5d8..528bb0a 100644
  opts = [
      cfg.StrOpt(
          'nc_template_path',
-@@ -153,6 +156,12 @@ cli_opts = [
+@@ -153,6 +156,13 @@ cli_opts = [
          default='/tmp',
          help='Directory where the image is supposed to be built',
      ),
-+    cfg.StrOpt(
++    cfg.Opt(
 +        'target_arch',
 +        default='amd64',
++        type=ArchType,
 +        help='Architecture for which image will be built using '
 +             'debootstrap',
 +    ),
  ]
  
  CONF = cfg.CONF
-@@ -551,7 +560,8 @@ class Manager(object):
+@@ -551,7 +561,8 @@ class Manager(object):
          LOG.debug('Preventing services from being get started')
          bu.suppress_services_start(chroot)
          LOG.debug('Installing base operating system using debootstrap')
