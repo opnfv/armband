@@ -2,18 +2,60 @@ From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Sun, 21 Feb 2016 16:29:52 +0100
 Subject: [PATCH] Add arm64 templates to cobbler and nailgun
 
+Add grub template import to cobbler server manifest
+
+Add arm64 templates to cobbler and nailgun
 ---
- deployment/puppet/cobbler/templates/dnsmasq.template.erb     |  2 ++
- deployment/puppet/cobbler/templates/efidefault.template.erb  |  5 +++++
- deployment/puppet/cobbler/templates/grubprofile.template.erb | 12 ++++++++++++
- deployment/puppet/cobbler/templates/grubsystem.template.erb  | 12 ++++++++++++
- deployment/puppet/nailgun/manifests/auxiliaryrepos.pp        | 12 ++++++++----
- deployment/puppet/nailgun/manifests/cobbler.pp               |  4 ++--
- 6 files changed, 41 insertions(+), 6 deletions(-)
+ deployment/puppet/cobbler/manifests/server.pp      | 27 ++++++++++++++++++++++
+ .../puppet/cobbler/templates/dnsmasq.template.erb  |  2 ++
+ .../cobbler/templates/efidefault.template.erb      |  5 ++++
+ .../cobbler/templates/grubprofile.template.erb     | 12 ++++++++++
+ .../cobbler/templates/grubsystem.template.erb      | 12 ++++++++++
+ .../puppet/nailgun/manifests/auxiliaryrepos.pp     | 12 ++++++----
+ deployment/puppet/nailgun/manifests/cobbler.pp     |  4 ++--
+ 7 files changed, 68 insertions(+), 6 deletions(-)
  create mode 100644 deployment/puppet/cobbler/templates/efidefault.template.erb
  create mode 100644 deployment/puppet/cobbler/templates/grubprofile.template.erb
  create mode 100644 deployment/puppet/cobbler/templates/grubsystem.template.erb
 
+diff --git a/deployment/puppet/cobbler/manifests/server.pp b/deployment/puppet/cobbler/manifests/server.pp
+index bdb1ae7..0523404 100644
+--- a/deployment/puppet/cobbler/manifests/server.pp
++++ b/deployment/puppet/cobbler/manifests/server.pp
+@@ -288,6 +288,33 @@ class cobbler::server (
+     notify  => [Service[$cobbler_service], Exec['cobbler_sync']],
+   }
+ 
++  file { '/etc/cobbler/pxe/efidefault.template':
++    content => template('cobbler/efidefault.template.erb'),
++    owner   => 'root',
++    group   => 'root',
++    mode    => '0644',
++    require => Package[$cobbler::packages::cobbler_package],
++    notify  => [Service[$cobbler_service], Exec['cobbler_sync']],
++  }
++
++  file { '/etc/cobbler/pxe/grubprofile.template':
++    content => template('cobbler/grubprofile.template.erb'),
++    owner   => 'root',
++    group   => 'root',
++    mode    => '0644',
++    require => Package[$cobbler::packages::cobbler_package],
++    notify  => [Service[$cobbler_service], Exec['cobbler_sync']],
++  }
++
++  file { '/etc/cobbler/pxe/grubsystem.template':
++    content => template('cobbler/grubsystem.template.erb'),
++    owner   => 'root',
++    group   => 'root',
++    mode    => '0644',
++    require => Package[$cobbler::packages::cobbler_package],
++    notify  => [Service[$cobbler_service], Exec['cobbler_sync']],
++  }
++
+   exec { '/var/lib/tftpboot/chain.c32':
+     command => 'cp /usr/share/syslinux/chain.c32 /var/lib/tftpboot/chain.c32',
+     unless  => 'test -e /var/lib/tftpboot/chain.c32',
 diff --git a/deployment/puppet/cobbler/templates/dnsmasq.template.erb b/deployment/puppet/cobbler/templates/dnsmasq.template.erb
 index 3a96ac1..8d3e753 100644
 --- a/deployment/puppet/cobbler/templates/dnsmasq.template.erb
