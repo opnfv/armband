@@ -6,28 +6,14 @@ For now the arch is hardcoded for simplicity. We should detect this
 but how? If we're multi-arch then one bootstrap image should be built
 per supported arch. This requires Fuel refactoring.
 ---
- build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh      | 2 +-
- build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh.orig | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
 index b096a78..b072d0a 100755
 --- a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
 +++ b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
 @@ -325,7 +325,7 @@ build_ubuntu_bootstrap () {
-         local ret=1
-         echo ${bs_progress_message} >&2
-         set_ui_bootstrap_error "${bs_progress_message}" >&2
--        if fuel-bootstrap -v --debug build --activate >>"$bs_build_log" 2>&1; then
-+        if fuel-bootstrap -v --debug build --arch arm64 --activate >>"$bs_build_log" 2>&1; then
-           ret=0
-           fuel notify --topic "done" --send "${bs_done_message}"
-         else
-diff --git a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh.orig b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh.orig
-index 69e38e4..713a6e4 100755
---- a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh.orig
-+++ b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh.orig
-@@ -313,7 +313,7 @@ build_ubuntu_bootstrap () {
          local ret=1
          echo ${bs_progress_message} >&2
          set_ui_bootstrap_error "${bs_progress_message}" >&2
