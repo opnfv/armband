@@ -10,7 +10,7 @@ per supported arch. This requires Fuel refactoring.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
-index b096a78..b072d0a 100755
+index b096a78..744f352 100755
 --- a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
 +++ b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
 @@ -325,7 +325,7 @@ build_ubuntu_bootstrap () {
@@ -18,7 +18,7 @@ index b096a78..b072d0a 100755
          echo ${bs_progress_message} >&2
          set_ui_bootstrap_error "${bs_progress_message}" >&2
 -        if fuel-bootstrap -v --debug build --activate >>"$bs_build_log" 2>&1; then
-+        if fuel-bootstrap -v --debug build --arch arm64 --activate >>"$bs_build_log" 2>&1; then
++        if fuel-bootstrap -v --debug build --target_arch arm64 --activate >>"$bs_build_log" 2>&1; then
            ret=0
            fuel notify --topic "done" --send "${bs_done_message}"
          else
