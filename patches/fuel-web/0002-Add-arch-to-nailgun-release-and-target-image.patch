@@ -134,7 +134,7 @@ index b87b42b..9a8d16b 100644
      operating_system: "Ubuntu"
      description: "This option will install the OpenStack Liberty packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
 diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/nailgun/orchestrator/deployment_serializers.py
-index 375a1ce..f6ed83a 100644
+index 375a1ce..b8b38e2 100644
 --- a/nailgun/nailgun/orchestrator/deployment_serializers.py
 +++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
 @@ -291,7 +291,14 @@ class DeploymentMultinodeSerializer(object):
@@ -146,7 +146,7 @@ index 375a1ce..f6ed83a 100644
 +        arch = release.arch
 +        if arch == "amd64":
 +            arch = "x86_64"
-+        else if arch == "arm64":
++        elif arch == "arm64":
 +            arch = "aarch64"
 +        image_data['img_path'] = '{0}cirros-{1}-disk.img'.format(img_dir,
 +            arch)
