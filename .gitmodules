@@ -22,3 +22,7 @@
 	path = upstream/fuel-mirror
 	url = git@github.com:openstack/fuel-mirror.git
 	branch = stable/8.0
+[submodule "fuel-plugin-qemu"]
+	path = upstream/fuel-plugin-qemu
+	url = https://github.com/openstack/fuel-plugin-qemu
+	branch = master

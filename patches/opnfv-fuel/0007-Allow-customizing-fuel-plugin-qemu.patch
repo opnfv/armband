@@ -1,0 +1,24 @@
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Fri, 4 Mar 2016 14:27:48 +0100
+Subject: [PATCH] Allow customizing fuel-plugin-qemu
+
+---
+ build/f_isoroot/f_qemupluginbuild/config.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/build/f_isoroot/f_qemupluginbuild/config.mk b/build/f_isoroot/f_qemupluginbuild/config.mk
+index e9c4356..c23e9c2 100644
+--- a/build/f_isoroot/f_qemupluginbuild/config.mk
++++ b/build/f_isoroot/f_qemupluginbuild/config.mk
+@@ -7,6 +7,6 @@
+ # http://www.apache.org/licenses/LICENSE-2.0
+ ##############################################################################
+ 
+-QEMU_BRANCH=292b588b5fe444651cca92d7511383ac42253984
+-QEMU_REPO=https://review.openstack.org/openstack/fuel-plugin-qemu
++QEMU_BRANCH:=292b588b5fe444651cca92d7511383ac42253984
++QEMU_REPO:=https://review.openstack.org/openstack/fuel-plugin-qemu
+ QEMU_CHANGE=
+-- 
+1.9.1
+
