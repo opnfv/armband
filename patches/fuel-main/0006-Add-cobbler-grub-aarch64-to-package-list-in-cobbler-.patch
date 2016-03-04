@@ -1,0 +1,25 @@
+From: Florin Dumitrascu <florin.dumitrascu@enea.com>
+Date: Fri, 4 Mar 2016 17:19:41 +0100
+Subject: [PATCH] Add cobbler-grub-aarch64 to package list in cobbler container
+ setup script
+
+---
+ docker/cobbler/setup.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/docker/cobbler/setup.sh b/docker/cobbler/setup.sh
+index a7fce0c..90627a8 100644
+--- a/docker/cobbler/setup.sh
++++ b/docker/cobbler/setup.sh
+@@ -31,7 +31,7 @@ yum update -y
+ 
+ ln -s /etc/dnsmasq.conf /etc/cobbler.dnsmasq.conf
+ 
+-packages="httpd cobbler dnsmasq xinetd tftp-server"
++packages="httpd cobbler cobbler-grub-aarch64 dnsmasq xinetd tftp-server"
+ echo $packages | xargs -n1 yum install -y
+ 
+ 
+-- 
+1.9.1
+
