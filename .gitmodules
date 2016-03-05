@@ -26,3 +26,7 @@
 	path = upstream/fuel-plugin-qemu
 	url = https://github.com/openstack/fuel-plugin-qemu
 	branch = master
+[submodule "fuel-plugin-ovsnfv"]
+	path = upstream/fuel-plugin-ovsnfv
+	url = https://gerrit.opnfv.org/gerrit/p/ovsnfv.git
+	branch = stable/brahmaputra

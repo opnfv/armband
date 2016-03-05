@@ -47,11 +47,13 @@ build:
 			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
 			FUEL_MIRROR_REPO=${root}/upstream/fuel-mirror \
 			QEMU_REPO=${root}/upstream/fuel-plugin-qemu \
+			OVSNFV_DPDK_REPO=${root}/upstream/fuel-plugin-ovsnfv \
 			FUELLIB_COMMIT=HEAD \
 			NAILGUN_COMMIT=HEAD \
 			FUEL_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_COMMIT=HEAD \
 			QEMU_BRANCH=HEAD \
+			OVSNFV_DPDK_BRANCH=HEAD \
 			PRODUCT_VERSION=8.0 \
 			PRODUCT_NAME=mos \
 			CENTOS_MAJOR=7 \

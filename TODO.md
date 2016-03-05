@@ -20,6 +20,7 @@ List of missing features and things to do
 * [fuel?] Disabling rx-vlan-filter from Fuel WebUI is not applied during netcheck
 * [fuel?] Gray out vCenter & co for archs other than x86
 * [fuel] Figure a way for not hardcoding the bootstrap image architecture
+* [fuel] Add QEMU_VERSION for fuel-plugin-qemu
 
 [1] https://github.com/openstack/fuel-agent/blob/master/fuel_agent/drivers/nailgun.py#L687-L693
 [2] https://github.com/openstack/fuel-agent/blob/master/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py#L107 
