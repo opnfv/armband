@@ -39,7 +39,6 @@ build:
 		time make \
 			FUEL_MAIN_REPO=${root}/upstream/fuel-main \
 			FUEL_MAIN_TAG= \
-			OVSNFV_DPDK_CHANGE=refs/changes/81/10881/1 \
 			UBUNTU_ARCH="amd64 arm64" \
 			SEPARATE_IMAGES="/boot,ext2 /,ext4 /boot/efi,vfat" \
 			FUELLIB_REPO=${root}/upstream/fuel-library \
@@ -53,7 +52,7 @@ build:
 			FUEL_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_COMMIT=HEAD \
 			QEMU_BRANCH=HEAD \
-			OVSNFV_DPDK_BRANCH=HEAD \
+			OVSNFV_DPDK_BRANCH=armband-workbench \
 			PRODUCT_VERSION=8.0 \
 			PRODUCT_NAME=mos \
 			CENTOS_MAJOR=7 \
