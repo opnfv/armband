@@ -6,7 +6,7 @@ all: build
 submodules-init:
 	@git submodule -q init
 	@git submodule -q sync
-	@git submodule -q update
+	@git submodule update
 
 # Cleans any changes made to submodules
 submodules-clean:
@@ -14,7 +14,7 @@ submodules-clean:
 		'git checkout -q armband-workbench-root; \
 		git branch -q -D armband-workbench; \
 		git tag -d armband-workbench-root; \
-		git reset -q --hard HEAD; git clean -qxdf'
+		git reset -q --hard HEAD; git clean -xdff'
 
 .PHONY: patches-export patches-import
 # Generate patches from submodules
