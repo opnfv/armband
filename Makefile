@@ -37,6 +37,7 @@ patches-import:
 build:
 	cd ${root}/upstream/fuel/build && \
 		time make \
+			BUILD_FUEL_PLUGINS=f_odlpluginbuild \
 			FUEL_MAIN_REPO=${root}/upstream/fuel-main \
 			FUEL_MAIN_TAG= \
 			UBUNTU_ARCH="amd64 arm64" \
