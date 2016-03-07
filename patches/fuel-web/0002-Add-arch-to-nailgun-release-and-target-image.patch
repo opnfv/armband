@@ -168,7 +168,7 @@ index 04ae0b0..c927f03 100644
          # NOTE(kozhukalov): This pre-provision task is going to be
          # removed by 7.0 because we need this only for classic way of
 diff --git a/nailgun/nailgun/orchestrator/tasks_templates.py b/nailgun/nailgun/orchestrator/tasks_templates.py
-index 39f2067..bff648a 100644
+index 39f2067..cd2278c 100644
 --- a/nailgun/nailgun/orchestrator/tasks_templates.py
 +++ b/nailgun/nailgun/orchestrator/tasks_templates.py
 @@ -207,7 +207,7 @@ def make_reboot_task(uids, task):
@@ -185,7 +185,7 @@ index 39f2067..bff648a 100644
                      "--log-file /var/log/fuel-agent-env-{0}.log "
                      "--data_driver nailgun_build_image "
 -                    "--input_data '{1}'").format(cid, conf),
-+                    "--target_arch {1}"
++                    "--target_arch {1} "
 +                    "--input_data '{2}'").format(cid, arch, conf),
              'timeout': settings.PROVISIONING_IMAGES_BUILD_TIMEOUT,
              'retries': 1}})
