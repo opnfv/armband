@@ -17,7 +17,7 @@ not yet implemented.
  7 files changed, 29 insertions(+), 5 deletions(-)
 
 diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
-index ca2d3e1..79a1ccf 100644
+index ca2d3e1..b0d410d 100644
 --- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
 +++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
 @@ -166,6 +166,14 @@ class BuildCommand(command.Command):
@@ -29,7 +29,7 @@ index ca2d3e1..79a1ccf 100644
 +            type=str,
 +            choices=['arm64', 'amd64'],
 +            help="Choose the target architecture for which image is built",
-+            default="x86_64"
++            default="amd64"
 +        )
 +
          return parser
