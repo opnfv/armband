@@ -6,9 +6,23 @@ Because /var/lib/cobbler is mounted as a volume, new cobbler aarch64
 grub loader packaged as an RPM (cobbler-grub-aarch64) should be
 reinstalled if its files are missing on Docker container start.
 ---
+ docker/cobbler/setup.sh | 2 +-
  docker/cobbler/start.sh | 3 +++
- 1 file changed, 3 insertions(+)
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/docker/cobbler/setup.sh b/docker/cobbler/setup.sh
+index a7fce0c..90627a8 100644
+--- a/docker/cobbler/setup.sh
++++ b/docker/cobbler/setup.sh
+@@ -31,7 +31,7 @@ yum update -y
+ 
+ ln -s /etc/dnsmasq.conf /etc/cobbler.dnsmasq.conf
+ 
+-packages="httpd cobbler dnsmasq xinetd tftp-server"
++packages="httpd cobbler cobbler-grub-aarch64 dnsmasq xinetd tftp-server"
+ echo $packages | xargs -n1 yum install -y
+ 
+ 
 diff --git a/docker/cobbler/start.sh b/docker/cobbler/start.sh
 index 3c5d411..c1a359b 100644
 --- a/docker/cobbler/start.sh
