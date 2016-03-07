@@ -4,8 +4,8 @@ Subject: [PATCH] Fix qemu-user-static replacement
 
 ---
  fuel_agent/manager.py     |  6 ++++++
- fuel_agent/utils/build.py | 13 +++++++++++++
- 2 files changed, 19 insertions(+)
+ fuel_agent/utils/build.py | 18 ++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
 diff --git a/fuel_agent/manager.py b/fuel_agent/manager.py
 index f613aef..6322a10 100644
@@ -25,10 +25,10 @@ index f613aef..6322a10 100644
          # Umount chroot tree and remove images tmp files
          if not bu.stop_chrooted_processes(chroot, signal=signal.SIGTERM):
 diff --git a/fuel_agent/utils/build.py b/fuel_agent/utils/build.py
-index 6f31732..d7b575e 100644
+index 6f31732..abd762e 100644
 --- a/fuel_agent/utils/build.py
 +++ b/fuel_agent/utils/build.py
-@@ -312,6 +312,19 @@ def populate_basic_dev(chroot):
+@@ -312,6 +312,24 @@ def populate_basic_dev(chroot):
      utils.execute('chroot', chroot,
                    'ln', '-s', '/proc/self/fd', '/dev/fd')
  
@@ -45,6 +45,11 @@ index 6f31732..d7b575e 100644
 +    utils.execute('chroot', chroot,
 +                  'dpkg-divert', '--divert', '/usr/bin/%s.orig' % qemu,
 +                  '/usr/bin/%s' % qemu)
++    utils.execute('chroot', chroot,
++                  'dpkg-divert', '--divert', '/usr/sbin/update-binfmts.orig',
++                  '--rename', '/usr/sbin/update-binfmts')
++    utils.execute('chroot', chroot, 'ln', '-sf', '/bin/true',
++                  '/usr/sbin/update-binfmts')
  
  def create_sparse_tmp_file(dir, suffix, size=8192):
      """Creates sparse file.
