@@ -3,14 +3,14 @@ Date: Sun, 21 Feb 2016 16:30:43 +0100
 Subject: [PATCH] Add arm64 fixture
 
 ---
- nailgun/nailgun/fixtures/openstack.yaml | 103 ++++++++++++++++++++++++++++++++
- 1 file changed, 103 insertions(+)
+ nailgun/nailgun/fixtures/openstack.yaml | 99 +++++++++++++++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index f9c8ab6..209c91e 100644
+index f9c8ab6..4daa2a2 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -2079,3 +2079,106 @@
+@@ -2079,3 +2079,102 @@
                uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_amd64-boot.img.gz"
                format: "ext2"
                container: "gzip"
@@ -112,10 +112,6 @@ index f9c8ab6..209c91e 100644
 +            /boot:
 +              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64-boot.img.gz"
 +              format: "ext2"
-+              container: "gzip"
-+            /boot/efi:
-+              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64-boot-efi.img.gz"
-+              format: "vfat"
 +              container: "gzip"
 -- 
 1.9.1
