@@ -9,13 +9,13 @@ Add arm64 templates to cobbler and nailgun
  deployment/puppet/cobbler/manifests/server.pp      | 27 +++++++++++++++
  .../puppet/cobbler/templates/dnsmasq.template.erb  |  2 ++
  .../cobbler/templates/efidefault.template.erb      |  5 +++
- .../cobbler/templates/grubprofile.template.erb     | 16 +++++++++
+ .../cobbler/templates/grubprofile.template.erb     | 12 +++++++
  .../cobbler/templates/grubsystem.template.erb      | 16 +++++++++
  .../templates/preseed/ubuntu-1404.preseed.erb      |  2 ++
  .../puppet/nailgun/manifests/auxiliaryrepos.pp     | 12 ++++---
  deployment/puppet/nailgun/manifests/cobbler.pp     | 38 +++++++++++++++++-----
  .../puppet/nailgun/manifests/cobbler/preseed.pp    | 13 ++++++++
- 9 files changed, 119 insertions(+), 12 deletions(-)
+ 9 files changed, 115 insertions(+), 12 deletions(-)
  create mode 100644 deployment/puppet/cobbler/templates/efidefault.template.erb
  create mode 100644 deployment/puppet/cobbler/templates/grubprofile.template.erb
  create mode 100644 deployment/puppet/cobbler/templates/grubsystem.template.erb
@@ -84,14 +84,10 @@ index 0000000..af09eb8
 +$grub_menu_items
 diff --git a/deployment/puppet/cobbler/templates/grubprofile.template.erb b/deployment/puppet/cobbler/templates/grubprofile.template.erb
 new file mode 100644
-index 0000000..9a191bc
+index 0000000..eb7557c
 --- /dev/null
 +++ b/deployment/puppet/cobbler/templates/grubprofile.template.erb
-@@ -0,0 +1,16 @@
-+set default=1
-+set timeout=5
-+tr -s ipxe_mac ':' '-' $net_default_mac
-+
+@@ -0,0 +1,12 @@
 +menuentry '$profile_name' {
 +    echo 'Network status:'
 +    net_ls_cards
@@ -268,6 +264,3 @@ index 0000000..93c71ba
 +    require => Class['::cobbler::server'],
 +  }
 +}
--- 
-1.9.1
-

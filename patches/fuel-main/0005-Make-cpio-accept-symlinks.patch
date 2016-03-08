@@ -25,6 +25,3 @@ index cb09691..3f28172 100644
  	for version in `ls -1 $(INITRAMROOT)/lib/modules`; do \
  		sudo depmod -b $(INITRAMROOT) $$version; \
  	done
--- 
-1.9.1
-

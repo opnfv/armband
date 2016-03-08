@@ -1,0 +1,35 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 9 Mar 2016 23:02:17 +0100
+Subject: [PATCH] bootstrap: Use gzip instead of xz compression.
+
+bootstrap mksquashfs using qemu-user-static is extremely slow,
+taking up to one hour. gzip, on the other hand, is reasonably fast.
+According to [1], xz is slower, with not much size gain.
+
+[1] https://jonathancarter.org/2015/04/06/squashfs-performance-testing/
+---
+ contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/consts.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/consts.py b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/consts.py
+index d507156..688197d 100644
+--- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/consts.py
++++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/consts.py
+@@ -24,7 +24,7 @@ COMPRESSED_CONTAINER_FORMAT = "tar.gz"
+ UNCOMPRESSED_CONTAINER_FORMAT = "directory"
+ ROOTFS = {'name': 'rootfs',
+           'mask': 'rootfs',
+-          'compress_format': 'xz',
++          'compress_format': 'gzip',
+           'uri': 'http://127.0.0.1:8080/bootstraps/{uuid}/root.squashfs',
+           'format': 'ext4',
+           'container': 'raw'}
+@@ -34,7 +34,7 @@ BOOTSTRAP_MODULES = [
+      'uri': 'http://127.0.0.1:8080/bootstraps/{uuid}/vmlinuz'},
+     {'name': 'initrd',
+      'mask': 'initrd',
+-     'compress_format': 'xz',
++     'compress_format': 'gzip',
+      'uri': 'http://127.0.0.1:8080/bootstraps/{uuid}/initrd.img'},
+     ROOTFS
+ ]

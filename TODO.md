@@ -1,28 +1,53 @@
 List of missing features and things to do
 =========================================
 
-* Extend arch list for auxiliary repo on fuel master (e.g. "amd64 arm64", or "arm64" if people want to support arm64 only).
-* Add Armband CentOS repository either as URL override.
-* [arm64-master] Add arm64 support for CentOS based actions.
-* [arm64-master] change docker repo in `upstream/fuel/build/config.mk`, perhaps by figuring out current architecture with `uname -m`
+Needed for arm64 deployment (mandatory)
+=========================================
+* [arm64-master] ODL plugin
+* [arm64-master] QEMU 2.5 for Ubuntu (in progress)
+
+Nice to have, should be fixed before rel
+=========================================
+* [fuel?] Disabling rx-vlan-filter from Fuel WebUI is not applied during netcheck
+* [thunderx] rtc-efi disable
+
+Cleanup tasks
+=========================================
+* [armband-rpm-repo] Armband CentOS repository as additional repo (x86_64)
+* [armband-deb-repo] Backport mysql/galera patches to B release versions
 * [arm64-master] Find `puppetlabs-products` repo for arm64.
 * [arm64-master] Fix license in ubuntu_1404_arm64.pp
-* [arm64-master] Remove/replace mini.iso with own kernel/initrd
 * [arm64-master] Look into default ubuntu_debootstrap change in cobbler.pp
-* [arm64-master] Add Cobbler aarch64 loader
-* [arm64-master] [fuel-agent] Custom package selection for arm64 in [1] or from above
-* [arm64-master] [fuel-agent] --kernel-flavor override in fuel_bootstrap based on arch [2]
-* [arm64-master] [fuel-agent] Package and repo update for arm64 in [3] (?)
-* [arm64-master] [fuel-agent] (?) Update image build tests for arm64 in [4] (+efi?)
-* [arm64-master] Factor out 10.0.2.6 local mirrors and switch to HTTPS for MOS mirror
-* [armband-deb-repo] Re-compile mixed-binaries (all+arch) debs for amd64 (e.g. ceph)
-* [ohai] ThunderX network card speed reported as N/A
-* [fuel?] Disabling rx-vlan-filter from Fuel WebUI is not applied during netcheck
-* [fuel?] Gray out vCenter & co for archs other than x86
-* [fuel] Figure a way for not hardcoding the bootstrap image architecture
+* [arm64-master] [fuel-agent] Package and repo update for arm64 in [2] (?)
 * [fuel] Add QEMU_VERSION for fuel-plugin-qemu
+* [ohai] ThunderX network card speed reported as N/A
+* [arm64-master] change docker repo in `upstream/fuel/build/config.mk`,
+  perhaps by figuring out current architecture with `uname -m`
+* [arm64-master] Fuel Master YUM repos still point to mirror.fuel-infra.org,
+  due to bootstrap_admin_node.sh hardcodes from OPNFV
+
+Needed for all arch support (todo, later)
+=========================================
+* [arm64-master] Extend arch list for auxiliary repo on fuel master
+  (e.g. "amd64 arm64", or "arm64" if people want to support arm64 only).
+  Use UBUNTU_ARCH in constructs like "for arch in arm64 amd64; do"
+* [arm64-master] [fuel-agent] Custom package selection for arm64 in [1] or from above
+* [arm64-master] Stop hardcoding grub-efi-arm64/grub-pc 
+* [fuel-main] deb/rpm building for arm64 support
+* [fuel-main] mirror arm64 support
+* [fuel] Figure a way for not hardcoding the bootstrap image architecture,
+  preferably selectable using fuel-menu
+
+Needed for aarch64 Fuel Master support
+=========================================
+* [arm64-master] Add arm64 support for CentOS based actions.
+
+No longer needed
+=========================================
+* [arm64-master] [fuel-agent] --kernel-flavor override in fuel_bootstrap based on arch [2]
+* [arm64-master] Factor out 10.0.2.6 local mirrors and switch to HTTPS for MOS mirror
+* [fuel?] Gray out vCenter & co for archs other than x86
+  vCenter is automatically disabled for aarch64 now
 
 [1] https://github.com/openstack/fuel-agent/blob/master/fuel_agent/drivers/nailgun.py#L687-L693
-[2] https://github.com/openstack/fuel-agent/blob/master/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py#L107 
-[3] https://github.com/openstack/fuel-agent/blob/master/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample#L19
-[4] https://github.com/openstack/fuel-agent/blob/master/fuel_agent/tests/test_nailgun_build_image.py#L26
+[2] https://github.com/openstack/fuel-agent/blob/master/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample#L19

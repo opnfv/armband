@@ -26,6 +26,3 @@ index 652939e..f54f486 100755
  cd ../qemu-2.2.1;echo "">> debian/patches/series
  sed -i 's/seccomp="yes"/seccomp="no"/' configure
  debian/rules build
--- 
-1.9.1
-

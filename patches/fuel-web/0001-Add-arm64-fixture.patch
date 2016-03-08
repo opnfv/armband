@@ -7,7 +7,7 @@ Subject: [PATCH] Add arm64 fixture
  1 file changed, 99 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index f9c8ab6..4daa2a2 100644
+index f9c8ab6..bf6f7c4 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
 @@ -2079,3 +2079,102 @@
@@ -69,19 +69,19 @@ index f9c8ab6..4daa2a2 100644
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-updates"
-+                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
 +                suite: "mos8.0-updates"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-security"
-+                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
 +                suite: "mos8.0-security"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-holdback"
-+                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
 +                suite: "mos8.0-holdback"
 +                section: "main restricted"
 +                priority: 1100
@@ -113,6 +113,3 @@ index f9c8ab6..4daa2a2 100644
 +              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64-boot.img.gz"
 +              format: "ext2"
 +              container: "gzip"
--- 
-1.9.1
-

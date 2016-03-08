@@ -41,6 +41,3 @@ index e95dbf2..709ca6b 100644
  	cd fuel-mirror && git checkout -q $(FUEL_MIRROR_COMMIT)
  	sudo pip install -U -r ./fuel-mirror/requirements.txt
  	sudo pip install ./fuel-mirror
--- 
-1.9.1
-

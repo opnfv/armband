@@ -19,6 +19,3 @@ index ae4766b..2a99278 100644
  
  # Expand repo URLs now
  #MIRROR_CENTOS:=$(call expand_repo_url,$(MIRROR_CENTOS))
--- 
-1.9.1
-
