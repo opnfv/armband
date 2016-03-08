@@ -1,0 +1,31 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 8 Mar 2016 01:06:56 +0100
+Subject: [PATCH] FIXME: s/grub-pc/grub-efi-arm64/
+
+This hard replaced the previously hardcoded grub-pc req.
+
+Fuel 9.0 moved default package list to openstack.yaml fixture, see [1].
+TODO: At least make this arch-dependant for mos8 ...
+
+[1] https://github.com/openstack/fuel-web/commit/
+    4ee42effe27694bd231663e3d0f10c0c42877177
+---
+ fuel_agent/drivers/nailgun.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fuel_agent/drivers/nailgun.py b/fuel_agent/drivers/nailgun.py
+index c2fef69..3807ca7 100644
+--- a/fuel_agent/drivers/nailgun.py
++++ b/fuel_agent/drivers/nailgun.py
+@@ -684,7 +684,7 @@ class NailgunBuildImage(BaseDataDriver):
+         "daemonize",
+         "debconf-utils",
+         "gdisk",
+-        "grub-pc",
++        "grub-efi-arm64",
+         "hpsa-dkms",
+         "i40e-dkms",
+         "linux-firmware",
+-- 
+1.9.1
+
