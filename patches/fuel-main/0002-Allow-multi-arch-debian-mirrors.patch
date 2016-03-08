@@ -40,6 +40,3 @@ index cf3704b..18757a1 100644
  if [ -e $(SANDBOX_UBUNTU)/etc/resolv.conf ]; then sudo cp -a $(SANDBOX_UBUNTU)/etc/resolv.conf $(SANDBOX_UBUNTU)/etc/resolv.conf.orig; fi
  sudo cp /etc/resolv.conf $(SANDBOX_UBUNTU)/etc/resolv.conf
  if [ -e $(SANDBOX_UBUNTU)/etc/hosts ]; then sudo cp -a $(SANDBOX_UBUNTU)/etc/hosts $(SANDBOX_UBUNTU)/etc/hosts.orig; fi
--- 
-1.9.1
-

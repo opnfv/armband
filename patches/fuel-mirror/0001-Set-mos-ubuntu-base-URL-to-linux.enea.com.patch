@@ -8,17 +8,14 @@ Contents of amd64 mos-ubuntu repos should be in sync with arm64.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/contrib/fuel_mirror/data/ubuntu.yaml b/contrib/fuel_mirror/data/ubuntu.yaml
-index 5ce288e..9a22ef4 100644
+index 5ce288e..7bc0c4b 100644
 --- a/contrib/fuel_mirror/data/ubuntu.yaml
 +++ b/contrib/fuel_mirror/data/ubuntu.yaml
 @@ -1,6 +1,6 @@
  # GLOBAL variables
  ubuntu_baseurl: &ubuntu_baseurl http://archive.ubuntu.com/ubuntu
 -mos_baseurl: &mos_baseurl http://mirror.fuel-infra.org/mos-repos/ubuntu/$mos_version
-+mos_baseurl: &mos_baseurl https://linux.enea.com/mos-repos/ubuntu/$mos_version
++mos_baseurl: &mos_baseurl http://linux.enea.com/mos-repos/ubuntu/$mos_version
  
  fuel_release_match:
     version: $openstack_version
--- 
-1.9.1
-
