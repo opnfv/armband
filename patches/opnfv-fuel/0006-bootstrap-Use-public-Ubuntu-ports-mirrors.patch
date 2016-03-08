@@ -46,6 +46,3 @@ index aa12c45..2e4843d 100644
    direct_repo_addresses:
 +    - "ports.ubuntu.com"
      - "127.0.0.1"
--- 
-1.9.1
-

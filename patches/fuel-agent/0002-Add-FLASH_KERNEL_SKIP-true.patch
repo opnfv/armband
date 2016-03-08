@@ -19,6 +19,3 @@ index af41b2b..6f31732 100644
      os.environ['LC_ALL'] = os.environ['LANG'] = os.environ['LANGUAGE'] = 'C'
  
  
--- 
-1.9.1
-

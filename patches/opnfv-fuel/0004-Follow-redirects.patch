@@ -23,6 +23,3 @@ index 01f6e41..61d41ab 100644
  export MIRROR_FUEL := "$(LATEST_MIRROR_ID_URL)/mos-repos/centos/mos8.0-centos7-fuel/$(LATEST_TARGET_CENTOS)/x86_64"
  
  # uncomment and use: make print-VARIABLE
--- 
-1.9.1
-

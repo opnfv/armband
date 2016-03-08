@@ -46,6 +46,3 @@ index acdd0b3..86349d2 100644
          raise errors.WrongPartitionSchemeError(
              'Unsupported partition flag: %s' % flag)
      if state not in ('on', 'off'):
--- 
-1.9.1
-

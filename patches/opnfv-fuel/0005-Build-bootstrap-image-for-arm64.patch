@@ -22,6 +22,3 @@ index b096a78..744f352 100755
            ret=0
            fuel notify --topic "done" --send "${bs_done_message}"
          else
--- 
-1.9.1
-

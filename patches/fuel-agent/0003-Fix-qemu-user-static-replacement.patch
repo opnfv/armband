@@ -53,6 +53,3 @@ index 6f31732..abd762e 100644
  
  def create_sparse_tmp_file(dir, suffix, size=8192):
      """Creates sparse file.
--- 
-1.9.1
-
