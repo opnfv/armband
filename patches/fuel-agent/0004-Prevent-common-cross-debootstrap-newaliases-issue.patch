@@ -11,12 +11,12 @@ For more information, see [1].
 
 [1] https://bugs.launchpad.net/ubuntu/+source/postfix/+bug/1531299
 ---
- fuel_agent/manager.py     |  6 ++++++
+ fuel_agent/manager.py     | 14 ++++++++++++++
  fuel_agent/utils/build.py | 24 ++++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ 2 files changed, 38 insertions(+)
 
 diff --git a/fuel_agent/manager.py b/fuel_agent/manager.py
-index 6322a10..db628a6 100644
+index 6322a10..843c40b 100644
 --- a/fuel_agent/manager.py
 +++ b/fuel_agent/manager.py
 @@ -836,10 +836,15 @@ class Manager(object):
@@ -43,6 +43,28 @@ index 6322a10..db628a6 100644
              metadata['all_packages'] = bu.get_installed_packages(chroot)
              # We need to recompress initramfs with new compression:
              bu.recompress_initramfs(
+@@ -964,6 +970,11 @@ class Manager(object):
+             self._update_metadata_with_repos(
+                 metadata, driver_os.repos)
+ 
++            # Prevent common cross-debootstraping problem w/ newaliases & qemu
++            # inet_addr_local[getifaddrs]: getifaddrs: Address family not supp
++            LOG.debug('Preventing newaliases from running inside chroot')
++            bu.prevent_qemu_newaliases(chroot)
++
+             LOG.debug('Installing packages using apt-get: %s',
+                       ' '.join(packages))
+             bu.run_apt_get(chroot, packages=packages,
+@@ -974,6 +985,9 @@ class Manager(object):
+                             allow_unsigned_file=CONF.allow_unsigned_file,
+                             force_ipv4_file=CONF.force_ipv4_file)
+ 
++            LOG.debug('Restoring newaliases command inside chroot')
++            bu.restore_newaliases(chroot)
++
+             LOG.debug('Making sure there are no running processes '
+                       'inside chroot before trying to umount chroot')
+             if not bu.stop_chrooted_processes(chroot, signal=signal.SIGTERM):
 diff --git a/fuel_agent/utils/build.py b/fuel_agent/utils/build.py
 index abd762e..e11ceba 100644
 --- a/fuel_agent/utils/build.py
