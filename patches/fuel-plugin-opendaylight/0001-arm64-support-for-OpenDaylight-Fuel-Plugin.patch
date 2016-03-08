@@ -1,0 +1,378 @@
+From: Florin Dumitrascu <florin.dumitrascu@enea.com>
+Date: Thu, 17 Mar 2016 18:15:42 +0100
+Subject: [PATCH] arm64 support for OpenDaylight Fuel Plugin
+
+ODL depends on a native library (leveldb).
+ODL Beryllium version is still using a native x86 version of
+this library (wrapped in leveldbjni). There is no upstream version
+of leveldbjni supporting arm64 leveldb, so we need to compile it
+when deploying ODL. This is done when running odl-install puppet manifest.
+For more info about this ODL limitation, read here:
+https://bugs.opendaylight.org/show_bug.cgi?id=3973
+
+Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
+---
+ .../modules/opendaylight/files/leveldb-arm64.patch |  36 +++++
+ .../opendaylight/files/leveldbjni-native.patch     |  23 ++++
+ .../puppet/modules/opendaylight/manifests/init.pp  |   8 ++
+ .../modules/opendaylight/manifests/install.pp      |  12 +-
+ .../modules/opendaylight/manifests/leveldbjni.pp   | 150 +++++++++++++++++++++
+ deployment_tasks.yaml                              |   2 +-
+ odl_package/ubuntu/opendaylight                    |   4 +-
+ pre_build_hook                                     |   9 +-
+ 8 files changed, 235 insertions(+), 9 deletions(-)
+ create mode 100644 deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
+ create mode 100644 deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch
+ create mode 100644 deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
+
+diff --git a/deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch b/deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
+new file mode 100644
+index 0000000..c72efeb
+--- /dev/null
++++ b/deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
+@@ -0,0 +1,36 @@
++diff --git a/port/atomic_pointer.h b/port/atomic_pointer.h
++index e17bf43..78cb6b3 100644
++--- a/port/atomic_pointer.h
+++++ b/port/atomic_pointer.h
++@@ -36,6 +36,8 @@
++ #define ARCH_CPU_X86_FAMILY 1
++ #elif defined(__ARMEL__)
++ #define ARCH_CPU_ARM_FAMILY 1
+++#elif defined(__aarch64__)
+++#define ARCH_CPU_ARM64_FAMILY 1
++ #elif defined(__ppc__) || defined(__powerpc__) || defined(__powerpc64__)
++ #define ARCH_CPU_PPC_FAMILY 1
++ #endif
++@@ -93,6 +95,13 @@ inline void MemoryBarrier() {
++ }
++ #define LEVELDB_HAVE_MEMORY_BARRIER
++
+++// ARM64
+++#elif defined(ARCH_CPU_ARM64_FAMILY)
+++inline void MemoryBarrier() {
+++ asm volatile("dmb sy" : : : "memory");
+++}
+++#define LEVELDB_HAVE_MEMORY_BARRIER
+++
++ // PPC
++ #elif defined(ARCH_CPU_PPC_FAMILY) && defined(__GNUC__)
++ inline void MemoryBarrier() {
++@@ -216,6 +225,7 @@ class AtomicPointer {
++ #undef LEVELDB_HAVE_MEMORY_BARRIER
++ #undef ARCH_CPU_X86_FAMILY
++ #undef ARCH_CPU_ARM_FAMILY
+++#undef ARCH_CPU_ARM64_FAMILY
++ #undef ARCH_CPU_PPC_FAMILY
++
++ }  // namespace port
++
+diff --git a/deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch b/deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch
+new file mode 100644
+index 0000000..7520205
+--- /dev/null
++++ b/deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch
+@@ -0,0 +1,23 @@
++diff --git a/leveldbjni-all/pom.xml b/leveldbjni-all/pom.xml
++index 426f2a6..c4a2a16 100755
++--- a/leveldbjni-all/pom.xml
+++++ b/leveldbjni-all/pom.xml
++@@ -41,7 +41,7 @@
++ 
++   <groupId>org.fusesource.leveldbjni</groupId>
++   <artifactId>leveldbjni-all</artifactId>
++-  <version>1.8</version>
+++  <version>1.8-odl</version>
++   <packaging>bundle</packaging>
++   
++   <name>${project.artifactId}</name>
++@@ -119,7 +119,8 @@
++               META-INF/native/osx/libleveldbjni.jnilib;osname=macosx;processor=x86,
++               META-INF/native/osx/libleveldbjni.jnilib;osname=macosx;processor=x86-64,
++               META-INF/native/linux32/libleveldbjni.so;osname=Linux;processor=x86,
++-              META-INF/native/linux64/libleveldbjni.so;osname=Linux;processor=x86-64
+++              META-INF/native/linux64/libleveldbjni.so;osname=Linux;processor=x86-64,
+++              META-INF/native/linux64/libleveldbjni.so;osname=Linux;processor=aarch64
++             </Bundle-NativeCode>
++          </instructions>
++         </configuration>
+diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
+index 8dfb213..95b3de7 100644
+--- a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
++++ b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
+@@ -8,4 +8,12 @@ class opendaylight {
+   $manager_ip_address = $odl_controller_hash[0]['internal_address']
+   $node_private_address = $node[0]['private_address']
+   $node_internal_address = $node[0]['internal_address']
++
++  $arch = $::architecture ? {
++    'aarch64' => $::osfamily ? {
++      'Debian' => 'arm64',
++      default  => 'aarch64',
++    },
++    default => $::architecture,
++  }
+ }
+diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
+index 7a3bf3f..f9bba56 100644
+--- a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
++++ b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
+@@ -19,6 +19,12 @@ class opendaylight::install (
+     ensure  => installed,
+   }
+ 
++  if ($::osfamily == 'Debian' and $::opendaylight::arch == 'arm64') {
++    class { 'opendaylight::leveldbjni':
++      require => Package['opendaylight'],
++    }
++  }
++
+   package {'opnfv-quagga':
+     ensure => installed,
+   }
+@@ -36,7 +42,8 @@ class opendaylight::install (
+ 
+   debug("Set odl rest api port to ${rest_port}")
+ 
+-  file { "${conf_dir}/jetty.xml":
++  file { 'jetty.xml':
++    path    => "${conf_dir}/jetty.xml",
+     ensure  => file,
+     owner   => 'odl',
+     content => template('opendaylight/jetty.xml.erb')
+@@ -72,6 +79,7 @@ class opendaylight::install (
+   Package['opendaylight'] ->
+   Ini_setting <||> ->
+   Firewall <||> ->
+-  File <||> ->
++  File['jetty.xml'] ->
++  Class['opendaylight::leveldbjni'] ->
+   Service['opendaylight']
+ }
+diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
+new file mode 100644
+index 0000000..c708611
+--- /dev/null
++++ b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
+@@ -0,0 +1,150 @@
++# == Class opendaylight::leveldbjni
++#
++# Manages compilation of JNI for leveldb.
++#
++# It compiles the leveldbjni from sources and patches it so that it's properly
++# detected by maven on arm64 system.
++#
++class opendaylight::leveldbjni(
++  $target = '/opt/opendaylight',
++  $user    = 'odl',
++  $branch  = 'leveldbjni-1.8',
++) {
++  case $::osfamily {
++    'Debian', 'Ubuntu': {}
++    default: {
++      fail('Not supported on OS other than Debian based.')
++    }
++  }
++
++  $libsnappy_dir = '/usr/lib'
++  $leveldb_dir = "${target}/leveldb"
++  $leveldbjni_dir = "${target}/leveldbjni"
++  $environment = ["SNAPPY_HOME=${libsnappy_dir}", "LEVELDB_HOME=${leveldb_dir}", "LEVELDBJNI_HOME=${leveldbjni_dir}", "LIBRARY_PATH=${libsnappy_dir}", "C_INCLUDE_PATH=${libsnappy_dir}", "CPLUS_INCLUDE_PATH=${libsnappy_dir}","JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-${::opendaylight::arch}"]
++  $parallel_jobs = ($processorcount + 1)/2
++
++  if ! defined(Package['git']) {
++    package { 'git':
++      ensure => 'present',
++    }
++  }
++  if ! defined(Package['build-essential']) {
++    package { 'build-essential':
++      ensure => 'present',
++    }
++  }
++  if ! defined(Package['automake']) {
++    package { 'automake':
++      ensure => 'present',
++    }
++  }
++  if ! defined(Package['make']) {
++    package { 'make':
++      ensure => 'present',
++    }
++  }
++  if ! defined(Package['libsnappy-dev']) {
++    package { 'libsnappy-dev':
++      ensure => 'present',
++    }
++  }
++  if ! defined(Package['patch']) {
++    package { 'patch':
++      ensure => 'present',
++    }
++  }
++  if ! defined(Package['maven']) {
++    package { 'maven':
++      ensure => 'present',
++    }
++  }
++  if ! defined(Package['openjdk-7-jdk']) { 
++    package { 'openjdk-7-jdk':
++      ensure => 'present',
++    }
++  }
++
++  exec { 'leveldb-fetch':
++    path    => ['/usr/bin'],
++    command => "git clone git://github.com/chirino/leveldb.git ${leveldb_dir}",
++    creates => "${leveldb_dir}/.git",
++    user    => $user,
++    require => [Package['git']],
++  } ->
++  exec { 'leveldbjni-fetch':
++    path    => ['/usr/bin'],
++    command => "git clone https://github.com/fusesource/leveldbjni.git -b ${branch} ${leveldbjni_dir}",
++    creates => "${leveldbjni_dir}/.git",
++    user    => $user,
++    require => [Package['git']],
++  } ->
++  exec { 'leveldb-merge-google':
++    path    => ['/usr/bin', '/bin'],
++    command => "git config user.name odl && git config user.email 'o@d.l' && git remote add google https://github.com/google/leveldb.git && git fetch google master && git fetch --tags google && git merge --no-edit v1.18",
++    unless  => "git remote | grep google",
++    cwd     => $leveldb_dir,
++    user    => $user,
++    require => [Package['git']],
++  } ->
++  exec { 'leveldb-patch':
++    path    => ['/usr/bin'],
++    command => "patch -p1 < ${leveldbjni_dir}/leveldb.patch",
++    unless  => "patch -p1 -R -N --dry-run < ${leveldbjni_dir}/leveldb.patch",
++    cwd     => $leveldb_dir,
++    user    => $user,
++    require => [Package['patch']],
++  } ->
++  file { "${leveldb_dir}/leveldb-arm64.patch":
++    ensure => "file",
++    source => "puppet:///modules/opendaylight/leveldb-arm64.patch",
++    owner  => $user,
++  } ->
++  exec { 'leveldb-patch-for-arm64':
++    path    => ['/usr/bin'],
++    command => "patch -p1 < ${leveldb_dir}/leveldb-arm64.patch",
++    unless  => "patch -p1 -R -N --dry-run < ${leveldb_dir}/leveldb-arm64.patch",
++    cwd     => $leveldb_dir,
++    user    => $user,
++    require => [Package['patch']],
++  } ->
++  exec { 'leveldb-build':
++    command => "/usr/bin/make libleveldb.a -j${parallel_jobs}",
++    creates => "${leveldb_dir}/libleveldb.a",
++    environment => $environment,
++    cwd     => $leveldb_dir,
++    user    => $user,
++    require => [Package['git'], Package['make'], Package['build-essential']],
++  } ->
++  file { "${leveldbjni_dir}/leveldbjni.patch":
++    ensure => "file",
++    source => "puppet:///modules/opendaylight/leveldbjni-native.patch",
++    owner  => $user,
++  } ->
++  exec { 'leveldbjni-patch':
++    path    => ['/usr/bin'],
++    command => "patch -p1 < ${leveldbjni_dir}/leveldbjni.patch",
++    unless  => "patch -p1 -R -N --dry-run < ${leveldbjni_dir}/leveldbjni.patch",
++    cwd     => $leveldbjni_dir,
++    user    => $user,
++    require => [Package['patch']],
++  } ->
++  exec { 'leveldbjni-build':
++    command     => "/usr/bin/mvn clean install -P download -P linux64 -P all",
++    # Creates requires a fully qualified path which we don't have
++    unless      => "/usr/bin/test -d ~${user}/.m2/repository/org/fusesource/leveldbjni/leveldbjni-all",
++    environment => $environment,
++    cwd         => $leveldbjni_dir,
++    user        => $user,
++    timeout     => 1200,
++    require     => [Package['maven']],
++  } ->
++  # Can't do this with 'file' type because we need to purge existing package
++  # and at the same time don't perform the copy if we've already copied our
++  # package.
++  exec { 'leveldbjni-copy':
++    path    => ['/bin'],
++    command => "rm -rf ${target}/system/org/fusesource/leveldbjni && cp -r ~${user}/.m2/repository/org/fusesource/leveldbjni $target/system/org/fusesource/",
++    creates => "${target}/system/org/fusesource/leveldbjni/leveldbjni-linux64",
++    user    => $user,
++  }
++}
+diff --git a/deployment_tasks.yaml b/deployment_tasks.yaml
+index 6588db3..0fe77af 100644
+--- a/deployment_tasks.yaml
++++ b/deployment_tasks.yaml
+@@ -17,7 +17,7 @@
+   parameters:
+     puppet_manifest: puppet/manifests/odl-install.pp
+     puppet_modules: puppet/modules:/etc/puppet/modules
+-    timeout: 720
++    timeout: 3600
+ - id: netconfig
+   type: skipped
+ - id: odl-netconfig
+diff --git a/odl_package/ubuntu/opendaylight b/odl_package/ubuntu/opendaylight
+index c7f5082..6e5ff7b 100644
+--- a/odl_package/ubuntu/opendaylight
++++ b/odl_package/ubuntu/opendaylight
+@@ -9,7 +9,7 @@ setgid odl
+ setuid odl
+ 
+ env KARAF_HOME="/opt/opendaylight"
+-env JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
++env JAVA_HOME="/usr/lib/jvm/java-7-openjdk-arm64"
+ env JAVA_OPTS="-server -Xms256M -Xmx2048M -XX:+UnlockDiagnosticVMOptions -XX:+UnsyncloadClass -XX:MaxPermSize=512M -Dcom.sun.management.jmxremote"
+ env OPTS="-Dkaraf.startLocalConsole=false -Dkaraf.startRemoteShell=true"
+ env MAIN="org.apache.karaf.main.Main"
+@@ -34,6 +34,6 @@ script
+         fi
+     done
+ 
+-    exec /usr/bin/java $JAVA_OPTS -Djava.endorsed.dirs="${JAVA_ENDORSED_DIRS}" -Djava.ext.dirs="${JAVA_EXT_DIRS}" -Dkaraf.instances="${KARAF_HOME}/instances" -Dkaraf.home="$KARAF_HOME" -Dkaraf.base="$KARAF_BASE" -Dkaraf.data="$KARAF_DATA" -Dkaraf.etc="$KARAF_ETC" -Djava.io.tmpdir="$KARAF_DATA/tmp" -Djava.util.logging.config.file="$KARAF_BASE/etc/java.util.logging.properties" $KARAF_OPTS $OPTS -classpath "$CLASSPATH" $MAIN
++    exec ${JAVA_HOME}/bin/java $JAVA_OPTS -Djava.endorsed.dirs="${JAVA_ENDORSED_DIRS}" -Djava.ext.dirs="${JAVA_EXT_DIRS}" -Dkaraf.instances="${KARAF_HOME}/instances" -Dkaraf.home="$KARAF_HOME" -Dkaraf.base="$KARAF_BASE" -Dkaraf.data="$KARAF_DATA" -Dkaraf.etc="$KARAF_ETC" -Djava.io.tmpdir="$KARAF_DATA/tmp" -Djava.util.logging.config.file="$KARAF_BASE/etc/java.util.logging.properties" $KARAF_OPTS $OPTS -classpath "$CLASSPATH" $MAIN
+ 
+ end script
+diff --git a/pre_build_hook b/pre_build_hook
+index db64e80..b2b97b3 100755
+--- a/pre_build_hook
++++ b/pre_build_hook
+@@ -41,7 +41,7 @@ fi
+ 
+ function cleanup {
+   rm -rf "${TMP_DIR}"
+-  sed -i -e "s/java-8-openjdk-amd64/java-7-openjdk-amd64/" "${DIR}/odl_package/ubuntu/opendaylight"
++  sed -i -e "s/java-8-openjdk-arm64/java-7-openjdk-arm64/" "${DIR}/odl_package/ubuntu/opendaylight"
+ }
+ 
+ function download {
+@@ -87,11 +87,12 @@ function build_pkg {
+       ;;
+     ubuntu)
+       pushd "${DIR}/repositories/${1}/"
+-      fpm --force -s dir -t deb -m 'mskalski@mirantis.com' --version "${ODL_VERSION_NUMBER}" --description "${ODL_DESCRIPTION}" --prefix /opt/opendaylight --deb-upstart "${DIR}/odl_package/${1}/opendaylight" --after-install "${DIR}/odl_package/${1}/opendaylight-post" --name opendaylight -d "${JAVA_VERSION}" -C "${TMP_DIR}/opendaylight_src"
++      fpm --force -s dir -t deb -a arm64 -m 'mskalski@mirantis.com' --version "${ODL_VERSION_NUMBER}" --description "${ODL_DESCRIPTION}" --prefix /opt/opendaylight --deb-upstart "${DIR}/odl_package/${1}/opendaylight" --after-install "${DIR}/odl_package/${1}/opendaylight-post" --name opendaylight -d "${JAVA_VERSION}" -C "${TMP_DIR}/opendaylight_src"
+       fpm --force -s python -t deb -m 'mskalski@mirantis.com' --python-install-lib /usr/lib/python2.7/dist-packages ${TMP_DIR}/networking_odl/setup.py
+       download_dependencies ${1}
+       popd
+-      add_opnfv_quagga "${DIR}/repositories/${1}/"
++      # We are adding arm64 opnfv quagga in our local repository
++      #add_opnfv_quagga "${DIR}/repositories/${1}/"
+       ;;
+     *) echo "Not supported system"; exit 1;;
+   esac
+@@ -103,7 +104,7 @@ cleanup
+ 
+ if [ "$USE_JAVA8" = true ]
+ then
+-  sed -i -e "s/java-7-openjdk-amd64/java-8-openjdk-amd64/" "${DIR}/odl_package/ubuntu/opendaylight"
++  sed -i -e "s/java-7-openjdk-arm64/java-8-openjdk-arm64/" "${DIR}/odl_package/ubuntu/opendaylight"
+ fi
+ 
+ mkdir -p "${TMP_DIR}"

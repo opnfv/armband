@@ -7,7 +7,7 @@ Subject: [PATCH] Make qemu-kvm architecture aware
  1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/deployment/puppet/openstack/manifests/compute.pp b/deployment/puppet/openstack/manifests/compute.pp
-index b2339bc..4f380b8 100644
+index b2339bc..ca1b2c4 100644
 --- a/deployment/puppet/openstack/manifests/compute.pp
 +++ b/deployment/puppet/openstack/manifests/compute.pp
 @@ -169,10 +169,15 @@ class openstack::compute (
@@ -16,8 +16,8 @@ index b2339bc..4f380b8 100644
  
 +      # Guard against some exotic distros with their `uname -m`
 +      $arch = $::architecture ? {
-+        'arm64', 'aarch64' => 'aarch64',
-+        default => 'x86_64',
++        /(arm64|aarch64)/ => 'aarch64',
++        default           => 'x86_64',
 +      }
        # From legacy libvirt.pp
        exec { 'symlink-qemu-kvm':
@@ -28,6 +28,3 @@ index b2339bc..4f380b8 100644
        }
  
        package { 'avahi':
--- 
-1.9.1
-

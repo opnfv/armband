@@ -21,7 +21,8 @@ submodules-clean:
 patches-export:
 	@git submodule -q foreach 'mkdir -p ${root}/patches/$$name'
 	@git submodule -q foreach 'git format-patch \
-		-o ${root}/patches/$$name -N armband-workbench-root'
+		-o ${root}/patches/$$name -N armband-workbench-root \
+	    --no-signature'
 	@find ${root}/patches -name '*.patch' -exec sed -i -e '1d' {} \;
 
 # apply patches from patches/* to respective submodules
@@ -33,6 +34,18 @@ patches-import:
 		'for p in $$(ls ${root}/patches/$$name/); do \
 			git am ${root}/patches/$$name/$$p; \
 		done'
+clean-docker:
+	docker stop FUEL_CENTOS_8.0 || true
+	docker rm $(docker ps -a -q) || true
+	docker rmi -f $(docker images -q) || true
+
+clean-build:
+	sudo rm -rf /tmp/fuel-main
+	git -C ${root}/upstream/fuel reset --hard HEAD
+	git -C ${root}/upstream/fuel clean -xdff
+
+release: export LC_ALL=en_US.UTF-8
+release: submodules-clean clean-docker clean-build submodules-init patches-import build
 
 build:
 	cd ${root}/upstream/fuel/build && \
@@ -48,12 +61,14 @@ build:
 			FUEL_MIRROR_REPO=${root}/upstream/fuel-mirror \
 			QEMU_REPO=${root}/upstream/fuel-plugin-qemu \
 			OVSNFV_DPDK_REPO=${root}/upstream/fuel-plugin-ovsnfv \
+			ODL_REPO=${root}/upstream/fuel-plugin-opendaylight \
 			FUELLIB_COMMIT=HEAD \
 			NAILGUN_COMMIT=HEAD \
 			FUEL_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_COMMIT=HEAD \
 			QEMU_BRANCH=HEAD \
 			OVSNFV_DPDK_BRANCH=armband-workbench \
+			ODL_BRANCH=armband-workbench \
 			PRODUCT_VERSION=8.0 \
 			PRODUCT_NAME=mos \
 			CENTOS_MAJOR=7 \
