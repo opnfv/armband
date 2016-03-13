@@ -1,0 +1,36 @@
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Sat, 5 Mar 2016 15:14:41 +0100
+Subject: [PATCH] fuel plugin: Pick updated numa... packages.
+
+Package version 1ubuntu3.14.04.1 of numactl_2.0.9~rc5,
+libnuma1_2.0.9~rc5 and libnuma-dev_2.0.9~rc5 is removed from
+archive.ubuntu.com and replaced with 1ubuntu3.14.04.2.
+
+TODO: This can be modified by using docker/chroot combined with apt-get
+download.
+---
+ fuel-plugin-ovsnfv/ovs_package/ubuntu/dependencies.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fuel-plugin-ovsnfv/ovs_package/ubuntu/dependencies.txt b/fuel-plugin-ovsnfv/ovs_package/ubuntu/dependencies.txt
+index 7d62008..1766086 100644
+--- a/fuel-plugin-ovsnfv/ovs_package/ubuntu/dependencies.txt
++++ b/fuel-plugin-ovsnfv/ovs_package/ubuntu/dependencies.txt
+@@ -71,11 +71,11 @@ http://archive.ubuntu.com/ubuntu/pool/main/b/bc/bc_1.06.95-8ubuntu1_amd64.deb
+ http://archive.ubuntu.com/ubuntu/pool/main/p/pkg-config/pkg-config_0.26-1ubuntu4_amd64.deb
+ http://archive.ubuntu.com/ubuntu/pool/main/d/dbus/libdbus-1-dev_1.6.18-0ubuntu4.3_amd64.deb
+ http://archive.ubuntu.com/ubuntu/pool/main/p/python-defaults/libpython-dev_2.7.5-5ubuntu3_amd64.deb
+-http://archive.ubuntu.com/ubuntu/pool/universe/n/numactl/numactl_2.0.9~rc5-1ubuntu3.14.04.1_amd64.deb
++http://archive.ubuntu.com/ubuntu/pool/universe/n/numactl/numactl_2.0.9~rc5-1ubuntu3.14.04.2_amd64.deb
+ http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/python2.7-dev_2.7.6-8ubuntu0.2_amd64.deb
+ http://archive.ubuntu.com/ubuntu/pool/main/p/python-defaults/python-dev_2.7.5-5ubuntu3_amd64.deb
+-http://archive.ubuntu.com/ubuntu/pool/main/n/numactl/libnuma1_2.0.9~rc5-1ubuntu3.14.04.1_amd64.deb
+-http://archive.ubuntu.com/ubuntu/pool/main/n/numactl/libnuma-dev_2.0.9~rc5-1ubuntu3.14.04.1_amd64.deb
++http://archive.ubuntu.com/ubuntu/pool/main/n/numactl/libnuma1_2.0.9~rc5-1ubuntu3.14.04.2_amd64.deb
++http://archive.ubuntu.com/ubuntu/pool/main/n/numactl/libnuma-dev_2.0.9~rc5-1ubuntu3.14.04.2_amd64.deb
+ https://pypi.python.org/packages/source/l/libvirt-python/libvirt-python-1.2.12.tar.gz
+ http://archive.ubuntu.com/ubuntu/pool/main/libg/libgpg-error/libgpg-error-dev_1.12-0.2ubuntu1_amd64.deb
+ http://archive.ubuntu.com/ubuntu/pool/main/libg/libgcrypt11/libgcrypt11-dev_1.5.3-2ubuntu4.3_amd64.deb
+-- 
+1.9.1
+
