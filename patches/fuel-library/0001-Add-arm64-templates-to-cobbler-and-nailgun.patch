@@ -1,0 +1,273 @@
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Sun, 21 Feb 2016 16:29:52 +0100
+Subject: [PATCH] Add arm64 templates to cobbler and nailgun
+
+Add grub template import to cobbler server manifest
+
+Add arm64 templates to cobbler and nailgun
+---
+ deployment/puppet/cobbler/manifests/server.pp      | 27 +++++++++++++++
+ .../puppet/cobbler/templates/dnsmasq.template.erb  |  2 ++
+ .../cobbler/templates/efidefault.template.erb      |  5 +++
+ .../cobbler/templates/grubprofile.template.erb     | 16 +++++++++
+ .../cobbler/templates/grubsystem.template.erb      | 16 +++++++++
+ .../templates/preseed/ubuntu-1404.preseed.erb      |  2 ++
+ .../puppet/nailgun/manifests/auxiliaryrepos.pp     | 12 ++++---
+ deployment/puppet/nailgun/manifests/cobbler.pp     | 38 +++++++++++++++++-----
+ .../puppet/nailgun/manifests/cobbler/preseed.pp    | 13 ++++++++
+ 9 files changed, 119 insertions(+), 12 deletions(-)
+ create mode 100644 deployment/puppet/cobbler/templates/efidefault.template.erb
+ create mode 100644 deployment/puppet/cobbler/templates/grubprofile.template.erb
+ create mode 100644 deployment/puppet/cobbler/templates/grubsystem.template.erb
+ create mode 100644 deployment/puppet/nailgun/manifests/cobbler/preseed.pp
+
+diff --git a/deployment/puppet/cobbler/manifests/server.pp b/deployment/puppet/cobbler/manifests/server.pp
+index bdb1ae7..0523404 100644
+--- a/deployment/puppet/cobbler/manifests/server.pp
++++ b/deployment/puppet/cobbler/manifests/server.pp
+@@ -288,6 +288,33 @@ class cobbler::server (
+     notify  => [Service[$cobbler_service], Exec['cobbler_sync']],
+   }
+ 
++  file { '/etc/cobbler/pxe/efidefault.template':
++    content => template('cobbler/efidefault.template.erb'),
++    owner   => 'root',
++    group   => 'root',
++    mode    => '0644',
++    require => Package[$cobbler::packages::cobbler_package],
++    notify  => [Service[$cobbler_service], Exec['cobbler_sync']],
++  }
++
++  file { '/etc/cobbler/pxe/grubprofile.template':
++    content => template('cobbler/grubprofile.template.erb'),
++    owner   => 'root',
++    group   => 'root',
++    mode    => '0644',
++    require => Package[$cobbler::packages::cobbler_package],
++    notify  => [Service[$cobbler_service], Exec['cobbler_sync']],
++  }
++
++  file { '/etc/cobbler/pxe/grubsystem.template':
++    content => template('cobbler/grubsystem.template.erb'),
++    owner   => 'root',
++    group   => 'root',
++    mode    => '0644',
++    require => Package[$cobbler::packages::cobbler_package],
++    notify  => [Service[$cobbler_service], Exec['cobbler_sync']],
++  }
++
+   exec { '/var/lib/tftpboot/chain.c32':
+     command => 'cp /usr/share/syslinux/chain.c32 /var/lib/tftpboot/chain.c32',
+     unless  => 'test -e /var/lib/tftpboot/chain.c32',
+diff --git a/deployment/puppet/cobbler/templates/dnsmasq.template.erb b/deployment/puppet/cobbler/templates/dnsmasq.template.erb
+index 3a96ac1..8d3e753 100644
+--- a/deployment/puppet/cobbler/templates/dnsmasq.template.erb
++++ b/deployment/puppet/cobbler/templates/dnsmasq.template.erb
+@@ -33,5 +33,7 @@ dhcp-no-override
+ # by assigning IPs one by one instead of using hash algorithm.
+ dhcp-sequential-ip
+ 
++dhcp-match=set:arm64,93,11
++dhcp-boot=net:arm64,grub/grub-aarch64.efi,boothost,<%= @next_server %>
+ dhcp-option=6,<%= @name_server %>
+ $insert_cobbler_system_definitions
+diff --git a/deployment/puppet/cobbler/templates/efidefault.template.erb b/deployment/puppet/cobbler/templates/efidefault.template.erb
+new file mode 100644
+index 0000000..af09eb8
+--- /dev/null
++++ b/deployment/puppet/cobbler/templates/efidefault.template.erb
+@@ -0,0 +1,5 @@
++set default=1
++set timeout=5
++tr -s ipxe_mac ':' '-' $net_default_mac
++
++$grub_menu_items
+diff --git a/deployment/puppet/cobbler/templates/grubprofile.template.erb b/deployment/puppet/cobbler/templates/grubprofile.template.erb
+new file mode 100644
+index 0000000..9a191bc
+--- /dev/null
++++ b/deployment/puppet/cobbler/templates/grubprofile.template.erb
+@@ -0,0 +1,16 @@
++set default=1
++set timeout=5
++tr -s ipxe_mac ':' '-' $net_default_mac
++
++menuentry '$profile_name' {
++    echo 'Network status:'
++    net_ls_cards
++    net_ls_addr
++    net_ls_routes
++
++    echo 'Loading Linux ...'
++    linux (tftp)$kernel_path $kernel_options BOOTIF=01-$ipxe_mac
++    echo 'Loading initial ramdisk ...'
++    initrd (tftp)$initrd_path
++    echo 'Booting bootstrap image ...'
++}
+diff --git a/deployment/puppet/cobbler/templates/grubsystem.template.erb b/deployment/puppet/cobbler/templates/grubsystem.template.erb
+new file mode 100644
+index 0000000..9a191bc
+--- /dev/null
++++ b/deployment/puppet/cobbler/templates/grubsystem.template.erb
+@@ -0,0 +1,16 @@
++set default=1
++set timeout=5
++tr -s ipxe_mac ':' '-' $net_default_mac
++
++menuentry '$profile_name' {
++    echo 'Network status:'
++    net_ls_cards
++    net_ls_addr
++    net_ls_routes
++
++    echo 'Loading Linux ...'
++    linux (tftp)$kernel_path $kernel_options BOOTIF=01-$ipxe_mac
++    echo 'Loading initial ramdisk ...'
++    initrd (tftp)$initrd_path
++    echo 'Booting bootstrap image ...'
++}
+diff --git a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb b/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
+index fd6dda3..65c6c69 100644
+--- a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
++++ b/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
+@@ -66,9 +66,11 @@ d-i apt-setup/mirror/error select Retry
+ # Use network mirror
+ d-i apt-setup/use_mirror boolean true
+ 
++<% if @arch == 'amd64' %>
+ # Select architecture to amd64. That's very important to dpkg, since
+ # by default we have both amd64 and i386.
+ d-i apt-setup/multiarch string amd64
++<% end %>
+ 
+ # You can choose to install restricted and universe software, or to install
+ # software from the backports repository.
+diff --git a/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp b/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
+index 41a2570..720943d 100644
+--- a/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
++++ b/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
+@@ -48,17 +48,21 @@ class nailgun::auxiliaryrepos(
+ 
+   exec { 'create_ubuntu_repo_dirs':
+     path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+-    command => "bash -c \"mkdir -p ${ubuntu_dir}/pool/{main,restricted} ${ubuntu_dir}/dists/auxiliary/{main,restricted}/binary-amd64/\"",
++    command => "bash -c \"mkdir -p ${ubuntu_dir}/pool/{main,restricted} ${ubuntu_dir}/dists/auxiliary/{main,restricted}/binary-{amd64,arm64}/\"",
+     unless => "test -d ${ubuntu_dir}/pool && \
+       test -d ${ubuntu_dir}/dists/auxiliary/main/binary-amd64 && \
+-      test -d ${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64",
++      test -d ${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64 && \
++      test -d ${ubuntu_dir}/dists/auxiliary/main/binary-arm64 && \
++      test -d ${ubuntu_dir}/dists/auxiliary/restricted/binary-arm64",
+   }
+ 
+   exec { 'create_ubuntu_repo_Packages':
+     path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+-    command => "bash -c \"touch ${ubuntu_dir}/dists/auxiliary/{main,restricted}/binary-amd64/Packages\"",
++    command => "bash -c \"touch ${ubuntu_dir}/dists/auxiliary/{main,restricted}/binary-{amd64,arm64}/Packages\"",
+     unless  => "test -f ${ubuntu_dir}/dists/auxiliary/main/binary-amd64/Packages && \
+-      test -f ${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64/Packages",
++      test -f ${ubuntu_dir}/dists/auxiliary/restricted/binary-amd64/Packages && \
++      test -f ${ubuntu_dir}/dists/auxiliary/main/binary-arm64/Packages && \
++      test -f ${ubuntu_dir}/dists/auxiliary/restricted/binary-arm64/Packages",
+   }
+ 
+   file { $release_files:
+diff --git a/deployment/puppet/nailgun/manifests/cobbler.pp b/deployment/puppet/nailgun/manifests/cobbler.pp
+index a11498c..95a9497 100644
+--- a/deployment/puppet/nailgun/manifests/cobbler.pp
++++ b/deployment/puppet/nailgun/manifests/cobbler.pp
+@@ -43,7 +43,7 @@ class nailgun::cobbler(
+   $bootstrap_profile = $bootstrap_flavor ? {
+     /(?i)centos/                 => 'bootstrap',
+     /(?i)ubuntu/                 => 'ubuntu_bootstrap',
+-    default                      => 'bootstrap',
++    default                      => 'ubuntu_bootstrap',
+   }
+ 
+   if $::osfamily == 'RedHat' {
+@@ -133,12 +133,9 @@ class nailgun::cobbler(
+         require   => Class['::cobbler::server'],
+       }
+ 
+-      file { '/var/lib/cobbler/kickstarts/ubuntu-amd64.preseed':
+-        content => template('cobbler/preseed/ubuntu-1404.preseed.erb'),
+-        owner   => 'root',
+-        group   => 'root',
+-        mode    => '0644',
+-        require => Class['::cobbler::server'],
++      nailgun::cobbler::preseed { 'ubuntu_1404_x86_64.preseed':
++        path =>'/var/lib/cobbler/kickstarts/ubuntu-amd64.preseed',
++        arch => "amd64",
+       } ->
+ 
+       cobbler_distro { 'ubuntu_1404_x86_64':
+@@ -151,6 +148,21 @@ class nailgun::cobbler(
+         require   => Class['::cobbler::server'],
+       }
+ 
++      nailgun::cobbler::preseed { 'ubuntu_1404_arm64.preseed':
++        path => '/var/lib/cobbler/kickstarts/ubuntu-arm64.preseed',
++        arch => "arm64",
++      } ->
++
++      cobbler_distro { 'ubuntu_1404_arm64':
++        kernel    => "${repo_root}/ubuntu/x86_64/images/linux",
++        initrd    => "${repo_root}/ubuntu/x86_64/images/initrd.gz",
++        arch      => 'x86_64', # Makes Cobbler choose PXE
++        breed     => 'ubuntu',
++        osversion => 'trusty',
++        ksmeta    => '',
++        require   => Class['::cobbler::server'],
++      }
++
+       cobbler_profile { 'centos-x86_64':
+         kickstart => '/var/lib/cobbler/kickstarts/centos-x86_64.ks',
+         kopts     => 'biosdevname=0 sshd=1 dhcptimeout=120',
+@@ -171,6 +183,16 @@ class nailgun::cobbler(
+         require   => Cobbler_distro['ubuntu_1404_x86_64'],
+       }
+ 
++      cobbler_profile { 'ubuntu_1404_arm64':
++        kickstart => '/var/lib/cobbler/kickstarts/ubuntu-arm64.preseed',
++        kopts     => 'console=ttyAMA0,115200 console=ttyS0,115200 net.ifnames=0 biosdevname=0 netcfg/choose_interface=eth0 netcfg/dhcp_timeout=120 netcfg/link_detection_timeout=20',
++        distro    => 'ubuntu_1404_arm64',
++        ksmeta    => '',
++        menu      => false,
++        server    => $real_server,
++        require   => Cobbler_distro['ubuntu_1404_arm64'],
++      }
++
+       cobbler_distro { 'bootstrap':
+         kernel    => "${repo_root}/bootstrap/linux",
+         initrd    => "${repo_root}/bootstrap/initramfs.img",
+@@ -205,7 +227,7 @@ class nailgun::cobbler(
+         distro    => 'ubuntu_bootstrap',
+         menu      => true,
+         kickstart => '',
+-        kopts     => extend_kopts($bootstrap_meta['extend_kopts'], "console=ttyS0,9600 console=tty0 panic=60 ethdevice-timeout=${bootstrap_ethdevice_timeout} boot=live toram components fetch=http://${server}:8080/bootstraps/active_bootstrap/root.squashfs biosdevname=0 url=${nailgun_api_url} mco_user=${mco_user} mco_pass=${mco_pass}"),
++        kopts     => extend_kopts($bootstrap_meta['extend_kopts'], "console=ttyAMA0,115200 console=ttyS0,115200 panic=60 ethdevice-timeout=${bootstrap_ethdevice_timeout} boot=live toram components fetch=http://${server}:8080/bootstraps/active_bootstrap/root.squashfs biosdevname=0 url=${nailgun_api_url} mco_user=${mco_user} mco_pass=${mco_pass}"),
+         ksmeta    => '',
+         server    => $real_server,
+         require   => Cobbler_distro['ubuntu_bootstrap'],
+diff --git a/deployment/puppet/nailgun/manifests/cobbler/preseed.pp b/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
+new file mode 100644
+index 0000000..93c71ba
+--- /dev/null
++++ b/deployment/puppet/nailgun/manifests/cobbler/preseed.pp
+@@ -0,0 +1,13 @@
++define nailgun::cobbler::preseed(
++  $path,
++  $arch = "amd64",
++) {
++
++  file { $path:
++    content => template('cobbler/preseed/ubuntu-1404.preseed.erb'),
++    owner   => 'root',
++    group   => 'root',
++    mode    => '0644',
++    require => Class['::cobbler::server'],
++  }
++}
+-- 
+1.9.1
+
