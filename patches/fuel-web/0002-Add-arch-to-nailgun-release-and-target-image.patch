@@ -1,0 +1,219 @@
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Wed, 24 Feb 2016 20:11:54 +0100
+Subject: [PATCH] Add arch to nailgun release and target image
+
+Thsi is required so that the TestVM image is created using a cirros
+image that is compatible with the architecture of the deployment setup.
+As a bonus, it is also used when building the target image.
+---
+ nailgun/nailgun/consts.py                          |  5 +++
+ .../alembic_migrations/versions/armband.py         | 47 ++++++++++++++++++++++
+ nailgun/nailgun/db/sqlalchemy/models/release.py    |  8 ++++
+ nailgun/nailgun/fixtures/openstack.yaml            |  3 ++
+ .../nailgun/orchestrator/deployment_serializers.py |  9 ++++-
+ .../orchestrator/provisioning_serializers.py       |  3 +-
+ nailgun/nailgun/orchestrator/tasks_templates.py    |  5 ++-
+ nailgun/nailgun/test/unit/test_tasks_templates.py  |  6 ++-
+ 8 files changed, 80 insertions(+), 6 deletions(-)
+ create mode 100644 nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
+
+diff --git a/nailgun/nailgun/consts.py b/nailgun/nailgun/consts.py
+index bb69168..2c19ec9 100644
+--- a/nailgun/nailgun/consts.py
++++ b/nailgun/nailgun/consts.py
+@@ -38,6 +38,11 @@ RELEASE_OS = Enum(
+     )
+ )
+ 
++RELEASE_ARCHS = Enum(
++    'amd64',
++    'arm64'
++)
++
+ CLUSTER_MODES = Enum(
+     'multinode',
+     'ha_full',
+diff --git a/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py b/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
+new file mode 100644
+index 0000000..8b832df
+--- /dev/null
++++ b/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
+@@ -0,0 +1,47 @@
++#    Copyright 2016 Mirantis, Inc.
++#
++#    Licensed under the Apache License, Version 2.0 (the "License"); you may
++#    not use this file except in compliance with the License. You may obtain
++#    a copy of the License at
++#
++#         http://www.apache.org/licenses/LICENSE-2.0
++#
++#    Unless required by applicable law or agreed to in writing, software
++#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++#    License for the specific language governing permissions and limitations
++#    under the License.
++
++"""Armband patches
++
++Revision ID: f9b7fd91ac19
++Revises: 43b2cb64dae6
++Create Date: 2016-03-01 23:18:58.712617
++
++"""
++
++# revision identifiers, used by Alembic.
++revision = 'f9b7fd91ac19'
++down_revision = '43b2cb64dae6'
++
++from alembic import op
++import sqlalchemy as sa
++from sqlalchemy.dialects import postgresql
++
++ENUMS = (
++    'release_arch')
++
++def upgrade():
++    add_release_arch()
++
++def downgrade():
++    remove_release_arch()
++    map(drop_enum, ENUMS)
++
++def add_release_arch():
++    arch_enum = sa.Enum('amd64', 'arm64', name='release_arch')
++    arch_enum.create(op.get_bind(), checkfirst=False)
++    op.add_column('releases', sa.Column('arch', arch_enum, nullable=False))
++
++def remove_release_arch():
++    op.drop_column('releases', 'arch')
+diff --git a/nailgun/nailgun/db/sqlalchemy/models/release.py b/nailgun/nailgun/db/sqlalchemy/models/release.py
+index 96cf2ed..62ac2c1 100644
+--- a/nailgun/nailgun/db/sqlalchemy/models/release.py
++++ b/nailgun/nailgun/db/sqlalchemy/models/release.py
+@@ -38,6 +38,14 @@ class Release(Base):
+     id = Column(Integer, primary_key=True)
+     name = Column(Unicode(100), nullable=False)
+     version = Column(String(30), nullable=False)
++    arch = Column(
++        Enum(
++            *consts.RELEASE_ARCHS,
++            name='release_arch'
++        ),
++        nullable=False,
++        default=consts.RELEASE_ARCHS.amd64
++    )
+     can_update_from_versions = Column(JSON, default=[],
+                                       nullable=False, server_default='[]')
+     description = Column(Unicode)
+diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
+index 4daa2a2..733fa0c 100644
+--- a/nailgun/nailgun/fixtures/openstack.yaml
++++ b/nailgun/nailgun/fixtures/openstack.yaml
+@@ -1913,6 +1913,7 @@
+     name: "Liberty on CentOS 6.5"
+     state: "unavailable"
+     version: "liberty-8.0"
++    arch: "amd64"
+     can_update_from_versions: []
+     operating_system: "CentOS"
+     description: "This option will install the OpenStack Liberty packages using a CentOS based operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+@@ -1986,6 +1987,7 @@
+   fields:
+     name: "Liberty on Ubuntu 14.04"
+     version: "liberty-8.0"
++    arch: "amd64"
+     can_update_from_versions: []
+     operating_system: "Ubuntu"
+     description: "This option will install the OpenStack Liberty packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+@@ -2084,6 +2086,7 @@
+   fields:
+     name: "Liberty on Ubuntu 14.04 (aarch64)"
+     version: "liberty-8.0"
++    arch: "arm64"
+     can_update_from_versions: []
+     operating_system: "Ubuntu"
+     description: "This option will install the OpenStack Liberty packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/nailgun/orchestrator/deployment_serializers.py
+index 375a1ce..b8b38e2 100644
+--- a/nailgun/nailgun/orchestrator/deployment_serializers.py
++++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
+@@ -291,7 +291,14 @@ class DeploymentMultinodeSerializer(object):
+             img_dir = '/usr/share/cirros-testvm/'
+         else:
+             img_dir = '/opt/vm/'
+-        image_data['img_path'] = '{0}cirros-x86_64-disk.img'.format(img_dir)
++        release = self.current_release(node.cluster)
++        arch = release.arch
++        if arch == "amd64":
++            arch = "x86_64"
++        elif arch == "arm64":
++            arch = "aarch64"
++        image_data['img_path'] = '{0}cirros-{1}-disk.img'.format(img_dir,
++            arch)
+ 
+         glance_properties = []
+ 
+diff --git a/nailgun/nailgun/orchestrator/provisioning_serializers.py b/nailgun/nailgun/orchestrator/provisioning_serializers.py
+index 04ae0b0..c927f03 100644
+--- a/nailgun/nailgun/orchestrator/provisioning_serializers.py
++++ b/nailgun/nailgun/orchestrator/provisioning_serializers.py
+@@ -313,7 +313,8 @@ class ProvisioningSerializer61(ProvisioningSerializer):
+                     [consts.MASTER_NODE_UID],
+                     attrs['repo_setup']['repos'],
+                     attrs['provision'],
+-                    cluster.id))
++                    cluster.id,
++                    cluster.release.arch))
+ 
+         # NOTE(kozhukalov): This pre-provision task is going to be
+         # removed by 7.0 because we need this only for classic way of
+diff --git a/nailgun/nailgun/orchestrator/tasks_templates.py b/nailgun/nailgun/orchestrator/tasks_templates.py
+index 39f2067..cd2278c 100644
+--- a/nailgun/nailgun/orchestrator/tasks_templates.py
++++ b/nailgun/nailgun/orchestrator/tasks_templates.py
+@@ -207,7 +207,7 @@ def make_reboot_task(uids, task):
+             'timeout': task['parameters']['timeout']}}
+ 
+ 
+-def make_provisioning_images_task(uids, repos, provision_data, cid):
++def make_provisioning_images_task(uids, repos, provision_data, cid, arch):
+     conf = {
+         'repos': repos,
+         'image_data': provision_data['image_data'],
+@@ -224,7 +224,8 @@ def make_provisioning_images_task(uids, repos, provision_data, cid):
+                     "--image_build_dir /var/lib/fuel/ibp "
+                     "--log-file /var/log/fuel-agent-env-{0}.log "
+                     "--data_driver nailgun_build_image "
+-                    "--input_data '{1}'").format(cid, conf),
++                    "--target_arch {1} "
++                    "--input_data '{2}'").format(cid, arch, conf),
+             'timeout': settings.PROVISIONING_IMAGES_BUILD_TIMEOUT,
+             'retries': 1}})
+ 
+diff --git a/nailgun/nailgun/test/unit/test_tasks_templates.py b/nailgun/nailgun/test/unit/test_tasks_templates.py
+index a38e975..9cb9171 100644
+--- a/nailgun/nailgun/test/unit/test_tasks_templates.py
++++ b/nailgun/nailgun/test/unit/test_tasks_templates.py
+@@ -133,7 +133,8 @@ class TestMakeTask(base.BaseTestCase):
+                         'uri': 'http://uri'
+                     }
+                 }},
+-            cid=123)
++            cid=123,
++            arch='amd64')
+ 
+         fuel_image_conf = {
+             "image_data": {
+@@ -168,7 +169,8 @@ class TestMakeTask(base.BaseTestCase):
+         cmd = result["parameters"]["cmd"].lstrip(
+             "fa_build_image --image_build_dir /var/lib/fuel/ibp "
+             "--log-file /var/log/fuel-agent-env-123.log "
+-            "--data_driver nailgun_build_image --input_data '").rstrip("'")
++            "--data_driver nailgun_build_image --target_arch amd64"
++            " --input_data '").rstrip("'")
+         self.assertEqual(jsonutils.loads(cmd), fuel_image_conf)
+ 
+     def test_generate_ironic_bootstrap_keys_task(self):
+-- 
+1.9.1
+

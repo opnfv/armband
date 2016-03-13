@@ -1,0 +1,118 @@
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Sun, 21 Feb 2016 16:30:43 +0100
+Subject: [PATCH] Add arm64 fixture
+
+---
+ nailgun/nailgun/fixtures/openstack.yaml | 99 +++++++++++++++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+
+diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
+index f9c8ab6..4daa2a2 100644
+--- a/nailgun/nailgun/fixtures/openstack.yaml
++++ b/nailgun/nailgun/fixtures/openstack.yaml
+@@ -2079,3 +2079,102 @@
+               uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_amd64-boot.img.gz"
+               format: "ext2"
+               container: "gzip"
++- pk: 3
++  extend: *base_release
++  fields:
++    name: "Liberty on Ubuntu 14.04 (aarch64)"
++    version: "liberty-8.0"
++    can_update_from_versions: []
++    operating_system: "Ubuntu"
++    description: "This option will install the OpenStack Liberty packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
++    attributes_metadata:
++      editable:
++        kernel_params:
++          kernel:
++            value: "console=ttyAMA0,115200 console=ttyS0,115200 net.ifnames=0 biosdevname=0 rootdelay=90 nomodeset"
++        repo_setup:
++          metadata:
++            label: "Repositories"
++            weight: 50
++            group: "general"
++            always_editable: true
++          repos:
++            type: "custom_repo_configuration"
++            extra_priority: null
++            description: |
++              Please note: the first repository will be considered the operating system mirror that will be used during node provisioning.
++              To create a local repository mirror on the Fuel master node, please follow the instructions provided by running "fuel-createmirror --help" on the Fuel master node.
++              Please make sure your Fuel master node has Internet access to the repository before attempting to create a mirror.
++              For more details, please refer to the documentation (https://docs.mirantis.com/openstack/fuel/fuel-8.0/operations.html#external-ubuntu-ops).
++            value:
++              # first repository on the list is used for downloading the kernel and initrd
++              - type: "deb"
++                name: "ubuntu"
++                uri: "http://ports.ubuntu.com/"
++                suite: "trusty"
++                section: "main universe multiverse"
++                priority: null
++              - type: "deb"
++                name: "ubuntu-updates"
++                uri: "http://ports.ubuntu.com/"
++                suite: "trusty-updates"
++                section: "main universe multiverse"
++                priority: null
++              - type: "deb"
++                name: "ubuntu-security"
++                uri: "http://ports.ubuntu.com/"
++                suite: "trusty-security"
++                section: "main universe multiverse"
++                priority: null
++              - type: "deb"
++                name: "mos"
++                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/x86_64"
++                suite: "mos8.0"
++                section: "main restricted"
++                priority: 1050
++              - type: "deb"
++                name: "mos-updates"
++                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                suite: "mos8.0-updates"
++                section: "main restricted"
++                priority: 1050
++              - type: "deb"
++                name: "mos-security"
++                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                suite: "mos8.0-security"
++                section: "main restricted"
++                priority: 1050
++              - type: "deb"
++                name: "mos-holdback"
++                uri: "https://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}/"
++                suite: "mos8.0-holdback"
++                section: "main restricted"
++                priority: 1100
++              - type: "deb"
++                name: "Auxiliary"
++                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/auxiliary"
++                suite: "auxiliary"
++                section: "main restricted"
++                priority: 1150
++      generated:
++        repo_setup:
++          installer_kernel:
++            remote_relative: "dists/trusty/main/installer-arm64/current/images/generic/netboot/vmlinuz"
++            local: "/var/www/nailgun/ubuntu/arm64/images/linux"
++          installer_initrd:
++            remote_relative: "dists/trusty/main/installer-arm64/current/images/generic/netboot/initrd.gz"
++            local: "/var/www/nailgun/ubuntu/arm64/images/initrd.gz"
++        cobbler:
++          profile:
++            generator_arg: "ubuntu_1404_arm64"
++        provision:
++          codename: "trusty"
++          image_data:
++            /:
++              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64.img.gz"
++              format: "ext4"
++              container: "gzip"
++            /boot:
++              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64-boot.img.gz"
++              format: "ext2"
++              container: "gzip"
+-- 
+1.9.1
+

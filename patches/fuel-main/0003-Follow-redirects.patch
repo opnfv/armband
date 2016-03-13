@@ -1,0 +1,24 @@
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Tue, 1 Mar 2016 09:35:24 +0100
+Subject: [PATCH] Follow redirects
+
+---
+ config.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config.mk b/config.mk
+index ae4766b..2a99278 100644
+--- a/config.mk
++++ b/config.mk
+@@ -271,7 +271,7 @@ USE_PREDEFINED_FUEL_LIB_PUPPET_MODULES?=
+ 
+ # If the URL given ended with target.txt then is't a pointer to a snapshot that
+ # should be unlinked. If it is not - return it as is.
+-expand_repo_url=$(shell url=$1; echo $${url} | grep -q -e '.*\.target\.txt$$' && echo "$${url%/*}/$$(curl -sSf $$url | head -1)/x86_64/" || echo $${url})
++expand_repo_url=$(shell url=$1; echo $${url} | grep -q -e '.*\.target\.txt$$' && echo "$${url%/*}/$$(curl -sSfL $$url | head -1)/x86_64/" || echo $${url})
+ 
+ # Expand repo URLs now
+ #MIRROR_CENTOS:=$(call expand_repo_url,$(MIRROR_CENTOS))
+-- 
+1.9.1
+
