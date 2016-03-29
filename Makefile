@@ -31,9 +31,9 @@ patches-import:
 	@git submodule -q foreach 'git tag armband-workbench-root'
 	@git submodule -q foreach 'git checkout -q -b armband-workbench'
 	@git submodule -q foreach \
-		'for p in $$(ls ${root}/patches/$$name/); do \
-			git am ${root}/patches/$$name/$$p; \
-		done'
+		'if [ ! -z "$$(ls ${root}/patches/$$name/)" ]; then \
+			git am ${root}/patches/$$name/*.patch; \
+		fi'
 clean-docker:
 	docker stop FUEL_CENTOS_8.0 || true
 	docker rm $(docker ps -a -q) || true

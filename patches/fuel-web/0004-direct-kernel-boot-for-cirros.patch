@@ -35,7 +35,7 @@ index 16dc3fa..23d6589 100644
  
  class VmwareDeploymentSerializerMixin(object):
 diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/nailgun/orchestrator/deployment_serializers.py
-index b8b38e2..54b1614 100644
+index b8b38e2..b76a3d3 100644
 --- a/nailgun/nailgun/orchestrator/deployment_serializers.py
 +++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
 @@ -274,6 +274,9 @@ class DeploymentMultinodeSerializer(object):
