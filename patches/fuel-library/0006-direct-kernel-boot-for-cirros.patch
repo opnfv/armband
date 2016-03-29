@@ -116,7 +116,7 @@ index 04d597c..c342830 100755
  exit 1 unless errors == 0
  
 diff --git a/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb b/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
-index 88b2c73..65e9400 100644
+index 2d030d9..b33fb25 100644
 --- a/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
 +++ b/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
 @@ -3,9 +3,15 @@
