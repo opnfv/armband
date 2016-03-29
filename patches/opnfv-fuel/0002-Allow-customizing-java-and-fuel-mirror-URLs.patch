@@ -8,7 +8,7 @@ Subject: [PATCH] Allow customizing java and fuel-mirror URLs
  2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/build/f_isoroot/f_odlpluginbuild/Makefile b/build/f_isoroot/f_odlpluginbuild/Makefile
-index f2a47b7..b0bc9c7 100644
+index 5287ca8..3ecf680 100644
 --- a/build/f_isoroot/f_odlpluginbuild/Makefile
 +++ b/build/f_isoroot/f_odlpluginbuild/Makefile
 @@ -12,7 +12,7 @@ ODL_BRANCH=brahmaputra-release
@@ -17,9 +17,9 @@ index f2a47b7..b0bc9c7 100644
  export USE_JAVA8=true
 -export JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_amd64.deb
 +export JAVA8_URL:=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_amd64.deb
+ export ODL_TARBALL_LOCATION=https://nexus.opendaylight.org/content/repositories/opendaylight.release/org/opendaylight/integration/distribution-karaf/0.4.0-Beryllium/distribution-karaf-0.4.0-Beryllium.tar.gz
  
  .PHONY: all
- all: .odlbuild
 diff --git a/build/f_isoroot/f_repobuild/Makefile b/build/f_isoroot/f_repobuild/Makefile
 index e95dbf2..709ca6b 100644
 --- a/build/f_isoroot/f_repobuild/Makefile
