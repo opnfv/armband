@@ -72,7 +72,7 @@ index b8b38e2..b76a3d3 100644
 +        if arch == 'aarch64':
 +            image_data['glance_properties'] += \
 +                ' --property os_command_line=\'root=/dev/vda1 rw rootwait' + \
-+                'console=tty0 console=ttyS0 console=ttyAMA0\'' + \
++                ' console=tty0 console=ttyS0 console=ttyAMA0\'' + \
 +                ' --property hw_video_model=vga'
 +            kernel_data = {
 +                'container_format': 'aki',
@@ -81,7 +81,7 @@ index b8b38e2..b76a3d3 100644
 +                'img_name': 'TestVM-kernel',
 +                'img_path': '{0}cirros-{1}-kernel'.format(img_dir, arch),
 +                'os_name': 'cirros',
-+                'min_ram': 64,
++                'min_ram': 128,
 +                'glance_properties': '',
 +            }
 +            initrd_data = {
@@ -91,7 +91,7 @@ index b8b38e2..b76a3d3 100644
 +                'img_name': 'TestVM-initramfs',
 +                'img_path': '{0}cirros-{1}-initramfs'.format(img_dir, arch),
 +                'os_name': 'cirros',
-+                'min_ram': 64,
++                'min_ram': 128,
 +                'glance_properties': '',
 +            }
 +            images += [kernel_data, initrd_data]
