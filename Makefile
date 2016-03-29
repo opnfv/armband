@@ -54,7 +54,6 @@ build:
 			FUEL_MAIN_REPO=${root}/upstream/fuel-main \
 			FUEL_MAIN_TAG= \
 			UBUNTU_ARCH="amd64 arm64" \
-			SEPARATE_IMAGES="/boot,ext2 /,ext4 /boot/efi,vfat" \
 			FUELLIB_REPO=${root}/upstream/fuel-library \
 			NAILGUN_REPO=${root}/upstream/fuel-web \
 			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
