@@ -7,7 +7,7 @@ Subject: [PATCH] Allow customizing fuel-plugin-qemu
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/build/f_isoroot/f_qemupluginbuild/config.mk b/build/f_isoroot/f_qemupluginbuild/config.mk
-index e4a7d39..3f0107c 100644
+index e9c4356..c23e9c2 100644
 --- a/build/f_isoroot/f_qemupluginbuild/config.mk
 +++ b/build/f_isoroot/f_qemupluginbuild/config.mk
 @@ -7,6 +7,6 @@

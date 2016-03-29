@@ -8,7 +8,7 @@ Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/build/f_isoroot/f_odlpluginbuild/Makefile b/build/f_isoroot/f_odlpluginbuild/Makefile
-index 3ecf680..b0449d0 100644
+index b0bc9c7..cc305e0 100644
 --- a/build/f_isoroot/f_odlpluginbuild/Makefile
 +++ b/build/f_isoroot/f_odlpluginbuild/Makefile
 @@ -8,8 +8,8 @@
