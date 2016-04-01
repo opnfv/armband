@@ -152,8 +152,8 @@ network:
       configurable: true
       floating_range_var: floating_ranges
       ip_range:
-      - 10.0.2.0.100
-      - 10.0.2.0.125
+      - 10.0.2.100
+      - 10.0.2.125
       map_priority: 1
       name: public
       notation: ip_ranges
