@@ -7,7 +7,7 @@ Subject: [PATCH] Allow customizing Fuel commit
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/build/config.mk b/build/config.mk
-index e11d033..2a81027 100644
+index 667575c..30d9ccc 100644
 --- a/build/config.mk
 +++ b/build/config.mk
 @@ -9,7 +9,7 @@

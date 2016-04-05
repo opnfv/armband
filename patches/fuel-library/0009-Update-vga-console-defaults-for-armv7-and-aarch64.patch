@@ -14,7 +14,7 @@ a nice UX addition.
 
 diff --git a/deployment/puppet/openstack/files/nova-libvirt-vga-console.patch b/deployment/puppet/openstack/files/nova-libvirt-vga-console.patch
 new file mode 100644
-index 0000000..d33d4ee
+index 0000000..c5f8e5a
 --- /dev/null
 +++ b/deployment/puppet/openstack/files/nova-libvirt-vga-console.patch
 @@ -0,0 +1,39 @@
