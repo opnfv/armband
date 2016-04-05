@@ -19,7 +19,7 @@ Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 
 diff --git a/deployment/puppet/openstack/files/nova-libvirt-inject.patch b/deployment/puppet/openstack/files/nova-libvirt-inject.patch
 new file mode 100644
-index 0000000..071aff3
+index 0000000..9cbfe5f
 --- /dev/null
 +++ b/deployment/puppet/openstack/files/nova-libvirt-inject.patch
 @@ -0,0 +1,44 @@
