@@ -8,16 +8,16 @@ Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/build/f_isoroot/f_odlpluginbuild/Makefile b/build/f_isoroot/f_odlpluginbuild/Makefile
-index 3ecf680..b0449d0 100644
+index 589adb8..0486416 100644
 --- a/build/f_isoroot/f_odlpluginbuild/Makefile
 +++ b/build/f_isoroot/f_odlpluginbuild/Makefile
 @@ -8,8 +8,8 @@
  ##############################################################################
  
  TOP := $(shell pwd)
--ODL_BRANCH=brahmaputra-release
+-ODL_BRANCH=brahmaputra-sr2
 -ODL_REPO="https://github.com/openstack/fuel-plugin-opendaylight.git"
-+ODL_BRANCH:=brahmaputra-release
++ODL_BRANCH:=brahmaputra-sr2
 +ODL_REPO:="https://github.com/openstack/fuel-plugin-opendaylight.git"
  
  export USE_JAVA8=true
