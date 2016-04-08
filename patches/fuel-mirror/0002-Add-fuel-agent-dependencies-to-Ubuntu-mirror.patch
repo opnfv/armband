@@ -10,12 +10,15 @@ list them as dependencies (not patched for cross-debootstrap).
 
 FIXME: Will building/patching fuel-agent using OPNFV mechanism solve
 missing deps from local mirror too?
+
+FIXME: Remove udev package from this patch when Ubuntu Trusty on arm64
+fixes persistent device names in the udev it ships out of the box.
 ---
- contrib/fuel_mirror/data/ubuntu.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ contrib/fuel_mirror/data/ubuntu.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/contrib/fuel_mirror/data/ubuntu.yaml b/contrib/fuel_mirror/data/ubuntu.yaml
-index 7bc0c4b..65026ed 100644
+index 7bc0c4b..4509a9a 100644
 --- a/contrib/fuel_mirror/data/ubuntu.yaml
 +++ b/contrib/fuel_mirror/data/ubuntu.yaml
 @@ -77,6 +77,7 @@ packages: &packages
@@ -34,3 +37,11 @@ index 7bc0c4b..65026ed 100644
       - "rsyslog-gnutls"
       - "rsyslog-relp"
       - "screen"
+@@ -124,6 +126,7 @@ packages: &packages
+      - "tmux"
+      - "traceroute"
+      - "ubuntu-standard"
++     - "udev"
+      - "vim"
+      - "virt-what"
+      - "xinetd"
