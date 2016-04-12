@@ -61,6 +61,7 @@ build:
 			QEMU_REPO=${root}/upstream/fuel-plugin-qemu \
 			OVSNFV_DPDK_REPO=${root}/upstream/fuel-plugin-ovsnfv \
 			ODL_REPO=${root}/upstream/fuel-plugin-opendaylight \
+			ODL_CHANGE= \
 			FUELLIB_COMMIT=HEAD \
 			NAILGUN_COMMIT=HEAD \
 			FUEL_AGENT_COMMIT=HEAD \
