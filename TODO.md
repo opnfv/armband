@@ -4,7 +4,7 @@ List of missing features and things to do
 Nice to have, should be fixed before rel
 =========================================
 * [fuel?] Disabling rx-vlan-filter from Fuel WebUI is not applied during netcheck
-* [thunderx] rtc-efi disable
+* [thunderx] rtc-efi disable (bootstrap handled, target image remaining)
 
 Cleanup tasks
 =========================================
