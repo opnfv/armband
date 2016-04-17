@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a486d77_bc238704",
+        "filename": "patches/fuel-library/0012-target-Ubuntu-Blacklist-rtc-efi-if-not-supported.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-04-17T16:35:16Z",
+      "side": 1,
+      "message": "Is this file complete? I don\u0027t see anything in line 52, but this line ends with \u0026\u0026 \\ ?",
+      "range": {
+        "startLine": 51,
+        "startChar": 133,
+        "endLine": 51,
+        "endChar": 137
+      },
+      "revId": "6bef7de313b6bb33f7a716d1d70ec4eb4aae9a3f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
