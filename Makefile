@@ -11,7 +11,8 @@ submodules-init:
 # Cleans any changes made to submodules
 submodules-clean:
 	@git submodule -q foreach \
-		'git checkout -q armband-workbench-root; \
+		'git am --abort; \
+                git checkout -q armband-workbench-root; \
 		git branch -q -D armband-workbench; \
 		git tag -d armband-workbench-root; \
 		git reset -q --hard HEAD; git clean -xdff'
