@@ -16,10 +16,10 @@ index 4ebf519..86d7b76 100644
  ##############################################################################
  
 -ODL_BRANCH=brahmaputra-sr2
--ODL_CHANGE=b876df2345bf8c785dceea74f4c271fdfcc9563c
+-ODL_CHANGE=ec9474c1178e7451ec75f6e306ac84424a84a28a
 -ODL_REPO="https://github.com/openstack/fuel-plugin-opendaylight.git"
 +ODL_BRANCH:=brahmaputra-sr2
-+ODL_CHANGE:=b876df2345bf8c785dceea74f4c271fdfcc9563c
++ODL_CHANGE:=ec9474c1178e7451ec75f6e306ac84424a84a28a
 +ODL_REPO:="https://github.com/openstack/fuel-plugin-opendaylight.git"
  
  export USE_JAVA8=true
