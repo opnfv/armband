@@ -58,6 +58,7 @@ build:
 			FUELLIB_REPO=${root}/upstream/fuel-library \
 			NAILGUN_REPO=${root}/upstream/fuel-web \
 			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
+			FUEL_NAILGUN_AGENT_REPO=${root}/upstream/fuel-nailgun-agent \
 			FUEL_MIRROR_REPO=${root}/upstream/fuel-mirror \
 			QEMU_REPO=${root}/upstream/fuel-plugin-qemu \
 			OVSNFV_DPDK_REPO=${root}/upstream/fuel-plugin-ovsnfv \
@@ -66,6 +67,7 @@ build:
 			FUELLIB_COMMIT=HEAD \
 			NAILGUN_COMMIT=HEAD \
 			FUEL_AGENT_COMMIT=HEAD \
+			FUEL_NAILGUN_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_COMMIT=HEAD \
 			QEMU_BRANCH=HEAD \
 			OVSNFV_DPDK_BRANCH=armband-workbench \
