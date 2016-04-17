@@ -44,7 +44,7 @@ index 0219961..1387cf9 100644
      LOG.info("Try to build image with data:\n%s", yaml.safe_dump(bootdata))
  
 -    opts = ['--data_driver', 'bootstrap_build_image']
-+    opts = ['--data_driver', 'bootstrap_build_image', 
++    opts = ['--data_driver', 'bootstrap_build_image',
 +            '--target_arch', data['target_arch']]
      if data.get('image_build_dir'):
          opts.extend(['--image_build_dir', data['image_build_dir']])
