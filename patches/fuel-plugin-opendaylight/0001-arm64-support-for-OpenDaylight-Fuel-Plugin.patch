@@ -30,7 +30,7 @@ new file mode 100644
 index 0000000..c72efeb
 --- /dev/null
 +++ b/deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
-@@ -0,0 +1,36 @@
+@@ -0,0 +1,35 @@
 +diff --git a/port/atomic_pointer.h b/port/atomic_pointer.h
 +index e17bf43..78cb6b3 100644
 +--- a/port/atomic_pointer.h
@@ -66,7 +66,6 @@ index 0000000..c72efeb
 + #undef ARCH_CPU_PPC_FAMILY
 +
 + }  // namespace port
-+
 diff --git a/deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch b/deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch
 new file mode 100644
 index 0000000..7520205
@@ -78,13 +77,13 @@ index 0000000..7520205
 +--- a/leveldbjni-all/pom.xml
 ++++ b/leveldbjni-all/pom.xml
 +@@ -41,7 +41,7 @@
-+ 
++
 +   <groupId>org.fusesource.leveldbjni</groupId>
 +   <artifactId>leveldbjni-all</artifactId>
 +-  <version>1.8</version>
 ++  <version>1.8-odl</version>
 +   <packaging>bundle</packaging>
-+   
++
 +   <name>${project.artifactId}</name>
 +@@ -119,7 +119,8 @@
 +               META-INF/native/osx/libleveldbjni.jnilib;osname=macosx;processor=x86,
@@ -215,7 +214,7 @@ index 0000000..c708611
 +      ensure => 'present',
 +    }
 +  }
-+  if ! defined(Package['openjdk-7-jdk']) { 
++  if ! defined(Package['openjdk-7-jdk']) {
 +    package { 'openjdk-7-jdk':
 +      ensure => 'present',
 +    }
