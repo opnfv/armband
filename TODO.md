@@ -7,7 +7,6 @@ Nice to have, should be fixed before rel
 
 Cleanup tasks
 =========================================
-* [armband-rpm-repo] Armband CentOS repository as additional repo (x86_64)
 * [arm64-master] Find `puppetlabs-products` repo for arm64.
 * [arm64-master] Fix license in ubuntu_1404_arm64.pp
 * [arm64-master] Look into default ubuntu_debootstrap change in cobbler.pp
@@ -16,8 +15,6 @@ Cleanup tasks
 * [ohai] ThunderX network card speed reported as N/A
 * [arm64-master] change docker repo in `upstream/fuel/build/config.mk`,
   perhaps by figuring out current architecture with `uname -m`
-* [arm64-master] Fuel Master YUM repos still point to mirror.fuel-infra.org,
-  due to bootstrap_admin_node.sh hardcodes from OPNFV
 
 Needed for all arch support (todo, later)
 =========================================
