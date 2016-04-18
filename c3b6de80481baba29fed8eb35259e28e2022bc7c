@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a486d77_3f0ae98a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-18T18:17:26Z",
+      "side": 1,
+      "message": "You want to use this URL:\nhttps://review.openstack.org/gitweb?p\u003dopenstack/fuel-library.git;a\u003dblob;f\u003ddeployment/puppet/openstack/manifests/ceilometer.pp;h\u003d8311731f5c60775da79a989581af34f8ef6ef2de;hb\u003drefs/heads/stable/8.0\n\nOn Master, there\u0027s no such file (the rebase will be so good \u003e) ).",
+      "revId": "c3b6de80481baba29fed8eb35259e28e2022bc7c",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
