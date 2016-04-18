@@ -22,6 +22,30 @@
       "revId": "6bef7de313b6bb33f7a716d1d70ec4eb4aae9a3f",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_7cf98f4c",
+        "filename": "patches/fuel-library/0012-target-Ubuntu-Blacklist-rtc-efi-if-not-supported.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-18T18:09:05Z",
+      "side": 1,
+      "message": "Take a look at line 40 above. It seems that those snippets are used to construct a single line command, hence each of them ends with a \u0027\u0026\u0026 \\\u0027",
+      "parentUuid": "1a486d77_bc238704",
+      "range": {
+        "startLine": 51,
+        "startChar": 133,
+        "endLine": 51,
+        "endChar": 137
+      },
+      "revId": "6bef7de313b6bb33f7a716d1d70ec4eb4aae9a3f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
