@@ -12,7 +12,7 @@ https://bugs.opendaylight.org/show_bug.cgi?id=3973
 
 Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
 ---
- .../modules/opendaylight/files/leveldb-arm64.patch |  36 +++++
+ .../modules/opendaylight/files/leveldb-arm64.patch |  35 +++++
  .../opendaylight/files/leveldbjni-native.patch     |  23 ++++
  .../puppet/modules/opendaylight/manifests/init.pp  |   8 ++
  .../modules/opendaylight/manifests/install.pp      |  12 +-
@@ -20,14 +20,14 @@ Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
  deployment_tasks.yaml                              |   2 +-
  odl_package/ubuntu/opendaylight                    |   4 +-
  pre_build_hook                                     |   9 +-
- 8 files changed, 235 insertions(+), 9 deletions(-)
+ 8 files changed, 234 insertions(+), 9 deletions(-)
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 
 diff --git a/deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch b/deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
 new file mode 100644
-index 0000000..c72efeb
+index 0000000..e0824ca
 --- /dev/null
 +++ b/deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
 @@ -0,0 +1,35 @@
@@ -68,7 +68,7 @@ index 0000000..c72efeb
 + }  // namespace port
 diff --git a/deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch b/deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch
 new file mode 100644
-index 0000000..7520205
+index 0000000..08a528b
 --- /dev/null
 +++ b/deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch
 @@ -0,0 +1,23 @@
@@ -150,7 +150,7 @@ index 7a3bf3f..f9bba56 100644
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 new file mode 100644
-index 0000000..c708611
+index 0000000..c599370
 --- /dev/null
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 @@ -0,0 +1,150 @@
