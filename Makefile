@@ -37,8 +37,8 @@ patches-import:
 		fi'
 clean-docker:
 	docker stop FUEL_CENTOS_8.0 || true
-	docker rm $(docker ps -a -q) || true
-	docker rmi -f $(docker images -q) || true
+	docker rm $(shell docker ps -a -q) || true
+	docker rmi -f $(shell docker images -q) || true
 
 clean-build:
 	sudo rm -rf /tmp/fuel-main
