@@ -1,0 +1,129 @@
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Wed, 20 Apr 2016 14:54:42 -0700
+Subject: [PATCH] Allow configuring MySQL WSREP SST provider
+
+On some arm64 platforms xtrabackup is broken due to an outdated
+MySQL/InnoDB code that it uses which is missing. To work around that
+this patch allows choosing which WSREP SST provider to use. Aside of
+already supported `xtrabackup-v2` and `mysqldump`, the `rsync` method
+has been added as it is comparable to xtrabackup in terms of speed (or
+is faster), has been validated to work on arm64 platforms where
+xtrabackup is broken and it doesn't rely on db mechanisms to perform the
+state transfer.
+
+This patch is tied to a patch in fuel-web that introduces configuration
+options for WSREP SST provider and in case nothing is specified, it
+will choose `xtrabackup-v2`.
+
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+---
+ deployment/puppet/galera/manifests/init.pp                | 15 ++++++++++++++-
+ deployment/puppet/mysql/manifests/server.pp               |  4 ++++
+ .../puppet/osnailyfacter/modular/database/database.pp     |  7 +++++++
+ 3 files changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/deployment/puppet/galera/manifests/init.pp b/deployment/puppet/galera/manifests/init.pp
+index 7f25ab3..12ad387 100644
+--- a/deployment/puppet/galera/manifests/init.pp
++++ b/deployment/puppet/galera/manifests/init.pp
+@@ -51,7 +51,7 @@
+ # [*wsrep_sst_method*]
+ #  (optional) The method for state snapshot transfer between nodes
+ #  Defaults to xtrabackup-v2
+-#  xtrabackup, xtrabackup-v2, mysqldump are supported
++#  xtrabackup, xtrabackup-v2, mysqldump and rsync are supported
+ #
+ # [*use_percona*]
+ #  Boolean. Set this value to true if you want to use percona instead of
+@@ -199,6 +199,19 @@ class galera (
+   elsif $wsrep_sst_method == 'mysqldump' {
+     $wsrep_sst_auth = true
+   }
++  elsif $wsrep_sst_method == 'rsync' {
++    firewall {'101 mysql-rsync':
++      port   => 4444,
++      proto  => 'tcp',
++      action => 'accept',
++      before => Package['MySQL-server'],
++    }
++    package { 'rsync':
++      ensure => present,
++      before => Package['MySQL-server'],
++    }
++    $wsrep_sst_auth = undef
++  }
+   else {
+     $wsrep_sst_auth = undef
+     warning("Unrecognized wsrep_sst method: ${wsrep_sst_auth}")
+diff --git a/deployment/puppet/mysql/manifests/server.pp b/deployment/puppet/mysql/manifests/server.pp
+index 4cce092..631ed69 100644
+--- a/deployment/puppet/mysql/manifests/server.pp
++++ b/deployment/puppet/mysql/manifests/server.pp
+@@ -42,6 +42,7 @@ class mysql::server (
+   $use_syslog              = true,
+   $wait_timeout            = $mysql::params::wait_timeout,
+   $ignore_db_dirs          = $mysql::params::ignore_db_dirs,
++  $wsrep_sst_method        = 'xtrabackup-v2',
+ ) inherits mysql::params {
+ 
+   if ($config_hash['config_file']) {
+@@ -226,6 +227,7 @@ class mysql::server (
+       gcache_factor      => $galera_gcache_factor,
+       skip_name_resolve  => $mysql_skip_name_resolve,
+       use_syslog         => $use_syslog,
++      wsrep_sst_method   => $wsrep_sst_method,
+       wsrep_sst_password => $root_password,
+     }
+ 
+@@ -240,6 +242,7 @@ class mysql::server (
+       gcache_factor      => $galera_gcache_factor,
+       skip_name_resolve  => $mysql_skip_name_resolve,
+       use_syslog         => $use_syslog,
++      wsrep_sst_method   => $wsrep_sst_method,
+       wsrep_sst_password => $root_password,
+       use_percona        => true,
+     }
+@@ -253,6 +256,7 @@ class mysql::server (
+       gcache_factor        => $galera_gcache_factor,
+       skip_name_resolve    => $mysql_skip_name_resolve,
+       use_syslog           => $use_syslog,
++      wsrep_sst_method     => $wsrep_sst_method,
+       wsrep_sst_password   => $root_password,
+       use_percona          => true,
+       use_percona_packages => true
+diff --git a/deployment/puppet/osnailyfacter/modular/database/database.pp b/deployment/puppet/osnailyfacter/modular/database/database.pp
+index d3fb736..d7ca319 100644
+--- a/deployment/puppet/osnailyfacter/modular/database/database.pp
++++ b/deployment/puppet/osnailyfacter/modular/database/database.pp
+@@ -1,10 +1,15 @@
+ notice('MODULAR: database.pp')
+ 
++$default_wsrep_hash = {
++  'wsrep_method' => 'xtrabackup-x2',
++}
++
+ $network_scheme = hiera_hash('network_scheme', {})
+ prepare_network_config($network_scheme)
+ $use_syslog               = hiera('use_syslog', true)
+ $primary_controller       = hiera('primary_controller')
+ $mysql_hash               = hiera_hash('mysql', {})
++$wsrep_hash               = hiera_hash('mysql_wsrep', $default_wsrep_hash)
+ $management_vip           = hiera('management_vip')
+ $database_vip             = hiera('database_vip', $management_vip)
+ 
+@@ -17,6 +22,7 @@ $haproxy_stats_url    = "http://${database_vip}:${haproxy_stats_port}/;csv"
+ 
+ $mysql_database_password   = $mysql_hash['root_password']
+ $enabled                   = pick($mysql_hash['enabled'], true)
++$wsrep_sst_method          = $wsrep_hash['wsrep_method']
+ 
+ $galera_node_address       = get_network_role_property('mgmt/database', 'ipaddr')
+ $galera_nodes              = values(get_node_to_ipaddr_map_by_network_role(hiera_hash('database_nodes'), 'mgmt/database'))
+@@ -78,6 +84,7 @@ if $enabled {
+     use_syslog              => $use_syslog,
+     config_hash             => $config_hash_real,
+     ignore_db_dirs          => $ignore_db_dirs,
++    wsrep_sst_method        => $wsrep_sst_method,
+   }
+ 
+   class { 'osnailyfacter::mysql_user':
