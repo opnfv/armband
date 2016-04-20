@@ -29,7 +29,7 @@ index 8311731..1d7af2b 100644
 --- a/deployment/puppet/openstack/manifests/ceilometer.pp
 +++ b/deployment/puppet/openstack/manifests/ceilometer.pp
 @@ -195,8 +195,14 @@ class openstack::ceilometer (
-
+ 
    if ($on_compute) {
      if $::operatingsystem == 'Ubuntu' and $::ceilometer::params::libvirt_group {
 +      # Armband libvirt-bin deb package (1.3.2 version) creates 'libvirtd' group on Ubuntu

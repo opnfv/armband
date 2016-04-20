@@ -12,7 +12,7 @@ to properly format and mount it during do_partitioning deployment phase.
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fuel_agent/drivers/nailgun.py b/fuel_agent/drivers/nailgun.py
-index 3807ca7..bc532b4 100644
+index c2fef69..0ae81f9 100644
 --- a/fuel_agent/drivers/nailgun.py
 +++ b/fuel_agent/drivers/nailgun.py
 @@ -324,7 +324,7 @@ class Nailgun(BaseDataDriver):

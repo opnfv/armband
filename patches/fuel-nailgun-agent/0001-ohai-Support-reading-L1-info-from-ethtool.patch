@@ -14,15 +14,15 @@ supports parsing ethtool speed starting with version amos2 [1].
 [1] https://linux.enea.com/mos-repos/ubuntu/8.0/pool/main/o/
     ohai/ohai_6.14.0-2~u14.04+mos1+mos8.0+amos2_all.deb
 ---
- ...ohai-Support-reading-L1-info-from-ethtool.patch | 34 ++++++++++++++++++++++
+ ...ohai-Support-reading-L1-info-from-ethtool.patch | 30 ++++++++++++++++++++++
  debian/patches/series                              |  1 +
- 2 files changed, 35 insertions(+)
+ 2 files changed, 31 insertions(+)
  create mode 100644 debian/patches/0001-ohai-Support-reading-L1-info-from-ethtool.patch
  create mode 100644 debian/patches/series
 
 diff --git a/debian/patches/0001-ohai-Support-reading-L1-info-from-ethtool.patch b/debian/patches/0001-ohai-Support-reading-L1-info-from-ethtool.patch
 new file mode 100644
-index 0000000..aa50ea4
+index 0000000..8ae8c49
 --- /dev/null
 +++ b/debian/patches/0001-ohai-Support-reading-L1-info-from-ethtool.patch
 @@ -0,0 +1,30 @@

@@ -8,10 +8,10 @@ Subject: [PATCH] Allow customizing java and fuel-mirror URLs
  2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/build/f_isoroot/f_odlpluginbuild/config.mk b/build/f_isoroot/f_odlpluginbuild/config.mk
-index a94d7e2..4ebf519 100644
+index a5e8a96..e64a05e 100644
 --- a/build/f_isoroot/f_odlpluginbuild/config.mk
 +++ b/build/f_isoroot/f_odlpluginbuild/config.mk
-@@ -12,6 +12,6 @@ ODL_CHANGE=b876df2345bf8c785dceea74f4c271fdfcc9563c
+@@ -12,6 +12,6 @@ ODL_CHANGE=ec9474c1178e7451ec75f6e306ac84424a84a28a
  ODL_REPO="https://github.com/openstack/fuel-plugin-opendaylight.git"
  
  export USE_JAVA8=true
