@@ -23,7 +23,7 @@ echo "Building armband, output dir: $OUTPUT_DIR"
 cd ..
 
 SCRIPT_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
-BUILD_BASE=$(readlink -e ${SCRIPT_DIR}/upstream/fuel/build/)
+BUILD_BASE="${SCRIPT_DIR}/upstream/fuel/build/"
 RESULT_DIR="${BUILD_BASE}/release"
 
 make release || error_exit "Make release failed"
