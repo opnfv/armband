@@ -10,6 +10,12 @@ error_exit() {
     exit 1
 }
 
+write_gitinfo() {
+    git_url=$(git config --get remote.origin.url)
+    git_rev=$(git rev-parse HEAD)
+    echo "$git_url: $git_rev"
+}
+
 if [ $# -eq 0 ]; then
     OUTPUT_DIR=$(pwd)
 else
@@ -23,10 +29,12 @@ echo "Building armband, output dir: $OUTPUT_DIR"
 cd ..
 
 SCRIPT_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
-BUILD_BASE="${SCRIPT_DIR}/upstream/fuel/build/"
+BUILD_BASE="${SCRIPT_DIR}/upstream/fuel/build"
 RESULT_DIR="${BUILD_BASE}/release"
 
 make release || error_exit "Make release failed"
+
+write_gitinfo >> ${BUILD_BASE}/gitinfo.txt
 
 echo "Copying results to $OUTPUT_DIR"
 sort ${BUILD_BASE}/gitinfo*.txt > ${OUTPUT_DIR}/gitinfo.txt
