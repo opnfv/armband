@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a486d77_684669c1",
+        "filename": "ci/build.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-21T13:53:59Z",
+      "side": 1,
+      "message": "Could we also do the gitinfo for submodules?",
+      "revId": "82c8ce04572c6b1e46909827ecb35ed2ca9e8285",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
