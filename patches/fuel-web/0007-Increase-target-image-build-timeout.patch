@@ -1,0 +1,27 @@
+From: Stanislaw Kardach <kda@semihalf.com>
+Date: Thu, 21 Apr 2016 15:36:27 -0700
+Subject: [PATCH] Increase target image build timeout
+
+Currently we're close to 40 minutes of image building (thanks to
+qemu-debootstrap). If network connectivity is a bit slow (happened to
+me) it's easy to go over 1h limit. Therefore let's push this to 2 hours
+to be safer.
+
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+---
+ nailgun/nailgun/settings.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/nailgun/nailgun/settings.yaml b/nailgun/nailgun/settings.yaml
+index 495a9c3..ac52141 100644
+--- a/nailgun/nailgun/settings.yaml
++++ b/nailgun/nailgun/settings.yaml
+@@ -85,7 +85,7 @@ COLLECTOR_INST_INFO_URL: "https://{collector_server}/api/v1/installation_structu
+ COLLECTOR_OSWL_INFO_URL: "https://{collector_server}/api/v1/oswl_stats/"
+ COLLECTOR_PING_URL: "https://{collector_server}/api/v1/ping/"
+ 
+-PROVISIONING_IMAGES_BUILD_TIMEOUT: 3600
++PROVISIONING_IMAGES_BUILD_TIMEOUT: 7200
+ PROVISIONING_IMAGES_PATH: "/var/www/nailgun/targetimages"
+ 
+ REPO_PRIORITIES:
