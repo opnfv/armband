@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a486d77_3350e231",
+        "filename": "ci/build.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T14:50:31Z",
+      "side": 1,
+      "message": "It is not the ODL plugin per-se. It is when you override `BUILD_FUEL_PLUGINS`.",
+      "revId": "9a07b1737dd78f1f1bb8baeb3604379211ee84cf",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
