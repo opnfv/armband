@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a486d77_4e83b556",
+        "filename": "docs/build-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "I would say it should be closer to 100GB",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_ee81414b",
+        "filename": "docs/build-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "Also add:\n- cpio \u003e\u003d2.11+dsfg-1ubuntu1.2\n- fuseiso",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_ce968594",
+        "filename": "docs/build-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "Also add DOCKER_OPTS\u003d",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_ae9349a2",
+        "filename": "docs/configguide/installerconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "Should we remove those entries until we actually introduce those plugins to the ISO?",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_ee7381af",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "This is wrong, we have all our code on master branch.",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_ae6589e2",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "We should probably add some dependencies here:\n\n- Install docker from https://docker.com. Trusty bundled docker causes problem when building.\n- Do not use aufs as a storage driver for docker. This prevents Fuel RPM repository container to build (due to missing cap_set_file). Use overlay instead and set it in /etc/defaults/docker via DOCKER_OPTS\u003d",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_ce68c5bc",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "This should also be modified to `make release`",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_8e62cdd6",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "It might be nice to add \"Do not change boot parameters\".",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_4e9cd5c0",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "This is untested so far.",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_eeaa61d3",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "This doesn\u0027t work, no matter what NTP server I choose, jump-host is always de-synchronized (looks like it\u0027s choosing wrong time zone). Target nodes are synchronized with jump-host though.",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_f3492a8c",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-22T16:32:59Z",
+      "side": 1,
+      "message": "So are we keeping this? We haven\u0027t yet tried ONOS at all (nor other plugins below).",
+      "revId": "719cf0300eb2c63375dde152851d6ba73ca99498",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
