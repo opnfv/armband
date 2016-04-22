@@ -32,11 +32,20 @@ SCRIPT_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
 BUILD_BASE="${SCRIPT_DIR}/upstream/fuel/build"
 RESULT_DIR="${BUILD_BASE}/release"
 
-make release || error_exit "Make release failed"
+make REVSTATE="${OPNFV_ARTIFACT_VERSION}" release ||
+    error_exit "Make release failed"
 
-write_gitinfo >> ${BUILD_BASE}/gitinfo.txt
+write_gitinfo >> ${BUILD_BASE}/gitinfo_armband.txt
 
 echo "Copying results to $OUTPUT_DIR"
 sort ${BUILD_BASE}/gitinfo*.txt > ${OUTPUT_DIR}/gitinfo.txt
 cp ${RESULT_DIR}/*.iso ${OUTPUT_DIR}/
 cp ${RESULT_DIR}/*.iso.txt ${OUTPUT_DIR}/
+
+# We need to build our own ODL plugin, and when this happens, fuel
+# renames the iso to unofficial-opnfv-${REVSTATE}.iso, so here we remove
+# the prefix:
+pushd ${OUTPUT_DIR} > /dev/null
+rename 's/^unofficial-//' *.iso
+rename 's/^unofficial-//' *.iso.txt
+popd > /dev/null
