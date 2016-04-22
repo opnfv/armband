@@ -48,7 +48,12 @@ clean-build:
 release: export LC_ALL=en_US.UTF-8
 release: submodules-clean clean-docker clean-build submodules-init patches-import build
 
+ifneq ($(REVSTATE),)
+    EXTRA_PARAMS="REVSTATE=$(REVSTATE)"
+endif
+
 build:
+	echo "Extra params; $(EXTRA_PARAMS)"
 	cd ${root}/upstream/fuel/build && \
 		time make \
 			BUILD_FUEL_PLUGINS=f_odlpluginbuild \
@@ -79,5 +84,6 @@ build:
 			MIRROR_UBUNTU_URL=http://archive.ubuntu.com/ubuntu/ \
 			LATEST_MIRROR_ID_URL=http://linux.enea.com/ \
 			JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_arm64.deb \
+			$(EXTRA_PARAMS) \
 			iso 2>&1 | tee ${root}/build.log
 
