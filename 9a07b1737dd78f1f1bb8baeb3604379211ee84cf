@@ -16,6 +16,24 @@
       "revId": "9a07b1737dd78f1f1bb8baeb3604379211ee84cf",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a486d77_9358b657",
+        "filename": "ci/build.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-04-22T15:17:50Z",
+      "side": 1,
+      "message": "True, I wasn\u0027t explicit enough... :-/",
+      "parentUuid": "1a486d77_3350e231",
+      "revId": "9a07b1737dd78f1f1bb8baeb3604379211ee84cf",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
