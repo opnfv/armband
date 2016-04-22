@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a486d77_7369ba8a",
+        "filename": "Makefile",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-04-22T09:18:19Z",
+      "side": 1,
+      "message": "This was removed in patch 2",
+      "revId": "a38bd1fa55f3ea55871cdd75b4316bd934864f65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
