@@ -80,7 +80,6 @@ build:
 			PRODUCT_NAME=mos \
 			CENTOS_MAJOR=7 \
 			EXTRA_RPM_REPOS="armband,http://linux.enea.com/mos-repos/centos/mos8.0-centos7-fuel/armband/x86_64,10" \
-			MIRROR_UBUNTU_URL=http://archive.ubuntu.com/ubuntu/ \
 			LATEST_MIRROR_ID_URL=http://linux.enea.com/ \
 			JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_arm64.deb \
 			$(EXTRA_PARAMS) \
