@@ -1,0 +1,62 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 28 Apr 2016 01:41:45 +0200
+Subject: [PATCH] FIXME: cobbler: setup.sh: Keep extra RPM repos.
+
+cobbler-grub-aarch64 (arm64 specific loader) is currently
+distributed and added to the cobbler docker container during
+ISO build using EXTRA_RPM_REPOS envvar mechanism.
+
+However, since this package installs files in a mounted location,
+its contents are not persistent, requiring a test and eventual
+forced reinstall during container start.
+
+This, of course, requires the package to be available at that point,
+which is not currently possible, as we remove the extra RPM repository
+entry from yum config at the end of container build.
+
+Hacky temporary workaround:
+Keep extra RPM yum config after container is set up, only for cobbler.
+
+TODO: This patch should be dropped once cobbler-grub-aarch64 RPM
+package gets upstreamed.
+---
+ docker/cobbler/setup.sh | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
+
+diff --git a/docker/cobbler/setup.sh b/docker/cobbler/setup.sh
+index 90627a8..1a0b0d2 100644
+--- a/docker/cobbler/setup.sh
++++ b/docker/cobbler/setup.sh
+@@ -68,17 +68,21 @@ puppet apply --debug --verbose --color false --detailed-exitcodes \
+   /etc/puppet/modules/nailgun/examples/cobbler-only.pp || [[ $? == 2 ]]
+ 
+ 
+-cat << EOF > /etc/yum.repos.d/nailgun.repo
+-[nailgun]
+-name=Nailgun Local Repo
+-baseurl=file:/var/www/nailgun/centos/x86_64
+-gpgcheck=0
+-
+-[mos]
+-name=MOS Local Repo
+-baseurl=file:/var/www/nailgun/mos-centos/x86_64
+-gpgcheck=0
+-EOF
++## FIXME(armband): Keep extra RPM repository in Cobbler container
++# Normally, extra RPM repos are discarded post-build, but we
++# need cobbler-grub-aarch64 during each container start.
++
++#  cat << EOF > /etc/yum.repos.d/nailgun.repo
++#  [nailgun]
++#  name=Nailgun Local Repo
++#  baseurl=file:/var/www/nailgun/centos/x86_64
++#  gpgcheck=0
++
++#  [mos]
++#  name=MOS Local Repo
++#  baseurl=file:/var/www/nailgun/mos-centos/x86_64
++#  gpgcheck=0
++#  EOF
+ 
+ yum clean all
+ 
