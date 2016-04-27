@@ -1,10 +1,6 @@
 List of missing features and things to do
 =========================================
 
-Nice to have, should be fixed before rel
-=========================================
-* [fuel?] Disabling rx-vlan-filter from Fuel WebUI is not applied during netcheck
-
 Cleanup tasks
 =========================================
 * [arm64-master] Find `puppetlabs-products` repo for arm64.
@@ -12,7 +8,6 @@ Cleanup tasks
 * [arm64-master] Look into default ubuntu_debootstrap change in cobbler.pp
 * [arm64-master] [fuel-agent] Package and repo update for arm64 in [2] (?)
 * [fuel] Add QEMU_VERSION for fuel-plugin-qemu
-* [ohai] ThunderX network card speed reported as N/A
 * [arm64-master] change docker repo in `upstream/fuel/build/config.mk`,
   perhaps by figuring out current architecture with `uname -m`
 
