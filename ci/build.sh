@@ -37,10 +37,10 @@ make REVSTATE="${OPNFV_ARTIFACT_VERSION}" release ||
 
 write_gitinfo >> ${BUILD_BASE}/gitinfo_armband.txt
 
-echo "Copying results to $OUTPUT_DIR"
+echo "Moving results to $OUTPUT_DIR"
 sort ${BUILD_BASE}/gitinfo*.txt > ${OUTPUT_DIR}/gitinfo.txt
-cp ${RESULT_DIR}/*.iso ${OUTPUT_DIR}/
-cp ${RESULT_DIR}/*.iso.txt ${OUTPUT_DIR}/
+mv ${RESULT_DIR}/*.iso ${OUTPUT_DIR}/
+mv ${RESULT_DIR}/*.iso.txt ${OUTPUT_DIR}/
 
 # We need to build our own ODL plugin, and when this happens, fuel
 # renames the iso to unofficial-opnfv-${REVSTATE}.iso, so here we remove
