@@ -22,10 +22,6 @@
 	path = upstream/fuel-mirror
 	url = https://github.com/openstack/fuel-mirror.git
 	branch = stable/8.0
-[submodule "fuel-plugin-ovsnfv"]
-	path = upstream/fuel-plugin-ovsnfv
-	url = https://gerrit.opnfv.org/gerrit/p/ovsnfv.git
-	branch = stable/brahmaputra
 [submodule "fuel-plugin-opendaylight"]
 	path = upstream/fuel-plugin-opendaylight
 	url = https://github.com/openstack/fuel-plugin-opendaylight.git
