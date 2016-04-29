@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_d947934a",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-29T22:11:55Z",
+      "side": 1,
+      "message": "following plugins -\u003e following OPNFV plugins\nprecompiled -\u003e ported",
+      "revId": "b158bd4cf67ca8c613bf0b73ea978b1302ff70ca",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_39f31f0c",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-29T22:11:55Z",
+      "side": 1,
+      "message": "1.0?",
+      "revId": "b158bd4cf67ca8c613bf0b73ea978b1302ff70ca",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_59f863e5",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-04-29T22:11:55Z",
+      "side": 1,
+      "message": "Perhaps we should add a line for OPNFV Fuel Brahmaputra 3.0 release? In the end we\u0027re also based on this.",
+      "revId": "b158bd4cf67ca8c613bf0b73ea978b1302ff70ca",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
