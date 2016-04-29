@@ -1,5 +1,5 @@
 ============================================================================================
-OPNFV Release Note for the Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool
+OPNFV Release Note for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool
 ============================================================================================
 
 License
@@ -13,27 +13,36 @@ Abstract
 ========
 
 This document compiles the release notes for the Brahmaputra 3.0 release of
-OPNFV when using Fuel as a deployment tool.
+OPNFV when using Fuel as a deployment tool, with an AArch64 (only) target
+node pool.
 
 Important notes
 ===============
 
-These notes provides release information for the use of Fuel as deployment
-tool for the Brahmaputra 3.0 release of OPNFV.
+These notes provide release information for the use of Fuel as deployment
+tool for the AArch64 Brahmaputra 3.0 release of OPNFV.
 
 The goal of the Brahmaputra release and this Fuel-based deployment process is
 to establish a lab ready platform accelerating further development
-of the OPNFV infrastructure.
+of the OPNFV infrastructure on AArch64 architecture.
 
-Carefully follow the installation-instructions provided in *Reference 13*.
+Due to early docker and nodejs support on AArch64, we will still use an
+x86_64 Fuel Master to build and deploy an AArch64 target pool.
+
+Although not currently supported, mixing x86_64 and AArch64 architectures
+inside the target pool will be possible later.
+
+Carefully follow the installation-instructions provided in *Reference 16*.
 
 Summary
 =======
 
-For Brahmaputra, the typical use of Fuel as an OpenStack installer is
+For AArch64 Brahmaputra, the typical use of Fuel as an OpenStack installer is
 supplemented with OPNFV unique components such as:
 
 - `OpenDaylight <http://www.opendaylight.org/software>`_ version "Berylium SR1"
+
+The following OPNFV plugins are not yet ported for AArch64:
 
 - `ONOS <http://onosproject.org/>`_ version "Drake"
 
@@ -62,7 +71,7 @@ OPNFV CI pipeline including:
 
   - build-instructions
 
-- The Brahmaputra Fuel installer image (.iso) built by Jenkins
+- The Brahmaputra Fuel installer image for AArch64 (.iso) built by Jenkins
 
 - Automated deployment of Brahmaputra with running on bare metal or a nested hypervisor environment (KVM)
 
@@ -81,17 +90,14 @@ Release Data
 | **Release designation**              | Brahmaputra 3.0 follow-up release    |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release date**                     | April 28 2016                        |
+| **Release date**                     | May 6 2016                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 | **Purpose of the delivery**          | Brahmaputra alignment to Released    |
 |                                      | Fuel 8.0 baseline + Bug-fixes for    |
 |                                      | the following feaures/scenarios:     |
-|                                      | - NFV Hypervisors-KVM                |
-|                                      | - Open vSwitch for NFV               |
+|                                      | - Added AArch64 target support       |
 |                                      | - OpenDaylight SR1                   |
-|                                      | - SDN distributed routing and VPN    |
-|                                      | - Service function chaining          |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
@@ -100,27 +106,28 @@ Version change
 
 Module version changes
 ~~~~~~~~~~~~~~~~~~~~~~
-This is a follow-up release to Brahmaputra 1.0. It is based on
+This is the first AArch64 release for Brahmaputra 3.0. It is based on
 following upstream versions:
 
 - Fuel 8.0 Base release
 
 - OpenStack Liberty release
 
+- OPNFV Fuel Brahmaputra 3.0 release
+
 - OpenDaylight Beryllium SR1 release
 
-- ONOS Drake release
 
 Document changes
 ~~~~~~~~~~~~~~~~
-This is a follow-up release to Brahmaputra 1.0. It
+This is based upon a follow-up release to Brahmaputra 1.0. It
 comes with the following documentation:
 
-- Installation instructions - *Reference 13* - **Changed**
+- Installation instructions - *Reference 16* - **Changed**
 
-- Build instructions - *Reference 14* - **Changed**
+- Build instructions - *Reference 17* - **Changed**
 
-- Release notes - *Reference 15* - **Changed** (This document)
+- Release notes - *Reference 18* - **Changed** (This document)
 
 Reason for version
 ------------------
@@ -147,16 +154,16 @@ Deliverables
 Software deliverables
 ~~~~~~~~~~~~~~~~~~~~~
 
-Fuel-based installer iso file found in *Reference 2*
+Fuel-based installer iso file for AArch64 targets found in *Reference 2*
 
 Documentation deliverables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Installation instructions - *Reference 13*
+- Installation instructions - *Reference 16*
 
-- Build instructions - *Reference 14*
+- Build instructions - *Reference 17*
 
-- Release notes - *Reference 15* (This document)
+- Release notes - *Reference 18* (This document)
 
 Known Limitations, Issues and Workarounds
 =========================================
@@ -171,6 +178,10 @@ System Limitations
 - **Storage:** Ceph is the only supported storage configuration
 
 - **Max number of networks:** 65k
+
+- **Fuel master arch:** x86_64
+
+- **Target node arch:** aarch64
 
 
 Known issues
@@ -244,3 +255,9 @@ Fuel in OPNFV
 14) `OPNFV Build instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/build-instruction.html>`_
 
 15) `OPNFV Release Note for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/release-notes.html>`_
+
+16) `OPNFV Installation instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/installation-instruction.html>`_
+
+17) `OPNFV Build instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/build-instruction.html>`_
+
+18) `OPNFV Release Note for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/release-notes.html>`_
