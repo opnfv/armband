@@ -1,0 +1,242 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_81b671db",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "Add a FIXME or some other header. Otherwise we\u0027ll forget.",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_a1bb75c3",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "Why not using python templates here (https://docs.python.org/2/library/string.html#template-strings)?\nIf not that then use the format specifiers (https://docs.python.org/2/library/string.html#format-specification-mini-language):\n\n template \u003d \"foo %s %d\"\n result \u003d template % (\"some string\", 123)",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_61b56dcc",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "This can be replaced by a single statement, as described in previous comments.",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_01ca614f",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "I don\u0027t like the logic here. In line 90 you\u0027re reading the unit and here you\u0027re discarding it and assuming it\u0027s Gigabytes. Therefore 128M suddenly becomes 128G",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_21c76547",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "or in lines 112 and 116 have an assignment and then a single return statement.",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_c1c31937",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "This is an interface change in case anyone is then using this name in CI tools. Shouldn\u0027t we put the naming change explicitly in the commit message? It makes sense but it also means that now images won\u0027t overwrite one another which will build up disk space usage (unless I\u0027m missing something).",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_e1c09d2c",
+        "filename": "patches/opnfv-fuel/0016-Support-for-uploading-the-ISO-to-a-libvirt-pool.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "Same as with previous file. Use templates or format strings.",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_41e709e5",
+        "filename": "patches/opnfv-fuel/0017-Remove-check-for-root.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "It doesn\u0027t?",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_e1d73dec",
+        "filename": "patches/opnfv-fuel/0019-virtual_fuel-add-XML-tree-as-attribute-of-VirtualFue.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "so you\u0027re appending after the first element in `/domain/devices`? Shouldn\u0027t we append at `devices[-1]` (the last sub-element)?",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_8104317f",
+        "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "Maybe I\u0027m being paranoid here but shouldn\u0027t we first prepare the string and then open and write it to the file? If something goes wrong and we break here, there will be a half configured interface in /etc/sysconfig/network-scripts/ and this is kind of scary.",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_a1093597",
+        "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "So prior to that change eth0 had the default route which means that it was used for routing traffic. How did that work on x86? Was the admin network also a public network with internet connectivity?",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_61032d74",
+        "filename": "patches/opnfv-fuel/0022-common.py-allow-retries-in-exec_cmd.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "`retries` is not a semantically correct name. It would imply that if you don\u0027t want retries, you should set it to 0. Here the meaning is closer to `trials`.\nOr perhaps change this to `retries \u003e\u003d 0`.",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_21f52583",
+        "filename": "patches/opnfv-fuel/0023-ipmi_adapter-simplify-and-graciously-retry-on-fail.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "So how do you check if the power is actually on? Doesn\u0027t it make sense to run this command until it actually returns \u0027Chassis Power is on\u0027? How about the situation when it\u0027s already on, will the ipmitool also return 0?",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_c1f1d996",
+        "filename": "patches/opnfv-fuel/0024-deploy.py-add-multiple-bridges-support.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-06T21:00:10Z",
+      "side": 1,
+      "message": "Why not have it in the `default` parameter of option parser?",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
