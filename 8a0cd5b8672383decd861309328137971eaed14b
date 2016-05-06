@@ -1,0 +1,276 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_c14a3955",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "\u0027Fuel VM: Add remote libvirt server support\u0027 or something like that?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_e1473d4a",
+        "filename": "patches/opnfv-fuel/0014-virtual_fuel-create-image-file-in-a-method.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "\u0027factor out\u0027 ... ?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_8174319d",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "This should probably be documented in the parent patch set commit in armband repo too?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_a1793595",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "Same as above.",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_416e29cb",
+        "filename": "patches/opnfv-fuel/0016-Support-for-uploading-the-ISO-to-a-libvirt-pool.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "dha/libvirt_adapter: ?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_61732db2",
+        "filename": "patches/opnfv-fuel/0016-Support-for-uploading-the-ISO-to-a-libvirt-pool.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "missing space :)",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_016821b9",
+        "filename": "patches/opnfv-fuel/0017-Fuel-VM-description.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "it needs a better commit message, describing it\u0027s Enea stuff.\n\nAlso, I think this one should go either last, or in separate patch set?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_216525e1",
+        "filename": "patches/opnfv-fuel/0017-Fuel-VM-description.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "8 please? :)",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_c161d9d4",
+        "filename": "patches/opnfv-fuel/0017-Fuel-VM-description.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "writeback cache? it does make a difference",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_e15e5d12",
+        "filename": "patches/opnfv-fuel/0018-Remove-check-for-root.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "deploy.py:",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_819bd1c8",
+        "filename": "patches/opnfv-fuel/0020-virtual_fuel-refactor.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "Refactor VM XML definition tree as obj attribute?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_a1a055f5",
+        "filename": "patches/opnfv-fuel/0021-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "FIXME: In order for Network Manager to use the newly added interfaces for outgoing traffic and honor their GATEWAY setting (e.g. if we just added one public interface), the default route on admin iface (most of the time called eth0) should be disabled.\nFor now, we assume the admin interface is always \"eth0\".",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_41a5c902",
+        "filename": "patches/opnfv-fuel/0025-deploy.py-make-it-possible-to-specify-several-bridge.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "Add multiple bridges support?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_61aa4dd6",
+        "filename": "patches/opnfv-fuel/0025-deploy.py-make-it-possible-to-specify-several-bridge.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "phrasing?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_01afc1e4",
+        "filename": "patches/opnfv-fuel/0026-deploy.sh-allow-specifying-several-bridges.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "ci/deploy.sh since it\u0027s different than deploy/deploy ... why use the same name anyway? :(",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_21ac45ed",
+        "filename": "patches/opnfv-fuel/0026-deploy.sh-allow-specifying-several-bridges.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-06T12:01:48Z",
+      "side": 1,
+      "message": "s/wit/with",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
