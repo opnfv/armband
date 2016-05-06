@@ -1,0 +1,102 @@
+From: Josep Puigdemont <josep.puigdemont@enea.com>
+Date: Wed, 4 May 2016 14:27:23 +0200
+Subject: [PATCH] virtual_fuel: add XML tree as attribute of VirtualFuel
+
+Now the VM XML definition tree is an attribute of the object, this way
+it can be used by all methods without having to re-read the file from
+the file.
+
+Methods added:
+update_vm_template_file: Flushes the contents of the in-memory XML
+    representation of the VM to the backing file.
+
+del_vm_nics: Deletes all interfaces from the VM
+
+add_vm_nic: Adds a new NIC to the VM, it now takes the name of the
+    bridge as a parameter.
+
+Add a function to flush the contents of the in-memory XML representation
+to the file update_vm_template_file
+
+Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
+---
+ deploy/environments/virtual_fuel.py | 37 +++++++++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 12 deletions(-)
+
+diff --git a/deploy/environments/virtual_fuel.py b/deploy/environments/virtual_fuel.py
+index 34e63ed..300c4a0 100644
+--- a/deploy/environments/virtual_fuel.py
++++ b/deploy/environments/virtual_fuel.py
+@@ -13,6 +13,7 @@ from execution_environment import ExecutionEnvironment
+ import tempfile
+ import os
+ import re
++import time
+ 
+ from common import (
+     exec_cmd,
+@@ -51,28 +52,38 @@ class VirtualFuel(ExecutionEnvironment):
+                                       self.dha.get_node_property(
+                                           self.fuel_node_id, 'libvirtTemplate'))
+         check_file_exists(self.vm_template)
++        with open(self.vm_template) as f:
++            self.vm_xml = etree.parse(f)
++
++        self.temp_vm_file = '%s/%s' % (self.temp_dir, self.vm_name)
++        self.update_vm_template_file()
+ 
+     def __del__(self):
+         delete(self.temp_dir)
+ 
+-    def set_vm_nic(self, temp_vm_file):
+-        with open(temp_vm_file) as f:
+-            vm_xml = etree.parse(f)
+-        interfaces = vm_xml.xpath('/domain/devices/interface')
++    def update_vm_template_file(self):
++        with open(self.temp_vm_file, "wc") as f:
++            self.vm_xml.write(f, pretty_print=True, xml_declaration=True)
++
++    def del_vm_nics(self):
++        interfaces = self.vm_xml.xpath('/domain/devices/interface')
+         for interface in interfaces:
+             interface.getparent().remove(interface)
++
++    def add_vm_nic(self, bridge):
+         interface = etree.Element('interface')
+         interface.set('type', 'bridge')
+         source = etree.SubElement(interface, 'source')
+-        source.set('bridge', self.pxe_bridge)
++        source.set('bridge', bridge)
+         model = etree.SubElement(interface, 'model')
+         model.set('type', 'virtio')
+-        devices = vm_xml.xpath('/domain/devices')
++
++        devices = self.vm_xml.xpath('/domain/devices')
+         if devices:
+             device = devices[0]
+             device.append(interface)
+-        with open(temp_vm_file, 'w') as f:
+-            vm_xml.write(f, pretty_print=True, xml_declaration=True)
++        else:
++            err('No devices!')
+ 
+     def create_volume(self, pool, name, su, img_type='qcow2'):
+         log('Creating image using Libvirt volumes in pool %s, name: %s' %
+@@ -111,11 +122,13 @@ class VirtualFuel(ExecutionEnvironment):
+         disk_size = disk_sizes['fuel']
+         disk_path = self.create_image(disk_path, disk_size)
+ 
+-        temp_vm_file = '%s/%s' % (self.temp_dir, self.vm_name)
+-        exec_cmd('cp %s %s' % (self.vm_template, temp_vm_file))
+-        self.set_vm_nic(temp_vm_file)
++        self.del_vm_nics()
++        self.add_vm_nic(self.pxe_bridge)
++        self.update_vm_template_file()
++
+         vm_definition_overwrite = self.dha.get_vm_definition('fuel')
+-        self.define_vm(self.vm_name, temp_vm_file, disk_path,
++
++        self.define_vm(self.vm_name, self.temp_vm_file, disk_path,
+                        vm_definition_overwrite)
+ 
+     def setup_environment(self):

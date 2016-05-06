@@ -1,0 +1,98 @@
+From: Josep Puigdemont <josep.puigdemont@enea.com>
+Date: Wed, 4 May 2016 14:27:23 +0200
+Subject: [PATCH] Support for uploading the ISO to a libvirt pool
+
+This will transfer the ISO to the remote host pool. This takes quite
+some time for large images, but it is unavoidable.
+
+Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
+---
+ deploy/dha_adapters/libvirt_adapter.py | 30 ++++++++++++++++++++++++++++++
+ deploy/environments/virtual_fuel.py    |  2 +-
+ deploy/install_fuel_master.py          |  8 ++++++--
+ 3 files changed, 37 insertions(+), 3 deletions(-)
+
+diff --git a/deploy/dha_adapters/libvirt_adapter.py b/deploy/dha_adapters/libvirt_adapter.py
+index 85913ac..604ab87 100644
+--- a/deploy/dha_adapters/libvirt_adapter.py
++++ b/deploy/dha_adapters/libvirt_adapter.py
+@@ -11,6 +11,7 @@
+ from lxml import etree
+ from hardware_adapter import HardwareAdapter
+ import tempfile
++import os
+ 
+ from common import (
+     log,
+@@ -23,6 +24,14 @@ DEV = {'pxe': 'network',
+        'disk': 'hd',
+        'iso': 'cdrom'}
+ 
++vol_xml_template = '''<volume type='file'>
++  <name>%name%</name>
++  <capacity unit='%unit%'>%size%</capacity>
++  <target>
++    <format type='%type%'/>
++  </target>
++</volume>
++'''
+ 
+ class LibvirtAdapter(HardwareAdapter):
+ 
+@@ -140,3 +149,24 @@ class LibvirtAdapter(HardwareAdapter):
+ 
+     def get_virt_net_conf_dir(self):
+         return self.dha_struct['virtNetConfDir']
++
++    def upload_iso(self, iso_file):
++        size = os.path.getsize(iso_file)
++        vol_name = os.path.basename(iso_file)
++        vol_xml = vol_xml_template.replace('%name%', vol_name)
++        vol_xml = vol_xml.replace('%size%', str(size))
++        vol_xml = vol_xml.replace('%unit%', 'bytes').replace('%type%', 'raw')
++        fd, fname = tempfile.mkstemp(text=True, suffix='deploy')
++        os.write(fd, vol_xml)
++        os.close(fd)
++
++        log(vol_xml)
++        pool = 'jenkins'
++        exec_cmd('virsh vol-create --pool %s %s' % (pool, fname))
++        vol_path = exec_cmd('virsh vol-path --pool %s %s' % (pool, vol_name))
++
++        exec_cmd('virsh vol-upload %s %s' % (vol_path, iso_file))
++
++        delete(fname)
++
++        return vol_path
+diff --git a/deploy/environments/virtual_fuel.py b/deploy/environments/virtual_fuel.py
+index d2907fa..77f0ace 100644
+--- a/deploy/environments/virtual_fuel.py
++++ b/deploy/environments/virtual_fuel.py
+@@ -79,7 +79,7 @@ class VirtualFuel(ExecutionEnvironment):
+             err('Could not determine size and unit of %s' % s)
+ 
+         vol_xml = vol_xml_template.replace('%name%',name)
+-        vol_xml = vol_xml.replace('%size%', str(size)).replace('%unit%', 'G')
++        vol_xml = vol_xml.replace('%size%', str(size)).replace('%unit%', unit)
+         vol_xml = vol_xml.replace('%type%', img_type)
+         fname = os.path.join(self.temp_dir, '%s_vol.xml' % name)
+         with file(fname, 'w') as f:
+diff --git a/deploy/install_fuel_master.py b/deploy/install_fuel_master.py
+index 4f6a052..1c1bf05 100644
+--- a/deploy/install_fuel_master.py
++++ b/deploy/install_fuel_master.py
+@@ -54,8 +54,12 @@ class InstallFuelMaster(object):
+ 
+         self.dha.node_power_off(self.fuel_node_id)
+ 
+-        log('Zero the MBR')
+-        self.dha.node_zero_mbr(self.fuel_node_id)
++        if os.environ.get('LIBVIRT_DEFAULT_URI'):
++            log('Upload ISO to pool')
++            self.iso_file = self.dha.upload_iso(self.iso_file)
++        else:
++            log('Zero the MBR')
++            self.dha.node_zero_mbr(self.fuel_node_id)
+ 
+         self.dha.node_set_boot_order(self.fuel_node_id, ['disk', 'iso'])
+ 
