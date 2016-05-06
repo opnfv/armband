@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_01dd8170",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "But it is more than that, I think this is generic enough",
+      "parentUuid": "9a91bd0f_c14a3955",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_e1473d4a",
         "filename": "patches/opnfv-fuel/0014-virtual_fuel-create-image-file-in-a-method.patch",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-05-06T12:01:48Z",
       "side": 1,
       "message": "\u0027factor out\u0027 ... ?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_815e71e8",
+        "filename": "patches/opnfv-fuel/0014-virtual_fuel-create-image-file-in-a-method.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_e1473d4a",
       "revId": "8a0cd5b8672383decd861309328137971eaed14b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_6181ed49",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Will do",
+      "parentUuid": "9a91bd0f_8174319d",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_a1793595",
         "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2016-05-06T12:01:48Z",
       "side": 1,
       "message": "Same as above.",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_0196e194",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Yes, this should be clear that it needs a pool called jenkins. Normally the default is in /var/lib, which usually has little space. This is why I didn\u0027t use it. But it needs documenting. I\u0027ll add it into the commit message too.",
+      "parentUuid": "9a91bd0f_a1793595",
       "revId": "8a0cd5b8672383decd861309328137971eaed14b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_2193e5a4",
+        "filename": "patches/opnfv-fuel/0016-Support-for-uploading-the-ISO-to-a-libvirt-pool.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "It would be misleading, it affects several other files, and the short log already tells what the commit does.",
+      "parentUuid": "9a91bd0f_416e29cb",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_61732db2",
         "filename": "patches/opnfv-fuel/0016-Support-for-uploading-the-ISO-to-a-libvirt-pool.patch",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2016-05-06T12:01:48Z",
       "side": 1,
       "message": "missing space :)",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_c15479cc",
+        "filename": "patches/opnfv-fuel/0016-Support-for-uploading-the-ISO-to-a-libvirt-pool.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_61732db2",
       "revId": "8a0cd5b8672383decd861309328137971eaed14b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_6146cd25",
+        "filename": "patches/opnfv-fuel/0017-Fuel-VM-description.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_016821b9",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_216525e1",
         "filename": "patches/opnfv-fuel/0017-Fuel-VM-description.patch",
         "patchSetId": 1
@@ -132,6 +258,24 @@
       "writtenOn": "2016-05-06T12:01:48Z",
       "side": 1,
       "message": "8 please? :)",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_a13cd594",
+        "filename": "patches/opnfv-fuel/0017-Fuel-VM-description.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_216525e1",
       "revId": "8a0cd5b8672383decd861309328137971eaed14b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_e18c1d82",
+        "filename": "patches/opnfv-fuel/0017-Fuel-VM-description.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "I don\u0027t want to touch something that works :)",
+      "parentUuid": "9a91bd0f_c161d9d4",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_e15e5d12",
         "filename": "patches/opnfv-fuel/0018-Remove-check-for-root.patch",
         "patchSetId": 1
@@ -166,6 +328,24 @@
       "writtenOn": "2016-05-06T12:01:48Z",
       "side": 1,
       "message": "deploy.py:",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_c1bd5904",
+        "filename": "patches/opnfv-fuel/0018-Remove-check-for-root.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "No, this affects more files than just deploy.py, and the short commit message describes perfectly what it does.",
+      "parentUuid": "9a91bd0f_e15e5d12",
       "revId": "8a0cd5b8672383decd861309328137971eaed14b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -189,6 +369,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_e1badd09",
+        "filename": "patches/opnfv-fuel/0020-virtual_fuel-refactor.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_819bd1c8",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_a1a055f5",
         "filename": "patches/opnfv-fuel/0021-transplant-Generate-extra-interfaces-config-file.patch",
         "patchSetId": 1
@@ -200,6 +398,24 @@
       "writtenOn": "2016-05-06T12:01:48Z",
       "side": 1,
       "message": "FIXME: In order for Network Manager to use the newly added interfaces for outgoing traffic and honor their GATEWAY setting (e.g. if we just added one public interface), the default route on admin iface (most of the time called eth0) should be disabled.\nFor now, we assume the admin interface is always \"eth0\".",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_813751b0",
+        "filename": "patches/opnfv-fuel/0021-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_a1a055f5",
       "revId": "8a0cd5b8672383decd861309328137971eaed14b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -223,6 +439,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_81e9911c",
+        "filename": "patches/opnfv-fuel/0025-deploy.py-make-it-possible-to-specify-several-bridge.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_41a5c902",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_61aa4dd6",
         "filename": "patches/opnfv-fuel/0025-deploy.py-make-it-possible-to-specify-several-bridge.patch",
         "patchSetId": 1
@@ -234,6 +468,24 @@
       "writtenOn": "2016-05-06T12:01:48Z",
       "side": 1,
       "message": "phrasing?",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_a1ee1521",
+        "filename": "patches/opnfv-fuel/0025-deploy.py-make-it-possible-to-specify-several-bridge.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_61aa4dd6",
       "revId": "8a0cd5b8672383decd861309328137971eaed14b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -257,6 +509,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_41f3890a",
+        "filename": "patches/opnfv-fuel/0026-deploy.sh-allow-specifying-several-bridges.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "one is python, the other bash...",
+      "parentUuid": "9a91bd0f_01afc1e4",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_21ac45ed",
         "filename": "patches/opnfv-fuel/0026-deploy.sh-allow-specifying-several-bridges.patch",
         "patchSetId": 1
@@ -268,6 +538,24 @@
       "writtenOn": "2016-05-06T12:01:48Z",
       "side": 1,
       "message": "s/wit/with",
+      "revId": "8a0cd5b8672383decd861309328137971eaed14b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_61f80de6",
+        "filename": "patches/opnfv-fuel/0026-deploy.sh-allow-specifying-several-bridges.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-06T13:27:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_21ac45ed",
       "revId": "8a0cd5b8672383decd861309328137971eaed14b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
