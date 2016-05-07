@@ -1,0 +1,33 @@
+From: Josep Puigdemont <josep.puigdemont@enea.com>
+Date: Fri, 6 May 2016 03:07:40 +0200
+Subject: [PATCH] deploy.sh: no need to set umask 0000
+
+Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
+---
+ ci/deploy.sh | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/ci/deploy.sh b/ci/deploy.sh
+index 343d499..34ecc57 100755
+--- a/ci/deploy.sh
++++ b/ci/deploy.sh
+@@ -76,9 +76,6 @@ Input parameters to the build script is:
+ -i .iso image to be deployed (needs to be provided in a URI
+    style, it can be a local resource: file:// or a remote resource http(s)://)
+ 
+-NOTE: Root priviledges are needed for this script to run
+-
+-
+ Examples:
+ sudo `basename $0` -b file:///home/jenkins/lab-config -l lf -p pod1 -s ha_odl-l3_heat_ceilometer -i file:///home/jenkins/myiso.iso
+ EOF
+@@ -207,9 +204,6 @@ fi
+ # Enable the automatic exit trap
+ trap do_exit SIGINT SIGTERM EXIT
+ 
+-# Set no restrictive umask so that Jenkins can removeeee any residuals
+-umask 0000
+-
+ clean
+ 
+ pushd ${DEPLOY_DIR} > /dev/null
