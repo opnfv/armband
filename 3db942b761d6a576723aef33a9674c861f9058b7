@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_41e8697c",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T18:35:51Z",
+      "side": 1,
+      "message": "This has to be exec_cmd",
+      "range": {
+        "startLine": 59,
+        "startChar": 17,
+        "endLine": 59,
+        "endChar": 25
+      },
+      "revId": "3db942b761d6a576723aef33a9674c861f9058b7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
