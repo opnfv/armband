@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_c148f9ce",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_81b671db",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_a1bb75c3",
         "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-05-06T21:00:10Z",
       "side": 1,
       "message": "Why not using python templates here (https://docs.python.org/2/library/string.html#template-strings)?\nIf not that then use the format specifiers (https://docs.python.org/2/library/string.html#format-specification-mini-language):\n\n template \u003d \"foo %s %d\"\n result \u003d template % (\"some string\", 123)",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_4135c944",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "To be honest I don\u0027t know why I did it this way rather than the obvious one (format specifiers).",
+      "parentUuid": "9a91bd0f_a1bb75c3",
       "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_613a4d38",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_61b56dcc",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_01ca614f",
         "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2016-05-06T21:00:10Z",
       "side": 1,
       "message": "I don\u0027t like the logic here. In line 90 you\u0027re reading the unit and here you\u0027re discarding it and assuming it\u0027s Gigabytes. Therefore 128M suddenly becomes 128G",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_a1305557",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "It\u0027s a bug!",
+      "parentUuid": "9a91bd0f_01ca614f",
       "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_013fc126",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_21c76547",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_c1c31937",
         "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2016-05-06T21:00:10Z",
       "side": 1,
       "message": "This is an interface change in case anyone is then using this name in CI tools. Shouldn\u0027t we put the naming change explicitly in the commit message? It makes sense but it also means that now images won\u0027t overwrite one another which will build up disk space usage (unless I\u0027m missing something).",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_213c452f",
+        "filename": "patches/opnfv-fuel/0015-virtual_fuel-initial-support-for-libvirt-volumes.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "Correct, I decided to have a sort of unique name so it would not mess with other possibly existing images on the same pool. Today the image resides on a local temporary directory without risk of duplicates.\nI think it is useful to have different names in case the user wants to keep an old Image for later testing (the VM can be the same).\nI will document it.",
+      "parentUuid": "9a91bd0f_c1c31937",
       "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_6111edab",
+        "filename": "patches/opnfv-fuel/0016-Support-for-uploading-the-ISO-to-a-libvirt-pool.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_e1c09d2c",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_41e709e5",
         "filename": "patches/opnfv-fuel/0017-Remove-check-for-root.patch",
         "patchSetId": 2
@@ -132,6 +258,24 @@
       "writtenOn": "2016-05-06T21:00:10Z",
       "side": 1,
       "message": "It doesn\u0027t?",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_0126e116",
+        "filename": "patches/opnfv-fuel/0017-Remove-check-for-root.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "I will double check, but I have been using it without problems as a regular user. You just need to be in the right groups, or that the remote user, when using a remote libvirt host, has the necessary rights to create VMs.\n\nThis is something that has been bothering me, I think we should be restrictive by default, and give only the necessary permissions when required. I.e., let it blow and fix it ;-)\n\nI hope this leads to better administration, for instance, I believe that with PolicyKit, you could restrict the jenkins user to have only 2 VMs running at a time, or be able to run only at certain times of the day. Not that we\u0027ll do this, but...",
+      "parentUuid": "9a91bd0f_41e709e5",
       "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_2123e506",
+        "filename": "patches/opnfv-fuel/0019-virtual_fuel-add-XML-tree-as-attribute-of-VirtualFue.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "Well, this is not my code ;-)\nThat\u0027s what I thought too, but empirically I realized it appends it to the last element of devices:\nhttp://paste.fedoraproject.org/363537/74138146/",
+      "parentUuid": "9a91bd0f_e1d73dec",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_8104317f",
         "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
         "patchSetId": 2
@@ -166,6 +328,24 @@
       "writtenOn": "2016-05-06T21:00:10Z",
       "side": 1,
       "message": "Maybe I\u0027m being paranoid here but shouldn\u0027t we first prepare the string and then open and write it to the file? If something goes wrong and we break here, there will be a half configured interface in /etc/sysconfig/network-scripts/ and this is kind of scary.",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_c11f99b6",
+        "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "True, very good catch, thanks",
+      "parentUuid": "9a91bd0f_8104317f",
       "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -189,6 +369,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_e11c1dc4",
+        "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "They\u0027ve set it to 10.20.0.1 by default in the kernel command line, iirc.",
+      "parentUuid": "9a91bd0f_a1093597",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_61032d74",
         "filename": "patches/opnfv-fuel/0022-common.py-allow-retries-in-exec_cmd.patch",
         "patchSetId": 2
@@ -200,6 +398,24 @@
       "writtenOn": "2016-05-06T21:00:10Z",
       "side": 1,
       "message": "`retries` is not a semantically correct name. It would imply that if you don\u0027t want retries, you should set it to 0. Here the meaning is closer to `trials`.\nOr perhaps change this to `retries \u003e\u003d 0`.",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_817991fe",
+        "filename": "patches/opnfv-fuel/0022-common.py-allow-retries-in-exec_cmd.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "True, it does feel wrong actually. I will use \"attempts\", though.",
+      "parentUuid": "9a91bd0f_61032d74",
       "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -223,6 +439,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_a17e15e3",
+        "filename": "patches/opnfv-fuel/0023-ipmi_adapter-simplify-and-graciously-retry-on-fail.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "When it is on, ipmitool returns 0, but maybe it always returns 0, the man page says nothing about the return value, but it is obvious non-zero if the command didn\u0027t get through, as we have seen (because the call to exec_cmd fails)",
+      "parentUuid": "9a91bd0f_21f52583",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_c1f1d996",
         "filename": "patches/opnfv-fuel/0024-deploy.py-add-multiple-bridges-support.patch",
         "patchSetId": 2
@@ -234,6 +468,24 @@
       "writtenOn": "2016-05-06T21:00:10Z",
       "side": 1,
       "message": "Why not have it in the `default` parameter of option parser?",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_418389cc",
+        "filename": "patches/opnfv-fuel/0024-deploy.py-add-multiple-bridges-support.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T01:08:26Z",
+      "side": 1,
+      "message": "Because the add_argument would append to it, not removing the default value. So if the default was [\u0027pxebr\u0027] and the user had given \"-b br2\", the value of args.pex_bridge would be [\u0027pxebr\u0027, \u0027br2\u0027].\nI can\u0027t figure out why someone thought this was a good idea...",
+      "parentUuid": "9a91bd0f_c1f1d996",
       "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
