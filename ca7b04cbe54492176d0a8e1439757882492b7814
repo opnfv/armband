@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_a19a9512",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-07T20:24:28Z",
+      "side": 1,
+      "message": "Isn\u0027t that a good reason to decrease the default retry time? I\u0027m not pushing this since in the end it is up to upstream project.",
+      "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
