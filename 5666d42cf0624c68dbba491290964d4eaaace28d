@@ -317,6 +317,23 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_a165b546",
+        "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-07T11:50:43Z",
+      "side": 1,
+      "message": "Maybe gateway should not be mandatory to support multiple interfaces? The other 3 always are.",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_8104317f",
         "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
         "patchSetId": 2
@@ -380,6 +397,24 @@
       "writtenOn": "2016-05-07T01:08:26Z",
       "side": 1,
       "message": "They\u0027ve set it to 10.20.0.1 by default in the kernel command line, iirc.",
+      "parentUuid": "9a91bd0f_a1093597",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_415aa984",
+        "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-07T11:50:43Z",
+      "side": 1,
+      "message": "Afaik, there was no public connectivity from Fuel to the internet in the standard OPNFV setup, hence the addition of local repos (for bootstrap build). OPNFV only required internet access on target nodes.",
       "parentUuid": "9a91bd0f_a1093597",
       "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
