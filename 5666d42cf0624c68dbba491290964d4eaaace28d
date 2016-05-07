@@ -334,6 +334,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_2151a562",
+        "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T13:03:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_a165b546",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_8104317f",
         "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
         "patchSetId": 2
@@ -416,6 +434,24 @@
       "side": 1,
       "message": "Afaik, there was no public connectivity from Fuel to the internet in the standard OPNFV setup, hence the addition of local repos (for bootstrap build). OPNFV only required internet access on target nodes.",
       "parentUuid": "9a91bd0f_a1093597",
+      "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_0154a152",
+        "filename": "patches/opnfv-fuel/0020-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-07T13:03:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a91bd0f_415aa984",
       "revId": "5666d42cf0624c68dbba491290964d4eaaace28d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
