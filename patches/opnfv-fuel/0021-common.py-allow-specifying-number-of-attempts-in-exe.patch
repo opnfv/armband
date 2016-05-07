@@ -1,0 +1,70 @@
+From: Josep Puigdemont <josep.puigdemont@enea.com>
+Date: Fri, 6 May 2016 03:28:26 +0200
+Subject: [PATCH] common.py: allow specifying number of attempts in exec_cmd
+
+Some commands executed by exec_cmd may fail because of a temporary
+cause, and it may be desirable to retry the same command several times
+until it succeeds. One example of this are the ipmitool commands, which
+may fail temorarily on some targets if they get too many requests
+simultaneously.
+
+In this patch two new optional parameters are introduced to the function
+signature, which do not break backward compatibility:
+  attempts: which indicates how many times the command should be run if
+            it returns a non-zero value*, and defaults to 1 (as today).
+  delay:    which indicates the delay in seconds between attempts, and
+            defaults to 5 seconds.
+  verbose:  It will print the remaining attempts left for the current
+            command if set to True.
+
+* It may be desirable to add yet another parameter to indicate what
+  return value should be considered an error, but zero for now seems a
+  reasonable default
+
+Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
+---
+ deploy/common.py | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/deploy/common.py b/deploy/common.py
+index 41b4e27..3cd3e0e 100644
+--- a/deploy/common.py
++++ b/deploy/common.py
+@@ -16,6 +16,7 @@ import argparse
+ import shutil
+ import stat
+ import errno
++import time
+ 
+ N = {'id': 0, 'status': 1, 'name': 2, 'cluster': 3, 'ip': 4, 'mac': 5,
+      'roles': 6, 'pending_roles': 7, 'online': 8, 'group_id': 9}
+@@ -37,13 +38,22 @@ out_handler.setFormatter(formatter)
+ LOG.addHandler(out_handler)
+ os.chmod(LOGFILE, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+ 
+-def exec_cmd(cmd, check=True):
+-    process = subprocess.Popen(cmd,
+-                               stdout=subprocess.PIPE,
+-                               stderr=subprocess.PIPE,
+-                               shell=True)
+-    (response, stderr) = process.communicate()
+-    return_code = process.returncode
++def exec_cmd(cmd, check=True, attempts=1, delay=5, verbose=False):
++    # a negative value means forever
++    while attempts != 0:
++        attempts = attempts - 1
++        process = subprocess.Popen(cmd,
++                                   stdout=subprocess.PIPE,
++                                   stderr=subprocess.PIPE,
++                                   shell=True)
++        (response, stderr) = process.communicate()
++        return_code = process.returncode
++        if return_code == 0 or attempts == 0:
++            break
++        time.sleep(delay)
++        if verbose:
++            log('%d attempts left: %s' % (attempts, cmd))
++
+     response = response.strip()
+     if check:
+         if return_code > 0:
