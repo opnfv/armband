@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_413b89eb",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-08T11:51:27Z",
+      "side": 1,
+      "message": "s/200/20/.\nCHANGE: Reduced retries from 200 to 20.",
+      "revId": "4573ae4771b8e1d036f995ada7ce89745227e451",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
