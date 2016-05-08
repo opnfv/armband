@@ -19,6 +19,47 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_e18f3dcb",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T07:29:32Z",
+      "side": 1,
+      "message": "I agree, I think 20 attempts should do...",
+      "parentUuid": "9a91bd0f_a19a9512",
+      "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_81bc316e",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T07:29:32Z",
+      "side": 1,
+      "message": "This should be %s",
+      "range": {
+        "startLine": 59,
+        "startChar": 27,
+        "endLine": 59,
+        "endChar": 29
+      },
+      "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_018901ca",
         "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
         "patchSetId": 4
@@ -30,6 +71,24 @@
       "writtenOn": "2016-05-07T22:10:27Z",
       "side": 1,
       "message": "[0]? I think we match this below against \u0027Chassis Power ...\u0027",
+      "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_c19239f6",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T07:29:32Z",
+      "side": 1,
+      "message": "The function returns a tuple (stdout, stderr), and I only care about stdout, won\u0027t [0] do?\n\nThere is an even bigger error here, \u0027% chassis\u0027... should be \u0027%s chassis\u0027... man, I really shouldn\u0027t be patching code at 3AM ;-)",
+      "parentUuid": "9a91bd0f_018901ca",
       "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
