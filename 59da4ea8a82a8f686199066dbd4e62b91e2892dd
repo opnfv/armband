@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_4112a963",
+        "filename": "ci/deploy.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T13:35:20Z",
+      "side": 1,
+      "message": "That would have been nicer and more compact... next time, though :)",
+      "parentUuid": "9a91bd0f_8131910d",
+      "revId": "59da4ea8a82a8f686199066dbd4e62b91e2892dd",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_e1541d23",
         "filename": "ci/deploy.sh",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2016-05-08T11:47:37Z",
       "side": 1,
       "message": "print $local_env too :)",
+      "revId": "59da4ea8a82a8f686199066dbd4e62b91e2892dd",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_a11db575",
+        "filename": "ci/deploy.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T13:35:20Z",
+      "side": 1,
+      "message": "but we know local_env is \"local_env\" ;-)\nand the file should no be printed, as the reason for having it locally is that it could contain passwords, or data that the lab does not want to reveal",
+      "parentUuid": "9a91bd0f_e1541d23",
       "revId": "59da4ea8a82a8f686199066dbd4e62b91e2892dd",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
