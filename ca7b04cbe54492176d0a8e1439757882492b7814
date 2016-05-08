@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_61724de7",
+        "filename": "patches/opnfv-fuel/0019-transplant-Generate-extra-interfaces-config-file.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T11:30:50Z",
+      "side": 1,
+      "message": "Not related to this, but could you take a look at the repositories, are they correct?",
+      "parentUuid": "9a91bd0f_e1a65d53",
+      "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_a19a9512",
         "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
         "patchSetId": 4
