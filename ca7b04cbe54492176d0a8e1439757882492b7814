@@ -92,6 +92,93 @@
       "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_61bb2d73",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T07:39:38Z",
+      "side": 1,
+      "message": "Ture, it only returns a tuple if Check\u003dTrue",
+      "parentUuid": "9a91bd0f_c19239f6",
+      "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_41b6298c",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T07:39:38Z",
+      "side": 1,
+      "message": "attempts",
+      "range": {
+        "startLine": 73,
+        "startChar": 25,
+        "endLine": 73,
+        "endChar": 32
+      },
+      "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_01b0218a",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T07:39:38Z",
+      "side": 1,
+      "message": "attempts",
+      "range": {
+        "startLine": 79,
+        "startChar": 18,
+        "endLine": 79,
+        "endChar": 25
+      },
+      "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_21ad2532",
+        "filename": "patches/opnfv-fuel/0022-ipmi_adapter-simplify-retry-if-command-fails.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-08T07:39:38Z",
+      "side": 1,
+      "message": "% missing",
+      "range": {
+        "startLine": 84,
+        "startChar": 51,
+        "endLine": 84,
+        "endChar": 52
+      },
+      "revId": "ca7b04cbe54492176d0a8e1439757882492b7814",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
