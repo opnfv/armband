@@ -1,0 +1,209 @@
+From: Josep Puigdemont <josep.puigdemont@enea.com>
+Date: Wed, 4 May 2016 14:27:23 +0200
+Subject: [PATCH] virtual_fuel: initial support for libvirt volumes
+
+This patch introduces the ability to create volumes on the libvirt host
+where the Fuel VM is being deployed. For now a default pool is used,
+but the idea is to allow this to be configured.
+
+Since all virsh commands honor LIBVIRT_DEFAULT_URI, we use this
+environment variable to detect wheter we should create a volume or not.
+The rationale being that this environment variable will only be set if
+the user wants to do the VM deployment on a remote libvirt host.
+
+All this could also be done using scp and a user directory on the host
+machine, but using pools allows us to take advantage of libvirt's
+policies and file permissions.
+
+CHANGE: before this patch, the file system image was named like the VM:
+vm_name.raw. This patch introduces a change and adds a timestamp suffix
+to the image: vm_name-timestamp.raw. This is so to avoid collisions with
+an image with the same name on the remote pool. It may also be useful to
+keep around old images for later testing, while the VM definition can
+likely be the same.
+
+FIXME: This patch will use a pool called "jenkins" in the libvirt
+server, and it will fail if it is not present. This is a requirement
+that should be amended in the future, and properly documented.
+
+Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
+---
+ deploy/deploy.py                       |  5 +++
+ deploy/dha_adapters/libvirt_adapter.py | 28 +++++++++++++++++
+ deploy/environments/virtual_fuel.py    | 57 +++++++++++++++++++++++++++++-----
+ deploy/install_fuel_master.py          |  8 +++--
+ 4 files changed, 88 insertions(+), 10 deletions(-)
+
+diff --git a/deploy/deploy.py b/deploy/deploy.py
+index f86f2be..265e888 100755
+--- a/deploy/deploy.py
++++ b/deploy/deploy.py
+@@ -243,6 +243,11 @@ class AutoDeploy(object):
+ 
+ 
+ def check_bridge(pxe_bridge, dha_path):
++    # Assume that bridges on remote nodes exists, we could ssh but
++    # the remote user might not have a login shell.
++    if os.environ.get('LIBVIRT_DEFAULT_URI'):
++        return
++
+     with io.open(dha_path) as yaml_file:
+         dha_struct = yaml.load(yaml_file)
+     if dha_struct['adapter'] != 'libvirt':
+diff --git a/deploy/dha_adapters/libvirt_adapter.py b/deploy/dha_adapters/libvirt_adapter.py
+index 85913ac..8f3042c 100644
+--- a/deploy/dha_adapters/libvirt_adapter.py
++++ b/deploy/dha_adapters/libvirt_adapter.py
+@@ -11,6 +11,7 @@
+ from lxml import etree
+ from hardware_adapter import HardwareAdapter
+ import tempfile
++import os
+ 
+ from common import (
+     log,
+@@ -23,6 +24,13 @@ DEV = {'pxe': 'network',
+        'disk': 'hd',
+        'iso': 'cdrom'}
+ 
++vol_xml_template = '''<volume type='file'>
++  <name>%s</name>
++  <capacity unit='%s'>%s</capacity>
++  <target>
++    <format type='%s'/>
++  </target>
++</volume>'''
+ 
+ class LibvirtAdapter(HardwareAdapter):
+ 
+@@ -140,3 +148,23 @@ class LibvirtAdapter(HardwareAdapter):
+ 
+     def get_virt_net_conf_dir(self):
+         return self.dha_struct['virtNetConfDir']
++
++    def upload_iso(self, iso_file):
++        size = os.path.getsize(iso_file)
++        vol_name = os.path.basename(iso_file)
++        vol_xml = vol_xml_template % (vol_name, 'bytes', str(size), 'raw')
++        fd, fname = tempfile.mkstemp(text=True, suffix='deploy')
++        os.write(fd, vol_xml)
++        os.close(fd)
++
++        log(vol_xml)
++        pool = 'jenkins' # FIXME
++        exec_cmd('virsh vol-create --pool %s %s' % (pool, fname))
++        vol_path = exec_cmd('virsh vol-path --pool %s %s' % (pool, vol_name))
++
++        exec_cmd('virsh vol-upload %s %s' % (vol_path, iso_file),
++                 attempts=5, delay=10, verbose=True)
++
++        delete(fname)
++
++        return vol_path
+diff --git a/deploy/environments/virtual_fuel.py b/deploy/environments/virtual_fuel.py
+index 82c4e47..56d6f98 100644
+--- a/deploy/environments/virtual_fuel.py
++++ b/deploy/environments/virtual_fuel.py
+@@ -11,14 +11,33 @@
+ from lxml import etree
+ from execution_environment import ExecutionEnvironment
+ import tempfile
++import os
++import re
+ 
+ from common import (
+     exec_cmd,
+     check_file_exists,
+     check_if_root,
+     delete,
++    log,
+ )
+ 
++vol_xml_template = '''<volume type='file'>
++  <name>%s</name>
++  <capacity unit='%s'>%s</capacity>
++  <target>
++    <format type='%s'/>
++  </target>
++</volume>'''
++
++def get_size_and_unit(s):
++    p = re.compile('^(\d+)\s*(\D+)')
++    m = p.match(s)
++    if m == None:
++        return None, None
++    size = m.groups()[0]
++    unit = m.groups()[1]
++    return size, unit
+ 
+ class VirtualFuel(ExecutionEnvironment):
+ 
+@@ -51,19 +70,41 @@ class VirtualFuel(ExecutionEnvironment):
+         with open(temp_vm_file, 'w') as f:
+             vm_xml.write(f, pretty_print=True, xml_declaration=True)
+ 
++    def create_volume(self, pool, name, su, img_type='qcow2'):
++        log('Creating image using Libvirt volumes in pool %s, name: %s' %
++            (pool, name))
++        size, unit = get_size_and_unit(su)
++        if size == None:
++            err('Could not determine size and unit of %s' % s)
++
++        vol_xml = vol_xml_template % (name, unit, str(size), img_type)
++        fname = os.path.join(self.temp_dir, '%s_vol.xml' % name)
++        with file(fname, 'w') as f:
++            f.write(vol_xml)
++
++        exec_cmd('virsh vol-create --pool %s %s' % (pool, fname))
++        vol_path = exec_cmd('virsh vol-path --pool %s %s' % (pool, name))
++
++        delete(fname)
++
++        return vol_path
++
+     def create_image(self, disk_path, disk_size):
+-        exec_cmd('qemu-img create -f qcow2 %s %s' % (disk_path, disk_size))
++        if os.environ.get('LIBVIRT_DEFAULT_URI') == None:
++            exec_cmd('qemu-img create -f qcow2 %s %s' % (disk_path, disk_size))
++        else:
++            pool = 'jenkins' # FIXME
++            name = os.path.basename(disk_path)
++            disk_path = self.create_volume(pool, name, disk_size)
+ 
+-    def create_vm(self):
+-        vm_template = '%s/%s' % (self.root_dir,
+-                                 self.dha.get_node_property(
+-                                     self.fuel_node_id, 'libvirtTemplate'))
+-        check_file_exists(vm_template)
++        return disk_path
+ 
+-        disk_path = '%s/%s.raw' % (self.storage_dir, self.vm_name)
++    def create_vm(self):
++        stamp = time.strftime("%Y%m%d%H%M%S")
++        disk_path = '%s/%s-%s.raw' % (self.storage_dir, self.vm_name, stamp)
+         disk_sizes = self.dha.get_disks()
+         disk_size = disk_sizes['fuel']
+-        self.create_image(disk_path, disk_size)
++        disk_path = self.create_image(disk_path, disk_size)
+ 
+         temp_vm_file = '%s/%s' % (self.temp_dir, self.vm_name)
+         exec_cmd('cp %s %s' % (vm_template, temp_vm_file))
+diff --git a/deploy/install_fuel_master.py b/deploy/install_fuel_master.py
+index 4f6a052..1c1bf05 100644
+--- a/deploy/install_fuel_master.py
++++ b/deploy/install_fuel_master.py
+@@ -54,8 +54,12 @@ class InstallFuelMaster(object):
+ 
+         self.dha.node_power_off(self.fuel_node_id)
+ 
+-        log('Zero the MBR')
+-        self.dha.node_zero_mbr(self.fuel_node_id)
++        if os.environ.get('LIBVIRT_DEFAULT_URI'):
++            log('Upload ISO to pool')
++            self.iso_file = self.dha.upload_iso(self.iso_file)
++        else:
++            log('Zero the MBR')
++            self.dha.node_zero_mbr(self.fuel_node_id)
+ 
+         self.dha.node_set_boot_order(self.fuel_node_id, ['disk', 'iso'])
+ 
