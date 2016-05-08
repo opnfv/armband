@@ -1,0 +1,47 @@
+From: Josep Puigdemont <josep.puigdemont@enea.com>
+Date: Fri, 6 May 2016 04:39:44 +0200
+Subject: [PATCH] deploy.sh: allow specifying several bridges
+
+It might be desirable to add several bridges to the fuel VM, so we let
+the user specify -B more than once, and honor that when calling
+deploy.py. We also make it possible to specify a comma separated list of
+bridges, as in: -B br1,br2, for convenience for the Jenkins jobs.
+
+There is a change in behavior from the previous version, and that is
+that it may call the deploy.py python script with more than one instance
+of the "-b" parameter.
+
+Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
+---
+ ci/deploy.sh | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/ci/deploy.sh b/ci/deploy.sh
+index 34ecc57..c9b836b 100755
+--- a/ci/deploy.sh
++++ b/ci/deploy.sh
+@@ -57,7 +57,10 @@ and provides a fairly simple mechanism to execute a deployment.
+ Input parameters to the build script is:
+ -b Base URI to the configuration directory (needs to be provided in a URI
+    style, it can be a local resource: file:// or a remote resource http(s)://)
+--B PXE Bridge for booting of Fuel master, default is pxebr
++-B PXE Bridge for booting of Fuel master. It can be specified several times,
++   or as a comma separated list of bridges, or both: -B br1 -B br2,br3
++   One NIC connected to each specified bridge will be created in the Fuel VM,
++   in the same order as provided in the command line. The default is pxebr.
+ -d Dry-run - Produces deploy config files (config/dea.yaml and
+    config/dha.yaml), but does not execute deploy
+ -f Deploy on existing Fuel master
+@@ -130,9 +133,9 @@ do
+             fi
+             ;;
+         B)
+-            if [[ ${OPTARG} ]]; then
+-                PXE_BRIDGE="-b ${OPTARG}"
+-            fi
++            for bridge in ${OPTARG//,/ }; do
++                PXE_BRIDGE+=" -b $bridge"
++            done
+             ;;
+         d)
+             DRY_RUN=1
