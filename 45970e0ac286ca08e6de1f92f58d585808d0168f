@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_570fc7e1",
+        "filename": "patches/opnfv-fuel/0027-deploy-reap.py-Dump-extra-interfaces-information.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-09T16:17:12Z",
+      "side": 1,
+      "message": "This is lazy Alex. You\u0027re in python and you want to run bash script to create an additional file in order to parse it? Why not do this instead:\n\n d \u003d {}\n with open(\"file.txt\") as f:\n     for line in f:\n        (key, val) \u003d line.split()\n        d[key.lower()] \u003d val.rstrip()",
+      "revId": "45970e0ac286ca08e6de1f92f58d585808d0168f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
