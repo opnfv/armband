@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_b7a093f5",
+        "filename": "patches/opnfv-fuel/0027-deploy-reap.py-Dump-extra-interfaces-information.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-09T15:01:49Z",
+      "side": 1,
+      "message": "Some interface names have uppercase letters (enP0p0...), as we discovered earlier. Should we consider them here?",
+      "range": {
+        "startLine": 54,
+        "startChar": 59,
+        "endLine": 54,
+        "endChar": 71
+      },
+      "revId": "d1217dba27b9f57bb5801fcd7c5d808d8c13e333",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_577ca772",
+        "filename": "patches/opnfv-fuel/0027-deploy-reap.py-Dump-extra-interfaces-information.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-09T15:01:49Z",
+      "side": 1,
+      "message": "no biggie, but setting a variable name might be clearer in a couple of months. \"Explicit is better than implicit\" ;-)",
+      "range": {
+        "startLine": 66,
+        "startChar": 71,
+        "endLine": 66,
+        "endChar": 79
+      },
+      "revId": "d1217dba27b9f57bb5801fcd7c5d808d8c13e333",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_77aa0bd6",
+        "filename": "patches/opnfv-fuel/0027-deploy-reap.py-Dump-extra-interfaces-information.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-09T15:01:49Z",
+      "side": 1,
+      "message": "As per comment above, this would remove device names with uppercase letters.",
+      "range": {
+        "startLine": 68,
+        "startChar": 47,
+        "endLine": 68,
+        "endChar": 68
+      },
+      "revId": "d1217dba27b9f57bb5801fcd7c5d808d8c13e333",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
