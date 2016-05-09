@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_57826701",
+        "filename": "patches/fuel-agent/0010-target-Ubuntu-Blacklist-rtc-efi-if-not-supported.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-09T20:01:28Z",
+      "side": 1,
+      "message": "hm, will have to push v2: update + rmmod only if rtc is not working ...",
+      "revId": "92730e0e3c9982eb1ab11c6a0f3063b9afa6504c",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
