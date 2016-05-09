@@ -3,7 +3,6 @@ List of missing features and things to do
 
 Cleanup tasks
 =========================================
-* [arm64-master] Find `puppetlabs-products` repo for arm64.
 * [arm64-master] Fix license in ubuntu_1404_arm64.pp
 * [arm64-master] Look into default ubuntu_debootstrap change in cobbler.pp
 * [arm64-master] [fuel-agent] Package and repo update for arm64 in [2] (?)

@@ -1,0 +1,33 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 9 May 2016 17:05:53 +0200
+Subject: [PATCH] UX: Update bootstrap/target build time estimate.
+
+While building for a different architecture (e.g. AArch64 on x86_64),
+the bootstrap/target image build may take longer, due to latency
+introduced by using qemu-user-static.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
+index 744f352..7395af3 100755
+--- a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
++++ b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
+@@ -29,9 +29,12 @@ and added to cluster. \
+ For more information please visit \
+ https://docs.mirantis.com/openstack/fuel/fuel-master/"
+ bs_progress_message="There is no active bootstrap. Bootstrap image building \
+-is in progress. Usually it takes 15-20 minutes. It depends on your internet \
+-connection and hardware performance. Please reboot failed to discover nodes \
+-after bootstrap image become available."
++is in progress. Usually it takes 15-20 minutes for a native build (x86_64) \
++and/or 30-45 minutes for each cross-build (e.g. AArch64). \
++It depends on your internet connection, hardware performance and selected \
++bootstrap architecture(s). This ISO supports AArch64 only. Please reboot \
++failed to discover nodes after bootstrap image become available."
++
+ bs_done_message="Default bootstrap image building done. Now you can boot new \
+ nodes over PXE, they will be discovered and become available for installing \
+ OpenStack on them"
