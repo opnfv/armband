@@ -27,5 +27,8 @@ if ! [ -z $LAB_CONFIG_URL ]; then
     fi
 fi
 
+# Deploys take significantly longer for us, change the default timeout
+DEPLOY_TIMEOUT=${DEPLOY_TIMEOUT:-360}
+
 cd upstream/fuel/ci
-./deploy.sh $@
+./deploy.sh $@ -T $DEPLOY_TIMEOUT
