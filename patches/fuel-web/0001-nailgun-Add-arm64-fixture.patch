@@ -1,13 +1,13 @@
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Sun, 21 Feb 2016 16:30:43 +0100
-Subject: [PATCH] Add arm64 fixture
+Subject: [PATCH] nailgun: Add arm64 fixture.
 
 ---
  nailgun/nailgun/fixtures/openstack.yaml | 99 +++++++++++++++++++++++++++++++++
  1 file changed, 99 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index f9c8ab6..bf6f7c4 100644
+index f9c8ab6..a330f4e 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
 @@ -2079,3 +2079,102 @@
@@ -26,7 +26,7 @@ index f9c8ab6..bf6f7c4 100644
 +      editable:
 +        kernel_params:
 +          kernel:
-+            value: "console=ttyAMA0,115200 console=ttyS0,115200 net.ifnames=0 biosdevname=0 rootdelay=90 nomodeset"
++            value: "console=ttyAMA0,115200 console=ttyS0,115200 net.ifnames=1 biosdevname=0 rootdelay=90 nomodeset"
 +        repo_setup:
 +          metadata:
 +            label: "Repositories"
