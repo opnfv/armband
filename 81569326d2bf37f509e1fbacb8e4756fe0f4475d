@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_8d88e023",
+        "filename": "docs/build-instruction.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-10T17:49:55Z",
+      "side": 1,
+      "message": "Well about that...we don\u0027t have this tag yet, do we?",
+      "revId": "81569326d2bf37f509e1fbacb8e4756fe0f4475d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_0d7cd01f",
+        "filename": "docs/build-instruction.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-10T17:49:55Z",
+      "side": 1,
+      "message": "Just as a note - this has to be done only once. Subsequent runs of submodules-init + patches-import will fail.",
+      "revId": "81569326d2bf37f509e1fbacb8e4756fe0f4475d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
