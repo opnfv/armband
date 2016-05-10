@@ -2,7 +2,7 @@ From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Wed, 24 Feb 2016 20:11:54 +0100
 Subject: [PATCH] Add arch to nailgun release and target image
 
-Thsi is required so that the TestVM image is created using a cirros
+This is required so that the TestVM image is created using a cirros
 image that is compatible with the architecture of the deployment setup.
 As a bonus, it is also used when building the target image.
 ---
@@ -37,11 +37,11 @@ index bb69168..2c19ec9 100644
      'ha_full',
 diff --git a/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py b/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
 new file mode 100644
-index 0000000..ad297b1
+index 0000000..8cca69c
 --- /dev/null
 +++ b/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
 @@ -0,0 +1,53 @@
-+#    Copyright 2016 Mirantis, Inc.
++#    Copyright 2016 Cavium, Inc.
 +#
 +#    Licensed under the Apache License, Version 2.0 (the "License"); you may
 +#    not use this file except in compliance with the License. You may obtain
@@ -114,7 +114,7 @@ index 96cf2ed..62ac2c1 100644
                                        nullable=False, server_default='[]')
      description = Column(Unicode)
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index bf6f7c4..4979fb5 100644
+index a330f4e..9da1346 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
 @@ -1913,6 +1913,7 @@
