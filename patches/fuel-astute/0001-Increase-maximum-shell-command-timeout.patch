@@ -1,0 +1,33 @@
+From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Date: Mon, 9 May 2016 18:54:33 -0700
+Subject: [PATCH] Increase maximum shell command timeout to 2h
+
+Since `execute_shell_command` mcagent is used for building the target
+image and the timeout provided in the astute task is just respected on
+the Astute level (on mcollective level this timeout is actually a
+minumum between value provided and ddl value) we need to increase it
+for Armband operation.
+
+Because Armband builds the target image via `qemu-debootstrap`, it can
+take more than 1 hour to finish the building. Therefore aside of
+increasing the timeout in the Astute task, the maximum timeout value
+for mcagent has to be increased.
+
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+---
+ mcagents/execute_shell_command.ddl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mcagents/execute_shell_command.ddl b/mcagents/execute_shell_command.ddl
+index 0480be7..ad58046 100644
+--- a/mcagents/execute_shell_command.ddl
++++ b/mcagents/execute_shell_command.ddl
+@@ -4,7 +4,7 @@ metadata    :name        => "Execute shell command",
+             :license     => "Apache License 2.0",
+             :version     => "8.0.0",
+             :url         => "http://mirantis.com",
+-            :timeout     => 3600
++            :timeout     => 7200
+ 
+ action "execute", :description => "Execute shell command" do
+ 
