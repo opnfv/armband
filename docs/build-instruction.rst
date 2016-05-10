@@ -1,5 +1,5 @@
 =================================================================================================
-OPNFV Build instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool
+OPNFV Build instruction for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool
 =================================================================================================
 
 License
@@ -13,14 +13,14 @@ Abstract
 ========
 
 This document describes how to build the Fuel deployment tool for the
-Brahmaputra release of OPNFV build system, dependencies and required
-system resources.
+AArch64 Brahmaputra release of OPNFV build system, dependencies and
+required system resources.
 
 Introduction
 ============
 
 This document describes the build system used to build the Fuel
-deployment tool for the Brahmaputra release of OPNFV, required
+deployment tool for the AArch64 Brahmaputra release of OPNFV, required
 dependencies and minimum requirements on the host to be used for the
 build system.
 
@@ -32,20 +32,24 @@ performed by the build system.
 The audience of this document is assumed to have good knowledge in
 network and Unix/Linux administration.
 
+Due to early docker and nodejs support on AArch64, we will still use an
+x86_64 Fuel Master to build and deploy an AArch64 target pool, as well
+as an x86_64 build machine for building the OPNFV ISO.
+
 Requirements
 ============
 
 Minimum Hardware Requirements
 -----------------------------
 
-- ~30 GB available disc
+- ~50 GB available disc
 
 - 4 GB RAM
 
 Minimum Software Requirements
 -----------------------------
 
-The build host should run Ubuntu 14.04 operating system.
+The build host should run Ubuntu 14.04 (x86_64) operating system.
 
 On the host, the following packages must be installed:
 
@@ -62,6 +66,8 @@ On the host, the following packages must be installed:
 - make (simply available through $ sudo apt-get install make)
 
 - curl (simply available through $ sudo apt-get install curl)
+
+- fuseiso (simply available through $ sudo apt-get install fuseiso)
 
 Preparations
 ============
@@ -98,24 +104,24 @@ Setting up OPNFV Gerrit in order to being able to clone the code
 - Select "SSH Public Keys" to the left and then "Add Key" and paste
   your public key in.
 
-Clone the OPNFV code Git repository with your SSH key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Clone the armband@OPNFV code Git repository with your SSH key
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Now it is time to clone the code repository:
 
-$ git clone ssh://<Linux foundation user>@gerrit.opnfv.org:29418/fuel
+$ git clone ssh://<Linux foundation user>@gerrit.opnfv.org:29418/armband
 
-Now you should have the OPNFV fuel repository with the Fuel
+Now you should have the OPNFV ARMBAND repository with its
 directories stored locally on your build host.
 
 Check out the Brahmaputra release:
-$ cd fuel
-$ git checkout brahmaputra.1.0
+$ cd armband
+$ git checkout brahmaputra.3.0
 
-Clone the OPNFV code Git repository without a SSH key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Clone the armband@OPNFV code Git repository without a SSH key
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can also opt to clone the code repository without a SSH key:
 
-$ git clone https://gerrit.opnfv.org:29418/gerrit/fuel
+$ git clone https://gerrit.opnfv.org:29418/gerrit/armband
 
 Make sure to checkout the release tag as described above.
 
@@ -187,11 +193,18 @@ If neither of the two available methods for proxying rsync are
 available, the last resort is to turn off the caching of the Ubuntu
 packages in the build system. This is done by removing the
 "f_repobuild" from SUBDIRS in the beginning of
-the fuel/build/f_isoroot/Makefile.
+the armband/upstream/fuel/build/f_isoroot/Makefile.
 
 Note! Doing this will require the Fuel master node to have Internet
 access when installing the ISO artifact built as no Ubuntu package
 cache will be on the ISO!
+
+Note! Armband build system uses git submodules to track fuel and
+other upstream repos, so in order to apply the above change, one
+should first initialize the submodules and apply armband patches
+(only needed once):
+$ make submodules-init
+$ make patches-import
 
 Configure your build environment
 --------------------------------
@@ -200,7 +213,10 @@ Configure your build environment
 standard Brahmaputra release **
 
 Select the versions of the components you want to build by editing the
-fuel/build/config.mk file.
+armband/upstream/fuel/build/config.mk file.
+
+Note! The same observation as above, before altering Makefile, run:
+$ make submodules-init patches-import
 
 Non official build: Selecting which plugins to build
 ----------------------------------------------------
@@ -209,7 +225,8 @@ individual developer locally), the selection if which Fuel plugins to
 build (if any) can be done by environment variable
 "BUILD_FUEL_PLUGINS" prior to building.
 
-Only the plugin targets from fuel/build/f_isoroot/Makefile that are
+Only the plugin targets from
+armband/upstream/fuel/build/f_isoroot/Makefile that are
 specified in the environment variable will then be built. In order to
 completely disable the building of plugins, the environment variable
 is set to " ". When using this functionality, the resulting iso file
@@ -219,24 +236,30 @@ that this is not a full build.
 This method of plugin selection is not meant to be used from within
 Gerrit!
 
+Note! So far, only ODL plugin was ported to AArch64.
+
 Building
 ========
 
-There are two methods available for building Fuel:
+There is only one preffered method available for building Fuel for AArch64:
 
 - A low level method using Make
-
-- An abstracted method using build.sh
 
 Low level build method using make
 ---------------------------------
 The low level method is based on Make:
 
-From the <fuel/build> directory, invoke <make [target]>
+From the <armband> directory, invoke <make [target]>
 
 Following targets exist:
 
-- none/all -  this will:
+- release - this will do the same as:
+
+  - make submodules-clean clean-docker clean-build
+
+  - make submodules-init patches-import build
+
+- none/all/build - this will:
 
   - Initialize the docker build environment
 
@@ -252,40 +275,42 @@ Following targets exist:
 
   - Reconstruct a fuel .iso image
 
-- clean - this will remove all artifacts from earlier builds.
+- submodules-init - Initialize git submodules (fuel@OPNFV, fuel-library etc.)
 
-- debug - this will simply enter the build container without starting a build, from here you can start a build by enter "make iso"
+- submodules-clean - cleanup git submodules (fuel@OPNFV, fuel-library etc.)
+
+- patches-import - this will apply armband@OPNFV patches to git submodules
+
+- patches-export - this will export git submodules changes as armband patches
+
+- clean-build - this will remove all artifacts from earlier builds.
+
+- clean-docker - this will remove all docker caches from earlier builds.
 
 If the build is successful, you will find the generated ISO file in
-the <fuel/build/release> subdirectory!
-
-Abstracted build method using build.sh
---------------------------------------
-The abstracted build method uses the <fuel/ci/build.sh> script which
-allows you to:
-
-- Create and use a build cache - significantly speeding up the
-  build time if upstream repositories have not changed.
-
-- push/pull cache and artifacts to an arbitrary URI (http(s):, file:, ftp:)
-
-For more info type <fuel/ci/build.sh -h>.
+the <armband/upstream/fuel/build/release> subdirectory!
 
 Artifacts
 =========
 
 The artifacts produced are:
 
-- <OPNFV_XXXX.iso> - Which represents the bootable Fuel image, XXXX is
-  replaced with the build identity provided to the build system
+- <OPNFV_XXXX.iso> - Which represents the bootable Fuel for AArch64 image,
+  XXXX is replaced with the build identity provided to the build system
 
 - <OPNFV_XXXX.iso.txt> - Which holds version metadata.
 
 References
 ==========
 
-1)  `OPNFV Installation instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/installation-instruction.html>`_
+1)  `OPNFV Installation instruction for the Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/installation-instruction.html>`_
 
-2) `OPNFV Build instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/build-instruction.html>`_
+2) `OPNFV Build instruction for the Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/build-instruction.html>`_
 
-3) `OPNFV Release Note for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/release-notes.html>`_
+3) `OPNFV Release Note for the Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/release-notes.html>`_
+
+4)  `OPNFV Installation instruction for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/installation-instruction.html>`_
+
+5) `OPNFV Build instruction for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/build-instruction.html>`_
+
+6) `OPNFV Release Note for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/release-notes.html>`_
