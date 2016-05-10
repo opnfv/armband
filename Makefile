@@ -61,6 +61,7 @@ build:
 			UBUNTU_ARCH="amd64 arm64" \
 			FUELLIB_REPO=${root}/upstream/fuel-library \
 			NAILGUN_REPO=${root}/upstream/fuel-web \
+			ASTUTE_REPO=${root}/upstream/fuel-astute \
 			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
 			FUEL_NAILGUN_AGENT_REPO=${root}/upstream/fuel-nailgun-agent \
 			FUEL_MIRROR_REPO=${root}/upstream/fuel-mirror \
@@ -68,6 +69,7 @@ build:
 			ODL_CHANGE= \
 			FUELLIB_COMMIT=HEAD \
 			NAILGUN_COMMIT=HEAD \
+			ASTUTE_COMMIT=HEAD \
 			FUEL_AGENT_COMMIT=HEAD \
 			FUEL_NAILGUN_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_COMMIT=HEAD \
