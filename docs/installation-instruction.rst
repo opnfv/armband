@@ -13,7 +13,8 @@ Abstract
 ========
 
 This document describes how to install the Brahmaputra 3.0 release of
-OPNFV when using Fuel as a deployment tool, with an AArch64 (only) target node pool.
+OPNFV when using Fuel as a deployment tool, with an AArch64 (only) target
+node pool.
 
 Introduction
 ============
@@ -43,20 +44,22 @@ Retrieving the ISO image
 ------------------------
 
 First of all, the Fuel deployment ISO image needs to be retrieved, the
-Fuel .iso image of the AArch64 Brahmaputra release can be found at *Reference: 2*
+ArmbandFuel .iso image of the AArch64 Brahmaputra release can be found
+at *Reference: 2*
 
 Building the ISO image
 ----------------------
 
-Alternatively, you may build the  .iso from source by cloning the
-opnfv/armband git repository.  To retrieve the repository for the AArch64 Brahmaputra 3.0 release use the following command:
+Alternatively, you may build the ArmbandFuel .iso from source by cloning the
+opnfv/armband git repository. To retrieve the repository for the AArch64
+Brahmaputra 3.0 release use the following command:
 
 $ git clone https://gerrit.opnfv.org/gerrit/armband
 
-Check-out the Brahmaputra stable branch to set the branch to the
+Check-out the Brahmaputra release tag to set the branch to the
 baseline required to replicate the Brahmaputra release:
 
-$ git checkout stable/brahmaputra
+$ git checkout brahmaputra.3.0
 
 Go to the armband directory and build the .iso:
 
@@ -66,7 +69,6 @@ For more information on how to build, please see *Reference: 14*
 
 Other preparations
 ------------------
-
 
 Next, familiarize yourself with Fuel by reading the following documents:
 
@@ -104,15 +106,13 @@ Hardware requirements
 =====================
 
 The following minimum hardware requirements must be met for the
-installation of Brahmaputra using Fuel:
+installation of AArch64 Brahmaputra 3.0 using Fuel:
 
 +--------------------+------------------------------------------------------+
 | **HW Aspect**      | **Requirement**                                      |
 |                    |                                                      |
 +====================+======================================================+
-| **# of nodes**     | Minimum 5 (3 for non redundant deployment):          |
-|                    |                                                      |
-|                    | - 1 Fuel deployment master (may be virtualized)      |
+| **AArch64 nodes**  | Minimum 5 (3 for non redundant deployment):          |
 |                    |                                                      |
 |                    | - 3(1) Controllers (1 colocated mongo/ceilometer     |
 |                    |   role, 2 Ceph-OSD roles)                            |
@@ -120,7 +120,7 @@ installation of Brahmaputra using Fuel:
 |                    | - 1 Compute (1 co-located Ceph-OSD role)             |
 |                    |                                                      |
 +--------------------+------------------------------------------------------+
-| **CPU**            | Minimum 1 socket x86_AMD64 with Virtualization       |
+| **CPU**            | Minimum 1 socket AArch64 (ARMv8) with Virtualization |
 |                    | support                                              |
 +--------------------+------------------------------------------------------+
 | **RAM**            | Minimum 16GB/server (Depending on VNF work load)     |
@@ -136,6 +136,8 @@ installation of Brahmaputra using Fuel:
 |                    | Note: These can be allocated to a single NIC -       |
 |                    | or spread out over multiple NICs as your hardware    |
 |                    | supports.                                            |
++--------------------+------------------------------------------------------+
+| **1 x86_64 node**  | - 1 Fuel deployment master, x86 (may be virtualized) |
 +--------------------+------------------------------------------------------+
 
 Help with Hardware Requirements
@@ -214,8 +216,12 @@ Install Fuel master
 
 #. In the "Network Setup" section - Configure DHCP/Static IP information for your FUEL node - For example, ETH0 is 10.20.0.2/24 for FUEL booting and ETH1 is DHCP/Static in your corporate/lab network (see figure below).
 
-   - Configuration of ETH1 interface for connectivity into your corporate/lab network is mandatory. You need to have internet access over this interface.
-     Due to the architecture of ports.ubuntu.com mirror, currently Fuel cannot create a full local mirror of all required AArch64 packages. Internet access is needed to deploy with Fuel on AArch64 nodes.
+   - **Note**: ArmbandFuel@OPNFV requires internet connectivity during bootstrap
+     image building, due to missing arm64 (AArch64) packages in the partial
+     local Ubuntu mirror (consequence of ports.ubuntu.com mirror architecture).
+
+   - Configuration of ETH1 interface for connectivity into your corporate/lab
+     network is mandatory, as internet connection is required during deployment.
 
    .. figure:: img/fuelmenu2.png
 
@@ -325,6 +331,9 @@ Install additional Plugins/Features on the FUEL node
 #. Install the wanted plugin with the command "fuel plugins --install /opt/opnfv/<plugin-name>-<version>.<arch>.rpm"
    Expected output: "Plugin ....... was successfully installed." (see figure below)
 
+   **NOTE**: AArch64 Brahmaputra 3.0 ships only with Opendaylight plugin,
+   see *Reference 15*.
+
    .. figure:: img/plugin_install.png
 
 Create an OpenStack Environment
@@ -346,7 +355,7 @@ Create an OpenStack Environment
 
    - Select "Neutron with ML2 plugin"
 
-   - Select "Neutron with tunneling segmentation" (Required when using the ODL or ONOS plugins)
+   - Select "Neutron with tunneling segmentation" (Required when using the ODL plugin)
 
    - Press <Next>
 
@@ -494,7 +503,7 @@ Allocate nodes to environment and assign functional roles
 
     - Click on the <+Add Nodes> button
 
-    - Check <Controller>, <Telemetry - MongoDB>  and optionally an SDN Controller role (OpenDaylight controller/ONOS) in the Assign Roles Section.
+    - Check <Controller>, <Telemetry - MongoDB>  and optionally an SDN Controller role (OpenDaylight controller) in the Assign Roles Section.
 
     - Check one node which you want to act as a Controller from the bottom half of the screen
 
@@ -532,8 +541,17 @@ Allocate nodes to environment and assign functional roles
     .. figure:: img/interfaceconf.png
 
 
-OPTIONAL - Set Local Mirror Repos
+OPTIONAL - UNTESTED - Set Local Mirror Repos
 ---------------------------------
+
+**NOTE**: AArch64 Brahmaputra 3.0 does not fully support local Ubuntu mirrors,
+or at least does not ship with arm64 packages in local repos by default.
+In order to use local (partial) Ubuntu mirrors, one should add arm64 packages
+by hand to the existing amd64 mirrors and re-generate repo metadata.
+Local MOS/Auxiliary repos contain packages for both amd64 and arm64.
+
+**NOTE**: Below instruction assume you already added (by hand) arm64
+Ubuntu necessary packages to the local repository!
 
 The following steps can be executed if you are in an environment with
 no connection to the Internet. The Fuel server delivers a local repo
@@ -595,6 +613,9 @@ Installation health-check
     - Check <Select All> and Click <Run Tests>
 
     - Allow tests to run and investigate results where appropriate
+
+    - Check *Reference 15* for known issues / limitations on AArch64, like
+      unsupported migration tests when using a GICv3 interrupt controller
 
     .. figure:: img/health.png
 
