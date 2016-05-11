@@ -1,0 +1,367 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_14eff8b1",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "2 double spaces and a line too long.",
+      "range": {
+        "startLine": 52,
+        "startChar": 29,
+        "endLine": 52,
+        "endChar": 31
+      },
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_54f58081",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "This is wrong in Fuel doc, I think. You do not need an user@gerrit.opnfv for https.\n\nMissing space + \"opnf.org\" typos.\nAlso, I would add a bash code-block.",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_f4f13496",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "There is also going to be a tag, we\u0027ll probably call it brahmaputra.3.0.",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_b42bacea",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "See my comments on the references. Do we change the existing ones or add new ones? If the latter,\nthis should be Reference 17.\nI kept the old (amd64) documents in the release note references, but added 3 new arm64 ones ...",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_943a2835",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "\"... on AArch64\"?, as most of the info below is not common.",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_d430b058",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "I think we should mention arch(s) here, to avoid confusion, Fuel Master being x86_64 and the rest being AArch64.",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_74352445",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "It\u0027s not clear to me whether this only describes the Fuel Master or all the nodes? If the latter, should be ammended.",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_343f9c27",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "First, this should be reference 12 instead of 11 (hw compat list).\nBut, we should remove reference 11 altogether ... as that is x86 specific + it\u0027s Mirantis\u0027 docs, not OPNFV\u0027s.\nSuggestions?",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_740c4495",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "This might be a bit misleading, one could use ETH2 instead of ETH1.\n\nI would keep the old pharsing and just add a warning / NOTE that sticks out, that we need internet connectivity during bootstrap build (due to missing arm64 packages in partial [not full] local Ubuntu mirror), or just link to the bug report explaining this - https://jira.opnfv.org/browse/ARMBAND-35 ...",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_7483e4cc",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "line breaks, not only here ...",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_9411c8ae",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "I am not sure this belongs here ...\nWe have JIRA cases for known workarounds (see https://jira.opnfv.org/browse/FUEL-134 for this particular one), my concern being that if we do this for Softiron\u0027s rx-vlan-filter, we should also do it for MySQL SST provider on ThunderX and so on.\n\nAt best, we could keep this, but factor out the manufactures/board name and instead describe the issue in a generic manner, e.g. \"Setting up offloading modes for network check\" ?",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_3426bc17",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "Add note that only ODL is currently ported to AArch64.",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_54234005",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "No ONOS on aarch64?",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_f41ff4b5",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "Celiometer :)",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_141db8bd",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "Is it really? We haven\u0027t came to a conclusion on this one, not that it\u0027s that important, to be honest.",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_b4796cfe",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "These 3 do not work on AArch64 for now.",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_d47e70e4",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "This works, although the URL is misleading, maybe worth a note that it contains both amd64 and arm64 packages?",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_9488e8e8",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 599,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "Link to vGICv3 case, which should also describe \"expected\" failures in tests due to vgicv3: https://jira.opnfv.org/browse/ARMBAND-28",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_346d5c33",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 609,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "This is broken (or better put, missing the URL itself) in Fuel docs ...",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_546a601b",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 639,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "We will probably have to omit this later.",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_f4761406",
+        "filename": "docs/installation-instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 643,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-05-11T17:24:05Z",
+      "side": 1,
+      "message": "In the release notes, I kept the amd64 guides and just added the arm64 ones, maybe I should also remove the amd64 ones?",
+      "revId": "77e03df9034abd030b97270ea4dbdea1784bc9e2",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
