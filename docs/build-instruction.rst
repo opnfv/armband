@@ -55,19 +55,31 @@ On the host, the following packages must be installed:
 
 - An x86_64 host (Bare-metal or VM) with Ubuntu 14.04 LTS installed
 
-  - A kernel equal- or later than 3.19 (Vivid) (simply available through sudo apt-get install linux-generic-lts-vivid)
-
   - **Note:** Builds on Wily (Ubuntu 15.x) are currently not supported
 
-- docker - see https://docs.docker.com/engine/installation/ubuntulinux/ for installation notes for Ubuntu 14.04. Tested against version 1.9.x and greater
+  - A kernel equal- or later than 3.19 (Vivid), simply available through:
 
-- git (simply available through $ sudo apt-get install git)
+.. code-block:: bash
 
-- make (simply available through $ sudo apt-get install make)
+    $ sudo apt-get install linux-generic-lts-vivid
 
-- curl (simply available through $ sudo apt-get install curl)
+- docker - see https://docs.docker.com/engine/installation/ubuntulinux/ for
+  installation notes for Ubuntu 14.04. Tested against version 1.9.x and greater
 
-- fuseiso (simply available through $ sudo apt-get install fuseiso)
+- git
+
+- make
+
+- curl
+
+- fuseiso
+
+Apart from docker, all other package requirements listed above are
+simply available through:
+
+.. code-block:: bash
+
+    $ sudo apt-get install git make curl fuseiso
 
 Preparations
 ============
@@ -76,7 +88,9 @@ Setting up the Docker build container
 -------------------------------------
 After having installed Docker, add yourself to the docker group:
 
-$ sudo usermod -a -G docker [userid]
+.. code-block:: bash
+
+    $ sudo usermod -a -G docker [userid]
 
 Also make sure to define relevant DNS servers part of the global
 DNS chain in your </etc/default/docker> configuration file.
@@ -84,11 +98,13 @@ Uncomment, and modify the values appropriately.
 
 For example:
 
-<DOCKER_OPTS=" --dns=8.8.8.8 --dns=8.8.8.4">
+.. code-block:: bash
+
+    DOCKER_OPTS=" --dns=8.8.8.8 --dns=8.8.8.4"
 
 Then restart docker:
 
-.. code-block:: console
+.. code-block:: bash
 
     $ sudo service docker restart
 
@@ -97,7 +113,7 @@ Setting up OPNFV Gerrit in order to being able to clone the code
 - Start setting up OPNFV gerrit by creating a SSH key (unless you
   don't already have one), create one with ssh-keygen
 
-- Add your generated public key in OPNFV Gerrit <https://gerrit.opnfv.org/>
+- Add your generated public key in OPNFV Gerrit (https://gerrit.opnfv.org/)
   (this requires a Linux foundation account, create one if you do not
   already have one)
 
@@ -108,20 +124,27 @@ Clone the armband@OPNFV code Git repository with your SSH key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Now it is time to clone the code repository:
 
-$ git clone ssh://<Linux foundation user>@gerrit.opnfv.org:29418/armband
+.. code-block:: bash
+
+    $ git clone ssh://<Linux foundation user>@gerrit.opnfv.org:29418/armband
 
 Now you should have the OPNFV ARMBAND repository with its
 directories stored locally on your build host.
 
 Check out the Brahmaputra release:
-$ cd armband
-$ git checkout brahmaputra.3.0
+
+.. code-block:: bash
+
+    $ cd armband
+    $ git checkout brahmaputra.3.0
 
 Clone the armband@OPNFV code Git repository without a SSH key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You can also opt to clone the code repository without a SSH key:
 
-$ git clone https://gerrit.opnfv.org:29418/gerrit/armband
+.. code-block:: bash
+
+    $ git clone https://gerrit.opnfv.org/gerrit/armband
 
 Make sure to checkout the release tag as described above.
 
@@ -132,8 +155,7 @@ The build system is able to make use of a web proxy setup if the
 http_proxy, https_proxy, no_proxy (if needed) and RSYNC_PROXY or
 RSYNC_CONNECT_PROG environment variables have been set before invoking make.
 
-The proxy setup must permit port 80 (http), 443 (https) and 873
-(rsync).
+The proxy setup must permit port 80 (http), 443 (https) and 873 (rsync).
 
 Important note about the host Docker daemon settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -143,9 +165,11 @@ for it to be able to pull the base Ubuntu 14.04 image from the Docker
 registry before invoking make! In Ubuntu this is done by adding a line
 like:
 
-export http_proxy="http://10.0.0.1:8888/"
+.. code-block:: bash
 
-to /etc/default/docker and restarting the Docker daemon.
+    export http_proxy="http://10.0.0.1:8888/"
+
+to </etc/default/docker> and restarting the Docker daemon.
 
 Setting proxy environment variables prior to build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -154,19 +178,23 @@ The build system will make use the following environment variables
 that needs to be exported to subshells by using export (bash) or
 setenv (csh/tcsh).
 
-| http_proxy (or HTTP_PROXY)
-| https_proxy (or HTTP_PROXY)
-| no_proxy (or NO_PROXY)
-| RSYNC_PROXY
-| RSYNC_CONNECT_PROG
+.. code-block:: bash
+
+    http_proxy (or HTTP_PROXY)
+    https_proxy (or HTTP_PROXY)
+    no_proxy (or NO_PROXY)
+    RSYNC_PROXY
+    RSYNC_CONNECT_PROG
 
 As an example, these are the settings that were put in the user's
 .bashrc when verifying the proxy build functionality:
 
-| export RSYNC_PROXY=10.0.0.1:8888
-| export http_proxy=http://10.0.0.1:8888
-| export https_proxy=http://10.0.0.1:8888
-| export no_proxy=localhost,127.0.0.1,.consultron.com,.sock
+.. code-block:: bash
+
+    export RSYNC_PROXY=10.0.0.1:8888
+    export http_proxy=http://10.0.0.1:8888
+    export https_proxy=http://10.0.0.1:8888
+    export no_proxy=localhost,127.0.0.1,.consultron.com,.sock
 
 Using a ssh proxy for the rsync connection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -192,8 +220,8 @@ of this process rsync is used.
 If neither of the two available methods for proxying rsync are
 available, the last resort is to turn off the caching of the Ubuntu
 packages in the build system. This is done by removing the
-"f_repobuild" from SUBDIRS in the beginning of
-the armband/upstream/fuel/build/f_isoroot/Makefile.
+"f_repobuild" from SUBDIRS in the beginning of the
+<armband/upstream/fuel/build/f_isoroot/Makefile>.
 
 Note! Doing this will require the Fuel master node to have Internet
 access when installing the ISO artifact built as no Ubuntu package
@@ -203,8 +231,11 @@ Note! Armband build system uses git submodules to track fuel and
 other upstream repos, so in order to apply the above change, one
 should first initialize the submodules and apply armband patches
 (only needed once):
-$ make submodules-init
-$ make patches-import
+
+.. code-block:: bash
+
+    $ make submodules-init
+    $ make patches-import
 
 Configure your build environment
 --------------------------------
@@ -213,10 +244,13 @@ Configure your build environment
 standard Brahmaputra release **
 
 Select the versions of the components you want to build by editing the
-armband/upstream/fuel/build/config.mk file.
+<armband/upstream/fuel/build/config.mk> file.
 
 Note! The same observation as above, before altering Makefile, run:
-$ make submodules-init patches-import
+
+.. code-block:: bash
+
+    $ make submodules-init patches-import
 
 Non official build: Selecting which plugins to build
 ----------------------------------------------------
@@ -226,7 +260,7 @@ build (if any) can be done by environment variable
 "BUILD_FUEL_PLUGINS" prior to building.
 
 Only the plugin targets from
-armband/upstream/fuel/build/f_isoroot/Makefile that are
+<armband/upstream/fuel/build/f_isoroot/Makefile> that are
 specified in the environment variable will then be built. In order to
 completely disable the building of plugins, the environment variable
 is set to " ". When using this functionality, the resulting iso file
@@ -295,8 +329,8 @@ Artifacts
 
 The artifacts produced are:
 
-- <OPNFV_XXXX.iso> - Which represents the bootable Fuel for AArch64 image,
-  XXXX is replaced with the build identity provided to the build system
+- <OPNFV_XXXX.iso> - Which represents the bootable (x86_64) Fuel for AArch64
+  image, XXXX is replaced with the build identity provided to the build system
 
 - <OPNFV_XXXX.iso.txt> - Which holds version metadata.
 
