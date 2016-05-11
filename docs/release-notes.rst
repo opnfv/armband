@@ -32,7 +32,7 @@ x86_64 Fuel Master to build and deploy an AArch64 target pool.
 Although not currently supported, mixing x86_64 and AArch64 architectures
 inside the target pool will be possible later.
 
-Carefully follow the installation-instructions provided in *Reference 16*.
+Carefully follow the installation-instructions provided in *Reference 13*.
 
 Summary
 =======
@@ -123,11 +123,11 @@ Document changes
 This is based upon a follow-up release to Brahmaputra 1.0. It
 comes with the following documentation:
 
-- Installation instructions - *Reference 16* - **Changed**
+- Installation instructions - *Reference 13* - **Changed**
 
-- Build instructions - *Reference 17* - **Changed**
+- Build instructions - *Reference 14* - **Changed**
 
-- Release notes - *Reference 18* - **Changed** (This document)
+- Release notes - *Reference 15* - **Changed** (This document)
 
 Reason for version
 ------------------
@@ -161,11 +161,11 @@ Fuel-based installer iso file for AArch64 targets found in *Reference 2*
 Documentation deliverables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Installation instructions - *Reference 16*
+- Installation instructions - *Reference 13*
 
-- Build instructions - *Reference 17*
+- Build instructions - *Reference 14*
 
-- Release notes - *Reference 18* (This document)
+- Release notes - *Reference 15* (This document)
 
 Known Limitations, Issues and Workarounds
 =========================================
@@ -252,14 +252,8 @@ Fuel
 Fuel in OPNFV
 -------------
 
-13) `OPNFV Installation instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/installation-instruction.html>`_
+13) `OPNFV Installation instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/installation-instruction.html>`_
 
-14) `OPNFV Build instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/build-instruction.html>`_
+14) `OPNFV Build instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/build-instruction.html>`_
 
-15) `OPNFV Release Note for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/release-notes.html>`_
-
-16) `OPNFV Installation instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/installation-instruction.html>`_
-
-17) `OPNFV Build instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/build-instruction.html>`_
-
-18) `OPNFV Release Note for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/release-notes.html>`_
+15) `OPNFV Release Note for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/release-notes.html>`_
