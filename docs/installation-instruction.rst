@@ -54,16 +54,23 @@ Alternatively, you may build the ArmbandFuel .iso from source by cloning the
 opnfv/armband git repository. To retrieve the repository for the AArch64
 Brahmaputra 3.0 release use the following command:
 
-$ git clone https://gerrit.opnfv.org/gerrit/armband
+.. code-block:: bash
+
+    $ git clone https://gerrit.opnfv.org/gerrit/armband
 
 Check-out the Brahmaputra release tag to set the branch to the
 baseline required to replicate the Brahmaputra release:
 
-$ git checkout brahmaputra.3.0
+.. code-block:: bash
+
+    $ git checkout brahmaputra.3.0
 
 Go to the armband directory and build the .iso:
 
-$ cd armband; make release
+.. code-block:: bash
+
+    $ cd armband
+    $ make release
 
 For more information on how to build, please see *Reference: 14*
 
