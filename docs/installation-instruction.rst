@@ -51,7 +51,7 @@ Building the ISO image
 Alternatively, you may build the  .iso from source by cloning the
 opnfv/armband git repository.  To retrieve the repository for the AArch64 Brahmaputra 3.0 release use the following command:
 
-$git clone https://<linux foundation uid>@gerrit.opnf.org/gerrit/armband
+$ git clone https://gerrit.opnfv.org/gerrit/armband
 
 Check-out the Brahmaputra stable branch to set the branch to the
 baseline required to replicate the Brahmaputra release:
@@ -356,7 +356,7 @@ Create an OpenStack Environment
 
 #. Select "additional services" you wish to install.
 
-   - Check option "Install Celiometer (OpenStack Telemetry)" and press <Next>
+   - Check option "Install Ceilometer (OpenStack Telemetry)" and press <Next>
 
 #. Create the new environment.
 
