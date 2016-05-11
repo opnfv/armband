@@ -143,8 +143,6 @@ Help with Hardware Requirements
 
 Calculate hardware requirements:
 
-For information on compatible hardware types available for use, please see *Reference: 11*.
-
 When choosing the hardware on which you will deploy your OpenStack
 environment, you should think about:
 
