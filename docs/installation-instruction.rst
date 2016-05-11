@@ -1,6 +1,6 @@
-========================================================================================================
-OPNFV Installation instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool
-========================================================================================================
+====================================================================================================================
+OPNFV Installation instruction for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool
+====================================================================================================================
 
 License
 =======
@@ -12,16 +12,16 @@ License. .. http://creativecommons.org/licenses/by/4.0 ..
 Abstract
 ========
 
-This document describes how to install the Brahmaputra release of
-OPNFV when using Fuel as a deployment tool, covering  it's usage,
-limitations, dependencies and required system resources.
+This document describes how to install the Brahmaputra 3.0 release of
+OPNFV when using Fuel as a deployment tool, with an AArch64 (only) target node pool.
 
 Introduction
 ============
 
 This document provides guidelines on how to install and
-configure the Brahmaputra release of OPNFV when using Fuel as a
-deployment tool, including required software and hardware configurations.
+configure the Brahmaputra 3.0 release of OPNFV when using Fuel as a
+deployment tool, with an AArch64 (only) target node pool,
+including required software and hardware configurations.
 
 Although the available installation options give a high degree of
 freedom in how the system is set-up, including architecture, services
@@ -35,7 +35,7 @@ networking and Unix/Linux administration.
 
 Preface
 =======
-Before starting the installation of the Brahmaputra release of
+Before starting the installation of the AArch64 Brahmaputra 3.0 release of
 OPNFV, using Fuel as a deployment tool, some planning must be
 done.
 
@@ -43,29 +43,30 @@ Retrieving the ISO image
 ------------------------
 
 First of all, the Fuel deployment ISO image needs to be retrieved, the
-Fuel .iso image of the Brahmaputra release can be found at *Reference: 2*
+Fuel .iso image of the AArch64 Brahmaputra release can be found at *Reference: 2*
 
 Building the ISO image
 ----------------------
 
-Alternatively, you may build the Fuel .iso from source by cloning the
-opnfv/fuel git repository.  To retrieve the repository for the Brahmaputra release use the following command:
+Alternatively, you may build the  .iso from source by cloning the
+opnfv/armband git repository.  To retrieve the repository for the AArch64 Brahmaputra 3.0 release use the following command:
 
-$git clone https://<linux foundation uid>@gerrit.opnf.org/gerrit/fuel
+$git clone https://<linux foundation uid>@gerrit.opnf.org/gerrit/armband
 
-Check-out the Brahmaputra release tag to set the branch to the
+Check-out the Brahmaputra stable branch to set the branch to the
 baseline required to replicate the Brahmaputra release:
 
-$ git checkout brahmaputra.1.0
+$ git checkout stable/brahmaputra
 
-Go to the fuel directory and build the .iso:
+Go to the armband directory and build the .iso:
 
-$ cd fuel/build; make all
+$ cd armband; make release
 
 For more information on how to build, please see *Reference: 14*
 
 Other preparations
 ------------------
+
 
 Next, familiarize yourself with Fuel by reading the following documents:
 
@@ -213,11 +214,14 @@ Install Fuel master
 
    .. figure:: img/fuelmenu1.png
 
-#. In the "Network Setup" section - Configure DHCP/Static IP information for your FUEL node - For example, ETH0 is 10.20.0.2/24 for FUEL booting and ETH1 is DHCP in your corporate/lab network (see figure below).
+#. In the "Network Setup" section - Configure DHCP/Static IP information for your FUEL node - For example, ETH0 is 10.20.0.2/24 for FUEL booting and ETH1 is DHCP/Static in your corporate/lab network (see figure below).
 
-   - Configure eth1 or other network interfaces here as well (if you have them present on your FUEL server).
+   - Configuration of ETH1 interface for connectivity into your corporate/lab network is mandatory. You need to have internet access over this interface.
+     Due to the architecture of ports.ubuntu.com mirror, currently Fuel cannot create a full local mirror of all required AArch64 packages. Internet access is needed to deploy with Fuel on AArch64 nodes.
 
    .. figure:: img/fuelmenu2.png
+
+   .. figure:: img/fuelmenu2a.png
 
 #. In the "PXE Setup" section (see figure below) - Change the following fields to appropriate values (example below):
 
@@ -294,6 +298,25 @@ scheme so that the FUEL Master can pick them up for control.
    .. figure:: img/nodes.png
 
 
+Target specific configuration
+-----------------------------
+
+#. AMD Softiron
+
+   For these targets, "rx-vlan-filter" offloading has to be turned off on the interface destined for OpenStack traffic (not the interface used for PXE boot).
+   For now this setting cannot be toggled from Fuel GUI, so it has to be done form the console.
+
+   - From Fuel master console identify target nodes admin IPs (see figure below).
+
+     .. figure:: img/fuelconsole1.png
+
+   - SSH into each of the target nodes and disable rx-vlan-filter on the physical interface allocated for OpenStack traffic  (see figure below).
+
+     .. figure:: img/softiron1.png
+
+   - Repeat the step above for all AMD Softiron nodes in the POD.
+
+
 Install additional Plugins/Features on the FUEL node
 ----------------------------------------------------
 
@@ -315,7 +338,7 @@ Create an OpenStack Environment
 
    .. figure:: img/newenv.png
 
-#. Select "<Liberty on Ubuntu 14.04>" and press <Next>
+#. Select "<Liberty on Ubuntu 14.04 (aarch64)>" and press <Next>
 
 #. Select "compute virtulization method".
 
@@ -618,8 +641,8 @@ Fuel
 Fuel in OPNFV
 -------------
 
-13) `OPNFV Installation instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/installation-instruction.html>`_
+13) `OPNFV Installation instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/installation-instruction.html>`_
 
-14) `OPNFV Build instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/build-instruction.html>`_
+14) `OPNFV Build instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/build-instruction.html>`_
 
-15) `OPNFV Release Note for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/release-notes.html>`_
+15) `OPNFV Release Note for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/release-notes.html>`_
