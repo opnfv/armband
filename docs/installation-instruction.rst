@@ -54,16 +54,23 @@ Alternatively, you may build the ArmbandFuel .iso from source by cloning the
 opnfv/armband git repository. To retrieve the repository for the AArch64
 Brahmaputra 3.0 release use the following command:
 
-$ git clone https://gerrit.opnfv.org/gerrit/armband
+.. code-block:: bash
+
+    $ git clone https://gerrit.opnfv.org/gerrit/armband
 
 Check-out the Brahmaputra release tag to set the branch to the
 baseline required to replicate the Brahmaputra release:
 
-$ git checkout brahmaputra.3.0
+.. code-block:: bash
+
+    $ git checkout brahmaputra.3.0
 
 Go to the armband directory and build the .iso:
 
-$ cd armband; make release
+.. code-block:: bash
+
+    $ cd armband
+    $ make release
 
 For more information on how to build, please see *Reference: 14*
 
@@ -328,11 +335,20 @@ Install additional Plugins/Features on the FUEL node
 
 #. Select wanted plugins/features from the /opt/opnfv/ directory.
 
-#. Install the wanted plugin with the command "fuel plugins --install /opt/opnfv/<plugin-name>-<version>.<arch>.rpm"
-   Expected output: "Plugin ....... was successfully installed." (see figure below)
+#. Install the wanted plugin with the command:
 
-   **NOTE**: AArch64 Brahmaputra 3.0 ships only with Opendaylight plugin,
-   see *Reference 15*.
+    .. code-block:: bash
+
+        $ fuel plugins --install /opt/opnfv/<plugin-name>-<version>.<arch>.rpm
+
+    Expected output (see figure below):
+
+    .. code-block:: bash
+
+        Plugin ....... was successfully installed.
+
+    **NOTE**: AArch64 Brahmaputra 3.0 ships only with Opendaylight plugin,
+    see *Reference 15*.
 
    .. figure:: img/plugin_install.png
 
