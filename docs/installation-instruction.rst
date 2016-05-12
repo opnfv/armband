@@ -143,8 +143,6 @@ Help with Hardware Requirements
 
 Calculate hardware requirements:
 
-For information on compatible hardware types available for use, please see *Reference: 11*.
-
 When choosing the hardware on which you will deploy your OpenStack
 environment, you should think about:
 
@@ -636,7 +634,7 @@ Fuel
 
 11) `Fuel Plugin Developers Guide <https://wiki.openstack.org/wiki/Fuel/Plugins>`_
 
-12) `Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/products/openstack-drivers-and-plugins/hardware-compatibility-list>`_
+12) `(N/A on AArch64) Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/products/openstack-drivers-and-plugins/hardware-compatibility-list>`_
 
 Fuel in OPNFV
 -------------
