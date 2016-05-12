@@ -136,6 +136,8 @@ installation of AArch64 Brahmaputra 3.0 using Fuel:
 | **Disk**           | Minimum 256GB 10kRPM spinning disks                  |
 |                    |                                                      |
 +--------------------+------------------------------------------------------+
+| **Firmware**       | UEFI compatible (e.g. EDK2) with PXE support         |
++--------------------+------------------------------------------------------+
 | **Networks**       | 4 Tagged VLANs (PUBLIC, MGMT, STORAGE, PRIVATE)      |
 |                    |                                                      |
 |                    | 1 Un-Tagged VLAN for PXE Boot - ADMIN Network        |
@@ -260,12 +262,14 @@ Install Fuel master
 
    .. figure:: img/fuelmenu4.png
 
+#. **DO NOT CHANGE** anything in "Bootstrap Image" section (see figure below).
 
-#. OPTION TO ENABLE PROXY SUPPORT - In the "Bootstrap Image" section (see figure below), edit the following fields to define a proxy. (**NOTE:** cannot be used in tandem with local repository support)
+   In ArmbandFuel@OPNFV, this data is **NOT** actually used for bootstrap
+   image building. Any change here will replace the configuration from
+   the OPNFV bootstrap build scripts and will lead to a failed bootstrap
+   image build.
 
-   - Navigate to "HTTP proxy" and enter your http proxy address
-
-   - Select <Check> and press [Enter]
+   **NOTE:** Cannot be used in tandem with local repository support.
 
    .. figure:: img/fuelmenu5.png
 
@@ -281,7 +285,7 @@ Install Fuel master
 
 #. Start the installation.
 
-   - Select Quit Setup and press Save and Quit.
+   - Press <F8> or select Quit Setup and press Save and Quit.
 
    - Installation starts, wait until the login screen is shown.
 
@@ -294,9 +298,15 @@ the login prompt, you should boot the Node Servers (Your
 Compute/Control/Storage blades (nested or real) with a PXE booting
 scheme so that the FUEL Master can pick them up for control.
 
+**NOTE**: AArch64 target nodes are expected to support PXE booting an
+EFI binary, i.e. an EFI-stubbed GRUB2 bootloader.
+
+**NOTE**: UEFI (EDK2) firmware is **highly** recommended, becoming
+the **de facto** standard for ARMv8 nodes.
+
 #. Enable PXE booting
 
-   - For every controller and compute server: enable PXE Booting as the first boot device in the BIOS boot order menu and hard disk as the second boot device in the same menu.
+   - For every controller and compute server: enable PXE Booting as the first boot device in the UEFI (EDK2) boot order menu and hard disk as the second boot device in the same menu.
 
 #. Reboot all the control and compute blades.
 
@@ -487,7 +497,7 @@ Enable Plugins
 
    - Enable and configure the plugins of your choice
 
-   .. figure:: img/plugins.png
+   .. figure:: img/plugins_aarch64.png
 
 Allocate nodes to environment and assign functional roles
 ---------------------------------------------------------
