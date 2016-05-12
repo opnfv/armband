@@ -58,7 +58,7 @@ Brahmaputra 3.0 release use the following command:
 
     $ git clone https://gerrit.opnfv.org/gerrit/armband
 
-Check-out the Brahmaputra release tag to set the branch to the
+Check-out the Brahmaputra release tag to set the HEAD to the
 baseline required to replicate the Brahmaputra release:
 
 .. code-block:: bash
@@ -223,7 +223,7 @@ Install Fuel master
 
 #. In the "Network Setup" section - Configure DHCP/Static IP information for your FUEL node - For example, ETH0 is 10.20.0.2/24 for FUEL booting and ETH1 is DHCP/Static in your corporate/lab network (see figure below).
 
-   - **Note**: ArmbandFuel@OPNFV requires internet connectivity during bootstrap
+   - **NOTE**: ArmbandFuel@OPNFV requires internet connectivity during bootstrap
      image building, due to missing arm64 (AArch64) packages in the partial
      local Ubuntu mirror (consequence of ports.ubuntu.com mirror architecture).
 
@@ -307,25 +307,6 @@ scheme so that the FUEL Master can pick them up for control.
    - Wait until all nodes are displayed in top right corner of the Fuel GUI: Total nodes and Unallocated nodes (see figure below).
 
    .. figure:: img/nodes.png
-
-
-Target specific configuration
------------------------------
-
-#. AMD Softiron
-
-   For these targets, "rx-vlan-filter" offloading has to be turned off on the interface destined for OpenStack traffic (not the interface used for PXE boot).
-   For now this setting cannot be toggled from Fuel GUI, so it has to be done form the console.
-
-   - From Fuel master console identify target nodes admin IPs (see figure below).
-
-     .. figure:: img/fuelconsole1.png
-
-   - SSH into each of the target nodes and disable rx-vlan-filter on the physical interface allocated for OpenStack traffic  (see figure below).
-
-     .. figure:: img/softiron1.png
-
-   - Repeat the step above for all AMD Softiron nodes in the POD.
 
 
 Install additional Plugins/Features on the FUEL node
@@ -556,7 +537,6 @@ Allocate nodes to environment and assign functional roles
 
     .. figure:: img/interfaceconf.png
 
-
 OPTIONAL - UNTESTED - Set Local Mirror Repos
 ---------------------------------
 
@@ -588,6 +568,55 @@ that can be used for installation / deployment of openstack.
    - "Auxiliary" URI="deb http://<ip-of-fuel-server>:8080/liberty-8.0/ubuntu/auxiliary auxiliary main restricted"
 
    - Click <Save Settings> at the bottom to Save your changes
+
+Target specific configuration
+-----------------------------
+
+#. Set up targets for provisioning with non-default "Offloading Modes"
+
+   Some target nodes may require additional configuration after they are
+   PXE booted (bootstrapped); the most frequent changes are in defaults
+   for ethernet devices' "Offloading Modes" settings (e.g. some targets'
+   ethernet drivers may strip VLAN traffic by default).
+
+   If your target ethernet drivers have wrong "Offloading Modes" defaults,
+   in "Configure interfaces" page (described above), expand affected
+   interface's "Offloading Modes" and [un]check the relevant settings
+   (see figure below):
+
+   .. figure:: img/offloadingmodes.png
+
+#. Set up targets for "Verify Networks" with non-default "Offloading Modes"
+
+   **NOTE**: Check *Reference 15* for an updated and comprehensive list of
+   known issues and/or limitations, including "Offloading Modes" not being
+   applied during "Verify Networks" step.
+
+   Setting custom "Offloading Modes" in Fuel GUI will only apply those settings
+   during provisiong and **not** during "Verify Networks", so if your targets
+   need this change, you have to apply "Offloading Modes" settings by hand
+   to bootstrapped nodes.
+
+   **E.g.**: Our driver has "rx-vlan-filter" default "on" (expected "off") on
+   the Openstack interface(s) "eth1", preventing VLAN traffic from passing
+   during "Verify Networks".
+
+   - From Fuel master console identify target nodes admin IPs (see figure below):
+
+     .. code-block:: bash
+
+         $ fuel nodes
+
+     .. figure:: img/fuelconsole1.png
+
+   - SSH into each of the target nodes and disable "rx-vlan-filter" on the
+     affected physical interface(s) allocated for OpenStack traffic (eth1):
+
+     .. code-block:: bash
+
+         $ ssh root@10.20.0.6 ethtool -K eth1 rx-vlan-filter off
+
+   - Repeat the step above for all affected nodes/interfaces in the POD.
 
 Verify Networks
 ---------------
