@@ -15,6 +15,13 @@ make patches-import
 
 # source local environment variables
 if ! [ -z $LAB_CONFIG_URL ]; then
+    while getopts "l:p:" OPTION 2>/dev/null
+    do
+        case $OPTION in
+            l) TARGET_LAB=$OPTARG;;
+            p) TARGET_POD=$OPTARG;;
+        esac
+    done
     local_env=${LAB_CONFIG_URL}/labs/${TARGET_LAB}/${TARGET_POD}/fuel/config/local_env
     # try to fetch this file, but don't create it if it does not exist.
     # We add "|| true" to ignore the curl error when the file does not exist
