@@ -1,0 +1,35 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 13 May 2016 23:06:28 +0200
+Subject: [PATCH] Add cobbler-grub-aarch64 to cobbler dependencies.
+
+The aarch64 grub EFI loader, packaged as an RPM and previously
+installed in the nailgun docker container in /var/lib/cobbler,
+is now added as a cobbler dependency in puppet and installed
+on the Fuel master node.
+
+[Alexandru.Avadanii@enea.com]
+Reworked based on Florin's work for the docker container.
+
+Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deployment/puppet/cobbler/manifests/packages.pp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/deployment/puppet/cobbler/manifests/packages.pp b/deployment/puppet/cobbler/manifests/packages.pp
+index 267c18c..9782c4c 100644
+--- a/deployment/puppet/cobbler/manifests/packages.pp
++++ b/deployment/puppet/cobbler/manifests/packages.pp
+@@ -25,10 +25,10 @@ class cobbler::packages {
+       $pexpect_package     = 'pexpect'
+       case $::operatingsystemrelease {
+         /6.+/: {
+-          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents', 'bind-utils']
++          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents', 'bind-utils', 'cobbler-grub-aarch64']
+         }
+         /7.+/: {
+-          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils']
++          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils', 'cobbler-grub-aarch64']
+         }
+       }
+     }
