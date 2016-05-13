@@ -1,27 +1,27 @@
 [submodule "opnfv-fuel"]
 	path = upstream/fuel
 	url = https://gerrit.opnfv.org/gerrit/fuel
-	branch = stable/brahmaputra
+	branch = master
 [submodule "fuel-main"]
 	path = upstream/fuel-main
 	url = https://github.com/openstack/fuel-main.git
-	branch = stable/8.0
+	branch = master
 [submodule "fuel-library"]
 	path = upstream/fuel-library
 	url = https://github.com/openstack/fuel-library.git
-	branch = stable/8.0
+	branch = master
 [submodule "fuel-web"]
 	path = upstream/fuel-web
 	url = https://github.com/openstack/fuel-web.git
-	branch = stable/8.0
+	branch = master
 [submodule "fuel-agent"]
 	path = upstream/fuel-agent
 	url = https://github.com/openstack/fuel-agent.git
-	branch = stable/8.0
+	branch = master
 [submodule "fuel-mirror"]
 	path = upstream/fuel-mirror
 	url = https://github.com/openstack/fuel-mirror.git
-	branch = stable/8.0
+	branch = master
 [submodule "fuel-plugin-opendaylight"]
 	path = upstream/fuel-plugin-opendaylight
 	url = https://github.com/openstack/fuel-plugin-opendaylight.git
@@ -29,8 +29,8 @@
 [submodule "fuel-nailgun-agent"]
 	path = upstream/fuel-nailgun-agent
 	url = https://github.com/openstack/fuel-nailgun-agent
-	branch = stable/8.0
+	branch = master
 [submodule "fuel-astute"]
 	path = upstream/fuel-astute
 	url = https://github.com/openstack/fuel-astute.git
-	branch = stable/8.0
+	branch = master
