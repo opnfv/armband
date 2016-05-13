@@ -1,0 +1,33 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 19 Mar 2016 19:02:15 +0100
+Subject: [PATCH] FIXME: Disable amd64 Mitaka on Ubuntu for now.
+
+Until we fix all cohabitation of amd64 and arm64, disable Openstack
+releases <Mitaka on Ubuntu 14.04> and <Mitaka on Ubuntu+UCA 14.04>
+(both x86_64) in openstack.yaml fixture.
+
+TODO: Propose renaming above releases to include arch in name.
+---
+ nailgun/nailgun/fixtures/openstack.yaml | 2 +
+ 2 file changed, 2 insertion(+)
+
+diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
+index 62e6b73..7d7ffa6 100644
+--- a/nailgun/nailgun/fixtures/openstack.yaml
++++ b/nailgun/nailgun/fixtures/openstack.yaml
+@@ -1977,6 +1977,7 @@
+   extend: *base_release
+   fields:
+     name: "Mitaka on Ubuntu 14.04"
++    state: "unavailable"
+     version: "mitaka-9.0"
+     operating_system: "Ubuntu"
+     description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base oper
+@@ -2218,6 +2219,7 @@
+   extend: *ubuntu_release
+   fields:
+     name: "Mitaka on Ubuntu+UCA 14.04"
++    state: "unavailable"
+     version: "mitaka-9.0"
+     description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base oper
+     attributes_metadata:
