@@ -1,0 +1,310 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 14 May 2016 00:53:36 +0200
+Subject: [PATCH] nailgun: Add AArch64 Openstack Mitaka release(s).
+
+Add the following Openstack releases:
+
+- Mitaka on Ubuntu 14.04 (aarch64)
+- Mitaka on Ubuntu+UCA 14.04 (aarch64)
+
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ nailgun/nailgun/fixtures/openstack.yaml | 287 ++++++++++++++++++++++++++++++++
+ 1 file changed, 287 insertions(+)
+
+diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
+index 62e6b73..9674d66 100644
+--- a/nailgun/nailgun/fixtures/openstack.yaml
++++ b/nailgun/nailgun/fixtures/openstack.yaml
+@@ -2314,3 +2314,290 @@
+             weight: 61
+             type: "checkbox"
+             value: true
++- &ubuntu_aarch64_release
++  pk: 4
++  extend: *base_release
++  fields:
++    name: "Mitaka on Ubuntu 14.04 (aarch64)"
++    version: "mitaka-9.0"
++    operating_system: "Ubuntu"
++    description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
++    attributes_metadata:
++      editable:
++        kernel_params:
++          kernel:
++            value: "console=ttyAMA0,115200 console=ttyS0,115200 net.ifnames=1 biosdevname=0 rootdelay=90 nomodeset"
++        repo_setup:
++          metadata:
++            label: "Repositories"
++            weight: 50
++            group: "general"
++            always_editable: true
++          repos:
++            type: "custom_repo_configuration"
++            extra_priority: null
++            description: |
++              Please note: the first repository will be considered the operating system mirror that will be used during node provisioning.
++              To create a local repository mirror on the Fuel master node, please follow the instructions provided by running "fuel-createmirror --help" on the Fuel master node.
++              Please make sure your Fuel master node has Internet access to the repository before attempting to create a mirror.
++              For more details, please refer to the documentation (https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html#external-ubuntu-ops).
++            value:
++              - type: "deb"
++                name: "ubuntu"
++                uri: "http://ports.ubuntu.com/"
++                suite: "trusty"
++                section: "main universe multiverse"
++                priority: null
++              - type: "deb"
++                name: "ubuntu-updates"
++                uri: "http://ports.ubuntu.com/"
++                suite: "trusty-updates"
++                section: "main universe multiverse"
++                priority: null
++              - type: "deb"
++                name: "ubuntu-security"
++                uri: "http://ports.ubuntu.com/"
++                suite: "trusty-security"
++                section: "main universe multiverse"
++                priority: null
++              - type: "deb"
++                name: "mos"
++                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/x86_64"
++                suite: "mos9.0"
++                section: "main restricted"
++                priority: 1050
++              - type: "deb"
++                name: "mos-updates"
++                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
++                suite: "mos9.0-updates"
++                section: "main restricted"
++                priority: 1050
++              - type: "deb"
++                name: "mos-security"
++                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
++                suite: "mos9.0-security"
++                section: "main restricted"
++                priority: 1050
++              - type: "deb"
++                name: "mos-holdback"
++                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
++                suite: "mos9.0-holdback"
++                section: "main restricted"
++                priority: 1100
++              - type: "deb"
++                name: "Auxiliary"
++                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/auxiliary"
++                suite: "auxiliary"
++                section: "main restricted"
++                priority: 1150
++        provision:
++          metadata:
++            label: "Provision"
++            weight: 80
++            group: "general"
++            restrictions:
++              - condition: "false"
++                action: "hide"
++          packages:
++            label: "Initial packages"
++            weight: 10
++            type: "textarea"
++            value: |
++              acl
++              anacron
++              bash-completion
++              bridge-utils
++              bsdmainutils
++              build-essential
++              cloud-init
++              curl
++              daemonize
++              debconf-utils
++              gdisk
++              grub-efi-arm64
++              hpsa-dkms
++              hwloc
++              i40e-dkms
++              linux-firmware
++              linux-firmware-nonfree
++              linux-headers-generic-lts-trusty
++              linux-image-generic-lts-trusty
++              lvm2
++              mcollective
++              mdadm
++              multipath-tools
++              multipath-tools-boot
++              nailgun-agent
++              nailgun-mcagents
++              network-checker
++              ntp
++              openssh-client
++              openssh-server
++              puppet
++              python-amqp
++              ruby-augeas
++              ruby-ipaddress
++              ruby-json
++              ruby-netaddr
++              ruby-openstack
++              ruby-shadow
++              ruby-stomp
++              telnet
++              ubuntu-minimal
++              ubuntu-standard
++              uuid-runtime
++              vim
++              virt-what
++              vlan
++      generated:
++       repo_setup:
++          installer_kernel:
++            remote_relative: "dists/trusty/main/installer-arm64/current/images/generic/netboot/vmlinuz"
++            local: "/var/www/nailgun/ubuntu/arm64/images/linux"
++          installer_initrd:
++            remote_relative: "dists/trusty/main/installer-arm64/current/images/generic/netboot/initrd.gz"
++            local: "/var/www/nailgun/ubuntu/arm64/images/initrd.gz"
++        cobbler:
++          profile:
++            generator_arg: "ubuntu_1404_arm64"
++        provision:
++          codename: "trusty"
++          image_data:
++            /:
++              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64.img.gz"
++              format: "ext4"
++              container: "gzip"
++            /boot:
++              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64-boot.img.gz"
++              format: "ext2"
++              container: "gzip"
++    node_attributes:
++      cpu_pinning:
++        metadata:
++          group: "nfv"
++          label: "CPU pinning"
++          weight: 10
++          restrictions:
++            - condition: "settings:common.libvirt_type.value != 'kvm'"
++              action: "hide"
++        nova:
++          weight: 10
++          description: "Number of CPUs for Nova usage"
++          label: "Nova CPU pinning"
++          type: "number"
++          value: 0
++          min: 0
++      hugepages:
++        metadata:
++          group: "nfv"
++          label: "Huge Pages"
++          weight: 20
++          restrictions:
++            - condition: "settings:common.libvirt_type.value != 'kvm'"
++              action: "hide"
++        nova:
++          weight: 10
++          description: "Nova Huge Pages configuration"
++          label: "Nova Huge Pages"
++          type: "custom_hugepages"
++          value: {}
++- pk: 5
++  extend: *ubuntu_aarch64_release
++  fields:
++    name: "Mitaka on Ubuntu+UCA 14.04 (aarch64)"
++    version: "mitaka-9.0"
++    description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system, including Ubuntu Cloud Archive OpenStack packages. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
++    attributes_metadata:
++      editable:
++        repo_setup:
++          repos:
++            type: "custom_repo_configuration"
++            extra_priority: null
++            description: |
++              Please note: the first repository will be considered the operating system mirror that will be used during node provisioning.
++              To create a local repository mirror on the Fuel master node, please follow the instructions provided by running "fuel-createmirror --help" on the Fuel master node.
++              Please make sure your Fuel master node has Internet access to the repository before attempting to create a mirror.
++              For more details, please refer to the documentation (https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html#external-ubuntu-ops).
++            value:
++              - type: "deb"
++                name: "ubuntu"
++                uri: "http://ports.ubuntu.com/"
++                suite: "trusty"
++                section: "main universe multiverse"
++                priority: null
++              - type: "deb"
++                name: "ubuntu-updates"
++                uri: "http://ports.ubuntu.com/"
++                suite: "trusty-updates"
++                section: "main universe multiverse"
++                priority: null
++              - type: "deb"
++                name: "ubuntu-security"
++                uri: "http://ports.ubuntu.com/"
++                suite: "trusty-security"
++                section: "main universe multiverse"
++                priority: null
++              - type: "deb"
++                name: "uca"
++                uri: "http://ubuntu-cloud.archive.canonical.com/ubuntu"
++                suite: "trusty-updates/mitaka"
++                section: "main"
++                priority: 1080
++              - type: "deb"
++                name: "uca-proposed"
++                uri: "http://ubuntu-cloud.archive.canonical.com/ubuntu"
++                suite: "trusty-proposed/mitaka"
++                section: "main"
++                priority: 1080
++              - type: "deb"
++                name: "mos"
++                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/x86_64"
++                suite: "mos9.0"
++                section: "main restricted"
++                priority: 1050
++              - type: "deb"
++                name: "mos-updates"
++                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
++                suite: "mos9.0-updates"
++                section: "main restricted"
++                priority: 1050
++              - type: "deb"
++                name: "mos-security"
++                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
++                suite: "mos9.0-security"
++                section: "main restricted"
++                priority: 1050
++              - type: "deb"
++                name: "mos-holdback"
++                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
++                suite: "mos9.0-holdback"
++                section: "main restricted"
++                priority: 1100
++              - type: "deb"
++                name: "Auxiliary"
++                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/auxiliary"
++                suite: "auxiliary"
++                section: "main restricted"
++                priority: 1150
++          repo_type:
++            type: "hidden"
++            weight: 58
++            value: "uca"
++          pin_haproxy:
++            label: "HAProxy APT Pinning"
++            description: "Use Fuel HAProxy packages instead of upstream"
++            weight: 59
++            type: "checkbox"
++            value: true
++          pin_rabbitmq:
++            label: "RabbitMQ APT Pinning"
++            description: "Use Fuel RabbitMQ packages instead of upstream"
++            weight: 60
++            type: "checkbox"
++            value: true
++          pin_ceph:
++            label: "Ceph APT Pinning"
++            description: "Use Fuel Ceph packages instead of upstream"
++            weight: 61
++            type: "checkbox"
++            value: true
