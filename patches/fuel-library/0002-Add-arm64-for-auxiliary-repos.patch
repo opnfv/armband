@@ -3,14 +3,14 @@ Date: Wed, 24 Feb 2016 20:05:25 +0100
 Subject: [PATCH] Add arm64 for auxiliary repos
 
 ---
- deployment/puppet/nailgun/files/Release-auxiliary     | 2 +-
- deployment/puppet/nailgun/manifests/auxiliaryrepos.pp | 4 +++-
+ deployment/puppet/fuel/files/Release-auxiliary     | 2 +-
+ deployment/puppet/fuel/manifests/auxiliaryrepos.pp | 4 +++-
  2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/deployment/puppet/nailgun/files/Release-auxiliary b/deployment/puppet/nailgun/files/Release-auxiliary
+diff --git a/deployment/puppet/fuel/files/Release-auxiliary b/deployment/puppet/fuel/files/Release-auxiliary
 index 2d5ce58..03f84b8 100644
---- a/deployment/puppet/nailgun/files/Release-auxiliary
-+++ b/deployment/puppet/nailgun/files/Release-auxiliary
+--- a/deployment/puppet/fuel/files/Release-auxiliary
++++ b/deployment/puppet/fuel/files/Release-auxiliary
 @@ -3,6 +3,6 @@ Label: auxiliary
  Suite: auxiliary
  Codename: auxiliary
@@ -19,10 +19,10 @@ index 2d5ce58..03f84b8 100644
 +Architectures: amd64 arm64
  Components: main restricted
  Description: Auxiliary
-diff --git a/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp b/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
+diff --git a/deployment/puppet/fuel/manifests/auxiliaryrepos.pp b/deployment/puppet/fuel/manifests/auxiliaryrepos.pp
 index 720943d..91adb3e 100644
---- a/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
-+++ b/deployment/puppet/nailgun/manifests/auxiliaryrepos.pp
+--- a/deployment/puppet/fuel/manifests/auxiliaryrepos.pp
++++ b/deployment/puppet/fuel/manifests/auxiliaryrepos.pp
 @@ -40,7 +40,9 @@ class nailgun::auxiliaryrepos(
    $release_files = [
      "${ubuntu_dir}/dists/auxiliary/Release",
