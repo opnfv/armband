@@ -6,7 +6,7 @@ This depends on cirros-testvm package to contain both amd64 and arm64
 images.
 ---
  deployment/puppet/openstack/manifests/img/cirros.pp           |  8 ++++++--
- .../puppet/osnailyfacter/modular/generate_vms/generate_vms.pp | 11 +++++++++++
+ puppet/osnailyfacter/manifests/generate_vms/vm_config.pp      | 11 +++++++++++
  deployment/puppet/osnailyfacter/templates/vm_libvirt.erb      |  9 ++++++++-
  files/fuel-migrate/fuel-migrate                               |  5 ++++-
  4 files changed, 29 insertions(+), 4 deletions(-)
@@ -43,10 +43,10 @@ index 84e202e..cff06e0 100644
      unless => "/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} index && (/usr/bin/glance -N ${os_auth_url} -T ${os_tenant_name} -I ${os_username} -K ${os_password} index | grep ${img_name})",
  
      }
-diff --git a/deployment/puppet/osnailyfacter/modular/generate_vms/generate_vms.pp b/deployment/puppet/osnailyfacter/modular/generate_vms/generate_vms.pp
+diff --git a/deployment/puppet/osnailyfacter/manifests/generate_vms/vm_config.pp b/deployment/puppet/osnailyfacter/manifests/generate_vms/vm_config.pp
 index 6d5426a..da5954e 100644
---- a/deployment/puppet/osnailyfacter/modular/generate_vms/generate_vms.pp
-+++ b/deployment/puppet/osnailyfacter/modular/generate_vms/generate_vms.pp
+--- a/deployment/puppet/osnailyfacter/manifests/generate_vms/vm_config.pp
++++ b/deployment/puppet/osnailyfacter/manifests/generate_vms/vm_config.pp
 @@ -11,6 +11,17 @@ define vm_config {
    $details = $name
    $id = $details['id']
