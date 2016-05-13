@@ -22,9 +22,7 @@ diff --git a/mcagents/execute_shell_command.ddl b/mcagents/execute_shell_command
 index 0480be7..ad58046 100644
 --- a/mcagents/execute_shell_command.ddl
 +++ b/mcagents/execute_shell_command.ddl
-@@ -4,7 +4,7 @@ metadata    :name        => "Execute shell command",
-             :license     => "Apache License 2.0",
-             :version     => "8.0.0",
+@@ -4,5 +4,5 @@ metadata    :name        => "Execute shell command",
              :url         => "http://mirantis.com",
 -            :timeout     => 3600
 +            :timeout     => 7200
