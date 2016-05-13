@@ -21,16 +21,15 @@ This patch extends the version checking introduced in [1]:
 [1] https://review.openstack.org/#/c/200602/8/deployment/puppet/
     openstack/manifests/ceilometer.pp
 ---
- deployment/puppet/openstack/manifests/ceilometer.pp | 8 +++++++-
+ deployment/puppet/openstack_tasks/manifests/ceilometer/compute.pp | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/deployment/puppet/openstack/manifests/ceilometer.pp b/deployment/puppet/openstack/manifests/ceilometer.pp
+diff --git a/deployment/puppet/openstack_tasks/manifests/ceilometer/compute.pp b/deployment/puppet/openstack_tasks/manifests/ceilometer/compute.pp
 index 8311731..1d7af2b 100644
---- a/deployment/puppet/openstack/manifests/ceilometer.pp
-+++ b/deployment/puppet/openstack/manifests/ceilometer.pp
-@@ -195,8 +195,14 @@ class openstack::ceilometer (
+--- a/deployment/puppet/openstack_tasks/manifests/ceilometer/compute.pp
++++ b/deployment/puppet/openstack_tasks/manifests/ceilometer/compute.pp
+@@ -195,7 +195,13 @@ class openstack::ceilometer (
  
-   if ($on_compute) {
      if $::operatingsystem == 'Ubuntu' and $::ceilometer::params::libvirt_group {
 +      # Armband libvirt-bin deb package (1.3.2 version) creates 'libvirtd' group on Ubuntu
 +      if (versioncmp($::libvirt_package_version, '1.3.2') >= 0) {

@@ -10,7 +10,7 @@ diff --git a/deployment/puppet/osnailyfacter/modular/astute/tasks.yaml b/deploym
 index a2cb1da..d9d2dcc 100644
 --- a/deployment/puppet/osnailyfacter/modular/astute/tasks.yaml
 +++ b/deployment/puppet/osnailyfacter/modular/astute/tasks.yaml
-@@ -19,7 +19,7 @@
+@@ -19,6 +19,6 @@
      cmd: ruby /etc/puppet/modules/osnailyfacter/modular/astute/upload_cirros.rb
      retries: 3
      interval: 20
@@ -18,4 +18,3 @@ index a2cb1da..d9d2dcc 100644
 +    timeout: 360
  
  - id: upload_nodes_info
-   type: upload_file

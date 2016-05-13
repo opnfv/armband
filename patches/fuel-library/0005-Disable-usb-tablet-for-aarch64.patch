@@ -3,28 +3,23 @@ Date: Tue, 15 Mar 2016 11:33:52 +0100
 Subject: [PATCH] Disable usb tablet for aarch64
 
 ---
- deployment/puppet/openstack/manifests/compute.pp | 12 ++++++++++++
+ deployment/puppet/openstack_tasks/manifests/roles/compute.pp | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/deployment/puppet/openstack/manifests/compute.pp b/deployment/puppet/openstack/manifests/compute.pp
+diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
 index ca1b2c4..c0349dc 100644
---- a/deployment/puppet/openstack/manifests/compute.pp
-+++ b/deployment/puppet/openstack/manifests/compute.pp
-@@ -316,6 +316,10 @@ class openstack::compute (
+--- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
++++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
+@@ -316,3 +316,7 @@ class openstack::compute (
    nova_config {
-     'libvirt/live_migration_flag':  value => 'VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST';
-     'libvirt/block_migration_flag': value => 'VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_NON_SHARED_INC';
 +    'libvirt/use_usb_tablet': value => $::architecture ? {
 +        /(arm64|aarch64)/ => false,
 +        default           => true,
 +    }
-   }
- 
-   nova_config {
-@@ -364,6 +368,14 @@ class openstack::compute (
-     # Workaround for bug LP #1469308
-     # also service name for Ubuntu and Centos is the same.
-     libvirt_service_name     => "libvirtd",
+     'libvirt/live_migration_flag':  value => 'VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST';
+     'libvirt/block_migration_flag': value => 'VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_NON_SHARED_INC';
+@@ -364,3 +368,11 @@ class openstack::compute (
+     libvirt_service_name                       => $::nova::params::libvirt_service_name,
 +  } ->
 +  package { 'vgabios':
 +    ensure => present;
@@ -35,4 +30,3 @@ index ca1b2c4..c0349dc 100644
 +    replace => false,
    }
  
-   # From legacy libvirt.pp

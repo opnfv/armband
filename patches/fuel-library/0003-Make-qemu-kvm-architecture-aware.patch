@@ -3,23 +3,20 @@ Date: Wed, 24 Feb 2016 20:07:06 +0100
 Subject: [PATCH] Make qemu-kvm architecture aware
 
 ---
- deployment/puppet/openstack/manifests/compute.pp | 9 +++++++--
+ deployment/puppet/openstack_tasks/manifests/roles/compute.pp | 9 +++++++--
  1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/deployment/puppet/openstack/manifests/compute.pp b/deployment/puppet/openstack/manifests/compute.pp
+diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
 index b2339bc..ca1b2c4 100644
---- a/deployment/puppet/openstack/manifests/compute.pp
-+++ b/deployment/puppet/openstack/manifests/compute.pp
-@@ -169,10 +169,15 @@ class openstack::compute (
-         before  => Augeas['libvirt-conf'],
-       }
- 
+--- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
++++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
+@@ -169,7 +169,12 @@ class openstack_tasks::compute (
+       # From legacy libvirt.pp
 +      # Guard against some exotic distros with their `uname -m`
 +      $arch = $::architecture ? {
 +        /(arm64|aarch64)/ => 'aarch64',
 +        default           => 'x86_64',
 +      }
-       # From legacy libvirt.pp
        exec { 'symlink-qemu-kvm':
 -        command => '/bin/ln -sf /usr/libexec/qemu-kvm /usr/bin/qemu-system-x86_64',
 -        creates => '/usr/bin/qemu-system-x86_64',
