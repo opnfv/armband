@@ -1,0 +1,79 @@
+From: Vijayendra Radhakrishna <vradhakrishna@mvista.com>
+Date: Sun, 15 May 2016 01:20:23 +0530
+Subject: [PATCH] Optimize lshw invocation
+
+nailgun-agent triggers lshw periodically and lshw takes too much time
+on some hardware like Cavium ThunderX crb2s (close to 5 min) but this
+hardware information is constant unless you add new hardware into
+nodes.
+
+This patch optimizes subsequent runs of nailgun-agent by saving the
+lshw output to a file for the first time it is triggered and reading
+it from that file on consecutive runs.
+
+lshw output file is saved on the tmp filesystem and on reboot it will
+be cleared and therefore any hardware changes will be detected.
+
+Signed-off-by: Vijayendra Radhakrishna <vradhakrishna@mvista.com>
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+---
+ agent | 31 +++++++++++++++++++++++++++++--
+ 1 file changed, 29 insertions(+), 2 deletions(-)
+
+diff --git a/agent b/agent
+index c764a68..da7b0ff 100755
+--- a/agent
++++ b/agent
+@@ -55,6 +55,8 @@ REMOVABLE_PCI_VENDORS = [
+   "0x1044", "0x9004", "0x9005",
+ ]
+ 
++LS_HW_OUT="/tmp/lshw.out"
++
+ def digest(body)
+   if body.is_a? Hash
+     digest body.map { |k,v| [digest(k),digest(v)].join("=>") }.sort
+@@ -788,16 +790,41 @@ class NodeAgent
+     res
+   end
+ 
++  def lshw(lshw_path)
++    if File.exist?(LS_HW_OUT)
++      begin
++        lshw = File.read(LS_HW_OUT)
++      rescue => e
++        return 1, e.message
++      end
++    else
++      begin
++        file = File.open(LS_HW_OUT, "w")
++        lshw = `#{lshw_path} -json`
++        exitstatus = $?
++        if exitstatus != 0
++          return exitstatus, lshw
++        end
++        file.write(lshw)
++      rescue => e
++        return 1, e.message
++      ensure
++        file.close unless file.nil?
++      end
++    end
++    return 0, lshw
++  end
++
+   def _get_pci_dev_list
+     lshw_path = `which lshw`.chomp
+     exitstatus = $?
+     if exitstatus == 0
+-      data = `#{lshw_path} -json`
++      exitstatus, data = lshw(lshw_path)
+       exitstatus = $?
+       if exitstatus == 0
+         return JSON.parse(data)
+       else
+-        @logger.warn("Can't get data from lshw. Reason: lshw exited with status #{exitstatus}")
++        @logger.warn("Can't get data from lshw. Reason: lshw exited with status #{exitstatus}. Error: #{data}")
+       end
+     else
+       @logger.warn("Can't find lshw. Reason: 'which lshw' returned exit status #{exitstatus}")
