@@ -11,7 +11,7 @@ TODO: maybe rename above fixture to include arch in name.
  1 file changed, 1 insertion(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index 4979fb5..037ceba 100644
+index 9da1346..f798830 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
 @@ -1986,6 +1986,7 @@
