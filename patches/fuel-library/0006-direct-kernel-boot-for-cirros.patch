@@ -3,42 +3,23 @@ Date: Tue, 15 Mar 2016 15:01:34 +0100
 Subject: [PATCH] direct kernel boot for cirros
 
 ---
- .../osnailyfacter/modular/astute/upload_cirros.rb  | 58 +++++++++++++++++++++-
- .../puppet/osnailyfacter/templates/vm_libvirt.erb  |  8 ++-
- 2 files changed, 63 insertions(+), 3 deletions(-)
+ .../osnailyfacter/modular/astute/upload_cirros.rb  | 51 +++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 2 deletions(-)
 
 diff --git a/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb b/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
-index 04d597c..c342830 100755
+index 53d75fc..8a75356 100755
 --- a/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
 +++ b/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
-@@ -1,6 +1,7 @@
- #!/usr/bin/env ruby
- require 'hiera'
- 
-+
- ENV['LANG'] = 'C'
- 
- hiera = Hiera.new(:config => '/etc/hiera.yaml')
-@@ -56,11 +57,17 @@ def image_list
+@@ -56,7 +56,7 @@ def image_list
      fields = line.split('|').map { |f| f.chomp.strip }
      next if fields[1] == 'ID'
      next unless fields[2]
--    images << fields[2]
-+    images << [fields[1], fields[2]]
+-    images << {fields[2] => fields[6]}
++    images << {fields[2] => { :id => fields[1], :status => fields[6]}}
    end
    {:images => images, :exit_code => return_code}
  end
- 
-+def image_name_list
-+  images = image_list
-+  images[:images].map! { |i| i[1] }
-+  images
-+end
-+
- # TODO degorenko: remove --os-image-api-version after liberty (fuel-8.0) release
- def image_create(image_hash)
-   command = <<-EOF
-@@ -79,6 +86,15 @@ EOF
+@@ -78,6 +78,15 @@ EOF
    [ stdout, return_code ]
  end
  
@@ -54,16 +35,16 @@ index 04d597c..c342830 100755
  # check if Glance is online
  # waited until the glance is started because when vCenter used as a glance
  # backend launch may takes up to 1 minute.
-@@ -93,7 +109,7 @@ end
- # upload image to Glance
+@@ -93,7 +102,7 @@ end
  # if it have not been already uploaded
  def upload_image(image)
--  list_of_images = image_list
-+  list_of_images = image_name_list
-   if list_of_images[:images].include?(image['img_name']) && list_of_images[:exit_code] == 0
+   list_of_images = image_list
+-  if list_of_images[:images].include?(image['img_name'] => "active") && list_of_images[:exit_code] == 0
++  if list_of_images[:images].select { |k,v| k == image['img_name'] and v[:status] == "active" } && list_of_images[:exit_code] == 0
      puts "Image '#{image['img_name']}' is already present!"
      return 0
-@@ -109,6 +125,43 @@ def upload_image(image)
+   end
+@@ -114,6 +123,43 @@ def upload_image(image)
    return return_code
  end
  
@@ -76,9 +57,9 @@ index 04d597c..c342830 100755
 +  return_code = img_list[:exit_code]
 +  if return_code == 0
 +    images.each do |image|
-+      img_list[:images].each do |il|
-+        if il[1] == image['img_name']
-+          image['id'] = il[0]
++      img_list[:images].each do |k,v|
++        if k == image['img_name']
++          image['id'] = v[:id]
 +        end
 +      end
 +    end
@@ -107,7 +88,7 @@ index 04d597c..c342830 100755
  ########################
  
  wait_for_glance
-@@ -117,6 +170,7 @@ errors = 0
+@@ -122,6 +168,7 @@ errors = 0
  test_vm_images.each do |image|
    errors += upload_image(image)
  end
@@ -115,24 +96,3 @@ index 04d597c..c342830 100755
  
  exit 1 unless errors == 0
  
-diff --git a/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb b/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
-index 2d030d9..b33fb25 100644
---- a/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
-+++ b/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
-@@ -3,9 +3,15 @@
-   <memory unit='GiB'><%= @details['mem'] %></memory>
-   <vcpu placement='static'><%= @details['cpu'] %></vcpu>
-   <os>
--    <type arch='<%= @machine_arch %>' machine='<%= @machine_type %>'>hvm</type>
-+  <type arch='<%= @machine_arch %>' machine='<%= @machine_type %>'>hvm</type>
-+  <% if $machine_arch == 'aarch64' %>
-+    <kernel>/var/lib/nova/<%= @details['id'] %>_vm.kernel</kernel>
-+    <initrd>/var/lib/nova/<%= @details['id'] %>_vm.initramfs</initrd>
-+    <cmdline>root=/dev/vda1 rw rootwait console=tty0 console=ttyS0 console=ttyAMA0</cmdline>
-+  <% else %>
-     <boot dev='network'/>
-     <boot dev='hd'/>
-+  <% end %>
-   </os>
-   <features>
-     <acpi/>
