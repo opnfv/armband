@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_8bcf63b0",
+        "filename": "patches/opnfv-fuel/0001-Allow-customizing-Fuel-commit.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-05-16T04:45:36Z",
+      "side": 1,
+      "message": "Wrong commit here. We should preserve values from master",
+      "revId": "5c92145b9d42e78eac309e1782786051e87446b4",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
