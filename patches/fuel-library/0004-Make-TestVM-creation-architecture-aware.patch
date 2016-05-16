@@ -129,3 +129,22 @@ index fad9436..667d4a7 100755
    </features>
    <clock offset='utc'/>
    <on_poweroff>destroy</on_poweroff>
+--- deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
++++ deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
+@@ -3,9 +3,15 @@
+   <memory unit='GiB'><%= @details['mem'] %></memory>
+   <vcpu placement='static'><%= @details['cpu'] %></vcpu>
+   <os>
+-    <type arch='<%= @machine_arch %>' machine='<%= @machine_type %>'>hvm</type>
++  <type arch='<%= @machine_arch %>' machine='<%= @machine_type %>'>hvm</type>
++  <% if  == 'aarch64' %>
++    <kernel>/var/lib/nova/<%= @details['id'] %>_vm.kernel</kernel>
++    <initrd>/var/lib/nova/<%= @details['id'] %>_vm.initramfs</initrd>
++    <cmdline>root=/dev/vda1 rw rootwait console=tty0 console=ttyS0 console=ttyAMA0</cmdline>
++  <% else %>
+     <boot dev='network'/>
+     <boot dev='hd'/>
++  <% end %>
+   </os>
+   <features>
+     <acpi/>
