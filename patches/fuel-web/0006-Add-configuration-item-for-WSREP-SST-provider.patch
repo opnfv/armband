@@ -12,13 +12,13 @@ Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
  1 file changed, 21 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index f798830..c99e91a 100644
+index 62e6b73..4b123b9 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -856,6 +856,27 @@
+@@ -918,6 +918,27 @@
+             description: "Name for Mongo replication set"
+             weight: 30
              type: "text"
-             restrictions:
-               - "settings:neutron_mellanox.plugin.value != 'ethernet'"
 +        mysql_wsrep:
 +          metadata:
 +            label: "Database configuration"
