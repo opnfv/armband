@@ -20,9 +20,7 @@ diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/b
 index ca2d3e1..b0d410d 100644
 --- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
 +++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
-@@ -166,6 +166,14 @@ class BuildCommand(command.Command):
-                  " files",
-             action='append'
+@@ -166,4 +166,12 @@ class BuildCommand(command.Command):
          )
 +        parser.add_argument(
 +            '--target_arch',
@@ -66,8 +64,7 @@ diff --git a/fuel_agent/manager.py b/fuel_agent/manager.py
 index 15cc5d8..f613aef 100644
 --- a/fuel_agent/manager.py
 +++ b/fuel_agent/manager.py
-@@ -18,6 +18,7 @@ import shutil
- import signal
+@@ -18,5 +18,6 @@ import shutil
  
  from oslo_config import cfg
 +from oslo_config import types

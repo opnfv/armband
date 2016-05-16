@@ -35,8 +35,7 @@ index 6322a10..843c40b 100644
              if hasattr(bs_scheme, 'certs') and bs_scheme.certs:
                  bu.copy_update_certs(bs_scheme.certs, chroot)
              bu.run_apt_get(chroot, packages=packages,
-@@ -873,6 +878,7 @@ class Manager(object):
-                             force_ipv4_file=CONF.force_ipv4_file)
+@@ -873,5 +878,6 @@ class Manager(object):
              # restore disabled hosts/resolv files
              bu.restore_resolv_conf(chroot)
 +            bu.restore_newaliases(chroot)
