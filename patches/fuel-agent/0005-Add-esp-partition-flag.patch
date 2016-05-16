@@ -16,11 +16,11 @@ index c2fef69..0ae81f9 100644
 --- a/fuel_agent/drivers/nailgun.py
 +++ b/fuel_agent/drivers/nailgun.py
 @@ -324,7 +324,7 @@ class Nailgun(BaseDataDriver):
-                 # uefi partition (for future use)
-                 LOG.debug('Adding UEFI partition on disk %s: size=200' %
-                           disk['name'])
--                parted.add_partition(size=200)
-+                parted.add_partition(size=200, flags=['esp'])
+             # uefi partition (for future use)
+             LOG.debug('Adding UEFI partition on disk %s: size=200' %
+                       disk['name'])
+-            parted.add_partition(size=200)
++            parted.add_partition(size=200, flags=['esp'])
  
              LOG.debug('Looping over all volumes on disk %s' % disk['name'])
              for volume in disk['volumes']:
