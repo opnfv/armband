@@ -1,0 +1,52 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 23 May 2016 22:06:09 +0200
+Subject: [PATCH] deploy: ipmi adapter: Add <port> config support.
+
+Sometimes the IPMI lanplus protocol listens on a non-standard
+remote port, e.g. when target nodes are interfaced through a
+fake IPMI BMC application that listens on multiple ports on the
+same IP address.
+
+Therefore, allow setting IPMI port in DEA/DHA as part of the IP
+address (appended with a ':' separator, e.g. '10.0.1.100:623')
+and pass it along to `ipmitool` when set.
+
+CHANGE: now get_access_info also supports specifying the IPMI
+port appended to the IPMI IP, in the format '<IP>:<PORT>'.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deploy/dha_adapters/ipmi_adapter.py | 5 ++++-
+ deploy/reap.py                      | 2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/deploy/dha_adapters/ipmi_adapter.py b/deploy/dha_adapters/ipmi_adapter.py
+index 283bd57..963b2a7 100644
+--- a/deploy/dha_adapters/ipmi_adapter.py
++++ b/deploy/dha_adapters/ipmi_adapter.py
+@@ -34,8 +34,11 @@ class IpmiAdapter(HardwareAdapter):
+ 
+     def ipmi_cmd(self, node_id):
+         ip, username, password = self.get_access_info(node_id)
++        ipport = ip.split(':')
+         cmd = 'ipmitool -I lanplus -A password'
+-        cmd += ' -H %s -U %s -P %s' % (ip, username, password)
++        cmd += ' -H %s -U %s -P %s' % (ipport[0], username, password)
++        if len(ipport) > 1:
++            cmd += ' -p %d' % int(ipport[1])
+         return cmd
+ 
+     def get_node_pxe_mac(self, node_id):
+diff --git a/deploy/reap.py b/deploy/reap.py
+index 6feaf17..30be8d1 100755
+--- a/deploy/reap.py
++++ b/deploy/reap.py
+@@ -56,7 +56,7 @@ adapter:
+ # For Non-Fuel nodes controlled by:
+ #   - ipmi adapter you need to provide:
+ #       pxeMac
+-#       ipmiIp
++#       ipmiIp (supports optional port suffix, e.g. <IP>:<PORT>)
+ #       ipmiUser
+ #       ipmiPass
+ #   - libvirt adapter you need to provide:
