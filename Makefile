@@ -12,7 +12,7 @@ submodules-init:
 submodules-clean:
 	@git submodule -q foreach \
 		'git am --abort; \
-                git checkout -q armband-workbench-root; \
+		git checkout -q armband-workbench-root; \
 		git branch -q -D armband-workbench; \
 		git tag -d armband-workbench-root; \
 		git reset -q --hard HEAD; git clean -xdff'
@@ -33,6 +33,7 @@ patches-import:
 	@git submodule -q foreach 'git checkout -q -b armband-workbench'
 	@git submodule -q foreach \
 		'if [ ! -z "$$(ls ${root}/patches/$$name/)" ]; then \
+			echo "-- patching $$name"; \
 			git am ${root}/patches/$$name/*.patch; \
 		fi'
 clean-docker:
