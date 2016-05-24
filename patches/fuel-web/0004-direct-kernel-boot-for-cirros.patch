@@ -4,17 +4,17 @@ Subject: [PATCH] direct kernel boot for cirros
 
 ---
  nailgun/nailgun/orchestrator/base_serializers.py   | 16 +++--
- .../nailgun/orchestrator/deployment_serializers.py | 70 ++++++++++++++++------
- 2 files changed, 62 insertions(+), 24 deletions(-)
+ .../nailgun/orchestrator/deployment_serializers.py | 68 ++++++++++++++++------
+ 2 files changed, 61 insertions(+), 23 deletions(-)
 
 diff --git a/nailgun/nailgun/orchestrator/base_serializers.py b/nailgun/nailgun/orchestrator/base_serializers.py
-index 16dc3fa..23d6589 100644
+index 0643635..a2f43b0 100644
 --- a/nailgun/nailgun/orchestrator/base_serializers.py
 +++ b/nailgun/nailgun/orchestrator/base_serializers.py
-@@ -36,12 +36,16 @@ class MuranoMetadataSerializerMixin(object):
-             self).generate_test_vm_image_data(node)
+@@ -145,12 +145,16 @@ class MuranoMetadataSerializerMixin(object):
  
-         # Add default Glance property for Murano.
+     def inject_murano_settings(self, image_data):
+         """Adds murano metadata to the test image"""
 -        test_vm_image = image_data['test_vm_image']
 -        existing_properties = test_vm_image['glance_properties']
 -        murano_data = ' '.join(["""--property murano_image_info='{"title":"""
@@ -35,10 +35,10 @@ index 16dc3fa..23d6589 100644
  
  class VmwareDeploymentSerializerMixin(object):
 diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/nailgun/orchestrator/deployment_serializers.py
-index b8b38e2..d3d03ec 100644
+index 6bb7990..62fb08b 100644
 --- a/nailgun/nailgun/orchestrator/deployment_serializers.py
 +++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
-@@ -274,6 +274,9 @@ class DeploymentMultinodeSerializer(object):
+@@ -283,6 +283,9 @@ class DeploymentMultinodeSerializer(object):
          return {'glance': {'image_cache_max_size': image_cache_max_size}}
  
      def generate_test_vm_image_data(self, node):
@@ -48,7 +48,7 @@ index b8b38e2..d3d03ec 100644
          # Instantiate all default values in dict.
          image_data = {
              'container_format': 'bare',
-@@ -297,8 +300,8 @@ class DeploymentMultinodeSerializer(object):
+@@ -306,8 +309,8 @@ class DeploymentMultinodeSerializer(object):
              arch = "x86_64"
          elif arch == "arm64":
              arch = "aarch64"
@@ -59,12 +59,10 @@ index b8b38e2..d3d03ec 100644
  
          glance_properties = []
  
-@@ -313,8 +316,38 @@ class DeploymentMultinodeSerializer(object):
+@@ -322,8 +325,38 @@ class DeploymentMultinodeSerializer(object):
              glance_properties.append('--property hypervisor_type=vmware')
  
          image_data['glance_properties'] = ' '.join(glance_properties)
--
--        return {'test_vm_image': image_data}
 +        images += [image_data]
 +
 +        # Now for aarch64 add also kernel and initrd because we direct
@@ -95,12 +93,13 @@ index b8b38e2..d3d03ec 100644
 +                'glance_properties': '',
 +            }
 +            images += [kernel_data, initrd_data]
-+
+ 
+-        return {'test_vm_image': image_data}
 +        return {'test_vm_image': images}
  
      @classmethod
      def get_net_provider_serializer(cls, cluster):
-@@ -495,20 +528,21 @@ class DeploymentHASerializer61(DeploymentHASerializer,
+@@ -522,20 +555,21 @@ class DeploymentHASerializer61(DeploymentHASerializer,
          images_data['test_vm_image'] = []
          if attrs.get('editable', {}).get('common', {}). \
             get('use_vcenter', {}).get('value') is True:
