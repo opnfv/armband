@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_7b13c35c",
+        "filename": "patches/opnfv-fuel/0030-ipmi-adapter-Port-config-support.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-24T11:20:20Z",
+      "side": 1,
+      "message": "%s, or int(ipmiport)",
+      "range": {
+        "startLine": 37,
+        "startChar": 25,
+        "endLine": 37,
+        "endChar": 27
+      },
+      "revId": "8e77c071bdd6ef09e2d0687e0506e87e9e5007ae",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_1b2cf798",
+        "filename": "patches/opnfv-fuel/0030-ipmi-adapter-Port-config-support.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-24T11:20:20Z",
+      "side": 1,
+      "message": "Won\u0027t this return 0 or an invalid value, if we have this by default in here? Maybe we should put the default port instead of None.",
+      "range": {
+        "startLine": 58,
+        "startChar": 18,
+        "endLine": 58,
+        "endChar": 35
+      },
+      "revId": "8e77c071bdd6ef09e2d0687e0506e87e9e5007ae",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
