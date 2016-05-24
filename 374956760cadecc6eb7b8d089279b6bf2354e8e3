@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a91bd0f_7b20a349",
+        "filename": "patches/opnfv-fuel/0030-deploy-ipmi-adapter-Add-port-config-support.patch",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-24T15:00:10Z",
+      "side": 1,
+      "message": "there has been no change in get_access_info at all, maybe this should refer to the class in general?",
+      "range": {
+        "startLine": 14,
+        "startChar": 12,
+        "endLine": 14,
+        "endChar": 27
+      },
+      "revId": "374956760cadecc6eb7b8d089279b6bf2354e8e3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_db2bef2e",
+        "filename": "patches/opnfv-fuel/0030-deploy-ipmi-adapter-Add-port-config-support.patch",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-05-24T15:00:10Z",
+      "side": 1,
+      "message": "Using \u0027:\u0027 might be conflicting with IPv6 in the future.",
+      "range": {
+        "startLine": 31,
+        "startChar": 9,
+        "endLine": 31,
+        "endChar": 31
+      },
+      "revId": "374956760cadecc6eb7b8d089279b6bf2354e8e3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
