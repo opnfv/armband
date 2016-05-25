@@ -13,22 +13,22 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index 62e6b73..7d7ffa6 100644
+index d3226da..7e6e96e 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -1977,6 +1977,7 @@
+@@ -1978,6 +1978,7 @@
    extend: *base_release
    fields:
      name: "Mitaka on Ubuntu 14.04"
 +    state: "unavailable"
      version: "mitaka-9.0"
+     arch: "amd64"
      operating_system: "Ubuntu"
-     description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
-@@ -2218,6 +2219,7 @@
+@@ -2220,6 +2221,7 @@
    extend: *ubuntu_release
    fields:
      name: "Mitaka on Ubuntu+UCA 14.04"
 +    state: "unavailable"
      version: "mitaka-9.0"
+     arch: "amd64"
      description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system, including Ubuntu Cloud Archive OpenStack packages. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
-     attributes_metadata:
