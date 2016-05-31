@@ -2,6 +2,7 @@ From: Josep Puigdemont <josep.puigdemont@enea.com>
 Date: Wed, 4 May 2016 14:27:23 +0200
 Subject: [PATCH] Remove check for root
 
+Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
 ---
  ci/deploy.sh                        | 5 -----
  deploy/deploy-config.py             | 1 -
@@ -10,10 +11,10 @@ Subject: [PATCH] Remove check for root
  4 files changed, 10 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index dc13f1c..343d499 100755
+index cd7f652..5f06a19 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
-@@ -193,11 +193,6 @@ do
+@@ -204,11 +204,6 @@ do
      esac
  done
  
@@ -38,7 +39,7 @@ index 65d51b2..88a1111 100644
  )
  
 diff --git a/deploy/deploy.py b/deploy/deploy.py
-index 265e888..ff4582a 100755
+index 9db1754..ca092f5 100755
 --- a/deploy/deploy.py
 +++ b/deploy/deploy.py
 @@ -32,7 +32,6 @@ from common import (
@@ -49,7 +50,7 @@ index 265e888..ff4582a 100755
      ArgParser,
  )
  
-@@ -230,7 +229,6 @@ class AutoDeploy(object):
+@@ -232,7 +231,6 @@ class AutoDeploy(object):
          return 0
  
      def run(self):
@@ -58,10 +59,10 @@ index 265e888..ff4582a 100755
              self.cleanup_execution_environment()
          else:
 diff --git a/deploy/environments/virtual_fuel.py b/deploy/environments/virtual_fuel.py
-index 56d6f98..f07207f 100644
+index b1a76e4..4ff68f6 100644
 --- a/deploy/environments/virtual_fuel.py
 +++ b/deploy/environments/virtual_fuel.py
-@@ -17,7 +17,6 @@ import re
+@@ -18,7 +18,6 @@ import time
  from common import (
      exec_cmd,
      check_file_exists,
@@ -69,7 +70,7 @@ index 56d6f98..f07207f 100644
      delete,
      log,
  )
-@@ -114,7 +113,6 @@ class VirtualFuel(ExecutionEnvironment):
+@@ -135,7 +134,6 @@ class VirtualFuel(ExecutionEnvironment):
                         vm_definition_overwrite)
  
      def setup_environment(self):
