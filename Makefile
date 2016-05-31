@@ -56,7 +56,7 @@ endif
 build:
 	cd ${root}/upstream/fuel/build && \
 		make \
-			BUILD_FUEL_PLUGINS=f_odlpluginbuild \
+			BUILD_FUEL_PLUGINS= \
 			FUEL_MAIN_REPO=${root}/upstream/fuel-main \
 			FUEL_MAIN_TAG= \
 			UBUNTU_ARCH="amd64 arm64" \
@@ -75,10 +75,8 @@ build:
 			FUEL_NAILGUN_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_COMMIT=HEAD \
 			ODL_BRANCH=armband-workbench \
-			PRODUCT_VERSION=8.0 \
-			PRODUCT_NAME=mos \
 			CENTOS_MAJOR=7 \
-			EXTRA_RPM_REPOS="armband,http://linux.enea.com/mos-repos/centos/mos8.0-centos7-fuel/armband/x86_64,10" \
+			EXTRA_RPM_REPOS="armband,http://linux.enea.com/mos-repos/centos/mos9.0-centos7-fuel/armband/x86_64,10" \
 			MIRROR_MOS_UBUNTU=linux.enea.com \
 			JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_arm64.deb \
 			$(EXTRA_PARAMS) \
