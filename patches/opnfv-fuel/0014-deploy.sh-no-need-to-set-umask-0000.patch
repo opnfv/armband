@@ -8,10 +8,10 @@ Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
  1 file changed, 6 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index 343d499..34ecc57 100755
+index a8b3015..cd7f652 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
-@@ -76,9 +76,6 @@ Input parameters to the build script is:
+@@ -82,9 +82,6 @@ Input parameters to the build script is:
  -i .iso image to be deployed (needs to be provided in a URI
     style, it can be a local resource: file:// or a remote resource http(s)://)
  
@@ -21,7 +21,7 @@ index 343d499..34ecc57 100755
  Examples:
  sudo `basename $0` -b file:///home/jenkins/lab-config -l lf -p pod1 -s ha_odl-l3_heat_ceilometer -i file:///home/jenkins/myiso.iso
  EOF
-@@ -207,9 +204,6 @@ fi
+@@ -226,9 +223,6 @@ fi
  # Enable the automatic exit trap
  trap do_exit SIGINT SIGTERM EXIT
  

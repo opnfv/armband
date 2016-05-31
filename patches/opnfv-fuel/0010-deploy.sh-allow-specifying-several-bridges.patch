@@ -17,7 +17,7 @@ Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
  1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index 34ecc57..c9b836b 100755
+index dc13f1c..3a95327 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -57,7 +57,10 @@ and provides a fairly simple mechanism to execute a deployment.
@@ -32,7 +32,7 @@ index 34ecc57..c9b836b 100755
  -d Dry-run - Produces deploy config files (config/dea.yaml and
     config/dha.yaml), but does not execute deploy
  -f Deploy on existing Fuel master
-@@ -130,9 +133,9 @@ do
+@@ -133,9 +136,9 @@ do
              fi
              ;;
          B)

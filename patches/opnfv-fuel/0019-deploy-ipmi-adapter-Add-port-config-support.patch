@@ -60,7 +60,7 @@ index 283bd57..f4f2e6a 100644
  
      def get_node_pxe_mac(self, node_id):
 diff --git a/deploy/reap.py b/deploy/reap.py
-index 6feaf17..9933d1d 100755
+index 1f1b8ad..d5386aa 100644
 --- a/deploy/reap.py
 +++ b/deploy/reap.py
 @@ -59,6 +59,8 @@ adapter:
