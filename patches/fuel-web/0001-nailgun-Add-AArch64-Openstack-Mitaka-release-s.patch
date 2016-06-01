@@ -157,7 +157,7 @@ index 62e6b73..9674d66 100644
 +              virt-what
 +              vlan
 +      generated:
-+       repo_setup:
++        repo_setup:
 +          installer_kernel:
 +            remote_relative: "dists/trusty/main/installer-arm64/current/images/generic/netboot/vmlinuz"
 +            local: "/var/www/nailgun/ubuntu/arm64/images/linux"
