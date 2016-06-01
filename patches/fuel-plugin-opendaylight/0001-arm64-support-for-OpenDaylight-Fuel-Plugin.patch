@@ -19,8 +19,8 @@ Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
  .../modules/opendaylight/manifests/leveldbjni.pp   | 150 +++++++++++++++++++++
  deployment_tasks.yaml                              |   2 +-
  odl_package/ubuntu/opendaylight                    |   4 +-
- pre_build_hook                                     |   9 +-
- 8 files changed, 234 insertions(+), 9 deletions(-)
+ pre_build_hook                                     |   7 +-
+ 8 files changed, 233 insertions(+), 8 deletions(-)
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
@@ -96,13 +96,13 @@ index 0000000..08a528b
 +          </instructions>
 +         </configuration>
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
-index 8dfb213..95b3de7 100644
+index 69cc23a..791ceba 100644
 --- a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
-@@ -8,4 +8,12 @@ class opendaylight {
-   $manager_ip_address = $odl_controller_hash[0]['internal_address']
-   $node_private_address = $node[0]['private_address']
-   $node_internal_address = $node[0]['internal_address']
+@@ -9,4 +9,12 @@ class opendaylight {
+   $odl_mgmt_ips = values($odl_mgmt_ips_hash)
+   $odl_nodes_names = keys($odl_mgmt_ips_hash)
+   $node_internal_address = $odl_mgmt_ips_hash["node-${node_uid}"]
 +
 +  $arch = $::architecture ? {
 +    'aarch64' => $::osfamily ? {
@@ -113,10 +113,10 @@ index 8dfb213..95b3de7 100644
 +  }
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
-index 7a3bf3f..f9bba56 100644
+index b229757..0979d86 100644
 --- a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
-@@ -19,6 +19,12 @@ class opendaylight::install (
+@@ -18,6 +18,12 @@ class opendaylight::install (
      ensure  => installed,
    }
  
@@ -129,7 +129,7 @@ index 7a3bf3f..f9bba56 100644
    package {'opnfv-quagga':
      ensure => installed,
    }
-@@ -36,7 +42,8 @@ class opendaylight::install (
+@@ -35,7 +41,8 @@ class opendaylight::install (
  
    debug("Set odl rest api port to ${rest_port}")
  
@@ -139,7 +139,7 @@ index 7a3bf3f..f9bba56 100644
      ensure  => file,
      owner   => 'odl',
      content => template('opendaylight/jetty.xml.erb')
-@@ -72,6 +79,7 @@ class opendaylight::install (
+@@ -71,6 +78,7 @@ class opendaylight::install (
    Package['opendaylight'] ->
    Ini_setting <||> ->
    Firewall <||> ->
@@ -305,7 +305,7 @@ index 0000000..c599370
 +  }
 +}
 diff --git a/deployment_tasks.yaml b/deployment_tasks.yaml
-index 6588db3..0fe77af 100644
+index 3706678..841bfee 100644
 --- a/deployment_tasks.yaml
 +++ b/deployment_tasks.yaml
 @@ -17,7 +17,7 @@
@@ -315,10 +315,10 @@ index 6588db3..0fe77af 100644
 -    timeout: 720
 +    timeout: 3600
  - id: netconfig
-   type: skipped
- - id: odl-netconfig
+   type: puppet
+   version: 2.0.0
 diff --git a/odl_package/ubuntu/opendaylight b/odl_package/ubuntu/opendaylight
-index c7f5082..6e5ff7b 100644
+index 756dd95..2945d02 100644
 --- a/odl_package/ubuntu/opendaylight
 +++ b/odl_package/ubuntu/opendaylight
 @@ -9,7 +9,7 @@ setgid odl
@@ -330,7 +330,7 @@ index c7f5082..6e5ff7b 100644
  env JAVA_OPTS="-server -Xms256M -Xmx2048M -XX:+UnlockDiagnosticVMOptions -XX:+UnsyncloadClass -XX:MaxPermSize=512M -Dcom.sun.management.jmxremote"
  env OPTS="-Dkaraf.startLocalConsole=false -Dkaraf.startRemoteShell=true"
  env MAIN="org.apache.karaf.main.Main"
-@@ -34,6 +34,6 @@ script
+@@ -37,6 +37,6 @@ script
          fi
      done
  
@@ -339,10 +339,10 @@ index c7f5082..6e5ff7b 100644
  
  end script
 diff --git a/pre_build_hook b/pre_build_hook
-index db64e80..b2b97b3 100755
+index c37da5d..6f4a917 100755
 --- a/pre_build_hook
 +++ b/pre_build_hook
-@@ -41,7 +41,7 @@ fi
+@@ -61,7 +61,7 @@ fi
  
  function cleanup {
    rm -rf "${TMP_DIR}"
@@ -351,13 +351,8 @@ index db64e80..b2b97b3 100755
  }
  
  function download {
-@@ -87,11 +87,12 @@ function build_pkg {
-       ;;
-     ubuntu)
-       pushd "${DIR}/repositories/${1}/"
--      fpm --force -s dir -t deb -m 'mskalski@mirantis.com' --version "${ODL_VERSION_NUMBER}" --description "${ODL_DESCRIPTION}" --prefix /opt/opendaylight --deb-upstart "${DIR}/odl_package/${1}/opendaylight" --after-install "${DIR}/odl_package/${1}/opendaylight-post" --name opendaylight -d "${JAVA_VERSION}" -C "${TMP_DIR}/opendaylight_src"
-+      fpm --force -s dir -t deb -a arm64 -m 'mskalski@mirantis.com' --version "${ODL_VERSION_NUMBER}" --description "${ODL_DESCRIPTION}" --prefix /opt/opendaylight --deb-upstart "${DIR}/odl_package/${1}/opendaylight" --after-install "${DIR}/odl_package/${1}/opendaylight-post" --name opendaylight -d "${JAVA_VERSION}" -C "${TMP_DIR}/opendaylight_src"
-       fpm --force -s python -t deb -m 'mskalski@mirantis.com' --python-install-lib /usr/lib/python2.7/dist-packages ${TMP_DIR}/networking_odl/setup.py
+@@ -192,7 +192,8 @@ function build_pkg {
+       fpm --architecture all --force -s python -t deb -m 'mskalski@mirantis.com' --python-install-lib /usr/lib/python2.7/dist-packages ${TMP_DIR}/networking_odl/setup.py
        download_dependencies ${1}
        popd
 -      add_opnfv_quagga "${DIR}/repositories/${1}/"
@@ -366,7 +361,7 @@ index db64e80..b2b97b3 100755
        ;;
      *) echo "Not supported system"; exit 1;;
    esac
-@@ -103,7 +104,7 @@ cleanup
+@@ -204,7 +205,7 @@ cleanup
  
  if [ "$USE_JAVA8" = true ]
  then
