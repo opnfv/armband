@@ -1,0 +1,34 @@
+From 6d5a1d9210a3a7cd491a58d72e3c48600792dcba Mon Sep 17 00:00:00 2001
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 31 May 2016 22:08:25 +0200
+Subject: ODL build: Allow customizing JAVA URL
+
+For Armband, JAVA8_URL hardcode needs to be patched outside of the
+build system, so make related var overrideable.
+
+Change-Id: I308074a4ae0c5f8b22e5e5128965ce90fea3734e
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Signed-off-by: Stanislaw Kardach <Stanislaw.Kardach@cavium.com>
+---
+ build/f_isoroot/f_odlpluginbuild/config.mk | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/build/f_isoroot/f_odlpluginbuild/config.mk b/build/f_isoroot/f_odlpluginbuild/config.mk
+index a5e8a96..1880b1e 100644
+--- a/build/f_isoroot/f_odlpluginbuild/config.mk
++++ b/build/f_isoroot/f_odlpluginbuild/config.mk
+@@ -11,7 +11,7 @@ ODL_BRANCH=brahmaputra-sr2
+ ODL_CHANGE=ec9474c1178e7451ec75f6e306ac84424a84a28a
+ ODL_REPO="https://github.com/openstack/fuel-plugin-opendaylight.git"
+ 
+-export USE_JAVA8=true
+-export JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_amd64.deb
+-export ODL_TARBALL_LOCATION=https://nexus.opendaylight.org/content/repositories/opendaylight.release/org/opendaylight/integration/distribution-karaf/0.4.1-Beryllium-SR1/distribution-karaf-0.4.1-Beryllium-SR1.tar.gz
+-export ODL_VERSION_NUMBER=0.4.1
++export USE_JAVA8?=true
++export JAVA8_URL?=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_amd64.deb
++export ODL_TARBALL_LOCATION?=https://nexus.opendaylight.org/content/repositories/opendaylight.release/org/opendaylight/integration/distribution-karaf/0.4.1-Beryllium-SR1/distribution-karaf-0.4.1-Beryllium-SR1.tar.gz
++export ODL_VERSION_NUMBER?=0.4.1
+-- 
+cgit v0.12
+

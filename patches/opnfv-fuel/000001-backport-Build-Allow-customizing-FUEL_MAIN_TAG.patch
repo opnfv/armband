@@ -1,0 +1,30 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 21 Feb 2016 16:28:02 +0100
+Subject: Build: Allow customizing FUEL_MAIN_TAG (commit)
+
+FUEL_MAIN_TAG is currently hard set to 9.0 (not overridable).
+
+While this is a sane assumption for the usual scenarios,
+Armband applies a series of patches on top of Fuel@OPNFV, hence
+requiring us to override this variable.
+
+Change-Id: Ided75cf0c3b5ad18cf7ef1ec88b5d2dc3aada511
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Signed-off-by: Stanislaw Kardach <Stanislaw.Kardach@cavium.com>
+---
+ build/config.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/config.mk b/build/config.mk
+index 23bda18..af63fcd 100644
+--- a/build/config.mk
++++ b/build/config.mk
+@@ -9,7 +9,7 @@
+ ##############################################################################
+ 
+ FUEL_MAIN_REPO := https://github.com/openstack/fuel-main
+-FUEL_MAIN_TAG = 9.0
++FUEL_MAIN_TAG := 9.0
+ MOS_VERSION = 9.0
+ OPENSTACK_VERSION = mitaka-9.0
+ 
