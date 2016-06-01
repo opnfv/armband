@@ -1,0 +1,43 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 1 Jun 2016 16:43:17 +0200
+Subject: [PATCH] ISO: Use --joliet-long names.
+
+Armband adds similar files, which tend to have long names and only
+differ in suffixes (e.g. DEBs for amd64 vs arm64).
+
+This works around ISO build error(s) like:
+
+"genisoimage: Error:
+./ubuntu/pool/main/g/golang-gogoprotobuf/golang-gogoprotobuf\
+-dev_0.0~git20150828.0.6cab0cc-1~u14.04+mos1_amd64.deb and
+./ubuntu/pool/main/g/golang-gogoprotobuf/golang-gogoprotobuf\
+-dev_0.0~git20150828.0.6cab0cc-1~u14.04+mos1_arm64.deb
+have the same Joliet name"
+
+Change-Id: I89d9816d86176d80bcc76f5f90c8391b0664ab82
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/install/install.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/build/install/install.sh b/build/install/install.sh
+index 8c29e08..f6308fb 100755
+--- a/build/install/install.sh
++++ b/build/install/install.sh
+@@ -186,7 +186,7 @@ make_live() {
+ prep_make_iso() {
+     DEST=$TOP/newiso
+     REPO=$DEST/ubuntu
+-    echo "Making ISO..."
++    echo "Preparing ISO..."
+     echo "Unpack of old ISO..."
+     if [ -d newiso ]; then
+         chmod -R 755 newiso
+@@ -215,6 +215,7 @@ make_iso_image() {
+         -no-emul-boot \
+         -boot-load-size 4 -boot-info-table \
+         --hide-rr-moved \
++        --joliet-long \
+         -x "lost+found" -o $NEWISO .
+
+     isoinfo -d -i $NEWISO
