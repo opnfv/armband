@@ -13,10 +13,10 @@ Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/nailgun/nailgun/settings.yaml b/nailgun/nailgun/settings.yaml
-index 495a9c3..ac52141 100644
+index 77e0452..5329975 100644
 --- a/nailgun/nailgun/settings.yaml
 +++ b/nailgun/nailgun/settings.yaml
-@@ -85,7 +85,7 @@ COLLECTOR_INST_INFO_URL: "https://{collector_server}/api/v1/installation_structu
+@@ -84,7 +84,7 @@ COLLECTOR_INST_INFO_URL: "https://{collector_server}/api/v1/installation_structu
  COLLECTOR_OSWL_INFO_URL: "https://{collector_server}/api/v1/oswl_stats/"
  COLLECTOR_PING_URL: "https://{collector_server}/api/v1/ping/"
  

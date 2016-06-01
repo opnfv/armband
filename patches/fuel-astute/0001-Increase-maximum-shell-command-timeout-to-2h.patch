@@ -19,10 +19,12 @@ Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mcagents/execute_shell_command.ddl b/mcagents/execute_shell_command.ddl
-index 0480be7..ad58046 100644
+index 9eb4457..9c4795b 100644
 --- a/mcagents/execute_shell_command.ddl
 +++ b/mcagents/execute_shell_command.ddl
-@@ -4,5 +4,5 @@ metadata    :name        => "Execute shell command",
+@@ -4,7 +4,7 @@ metadata    :name        => "Execute shell command",
+             :license     => "Apache License 2.0",
+             :version     => "9.0.0",
              :url         => "http://mirantis.com",
 -            :timeout     => 3600
 +            :timeout     => 7200

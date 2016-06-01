@@ -12,10 +12,10 @@ to properly format and mount it during do_partitioning deployment phase.
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fuel_agent/drivers/nailgun.py b/fuel_agent/drivers/nailgun.py
-index c2fef69..0ae81f9 100644
+index 085a0be..49932d5 100644
 --- a/fuel_agent/drivers/nailgun.py
 +++ b/fuel_agent/drivers/nailgun.py
-@@ -324,7 +324,7 @@ class Nailgun(BaseDataDriver):
+@@ -363,7 +363,7 @@ class Nailgun(BaseDataDriver):
              # uefi partition (for future use)
              LOG.debug('Adding UEFI partition on disk %s: size=200' %
                        disk['name'])
@@ -25,10 +25,10 @@ index c2fef69..0ae81f9 100644
              LOG.debug('Looping over all volumes on disk %s' % disk['name'])
              for volume in disk['volumes']:
 diff --git a/fuel_agent/utils/partition.py b/fuel_agent/utils/partition.py
-index acdd0b3..86349d2 100644
+index f7126b1..b811511 100644
 --- a/fuel_agent/utils/partition.py
 +++ b/fuel_agent/utils/partition.py
-@@ -93,7 +93,7 @@ def set_partition_flag(dev, num, flag, state='on'):
+@@ -94,7 +94,7 @@ def set_partition_flag(dev, num, flag, state='on'):
      :param dev: A device file, e.g. /dev/sda.
      :param num: Partition number
      :param flag: Flag name. Must be one of 'bios_grub', 'legacy_boot',
@@ -37,7 +37,7 @@ index acdd0b3..86349d2 100644
      :param state: Desiable flag state. 'on' or 'off'. Default is 'on'.
  
      :returns: None
-@@ -103,7 +103,7 @@ def set_partition_flag(dev, num, flag, state='on'):
+@@ -104,7 +104,7 @@ def set_partition_flag(dev, num, flag, state='on'):
      # parted supports more flags but we are interested in
      # setting only this subset of them.
      # not all of these flags are compatible with one another.

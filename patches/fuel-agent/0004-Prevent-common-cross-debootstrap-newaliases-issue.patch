@@ -16,10 +16,10 @@ For more information, see [1].
  2 files changed, 38 insertions(+)
 
 diff --git a/fuel_agent/manager.py b/fuel_agent/manager.py
-index 6322a10..843c40b 100644
+index 637c99a..86f76b9 100644
 --- a/fuel_agent/manager.py
 +++ b/fuel_agent/manager.py
-@@ -836,10 +836,15 @@ class Manager(object):
+@@ -1037,10 +1037,15 @@ class Manager(object):
                  direct_repo_addrs=driver_os.proxies.direct_repo_addr_list)
              self._update_metadata_with_repos(
                  metadata, driver_os.repos)
@@ -35,14 +35,15 @@ index 6322a10..843c40b 100644
              if hasattr(bs_scheme, 'certs') and bs_scheme.certs:
                  bu.copy_update_certs(bs_scheme.certs, chroot)
              bu.run_apt_get(chroot, packages=packages,
-@@ -873,5 +878,6 @@ class Manager(object):
+@@ -1084,6 +1089,7 @@ class Manager(object):
+                             add_multipath_conf=False)
              # restore disabled hosts/resolv files
              bu.restore_resolv_conf(chroot)
 +            bu.restore_newaliases(chroot)
              metadata['all_packages'] = bu.get_installed_packages(chroot)
              # We need to recompress initramfs with new compression:
              bu.recompress_initramfs(
-@@ -964,6 +970,11 @@ class Manager(object):
+@@ -1175,6 +1181,11 @@ class Manager(object):
              self._update_metadata_with_repos(
                  metadata, driver_os.repos)
  
@@ -54,7 +55,7 @@ index 6322a10..843c40b 100644
              LOG.debug('Installing packages using apt-get: %s',
                        ' '.join(packages))
              bu.run_apt_get(chroot, packages=packages,
-@@ -974,6 +985,9 @@ class Manager(object):
+@@ -1187,6 +1198,9 @@ class Manager(object):
                              allow_unsigned_file=CONF.allow_unsigned_file,
                              force_ipv4_file=CONF.force_ipv4_file)
  
@@ -65,10 +66,10 @@ index 6322a10..843c40b 100644
                        'inside chroot before trying to umount chroot')
              if not bu.stop_chrooted_processes(chroot, signal=signal.SIGTERM):
 diff --git a/fuel_agent/utils/build.py b/fuel_agent/utils/build.py
-index abd762e..e11ceba 100644
+index 1bc0a5f..5761cc5 100644
 --- a/fuel_agent/utils/build.py
 +++ b/fuel_agent/utils/build.py
-@@ -331,6 +331,30 @@ def prevent_qemu_replacement(chroot, arch):
+@@ -339,6 +339,30 @@ def prevent_qemu_replacement(chroot, arch):
      utils.execute('chroot', chroot, 'ln', '-sf', '/bin/true',
                    '/usr/sbin/update-binfmts')
  

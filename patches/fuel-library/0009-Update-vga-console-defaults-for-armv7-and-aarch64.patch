@@ -8,7 +8,7 @@ use PL011 serial driver for guests, adding console=ttyAMA0 is also
 a nice UX addition.
 ---
  .../openstack/files/nova-libvirt-vga-console.patch | 39 ++++++++++++++++++++++
- deployment/puppet/openstack_tasks/manifests/roles/compute.pp   | 19 +++++++++++
+ .../openstack_tasks/manifests/roles/compute.pp     | 19 +++++++++++
  2 files changed, 58 insertions(+)
  create mode 100644 deployment/puppet/openstack/files/nova-libvirt-vga-console.patch
 
@@ -58,26 +58,31 @@ index 0000000..c5f8e5a
 +             # so use 'vga' instead when running on Power hardware.
 +             video.type = 'vga'
 diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
-index c0349dc..46b1801 100644
+index 5d12be8..9283e8f 100644
 --- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
 +++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
-@@ -157,4 +157,10 @@ class openstack::compute (
-
+@@ -158,6 +158,12 @@ class openstack_tasks::roles::compute {
+ 
    include ::nova::params
-+
+ 
 +  if ! defined(Package['patch']) {
 +    package { 'patch':
 +      ensure => 'present',
 +    }
 +  }
- 
++
    case $::osfamily {
-@@ -250,3 +256,4 @@ class openstack::compute (
+     'RedHat': {
+       # From legacy libvirt.pp
+@@ -295,6 +301,7 @@ class openstack_tasks::roles::compute {
+   }
  
    $notify_on_state_change = 'vm_and_task_state'
 +  $nova_path = '/usr/lib/python2.7/dist-packages/nova'
  
-@@ -273,5 +280,17 @@ class openstack::compute (
+   class { '::nova':
+     rpc_backend                        => $rpc_backend_real,
+@@ -316,6 +323,18 @@ class openstack_tasks::roles::compute {
      memcached_servers                  => $memcached_addresses,
      cinder_catalog_info                => pick($nova_hash_real['cinder_catalog_info'], 'volumev2:cinderv2:internalURL'),
      rabbit_heartbeat_timeout_threshold => $::os_service_default,
@@ -95,3 +100,4 @@ index c0349dc..46b1801 100644
 +    require => [Package['patch']],
    }
  
+   class { '::nova::availability_zone':

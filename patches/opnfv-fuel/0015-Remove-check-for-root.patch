@@ -38,7 +38,7 @@ index 65d51b2..88a1111 100644
  )
  
 diff --git a/deploy/deploy.py b/deploy/deploy.py
-index 265e888..ff4582a 100755
+index 9f45853..dd48278 100644
 --- a/deploy/deploy.py
 +++ b/deploy/deploy.py
 @@ -32,7 +32,6 @@ from common import (

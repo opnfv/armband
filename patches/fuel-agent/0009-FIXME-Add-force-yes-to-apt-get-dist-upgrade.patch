@@ -17,10 +17,10 @@ the same behavior.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fuel_agent/utils/build.py b/fuel_agent/utils/build.py
-index e11ceba..8cca26d 100644
+index 5761cc5..5557810 100644
 --- a/fuel_agent/utils/build.py
 +++ b/fuel_agent/utils/build.py
-@@ -111,7 +111,7 @@ def run_apt_get(chroot, packages, eatmydata=False, attempts=10):
+@@ -107,7 +107,7 @@ def run_apt_get(chroot, packages, eatmydata=False, attempts=10):
      time in X times.
      """
      for action in ('update', 'dist-upgrade'):

@@ -12,10 +12,10 @@ Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
  1 file changed, 21 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index 62e6b73..4b123b9 100644
+index 2e38ca7..38b0c5d 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -918,6 +918,27 @@
+@@ -932,6 +932,27 @@
              description: "Name for Mongo replication set"
              weight: 30
              type: "text"

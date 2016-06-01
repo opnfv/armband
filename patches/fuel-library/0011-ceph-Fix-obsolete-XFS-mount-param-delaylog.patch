@@ -16,10 +16,10 @@ older than 4.0.
  2 files changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/deployment/puppet/osnailyfacter/manifests/ceph/ceph_osd.pp b/deployment/puppet/osnailyfacter/manifests/ceph/ceph_osd.pp
-index f7da80e..22aab33 100644
+index 2480f18..0957010 100644
 --- a/deployment/puppet/osnailyfacter/manifests/ceph/ceph_osd.pp
 +++ b/deployment/puppet/osnailyfacter/manifests/ceph/ceph_osd.pp
-@@ -50,4 +50,11 @@ class {'ceph':
+@@ -35,6 +35,13 @@ class osnailyfacter::ceph::ceph_osd {
    }
  
    if $ceph_tuning_settings_hash != {} {
@@ -31,11 +31,13 @@ index f7da80e..22aab33 100644
 +      ], ',')
 +    }
      ceph_conf {
-diff --git a/deployment/puppet/osnailyfacter/manifests/globals/globals.pp b/deployment/puppet/osnailyfacter/modular/globals/globals.pp
-index 268a5b1..69aed7b 100644
+       'global/debug_default'                    : value => $debug;
+       'global/max_open_files'                   : value => $ceph_tuning_settings_hash['max_open_files'];
+diff --git a/deployment/puppet/osnailyfacter/manifests/globals/globals.pp b/deployment/puppet/osnailyfacter/manifests/globals/globals.pp
+index 8d1552e..e38ad37 100644
 --- a/deployment/puppet/osnailyfacter/manifests/globals/globals.pp
 +++ b/deployment/puppet/osnailyfacter/manifests/globals/globals.pp
-@@ -123,7 +123,7 @@ if ($storage_hash['volumes_ceph'] or $storage_hash['images_ceph'] or $storage_ha
+@@ -145,7 +145,7 @@ class osnailyfacter::globals::globals {
      $ceph_tuning_settings = {
        'max_open_files'                       => pick($storage_tuning_settings['max_open_files'], '131072'),
        'osd_mkfs_type'                        => pick($storage_tuning_settings['osd_mkfs_type'], 'xfs'),

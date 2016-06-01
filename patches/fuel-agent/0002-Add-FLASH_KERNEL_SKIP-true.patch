@@ -8,10 +8,10 @@ FIXME: Add nice description of the issue at hand.
  1 file changed, 1 insertion(+)
 
 diff --git a/fuel_agent/utils/build.py b/fuel_agent/utils/build.py
-index af41b2b..6f31732 100644
+index 2950ad8..74cbfd8 100644
 --- a/fuel_agent/utils/build.py
 +++ b/fuel_agent/utils/build.py
-@@ -97,6 +97,7 @@ def set_apt_get_env():
+@@ -93,6 +93,7 @@ def set_apt_get_env():
      # NOTE(agordeev): disable any confirmations/questions from apt-get side
      os.environ['DEBIAN_FRONTEND'] = 'noninteractive'
      os.environ['DEBCONF_NONINTERACTIVE_SEEN'] = 'true'

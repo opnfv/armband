@@ -6,9 +6,11 @@ For now the arch is hardcoded for simplicity. We should detect this
 but how? If we're multi-arch then one bootstrap image should be built
 per supported arch. This requires Fuel refactoring.
 ---
- build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ build/bootstrap_admin_node.sh.patch | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
+diff --git a/build/bootstrap_admin_node.sh.patch b/build/bootstrap_admin_node.sh.patch
+index aeef3f7..c66b497 100644
 --- a/build/bootstrap_admin_node.sh.patch
 +++ b/build/bootstrap_admin_node.sh.patch
 @@ -53,6 +53,23 @@

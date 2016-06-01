@@ -14,10 +14,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 287 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index 62e6b73..9674d66 100644
+index 5921389..823a789 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -2314,3 +2314,290 @@
+@@ -2317,3 +2317,290 @@
              weight: 61
              type: "checkbox"
              value: true

@@ -17,10 +17,12 @@ not yet implemented.
  7 files changed, 29 insertions(+), 5 deletions(-)
 
 diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
-index ca2d3e1..b0d410d 100644
+index b4e9a05..a22d319 100644
 --- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
 +++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/commands/build.py
-@@ -166,4 +166,12 @@ class BuildCommand(command.Command):
+@@ -171,6 +171,14 @@ class BuildCommand(command.Command):
+                   " by ssh still rejected by default! This password actual"
+                   " only for tty login!"),
          )
 +        parser.add_argument(
 +            '--target_arch',
@@ -34,10 +36,10 @@ index ca2d3e1..b0d410d 100644
  
      def take_action(self, parsed_args):
 diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/utils/bootstrap_image.py b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/utils/bootstrap_image.py
-index 0219961..6e60fb8 100644
+index c09d421..a535075 100644
 --- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/utils/bootstrap_image.py
 +++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/utils/bootstrap_image.py
-@@ -172,7 +172,8 @@ def make_bootstrap(data):
+@@ -161,7 +161,8 @@ def make_bootstrap(data):
  
      LOG.info("Try to build image with data:\n%s", yaml.safe_dump(bootdata))
  
@@ -48,10 +50,10 @@ index 0219961..6e60fb8 100644
          opts.extend(['--image_build_dir', data['image_build_dir']])
  
 diff --git a/debian/control b/debian/control
-index 0a6f947..189dc00 100644
+index d24450c..e843980 100644
 --- a/debian/control
 +++ b/debian/control
-@@ -36,6 +36,8 @@ Pre-Depends: dpkg (>= 1.15.6~)
+@@ -37,6 +37,8 @@ Pre-Depends: dpkg (>= 1.15.6~)
  Depends: bzip2,
           cloud-utils,
  	 debootstrap,
@@ -61,17 +63,18 @@ index 0a6f947..189dc00 100644
  	 ethtool,
  	 gdisk,
 diff --git a/fuel_agent/manager.py b/fuel_agent/manager.py
-index 15cc5d8..f613aef 100644
+index df54f65..ba1ab78 100644
 --- a/fuel_agent/manager.py
 +++ b/fuel_agent/manager.py
-@@ -18,5 +18,6 @@ import shutil
+@@ -19,6 +19,7 @@ import signal
+ import tempfile
  
  from oslo_config import cfg
 +from oslo_config import types
  import six
  import yaml
  
-@@ -33,6 +34,8 @@ from fuel_agent.utils import md as mu
+@@ -34,6 +35,8 @@ from fuel_agent.utils import md as mu
  from fuel_agent.utils import partition as pu
  from fuel_agent.utils import utils
  
@@ -80,7 +83,7 @@ index 15cc5d8..f613aef 100644
  opts = [
      cfg.StrOpt(
          'nc_template_path',
-@@ -153,6 +156,13 @@ cli_opts = [
+@@ -192,6 +195,13 @@ cli_opts = [
          default='/tmp',
          help='Directory where the image is supposed to be built',
      ),
@@ -94,7 +97,7 @@ index 15cc5d8..f613aef 100644
  ]
  
  CONF = cfg.CONF
-@@ -551,7 +561,8 @@ class Manager(object):
+@@ -724,7 +734,8 @@ class Manager(object):
          LOG.debug('Preventing services from being get started')
          bu.suppress_services_start(chroot)
          LOG.debug('Installing base operating system using debootstrap')
@@ -105,10 +108,10 @@ index 15cc5d8..f613aef 100644
                             proxies=proxies.proxies,
                             direct_repo_addr=proxies.direct_repo_addr_list)
 diff --git a/fuel_agent/tests/test_build_utils.py b/fuel_agent/tests/test_build_utils.py
-index 82c3462..ac5ae82 100644
+index 54f79f9..0ec466f 100644
 --- a/fuel_agent/tests/test_build_utils.py
 +++ b/fuel_agent/tests/test_build_utils.py
-@@ -42,7 +42,7 @@ class BuildUtilsTestCase(unittest2.TestCase):
+@@ -43,7 +43,7 @@ class BuildUtilsTestCase(unittest2.TestCase):
      def test_run_debootstrap(self, mock_exec, mock_environ):
          bu.run_debootstrap('uri', 'suite', 'chroot', 'arch', attempts=2)
          mock_exec.assert_called_once_with(
@@ -117,7 +120,7 @@ index 82c3462..ac5ae82 100644
              .format(','.join(bu.ADDITIONAL_DEBOOTSTRAP_PACKAGES)),
              '--verbose', '--no-check-gpg', '--arch=arch',
              'suite', 'chroot', 'uri', attempts=2, env_variables={})
-@@ -53,7 +53,7 @@ class BuildUtilsTestCase(unittest2.TestCase):
+@@ -54,7 +54,7 @@ class BuildUtilsTestCase(unittest2.TestCase):
          bu.run_debootstrap('uri', 'suite', 'chroot', 'arch', eatmydata=True,
                             attempts=2)
          mock_exec.assert_called_once_with(
@@ -127,10 +130,10 @@ index 82c3462..ac5ae82 100644
              '--verbose', '--no-check-gpg', '--arch=arch',
              '--include=eatmydata', 'suite',
 diff --git a/fuel_agent/utils/build.py b/fuel_agent/utils/build.py
-index 7247965..af41b2b 100644
+index b1ecc0f..2950ad8 100644
 --- a/fuel_agent/utils/build.py
 +++ b/fuel_agent/utils/build.py
-@@ -80,7 +80,7 @@ def run_debootstrap(uri, suite, chroot, arch='amd64', eatmydata=False,
+@@ -76,7 +76,7 @@ def run_debootstrap(uri, suite, chroot, arch='amd64', eatmydata=False,
          env_vars['no_proxy'] = ','.join(direct_repo_addr)
          LOG.debug('Setting no_proxy for: {0}'.format(env_vars['no_proxy']))
  
@@ -140,7 +143,7 @@ index 7247965..af41b2b 100644
              '--verbose', '--no-check-gpg',
              '--arch={0}'.format(arch)]
 diff --git a/specs/fuel-agent.spec b/specs/fuel-agent.spec
-index 5c37600..a43f693 100644
+index 72cd6a1..18af4b9 100644
 --- a/specs/fuel-agent.spec
 +++ b/specs/fuel-agent.spec
 @@ -50,6 +50,8 @@ Requires:    xfsprogs

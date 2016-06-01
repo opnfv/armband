@@ -5,15 +5,15 @@ Subject: [PATCH] m1.micro: Increase profile RAM size to 128MB.
 TestVM (cirros) on aarch64 requires more than 64MB RAM.
 Keep profiles uniform across all archs.
 ---
- .../openstack_tasks/manifests/openstack_controller/openstack_controller.pp  | 2 +-
+ .../manifests/openstack_controller/openstack_controller.pp              | 2 +-
  tests/noop/spec/hosts/openstack-controller/openstack-controller_spec.rb | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/deployment/puppet/openstack_tasks/manifests/openstack_controller/openstack_controller.pp b/deployment/puppet/openstack_tasks/manifests/openstack_controller/openstack_controller.pp
-index b1d8795..88e0ab3 100644
+index f88a03e..6a2df44 100644
 --- a/deployment/puppet/openstack_tasks/manifests/openstack_controller/openstack_controller.pp
 +++ b/deployment/puppet/openstack_tasks/manifests/openstack_controller/openstack_controller.pp
-@@ -233,7 +233,7 @@ if $primary_controller {
+@@ -399,7 +399,7 @@ class openstack_tasks::openstack_controller::openstack_controller {
          "OS_REGION_NAME=${region}",
          "NOVA_ENDPOINT_TYPE=internalURL",
        ],
@@ -23,13 +23,15 @@ index b1d8795..88e0ab3 100644
        # Retry nova-flavor list until it exits 0, then exit with grep status,
        # finally exit 1 if tries exceeded
 diff --git a/tests/noop/spec/hosts/openstack-controller/openstack-controller_spec.rb b/tests/noop/spec/hosts/openstack-controller/openstack-controller_spec.rb
-index 36161e6..b15da07 100644
+index 2124cc7..7539e02 100644
 --- a/tests/noop/spec/hosts/openstack-controller/openstack-controller_spec.rb
 +++ b/tests/noop/spec/hosts/openstack-controller/openstack-controller_spec.rb
-@@ -399,5 +399,5 @@ describe manifest do
+@@ -408,7 +408,7 @@ describe manifest do
      if primary_controller
        it 'should retry unless when creating m1.micro flavor' do
          should contain_exec('create-m1.micro-flavor').with(
 -           'command' => 'bash -c "nova flavor-create --is-public true m1.micro auto 64 0 1"',
 +           'command' => 'bash -c "nova flavor-create --is-public true m1.micro auto 128 0 1"',
             'unless'  => 'bash -c \'for tries in {1..10}; do
+                       nova flavor-list | grep m1.micro;
+                       status=("${PIPESTATUS[@]}");

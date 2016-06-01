@@ -35,7 +35,7 @@ Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
  4 files changed, 88 insertions(+), 10 deletions(-)
 
 diff --git a/deploy/deploy.py b/deploy/deploy.py
-index f86f2be..265e888 100755
+index 0d40641..9f45853 100644
 --- a/deploy/deploy.py
 +++ b/deploy/deploy.py
 @@ -243,6 +243,11 @@ class AutoDeploy(object):

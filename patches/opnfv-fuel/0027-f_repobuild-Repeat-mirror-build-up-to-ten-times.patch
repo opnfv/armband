@@ -16,7 +16,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100755 build/f_isoroot/f_repobuild/fuel_mirror_loop
 
 diff --git a/build/f_isoroot/f_repobuild/Makefile b/build/f_isoroot/f_repobuild/Makefile
-index 5e7157b..9abe9bb 100644
+index 36d6c8e..9582f6f 100644
 --- a/build/f_isoroot/f_repobuild/Makefile
 +++ b/build/f_isoroot/f_repobuild/Makefile
 @@ -23,6 +23,9 @@ export OPENSTACK_VERSION

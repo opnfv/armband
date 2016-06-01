@@ -7,10 +7,10 @@ Subject: [PATCH] Increase upload_cirros timeout for multi-image
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/deployment/puppet/osnailyfacter/modular/astute/tasks.yaml b/deployment/puppet/osnailyfacter/modular/astute/tasks.yaml
-index a2cb1da..d9d2dcc 100644
+index d290673..b38ca3d 100644
 --- a/deployment/puppet/osnailyfacter/modular/astute/tasks.yaml
 +++ b/deployment/puppet/osnailyfacter/modular/astute/tasks.yaml
-@@ -19,6 +19,6 @@
+@@ -31,7 +31,7 @@
      cmd: ruby /etc/puppet/modules/osnailyfacter/modular/astute/upload_cirros.rb
      retries: 3
      interval: 20
@@ -18,3 +18,4 @@ index a2cb1da..d9d2dcc 100644
 +    timeout: 360
  
  - id: upload_nodes_info
+   type: skipped

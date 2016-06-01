@@ -9,10 +9,10 @@ Subject: [PATCH] Add fs for efi partition
  3 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/debian/control b/debian/control
-index 189dc00..acfda35 100644
+index e843980..c763ab9 100644
 --- a/debian/control
 +++ b/debian/control
-@@ -39,6 +39,7 @@ Depends: bzip2,
+@@ -40,6 +40,7 @@ Depends: bzip2,
  	 qemu-user-static,
  	 binfmt-support,
  	 dmidecode,
@@ -21,10 +21,10 @@ index 189dc00..acfda35 100644
  	 gdisk,
  	 genisoimage,
 diff --git a/fuel_agent/drivers/nailgun.py b/fuel_agent/drivers/nailgun.py
-index bc532b4..f092865 100644
+index 1546f78..a00f952 100644
 --- a/fuel_agent/drivers/nailgun.py
 +++ b/fuel_agent/drivers/nailgun.py
-@@ -81,6 +81,9 @@ class Nailgun(BaseDataDriver):
+@@ -82,6 +82,9 @@ class Nailgun(BaseDataDriver):
          # was already allocated on first matching volume
          # or not
          self._boot_partition_done = False
@@ -34,7 +34,7 @@ index bc532b4..f092865 100644
          # this var is used as a flag that /boot fs
          # has already been added. we need this to
          # get rid of md over all disks for /boot partition.
-@@ -321,10 +324,14 @@ class Nailgun(BaseDataDriver):
+@@ -360,10 +363,14 @@ class Nailgun(BaseDataDriver):
              LOG.debug('Adding bios_grub partition on disk %s: size=24' %
                        disk['name'])
              parted.add_partition(size=24, flags=['bios_grub'])
@@ -53,7 +53,7 @@ index bc532b4..f092865 100644
              LOG.debug('Looping over all volumes on disk %s' % disk['name'])
              for volume in disk['volumes']:
 diff --git a/specs/fuel-agent.spec b/specs/fuel-agent.spec
-index a43f693..c2b9b51 100644
+index 18af4b9..8604e57 100644
 --- a/specs/fuel-agent.spec
 +++ b/specs/fuel-agent.spec
 @@ -50,6 +50,7 @@ Requires:    xfsprogs

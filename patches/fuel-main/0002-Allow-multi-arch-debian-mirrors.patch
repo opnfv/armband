@@ -28,10 +28,10 @@ index 7a9466e..fe1ada2 100644
  	rm -rf $(LOCAL_MIRROR_UBUNTU)/.temp $(LOCAL_MIRROR_UBUNTU)/project
  	$(ACTION.TOUCH)
 diff --git a/sandbox.mk b/sandbox.mk
-index cf3704b..18757a1 100644
+index 863484e..da1dc8a 100644
 --- a/sandbox.mk
 +++ b/sandbox.mk
-@@ -183,7 +183,7 @@ touch $(SANDBOX_UBUNTU)/etc/init.d/.legacy-bootordering
+@@ -188,7 +188,7 @@ touch $(SANDBOX_UBUNTU)/etc/init.d/.legacy-bootordering
  mkdir -p $(SANDBOX_UBUNTU)/usr/sbin
  cp -a $(BUILD_DIR)/policy-rc.d $(SANDBOX_UBUNTU)/usr/sbin
  echo "Running qemu-debootstrap"

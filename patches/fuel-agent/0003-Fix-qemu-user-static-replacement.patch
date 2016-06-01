@@ -8,10 +8,10 @@ Subject: [PATCH] Fix qemu-user-static replacement
  2 files changed, 24 insertions(+)
 
 diff --git a/fuel_agent/manager.py b/fuel_agent/manager.py
-index f613aef..6322a10 100644
+index ba1ab78..637c99a 100644
 --- a/fuel_agent/manager.py
 +++ b/fuel_agent/manager.py
-@@ -587,6 +587,12 @@ class Manager(object):
+@@ -760,6 +760,12 @@ class Manager(object):
          fu.mount_bind(chroot, '/proc')
          bu.populate_basic_dev(chroot)
  
@@ -25,10 +25,10 @@ index f613aef..6322a10 100644
          # Umount chroot tree and remove images tmp files
          if not bu.stop_chrooted_processes(chroot, signal=signal.SIGTERM):
 diff --git a/fuel_agent/utils/build.py b/fuel_agent/utils/build.py
-index 6f31732..abd762e 100644
+index 74cbfd8..1bc0a5f 100644
 --- a/fuel_agent/utils/build.py
 +++ b/fuel_agent/utils/build.py
-@@ -312,6 +312,24 @@ def populate_basic_dev(chroot):
+@@ -320,6 +320,24 @@ def populate_basic_dev(chroot):
      utils.execute('chroot', chroot,
                    'ln', '-s', '/proc/self/fd', '/dev/fd')
  

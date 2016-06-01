@@ -13,7 +13,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 ---
  .../openstack/files/nova-libvirt-inject.patch      | 44 ++++++++++++++++++++++
- deployment/puppet/openstack_tasks/manifests/roles/compute.pp   | 12 ++++++
+ .../openstack_tasks/manifests/roles/compute.pp     | 12 ++++++
  2 files changed, 56 insertions(+)
  create mode 100644 deployment/puppet/openstack/files/nova-libvirt-inject.patch
 
@@ -68,10 +68,12 @@ index 0000000..9cbfe5f
 +             if target_partition == 0:
 +                 target_partition = None
 diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
-index 46b1801..d42d6a1 100644
+index 9283e8f..b9f0784 100644
 --- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
 +++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
-@@ -281,4 +281,16 @@ class openstack::compute (
+@@ -324,6 +324,18 @@ class openstack_tasks::roles::compute {
+     cinder_catalog_info                => pick($nova_hash_real['cinder_catalog_info'], 'volumev2:cinderv2:internalURL'),
+     rabbit_heartbeat_timeout_threshold => $::os_service_default,
    } ->
 +  # FIXME(armband): Fix inject for part image direct boot (bug LP #1469308)
 +  file { "${nova_path}/libvirt-inject.patch":

@@ -1,7 +1,6 @@
-From ec3299c72eae195106092a646409564b5b3eb560 Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Wed, 24 Feb 2016 20:08:24 +0100
-Subject: [PATCH 10/20] Make TestVM creation architecture aware
+Subject: [PATCH] Make TestVM creation architecture aware
 
 This depends on cirros-testvm package to contain both amd64 and arm64
 images.

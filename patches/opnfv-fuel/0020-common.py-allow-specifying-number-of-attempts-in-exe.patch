@@ -23,11 +23,11 @@ signature, which do not break backward compatibility:
 
 Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
 ---
- deploy/common.py | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ deploy/common.py | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
 diff --git a/deploy/common.py b/deploy/common.py
-index 41b4e27..3cd3e0e 100644
+index 787a21a..ed1ffde 100644
 --- a/deploy/common.py
 +++ b/deploy/common.py
 @@ -16,6 +16,7 @@ import argparse
@@ -38,7 +38,7 @@ index 41b4e27..3cd3e0e 100644
  
  N = {'id': 0, 'status': 1, 'name': 2, 'cluster': 3, 'ip': 4, 'mac': 5,
       'roles': 6, 'pending_roles': 7, 'online': 8, 'group_id': 9}
-@@ -37,15 +37,24 @@ out_handler.setFormatter(formatter)
+@@ -37,15 +38,24 @@ out_handler.setFormatter(formatter)
  LOG.addHandler(out_handler)
  os.chmod(LOGFILE, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
  

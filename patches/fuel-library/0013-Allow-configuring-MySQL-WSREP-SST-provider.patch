@@ -21,7 +21,7 @@ Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/deployment/puppet/osnailyfacter/manifests/database/database.pp b/deployment/puppet/osnailyfacter/manifests/database/database.pp
-index 1755c34..0cfbc8c 100644
+index 2940871..42b476f 100644
 --- a/deployment/puppet/osnailyfacter/manifests/database/database.pp
 +++ b/deployment/puppet/osnailyfacter/manifests/database/database.pp
 @@ -8,6 +8,7 @@ class osnailyfacter::database::database {

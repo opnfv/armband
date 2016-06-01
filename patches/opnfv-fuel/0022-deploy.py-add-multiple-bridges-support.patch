@@ -19,7 +19,7 @@ Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
  2 files changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/deploy/deploy.py b/deploy/deploy.py
-index ff4582a..041ba2f 100755
+index dd48278..ad58ed6 100644
 --- a/deploy/deploy.py
 +++ b/deploy/deploy.py
 @@ -312,8 +312,8 @@ def parse_arguments():
@@ -43,7 +43,8 @@ index ff4582a..041ba2f 100755
      check_file_exists(args.dha_file)
  
      if not args.cleanup_only:
-@@ -343,6 +346,7 @@ def parse_arguments():
+@@ -344,7 +347,8 @@ def parse_arguments():
+         check_file_exists(iso_abs_path)
          log('Using image directory: %s' % args.storage_dir)
          create_dir_if_not_exists(args.storage_dir)
 -        check_bridge(args.pxe_bridge, args.dha_file)

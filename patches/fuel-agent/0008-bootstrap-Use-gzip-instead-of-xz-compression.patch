@@ -12,7 +12,7 @@ According to [1], xz is slower, with not much size gain.
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/consts.py b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/consts.py
-index d507156..688197d 100644
+index d0c9832..8a22a2a 100644
 --- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/consts.py
 +++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/consts.py
 @@ -24,7 +24,7 @@ COMPRESSED_CONTAINER_FORMAT = "tar.gz"

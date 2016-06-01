@@ -17,10 +17,10 @@ TODO: At least make this arch-dependant for mos8 ...
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fuel_agent/drivers/nailgun.py b/fuel_agent/drivers/nailgun.py
-index 0ae81f9..bc532b4 100644
+index 49932d5..1546f78 100644
 --- a/fuel_agent/drivers/nailgun.py
 +++ b/fuel_agent/drivers/nailgun.py
-@@ -684,7 +684,7 @@ class NailgunBuildImage(BaseDataDriver):
+@@ -731,7 +731,7 @@ class NailgunBuildImage(BaseDataDriver):
          "daemonize",
          "debconf-utils",
          "gdisk",
