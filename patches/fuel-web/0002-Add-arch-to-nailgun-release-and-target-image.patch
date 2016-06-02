@@ -58,14 +58,14 @@ index 0000000..8cca69c
 +"""Armband patches
 +
 +Revision ID: f9b7fd91ac19
-+Revises: 43b2cb64dae6
++Revises: 675105097a69
 +Create Date: 2016-03-01 23:18:58.712617
 +
 +"""
 +
 +# revision identifiers, used by Alembic.
 +revision = 'f9b7fd91ac19'
-+down_revision = '43b2cb64dae6'
++down_revision = '675105097a69'
 +
 +from alembic import op
 +from nailgun.utils.migration import drop_enum
