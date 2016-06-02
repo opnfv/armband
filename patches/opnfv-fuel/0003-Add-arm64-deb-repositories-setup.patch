@@ -11,18 +11,27 @@ Subject: [PATCH] Add arm64 deb repositories setup
  build/install/uninstall.sh                | 18 ++++++++++--------
  6 files changed, 43 insertions(+), 15 deletions(-)
 
-diff --git a/build/f_isoroot/f_kscfg/ks.cfg b/build/f_isoroot/f_kscfg/ks.cfg
-index c93babe..30bad1d 100644
---- a/build/f_isoroot/f_kscfg/ks.cfg
-+++ b/build/f_isoroot/f_kscfg/ks.cfg
-@@ -448,6 +448,7 @@ cp -r ${SOURCE}/extra-repos ${repodir}/
- cp ${SOURCE}/.treeinfo ${repodir}/centos/x86_64
- 
- # Copying Ubuntu files
-+# FIXME: This is missleading as dist/pool may contain multiple arch!
- mkdir -p ${repodir}/ubuntu/x86_64/images
- cp -r ${SOURCE}/ubuntu/dists ${repodir}/ubuntu/x86_64
- cp -r ${SOURCE}/ubuntu/pool ${repodir}/ubuntu/x86_64
+diff --git a/build/f_isoroot/f_kscfg/ks.cfg.patch b/build/f_isoroot/f_kscfg/ks.cfg.patch
+index a6840e4..e1ae8fc 100644
+--- a/build/f_isoroot/f_kscfg/ks.cfg.patch
++++ b/build/f_isoroot/f_kscfg/ks.cfg.patch
+@@ -1,6 +1,16 @@
+ *** /dev/null	2016-04-26 10:10:11.481587709 +0200
+ --- ks.cfg	2016-04-26 10:10:11.481587709 +0200
+ ***************
++*** 448,453 ****
++--- 448,454 ----
++  cp ${SOURCE}/.treeinfo ${repodir}/centos/x86_64
++  
++  # Copying Ubuntu files
+++ # FIXME: This is missleading as dist/pool may contain multiple arch!
++  mkdir -p ${repodir}/ubuntu/x86_64/images
++  cp -r ${SOURCE}/ubuntu/dists ${repodir}/ubuntu/x86_64
++  cp -r ${SOURCE}/ubuntu/pool ${repodir}/ubuntu/x86_64
++***************
+ *** 579,584 ****
+ --- 579,592 ----
+   
 diff --git a/build/install/apt-ftparchive-deb.conf b/build/install/apt-ftparchive-deb.conf
 index 0d15aec..e6392f8 100644
 --- a/build/install/apt-ftparchive-deb.conf

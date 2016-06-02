@@ -11,23 +11,37 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh | 9 ++++++---
  1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
-index 744f352..7395af3 100755
---- a/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
-+++ b/build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh
-@@ -29,9 +29,12 @@ and added to cluster. \
- For more information please visit \
- https://docs.mirantis.com/openstack/fuel/fuel-master/"
- bs_progress_message="There is no active bootstrap. Bootstrap image building \
--is in progress. Usually it takes 15-20 minutes. It depends on your internet \
--connection and hardware performance. Please reboot failed to discover nodes \
--after bootstrap image become available."
-+is in progress. Usually it takes 15-20 minutes for a native build (x86_64) \
-+and/or 30-45 minutes for each cross-build (e.g. AArch64). \
-+It depends on your internet connection, hardware performance and selected \
-+bootstrap architecture(s). This ISO supports AArch64 only. Please reboot \
-+failed to discover nodes after bootstrap image become available."
-+
- bs_done_message="Default bootstrap image building done. Now you can boot new \
- nodes over PXE, they will be discovered and become available for installing \
- OpenStack on them"
+diff --git a/build/bootstrap_admin_node.sh.patch b/build/bootstrap_admin_node.sh.patch
+index c66b497..46b53e6 100644
+--- a/build/bootstrap_admin_node.sh.patch
++++ b/build/bootstrap_admin_node.sh.patch
+@@ -1,6 +1,29 @@
+ *** bootstrap_admin_node.sh.orig	Mon May 30 06:31:38 2016
+ --- bootstrap_admin_node.sh	Mon May 30 06:35:11 2016
+ ***************
++*** 86,94 ****
++  http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-install-guide/bootstrap/\
++  bootstrap_troubleshoot.html"
++  bs_progress_message="There is no active bootstrap. Bootstrap image building \
++! is in progress. Usually it takes 15-20 minutes. It depends on your internet \
++! connection and hardware performance. After bootstrap image becomes available, \
++! reboot nodes that failed to be discovered."
++  bs_done_message="Default bootstrap image building done. Now you can boot new \
++  nodes over PXE, they will be discovered and become available for installing \
++  OpenStack on them"
++--- 86,96 ----
++  http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-install-guide/bootstrap/\
++  bootstrap_troubleshoot.html"
++  bs_progress_message="There is no active bootstrap. Bootstrap image building \
++! is in progress. Usually it takes 15-20 minutes for a native build (x86_64) \
++! and/or 30-45 minutes for each cross-build (e.g. AArch64). \
++! It depends on your internet connection, hardware performance and selected \
++! bootstrap architecture(s). This ISO supports AArch64 only. After bootstrap \
++! image becomes available, reboot nodes that failed to be discovered."
++  bs_done_message="Default bootstrap image building done. Now you can boot new \
++  nodes over PXE, they will be discovered and become available for installing \
++  OpenStack on them"
++***************
+ *** 339,346 ****
+   set +x
+   echo "Done!"
