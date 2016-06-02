@@ -182,7 +182,7 @@ index b403733..9267abe 100644
 -    group   => 'root',
 -    mode    => '0644',
 -    require => Class['::cobbler::server'],
-+  nailgun::cobbler::preseed { 'ubuntu_1404_x86_64.preseed':
++  fuel::cobbler::preseed { 'ubuntu_1404_x86_64.preseed':
 +    path =>'/var/lib/cobbler/kickstarts/ubuntu-amd64.preseed',
 +    arch => "amd64",
    } ->
@@ -192,7 +192,7 @@ index b403733..9267abe 100644
      require   => Class['::cobbler::server'],
    }
  
-+  nailgun::cobbler::preseed { 'ubuntu_1404_arm64.preseed':
++  fuel::cobbler::preseed { 'ubuntu_1404_arm64.preseed':
 +    path => '/var/lib/cobbler/kickstarts/ubuntu-arm64.preseed',
 +    arch => "arm64",
 +  } ->
@@ -242,7 +242,7 @@ index 0000000..93c71ba
 --- /dev/null
 +++ b/deployment/puppet/fuel/manifests/cobbler/preseed.pp
 @@ -0,0 +1,13 @@
-+define nailgun::cobbler::preseed(
++define fuel::cobbler::preseed(
 +  $path,
 +  $arch = "amd64",
 +) {
