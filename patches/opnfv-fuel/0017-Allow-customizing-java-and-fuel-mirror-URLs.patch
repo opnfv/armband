@@ -11,14 +11,13 @@ diff --git a/build/f_isoroot/f_odlpluginbuild/config.mk b/build/f_isoroot/f_odlp
 index a5e8a96..e64a05e 100644
 --- a/build/f_isoroot/f_odlpluginbuild/config.mk
 +++ b/build/f_isoroot/f_odlpluginbuild/config.mk
-@@ -12,6 +12,6 @@ ODL_CHANGE=ec9474c1178e7451ec75f6e306ac84424a84a28a
- ODL_REPO="https://github.com/openstack/fuel-plugin-opendaylight.git"
+@@ -12,5 +12,5 @@ ODL_CHANGE=ec9474c1178e7451ec75f6e306ac84424a84a28a
  
  export USE_JAVA8=true
 -export JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_amd64.deb
 +export JAVA8_URL:=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_amd64.deb
- export ODL_TARBALL_LOCATION=https://nexus.opendaylight.org/content/repositories/opendaylight.release/org/opendaylight/integration/distribution-karaf/0.4.1-Beryllium-SR1/distribution-karaf-0.4.1-Beryllium-SR1.tar.gz
- export ODL_VERSION_NUMBER=0.4.1
+ export ODL_TARBALL_LOCATION=https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.4.2-Beryllium-SR2/distribution-karaf-0.4.2-Beryllium-SR2.tar.gz
+ export ODL_VERSION_NUMBER=0.4.2
 diff --git a/build/f_isoroot/f_repobuild/Makefile b/build/f_isoroot/f_repobuild/Makefile
 index e95dbf2..709ca6b 100644
 --- a/build/f_isoroot/f_repobuild/Makefile
