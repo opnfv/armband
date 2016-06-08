@@ -19,10 +19,10 @@ Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
  2 files changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/deploy/deploy.py b/deploy/deploy.py
-index ff4582a..041ba2f 100755
+index 179ee7b..9db1754 100755
 --- a/deploy/deploy.py
 +++ b/deploy/deploy.py
-@@ -312,8 +312,8 @@ def parse_arguments():
+@@ -316,8 +316,8 @@ def parse_arguments():
      parser.add_argument('-s', dest='storage_dir', action='store',
                          default='%s/images' % CWD,
                          help='Storage Directory [default: images]')
@@ -33,17 +33,18 @@ index ff4582a..041ba2f 100755
                          help='Linux Bridge for booting up the Fuel Master VM '
                               '[default: pxebr]')
      parser.add_argument('-p', dest='fuel_plugins_dir', action='store',
-@@ -332,6 +332,9 @@ def parse_arguments():
-     args = parser.parse_args()
-     log(args)
+@@ -333,6 +333,9 @@ def parse_arguments():
+                         action='store_true', default=False,
+                         help=('Do not launch environment deployment'))
  
 +    if not args.pxe_bridge:
 +        args.pxe_bridge = ['pxebr']
 +
-     check_file_exists(args.dha_file)
+     args = parser.parse_args()
+     log(args)
  
-     if not args.cleanup_only:
-@@ -343,6 +346,7 @@ def parse_arguments():
+@@ -348,7 +351,8 @@ def parse_arguments():
+         check_file_exists(iso_abs_path)
          log('Using image directory: %s' % args.storage_dir)
          create_dir_if_not_exists(args.storage_dir)
 -        check_bridge(args.pxe_bridge, args.dha_file)
@@ -53,10 +54,10 @@ index ff4582a..041ba2f 100755
      kwargs = {'no_fuel': args.no_fuel, 'fuel_only': args.fuel_only,
                'no_health_check': args.no_health_check,
 diff --git a/deploy/environments/virtual_fuel.py b/deploy/environments/virtual_fuel.py
-index b68577e..6b673d0 100644
+index 5a86c97..b1a76e4 100644
 --- a/deploy/environments/virtual_fuel.py
 +++ b/deploy/environments/virtual_fuel.py
-@@ -121,7 +121,8 @@ class VirtualFuel(ExecutionEnvironment):
+@@ -125,7 +125,8 @@ class VirtualFuel(ExecutionEnvironment):
          disk_path = self.create_image(disk_path, disk_size)
  
          self.del_vm_nics()

@@ -2,7 +2,7 @@ From: Josep Puigdemont <josep.puigdemont@enea.com>
 Date: Fri, 6 May 2016 12:09:58 +0200
 Subject: [PATCH] ipmi_adapter: simplify, retry if command fails
 
-The method get_node_state has been added to the The IpmiAdapter class.
+The method get_node_state has been added to the the IpmiAdapter class.
 
 In addition, now the power on/off methods will try several times to
 perform their IPMI command before giving up, instead of bailing out at
@@ -11,17 +11,14 @@ the first error.
 After the power on/off command is completed, the method will wait until
 the node is in the desired state.
 
-FIXME: a command could potentially take several minutes if the defaults
-are used; each IPMI command can take 1 minutes, and there can be three
+NOTE: a command could potentially take several minutes if the defaults
+are used; each IPMI command can take up to 1 minute, and there can be 3
 commands issued per operation, one of them may be retried 20 times with
-the current defaults. Ideally we would use eventlet or something alike
-to allow each command a limited time to execute:
+the current defaults. Ideally we would use eventlet or something similar
+to allow each command a limited time to execute, instead:
+
     with eventlet.timeout.Timeout(seconds) as t:
         power_on/off_command
-
-FIXME: There is a potential dead-lock situation by issuing the command
-and then checking the status, as someone could have intervened in
-between the two commands.
 
 Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
 ---

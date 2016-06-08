@@ -37,7 +37,7 @@ Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
  1 file changed, 34 insertions(+)
 
 diff --git a/deploy/reap.py b/deploy/reap.py
-index bf64d40..6feaf17 100755
+index 1262d4c..1f1b8ad 100644
 --- a/deploy/reap.py
 +++ b/deploy/reap.py
 @@ -15,6 +15,8 @@ import yaml
@@ -49,7 +49,7 @@ index bf64d40..6feaf17 100755
  
  from common import (
      N,
-@@ -245,6 +247,38 @@ class Reap(object):
+@@ -246,6 +248,38 @@ class Reap(object):
              if key not in ['ipaddress', 'netmask',
                             'dhcp_pool_start', 'dhcp_pool_end']:
                  del fuel['ADMIN_NETWORK'][key]

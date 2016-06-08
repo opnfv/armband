@@ -8,8 +8,8 @@ introduced by using qemu-user-static.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- build/f_isoroot/f_bootstrap/bootstrap_admin_node.sh | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ build/bootstrap_admin_node.sh.patch | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
 diff --git a/build/bootstrap_admin_node.sh.patch b/build/bootstrap_admin_node.sh.patch
 index c66b497..46b53e6 100644
