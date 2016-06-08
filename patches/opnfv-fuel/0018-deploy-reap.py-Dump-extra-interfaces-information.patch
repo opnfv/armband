@@ -49,9 +49,7 @@ index 1262d4c..1f1b8ad 100644
  
  from common import (
      N,
-@@ -246,6 +248,38 @@ class Reap(object):
-             if key not in ['ipaddress', 'netmask',
-                            'dhcp_pool_start', 'dhcp_pool_end']:
+@@ -246,4 +248,36 @@ class Reap(object):
                  del fuel['ADMIN_NETWORK'][key]
 +
 +        ## FIXME(armband): Factor in support for adding public/other interfaces.
