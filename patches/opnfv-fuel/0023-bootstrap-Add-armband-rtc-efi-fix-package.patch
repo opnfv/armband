@@ -28,11 +28,11 @@ diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoro
 index 2e4843d..15d9e9d 100644
 --- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
 +++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
-@@ -28,6 +28,7 @@
-     - xz-utils
-     - squashfs-tools
-     - msmtp-mta
+@@ -7,6 +7,7 @@
+   output_dir: /tmp/
+   kernel_flavor: linux-image-generic-lts-trusty
+   packages:
 +    - armband-rtc-efi-fix
-   bootstrap_images_dir: /var/www/nailgun/bootstraps
-   active_bootstrap_symlink: /var/www/nailgun/bootstraps/active_bootstrap
-   flavor: ubuntu
+     - fuel-agent
+     - hwloc
+     - hpsa-dkms

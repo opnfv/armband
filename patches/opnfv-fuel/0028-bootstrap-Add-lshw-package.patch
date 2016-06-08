@@ -20,11 +20,11 @@ diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoro
 index 15d9e9d..b45a14a 100644
 --- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
 +++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
-@@ -29,6 +29,7 @@
-     - squashfs-tools
-     - msmtp-mta
-     - armband-rtc-efi-fix
+@@ -17,6 +17,7 @@
+     - linux-headers-generic
+     - live-boot
+     - live-boot-initramfs-tools
 +    - lshw
-   bootstrap_images_dir: /var/www/nailgun/bootstraps
-   active_bootstrap_symlink: /var/www/nailgun/bootstraps/active_bootstrap
-   flavor: ubuntu
+     - mc
+     - mcollective
+     - msmtp-mta

@@ -40,9 +40,7 @@ index aa12c45..2e4843d 100644
        priority:
        suite: trusty-security
        type: deb
-@@ -60,4 +60,5 @@
-       type: deb
-   skip_default_img_build: true
+@@ -60,2 +60,3 @@
    direct_repo_addresses:
 +    - "ports.ubuntu.com"
      - "127.0.0.1"
