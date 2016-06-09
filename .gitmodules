@@ -30,7 +30,3 @@
 	path = upstream/fuel-nailgun-agent
 	url = https://github.com/openstack/fuel-nailgun-agent
 	branch = stable/mitaka
-[submodule "fuel-astute"]
-	path = upstream/fuel-astute
-	url = https://github.com/openstack/fuel-astute.git
-	branch = stable/mitaka
