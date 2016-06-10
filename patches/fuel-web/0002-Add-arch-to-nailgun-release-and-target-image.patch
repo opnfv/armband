@@ -161,13 +161,12 @@ diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/na
 index 699a599..6bb7990 100644
 --- a/nailgun/nailgun/orchestrator/deployment_serializers.py
 +++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
-@@ -300,7 +300,14 @@ class DeploymentMultinodeSerializer(object):
+@@ -300,7 +300,13 @@ class DeploymentMultinodeSerializer(object):
              img_dir = '/usr/share/cirros-testvm/'
          else:
              img_dir = '/opt/vm/'
 -        image_data['img_path'] = '{0}cirros-x86_64-disk.img'.format(img_dir)
-+        release = self.current_release(node.cluster)
-+        arch = release.arch
++        arch = node.cluster.release.arch
 +        if arch == "amd64":
 +            arch = "x86_64"
 +        elif arch == "arm64":
