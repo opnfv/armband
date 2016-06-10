@@ -16,6 +16,23 @@
       "revId": "4a6fa239ccfa0ab00aa82df87f8dc4134c62d427",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a7ca5a3_4883a2cc",
+        "filename": "patches/opnfv-fuel/0031-post-scripts-Enable-systemd-binfmt-for-first-boot.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-06-10T10:00:28Z",
+      "side": 1,
+      "message": "NO as a negative or a number? If latter then perhaps use \"NMB\" or \"CNT\" (as in count)?",
+      "revId": "4a6fa239ccfa0ab00aa82df87f8dc4134c62d427",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
