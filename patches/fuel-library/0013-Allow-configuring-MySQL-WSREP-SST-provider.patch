@@ -24,14 +24,12 @@ diff --git a/deployment/puppet/osnailyfacter/manifests/database/database.pp b/de
 index 1755c34..0cfbc8c 100644
 --- a/deployment/puppet/osnailyfacter/manifests/database/database.pp
 +++ b/deployment/puppet/osnailyfacter/manifests/database/database.pp
-@@ -8,6 +8,7 @@ class osnailyfacter::database::database {
+@@ -8,4 +8,5 @@ class osnailyfacter::database::database {
    $use_syslog               = hiera('use_syslog', true)
    $primary_controller       = hiera('primary_controller')
    $mysql_hash               = hiera_hash('mysql', {})
 +  $wsrep_hash               = hiera_hash('mysql_wsrep', {})
    $debug                    = pick($mysql_hash['debug'], hiera('debug', false))
-   $management_vip           = hiera('management_vip')
-   $database_vip             = hiera('database_vip', $management_vip)
 @@ -22,6 +23,7 @@ class osnailyfacter::database::database {
  
    $mysql_root_password       = $mysql_hash['root_password']

@@ -1,13 +1,18 @@
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Tue, 15 Mar 2016 15:01:34 +0100
-Subject: [PATCH] direct kernel boot for cirros
+Subject: [PATCH] upload_cirros: Add direct kernel boot support.
 
+AArch64 currently only supports direct kernel boot, so add the
+functionality of uploading and connecting kernel and initramfs
+images (disk formats `AKI` and `ARI`).
+
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
 ---
- .../osnailyfacter/modular/astute/upload_cirros.rb  | 51 +++++++++++++++++++++-
- 1 file changed, 49 insertions(+), 2 deletions(-)
+ .../osnailyfacter/modular/astute/upload_cirros.rb  | 53 ++++++++++++++++++++--
+ 1 file changed, 50 insertions(+), 3 deletions(-)
 
 diff --git a/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb b/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
-index 53d75fc..8a75356 100755
+index f0441b0..cefc3ed 100755
 --- a/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
 +++ b/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
 @@ -56,7 +56,7 @@ def image_list
@@ -35,17 +40,17 @@ index 53d75fc..8a75356 100755
  # check if Glance is online
  # waited until the glance is started because when vCenter used as a glance
  # backend launch may takes up to 1 minute.
-@@ -93,7 +102,7 @@ end
- # if it have not been already uploaded
- def upload_image(image)
+@@ -133,7 +142,7 @@ end
+ # return true if image has been uploaded and active
+ def check_image(image)
    list_of_images = image_list
--  if list_of_images[:images].include?(image['img_name'] => "active") && list_of_images[:exit_code] == 0
-+  if list_of_images[:images].select { |k,v| k == image['img_name'] and v[:status] == "active" } && list_of_images[:exit_code] == 0
-     puts "Image '#{image['img_name']}' is already present!"
-     return 0
+-  if list_of_images[:exit_code] == 0 && list_of_images[:images].include?(image['img_name'] => "active")
++  if list_of_images[:exit_code] == 0 && list_of_images[:images].select { |k,v| k == image['img_name'] and v[:status] == "active" }
+     return true
    end
-@@ -114,6 +123,43 @@ def upload_image(image)
-   return return_code
+   return false
+@@ -157,6 +166,43 @@ def delete_image(image_name)
+   [ stdout, return_code ]
  end
  
 +# For each disk image try to find a kernel and initramfs images and
@@ -88,11 +93,13 @@ index 53d75fc..8a75356 100755
  ########################
  
  wait_for_glance
-@@ -122,6 +168,7 @@ errors = 0
- test_vm_images.each do |image|
-   errors += upload_image(image)
- end
-+errors = connect_dependant_images(test_vm_images) unless errors != 0
- 
- exit 1 unless errors == 0
- 
+@@ -167,7 +213,8 @@ test_vm_images.each do |image|
+   # retry upload 5 times with a 1 minute sleep between tries
+   5.times.each do |retries|
+     if upload_image(image)
+-      success = true
++      if connect_dependant_images(test_vm_images) == 0
++        success = true
+       break
+     end
+     sleep 60
