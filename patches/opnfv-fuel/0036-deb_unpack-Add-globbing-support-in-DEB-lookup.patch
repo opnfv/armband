@@ -1,0 +1,54 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 13 Jun 2016 22:23:57 +0200
+Subject: [PATCH] deb_unpack: Add globbing support in DEB lookup.
+
+Previously, patching DEB packages required specifying the full
+package filename, including version suffix.
+
+While this ensures our patches are not applied to wrong DEBs,
+it makes generic patching hard (e.g. some patches should be applied
+no matter the DEB version).
+
+CHANGE:
+ Allow glob matching when passing DEB to deb_unpack.
+ Only the <last> matching entry is used.
+
+The rest of the processing remains unchanged, e.g. <.package>
+will still contain the full path (including version) of the
+patched DEB package, making this change backwards compatible.
+
+While at it, optimize deb_unpack a little.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/patch-packages/tools/deb_unpack | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/build/patch-packages/tools/deb_unpack b/build/patch-packages/tools/deb_unpack
+index aaa60b7..e971ce8 100755
+--- a/build/patch-packages/tools/deb_unpack
++++ b/build/patch-packages/tools/deb_unpack
+@@ -45,14 +45,16 @@ ISOROOT=`mktemp -d /tmp/XXXXXXX`
+ fuseiso -p $ORIGISO $ISOROOT
+ sleep 1
+ 
+-if [ ! -f $ISOROOT/ubuntu/pool/main/$DEB ];then
++# Allow globbing for deb path, but only return last result!
++DEBPATH=$(find "$ISOROOT/ubuntu/pool/main/" -name "$1" -type f | tail -1)
++
++if [ ! -f $DEBPATH ]; then
+   echo "Could not find package $DEB in source ISO!"
++  exit 1
+ fi
+ 
+-mkdir -p $DEST
+-dpkg -x $ISOROOT/ubuntu/pool/main/$DEB $DEST
+-
+ mkdir -p $DEST/DEBIAN
+-dpkg -e $ISOROOT/ubuntu/pool/main/$DEB $DEST/DEBIAN
++dpkg -x $DEBPATH $DEST
++dpkg -e $DEBPATH $DEST/DEBIAN
+ 
+-echo $DEB > .package
+\ No newline at end of file
++basename "$DEBPATH" > .package
