@@ -63,14 +63,12 @@ build:
 			FUELLIB_REPO=${root}/upstream/fuel-library \
 			NAILGUN_REPO=${root}/upstream/fuel-web \
 			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
-			FUEL_NAILGUN_AGENT_REPO=${root}/upstream/fuel-nailgun-agent \
 			FUEL_MIRROR_REPO=${root}/upstream/fuel-mirror \
 			ODL_REPO=${root}/upstream/fuel-plugin-opendaylight \
 			ODL_CHANGE= \
 			FUELLIB_COMMIT=HEAD \
 			NAILGUN_COMMIT=HEAD \
 			FUEL_AGENT_COMMIT=HEAD \
-			FUEL_NAILGUN_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_COMMIT=HEAD \
 			ODL_BRANCH=armband-workbench \
 			CENTOS_MAJOR=7 \

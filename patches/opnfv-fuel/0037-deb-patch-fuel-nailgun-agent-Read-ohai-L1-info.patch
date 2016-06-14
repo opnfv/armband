@@ -1,0 +1,120 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 13 Jun 2016 22:23:57 +0200
+Subject: [PATCH] deb-patch: fuel-nailgun-agent: Read ohai L1 info.
+
+Traditional methods of reading the ethernet card speed rely on the
+drivers populating the advertised and/or supported link speed lists.
+
+This is not true for all drivers, especially for some Fibers
+that only report the speed via ethtool when the link is up.
+
+This patch adds support for reading L1 info from ohai, which
+supports parsing ethtool speed starting with version amos2 [1].
+
+[1] https://linux.enea.com/mos-repos/ubuntu/8.0/pool/main/o/
+    ohai/ohai_6.14.0-2~u14.04+mos1+mos8.0+amos2_all.deb
+
+NOTE:
+ Depends-on: "deb_unpack: Add globbing support in DEB lookup."
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/patch-packages/Makefile                      |  2 +-
+ ...ohai-Support-reading-L1-info-from-ethtool.patch | 35 ++++++++++++++++++++++
+ build/patch-packages/fuel-nailgun-agent/Makefile   | 32 ++++++++++++++++++++
+ 3 files changed, 68 insertions(+), 1 deletion(-)
+ create mode 100644 build/patch-packages/fuel-nailgun-agent/0001-ohai-Support-reading-L1-info-from-ethtool.patch
+ create mode 100644 build/patch-packages/fuel-nailgun-agent/Makefile
+
+diff --git a/build/patch-packages/Makefile b/build/patch-packages/Makefile
+index 339c9e7..792e234 100644
+--- a/build/patch-packages/Makefile
++++ b/build/patch-packages/Makefile
+@@ -8,7 +8,7 @@
+ # http://www.apache.org/licenses/LICENSE-2.0
+ ##############################################################################
+ 
+-SUBDIRS := 
++SUBDIRS := fuel-nailgun-agent
+ SUBCLEAN = $(addsuffix .clean,$(SUBDIRS))
+ 
+ .PHONY: $(SUBDIRS) $(SUBCLEAN) clean
+diff --git a/build/patch-packages/fuel-nailgun-agent/0001-ohai-Support-reading-L1-info-from-ethtool.patch b/build/patch-packages/fuel-nailgun-agent/0001-ohai-Support-reading-L1-info-from-ethtool.patch
+new file mode 100644
+index 0000000..849203a
+--- /dev/null
++++ b/build/patch-packages/fuel-nailgun-agent/0001-ohai-Support-reading-L1-info-from-ethtool.patch
+@@ -0,0 +1,35 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Sat, 2 Apr 2016 22:57:59 +0200
++Subject: [PATCH] ohai: Support reading L1 info from ethtool.
++
++Traditional methods of reading the ethernet card speed rely on the
++drivers populating the advertised and/or supported link speed lists.
++
++This is not true for all drivers, especially for some Fibers
++that only report the speed via ethtool when the link is up.
++
++This patch adds support for reading L1 info from ohai, which
++supports parsing ethtool speed starting with version amos2 [1].
++
++[1] https://linux.enea.com/mos-repos/ubuntu/8.0/pool/main/o/
++    ohai/ohai_6.14.0-2~u14.04+mos1+mos8.0+amos2_all.deb
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++
++diff --git a/usr/bin/nailgun-agent b/usr/bin/nailgun-agent
++--- a/usr/bin/nailgun-agent
+++++ b/usr/bin/nailgun-agent
++@@ -379,7 +379,11 @@
++                 int_meta[:current_speed] = int_info.current_mode.speed
++               end
++             rescue
++-              int_meta[:current_speed] = nil
+++              if intinfo.has_key?(:link_speed) && 0 < intinfo[:link_speed]
+++                int_meta[:current_speed] = intinfo[:link_speed]
+++              else
+++                int_meta[:current_speed] = nil
+++              end
++             end
++           elsif (addrinfo[:family] rescue nil) =~ /^inet$/
++             int_meta[:ip] = addr
+diff --git a/build/patch-packages/fuel-nailgun-agent/Makefile b/build/patch-packages/fuel-nailgun-agent/Makefile
+new file mode 100644
+index 0000000..610800f
+--- /dev/null
++++ b/build/patch-packages/fuel-nailgun-agent/Makefile
+@@ -0,0 +1,32 @@
++##############################################################################
++# Copyright (c) 2015 Ericsson AB and others.
++# Copyright (c) 2016 Enea AB.
++# stefan.k.berg@ericsson.com
++# jonas.bjurel@ericsson.com
++# Alexandru.Avadanii@enea.com
++# All rights reserved. This program and the accompanying materials
++# are made available under the terms of the Apache License, Version 2.0
++# which accompanies this distribution, and is available at
++# http://www.apache.org/licenses/LICENSE-2.0
++##############################################################################
++
++TOP := $(shell pwd)
++PATCHES := $(wildcard *.patch)
++
++.PHONY: all
++all:
++
++.PHONY: clean
++clean:
++	@rm -rf package
++	@rm -rf *.deb
++	@rm -rf patch-replacements
++	@rm -rf .package
++
++.PHONY: release
++release:
++	../tools/deb_unpack nailgun-agent_*_all.deb $(ORIGISO)
++	@cd package; cat ../*.patch | patch -p1 -N -r -
++	../tools/deb_pack $(REVSTATE)
++	@cp *.deb ../release/packages
++	@cat patch-replacements >> ../release/patch-replacements
