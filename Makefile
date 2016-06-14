@@ -6,7 +6,7 @@ all: build
 submodules-init:
 	@git submodule -q init
 	@git submodule -q sync
-	@git submodule update
+	@git submodule update --remote
 
 # Cleans any changes made to submodules
 submodules-clean:
