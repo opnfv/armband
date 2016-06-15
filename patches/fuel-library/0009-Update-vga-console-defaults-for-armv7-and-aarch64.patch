@@ -17,7 +17,7 @@ new file mode 100644
 index 0000000..c5f8e5a
 --- /dev/null
 +++ b/deployment/puppet/openstack/files/nova-libvirt-vga-console.patch
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,40 @@
 +From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 +Date: Tue, 22 Mar 2016 12:05:09 +0100
 +Subject: [PATCH] Update vga, console defaults for armv7 and aarch64
@@ -47,12 +47,13 @@ index 0000000..c5f8e5a
 +             if virt_type == "qemu":
 +                 guest.os_cmdline += " no_timer_check"
 +         if instance.ramdisk_id:
-+@@ -3972,7 +3972,8 @@ class LibvirtDriver(driver.ComputeDriver):
++@@ -3972,7 +3972,9 @@ class LibvirtDriver(driver.ComputeDriver):
 +             video.type = 'xen'
 +         elif CONF.libvirt.virt_type == 'parallels':
 +             video.type = 'vga'
-+-        elif guestarch in (arch.PPC, arch.PPC64):
-++        elif guestarch in (arch.ARMV7, arch.AARCH64, arch.PPC, arch.PPC64):
++-        elif guestarch in (arch.PPC, arch.PPC64, arch.PPC64LE):
+++        elif guestarch in (arch.ARMV7, arch.AARCH64,
+++                           arch.PPC, arch.PPC64, arch.PPC64LE):
 ++            # NOTE(armband): Added ARM v7/v8, same as on PPC.
 +             # NOTE(ldbragst): PowerKVM doesn't support 'cirrus' be default
 +             # so use 'vga' instead when running on Power hardware.
