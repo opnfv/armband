@@ -1,14 +1,16 @@
+From 0ca4dada5b3528c84f2edcb7f1a2df8f0a18779d Mon Sep 17 00:00:00 2001
 From: Josep Puigdemont <josep.puigdemont@enea.com>
 Date: Mon, 9 May 2016 11:05:58 +0200
 Subject: [PATCH] deploy.sh: accept a timeout flag (-T)
 
+Change-Id: I58a7b9bc639bb03b994ea34fc317f5679140d9fd
 Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
 ---
  ci/deploy.sh | 19 +++++++++++++++----
  1 file changed, 15 insertions(+), 4 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index 3a95327..a8b3015 100755
+index 4e4586c..8411714 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -29,7 +29,7 @@ cat << EOF
@@ -20,7 +22,7 @@ index 3a95327..a8b3015 100755
         -s deployment-scenario [-S optional Deploy-scenario path URI]
         [-R optional local relen repo (containing deployment Scenarios]
  
-@@ -46,6 +46,7 @@ OPTIONS:
+@@ -47,6 +47,7 @@ OPTIONS:
    -p  Pod-name
    -s  Deploy-scenario short-name/base-file-name
    -S  Storage dir for VM images
@@ -28,7 +30,7 @@ index 3a95327..a8b3015 100755
    -i  iso url
  
  Description:
-@@ -76,6 +77,8 @@ Input parameters to the build script is:
+@@ -78,6 +79,8 @@ Input parameters to the build script is:
     or a deployment short-name as defined by scenario.yaml in the deployment
     scenario path.
  -S Storage dir for VM images, default is fuel/deploy/images
@@ -37,7 +39,7 @@ index 3a95327..a8b3015 100755
  -i .iso image to be deployed (needs to be provided in a URI
     style, it can be a local resource: file:// or a remote resource http(s)://)
  
-@@ -114,6 +117,11 @@ FUEL_CREATION_ONLY=''
+@@ -116,6 +119,11 @@ FUEL_CREATION_ONLY=''
  NO_DEPLOY_ENVIRONMENT=''
  STORAGE_DIR=''
  DRY_RUN=0
@@ -49,16 +51,16 @@ index 3a95327..a8b3015 100755
  #
  # END of variables to customize
  ############################################################################
-@@ -121,7 +129,7 @@ DRY_RUN=0
+@@ -123,7 +131,7 @@ DRY_RUN=0
  ############################################################################
  # BEGIN of main
  #
--while getopts "b:B:dfFHl:p:s:S:i:he" OPTION
-+while getopts "b:B:dfFHl:p:s:S:T:i:he" OPTION
+-while getopts "b:B:dfFHl:L:p:s:S:i:he" OPTION
++while getopts "b:B:dfFHl:L:p:s:S:T:i:he" OPTION
  do
      case $OPTION in
          b)
-@@ -169,6 +177,9 @@ do
+@@ -174,6 +182,9 @@ do
                  STORAGE_DIR="-s ${OPTARG}"
              fi
              ;;
@@ -68,14 +70,17 @@ index 3a95327..a8b3015 100755
          i)
              ISO=${OPTARG}
              if [[ ! $ISO == file://* ]] && \
-@@ -238,8 +249,8 @@ if [ $DRY_RUN -eq 0 ]; then
+@@ -243,8 +254,8 @@ if [ $DRY_RUN -eq 0 ]; then
          ISO=${SCRIPT_PATH}/ISO/image.iso
      fi
      # Start deployment
--    echo "python deploy.py $STORAGE_DIR $PXE_BRIDGE $USE_EXISTING_FUEL $FUEL_CREATION_ONLY $NO_HEALTH_CHECK $NO_DEPLOY_ENVIRONMENT -dea ${SCRIPT_PATH}/config/dea.yaml -dha ${SCRIPT_PATH}/config/dha.yaml -iso $ISO"
--    python deploy.py $STORAGE_DIR $PXE_BRIDGE $USE_EXISTING_FUEL $FUEL_CREATION_ONLY $NO_HEALTH_CHECK $NO_DEPLOY_ENVIRONMENT -dea ${SCRIPT_PATH}/config/dea.yaml -dha ${SCRIPT_PATH}/config/dha.yaml -iso $ISO
-+    echo "python deploy.py $STORAGE_DIR $PXE_BRIDGE $USE_EXISTING_FUEL $FUEL_CREATION_ONLY $NO_HEALTH_CHECK $NO_DEPLOY_ENVIRONMENT -dea ${SCRIPT_PATH}/config/dea.yaml -dha ${SCRIPT_PATH}/config/dha.yaml -iso $ISO $DEPLOY_TIMEOUT"
-+    python deploy.py $STORAGE_DIR $PXE_BRIDGE $USE_EXISTING_FUEL $FUEL_CREATION_ONLY $NO_HEALTH_CHECK $NO_DEPLOY_ENVIRONMENT -dea ${SCRIPT_PATH}/config/dea.yaml -dha ${SCRIPT_PATH}/config/dha.yaml -iso $ISO $DEPLOY_TIMEOUT
+-    echo "python deploy.py $DEPLOY_LOG $STORAGE_DIR $PXE_BRIDGE $USE_EXISTING_FUEL $FUEL_CREATION_ONLY $NO_HEALTH_CHECK $NO_DEPLOY_ENVIRONMENT -dea ${SCRIPT_PATH}/config/dea.yaml -dha ${SCRIPT_PATH}/config/dha.yaml -iso $ISO"
+-    python deploy.py $DEPLOY_LOG $STORAGE_DIR $PXE_BRIDGE $USE_EXISTING_FUEL $FUEL_CREATION_ONLY $NO_HEALTH_CHECK $NO_DEPLOY_ENVIRONMENT -dea ${SCRIPT_PATH}/config/dea.yaml -dha ${SCRIPT_PATH}/config/dha.yaml -iso $ISO
++    echo "python deploy.py $DEPLOY_LOG $STORAGE_DIR $PXE_BRIDGE $USE_EXISTING_FUEL $FUEL_CREATION_ONLY $NO_HEALTH_CHECK $NO_DEPLOY_ENVIRONMENT -dea ${SCRIPT_PATH}/config/dea.yaml -dha ${SCRIPT_PATH}/config/dha.yaml -iso $ISO $DEPLOY_TIMEOUT"
++    python deploy.py $DEPLOY_LOG $STORAGE_DIR $PXE_BRIDGE $USE_EXISTING_FUEL $FUEL_CREATION_ONLY $NO_HEALTH_CHECK $NO_DEPLOY_ENVIRONMENT -dea ${SCRIPT_PATH}/config/dea.yaml -dha ${SCRIPT_PATH}/config/dha.yaml -iso $ISO $DEPLOY_TIMEOUT
  fi
  popd > /dev/null
  
+-- 
+2.5.5
+

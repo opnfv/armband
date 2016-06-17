@@ -1,9 +1,11 @@
+From 800aae6db0d0d79d01cec4df85075026073063dd Mon Sep 17 00:00:00 2001
 From: Josep Puigdemont <josep.puigdemont@enea.com>
 Date: Wed, 4 May 2016 14:27:23 +0200
 Subject: [PATCH] Fuel VM for the Enea Armband lab
 
 This is the initial VM description fit for Enea's Armband lab.
 
+Change-Id: Ia89f9728fff0ab1c279f6200fd558d9643cf4ea5
 Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
 ---
  .../hardware_environment/vms/enea_lab/fuel.xml     | 88 ++++++++++++++++++++++
@@ -104,3 +106,6 @@ index 0000000..8773ed4
 +    </memballoon>
 +  </devices>
 +</domain>
+-- 
+2.5.5
+

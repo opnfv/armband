@@ -1,3 +1,4 @@
+From 2a9e72d95200161ec27e8f199a76c6ec1f88bff1 Mon Sep 17 00:00:00 2001
 From: Josep Puigdemont <josep.puigdemont@enea.com>
 Date: Fri, 20 May 2016 10:23:45 +0200
 Subject: [PATCH] virtual_fuel: prepare class to allow multiple bridges
@@ -12,17 +13,19 @@ The following method has been deleted:
 
     set_vm_nic: implemented with the two new methods
 
-Apart from the deleted method, no functionality has been changed. This
-is just a small but necessary step towards adding support for supporting
-more than one bridge in the fuel VM.
+Apart from the deleted method, no functionality has been changed.
 
+This is just a small but necessary step towards adding support for
+configuring more than one NIC in the fuel VM.
+
+Change-Id: I9f02c8163dfb9768510e78d5d5e77a0bb43306fb
 Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
 ---
  deploy/environments/virtual_fuel.py | 21 +++++++++++++--------
  1 file changed, 13 insertions(+), 8 deletions(-)
 
 diff --git a/deploy/environments/virtual_fuel.py b/deploy/environments/virtual_fuel.py
-index 7dc9720..5a86c97 100644
+index 2fac98b..5a86c97 100644
 --- a/deploy/environments/virtual_fuel.py
 +++ b/deploy/environments/virtual_fuel.py
 @@ -67,22 +67,25 @@ class VirtualFuel(ExecutionEnvironment):
@@ -61,7 +64,7 @@ index 7dc9720..5a86c97 100644
  
 -        temp_vm_file = '%s/%s' % (self.temp_dir, self.vm_name)
 -        exec_cmd('cp %s %s' % (self.vm_template, temp_vm_file))
--        self.set_vm_nic(temp_vm_file)
+-        self.set_vm_nic()
 +        self.del_vm_nics()
 +        self.add_vm_nic(self.pxe_bridge)
 +        self.update_vm_template_file()
@@ -73,3 +76,6 @@ index 7dc9720..5a86c97 100644
                         vm_definition_overwrite)
  
      def setup_environment(self):
+-- 
+2.5.5
+

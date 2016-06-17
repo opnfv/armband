@@ -1,3 +1,4 @@
+From e8232eca62d67c2bac1d34f5b2adfeba1a580634 Mon Sep 17 00:00:00 2001
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Wed, 4 May 2016 18:31:09 +0200
 Subject: [PATCH] deploy/reap.py: Dump extra interfaces information.
@@ -30,6 +31,7 @@ see related bug report [2].
 [1] https://jira.opnfv.org/browse/ARMBAND-35
 [2] https://jira.opnfv.org/browse/FUEL-136
 
+Change-Id: I6f0a759c65a435ec8bd883a04c8d1adca109cc13
 Signed-off-by: Alexandu Avadanii <alexandru.avadanii@enea.com>
 Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
 ---
@@ -37,7 +39,7 @@ Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
  1 file changed, 34 insertions(+)
 
 diff --git a/deploy/reap.py b/deploy/reap.py
-index 1262d4c..1f1b8ad 100644
+index ed5bc99..9f14e35 100644
 --- a/deploy/reap.py
 +++ b/deploy/reap.py
 @@ -15,6 +15,8 @@ import yaml
@@ -49,7 +51,9 @@ index 1262d4c..1f1b8ad 100644
  
  from common import (
      N,
-@@ -246,4 +248,36 @@ class Reap(object):
+@@ -248,6 +250,38 @@ class Reap(object):
+             if key not in ['ipaddress', 'netmask',
+                            'dhcp_pool_start', 'dhcp_pool_end', 'ssh_network']:
                  del fuel['ADMIN_NETWORK'][key]
 +
 +        ## FIXME(armband): Factor in support for adding public/other interfaces.
@@ -86,3 +90,6 @@ index 1262d4c..1f1b8ad 100644
          self.write_yaml(self.dea_file, {'fuel': fuel})
  
      def reap_network_settings(self):
+-- 
+2.5.5
+

@@ -1,7 +1,9 @@
+From b7d5f0ca9a76de6d99fc5d6f5cbb8df864c62b7b Mon Sep 17 00:00:00 2001
 From: Josep Puigdemont <josep.puigdemont@enea.com>
 Date: Wed, 4 May 2016 14:27:23 +0200
 Subject: [PATCH] Remove check for root
 
+Change-Id: Ic6bfaf07c0d9d347aec2df8724184d0314665503
 Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
 ---
  ci/deploy.sh                        | 5 -----
@@ -11,10 +13,10 @@ Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
  4 files changed, 10 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index cd7f652..5f06a19 100755
+index c08a94b..081806c 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
-@@ -204,11 +204,6 @@ do
+@@ -209,11 +209,6 @@ do
      esac
  done
  
@@ -39,18 +41,18 @@ index 65d51b2..88a1111 100644
  )
  
 diff --git a/deploy/deploy.py b/deploy/deploy.py
-index 9db1754..ca092f5 100755
+index 56e5bd5..a021e28 100755
 --- a/deploy/deploy.py
 +++ b/deploy/deploy.py
-@@ -32,7 +32,6 @@ from common import (
-     check_file_exists,
+@@ -33,7 +33,6 @@ from common import (
+     check_dir_exists,
      create_dir_if_not_exists,
      delete,
 -    check_if_root,
      ArgParser,
  )
  
-@@ -232,7 +231,6 @@ class AutoDeploy(object):
+@@ -234,7 +233,6 @@ class AutoDeploy(object):
          return 0
  
      def run(self):
@@ -78,3 +80,6 @@ index b1a76e4..4ff68f6 100644
          self.cleanup_environment()
          self.create_vm()
  
+-- 
+2.5.5
+

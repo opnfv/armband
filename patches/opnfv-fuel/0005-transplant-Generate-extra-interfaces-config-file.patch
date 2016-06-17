@@ -1,3 +1,4 @@
+From 7dad9f8350e8563942f4e9ffae595bbfe44e606d Mon Sep 17 00:00:00 2001
 From: Josep Puigdemont <josep.puigdemont@enea.com>
 Date: Wed, 4 May 2016 17:58:56 +0200
 Subject: [PATCH] transplant: Generate extra interfaces config file
@@ -19,6 +20,7 @@ added one public interface), the default route on admin iface (most of
 the time called eth0) should be disabled. For now, we assume the admin
 interface is always "eth0".
 
+Change-Id: I0457dc9a0d49e46b8ca85cfe7a4435c2b15f5238
 Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
 Signed-off-by: Alexandu Avadanii <alexandru.avadanii@enea.com>
 ---
@@ -105,3 +107,6 @@ index e57a4fb..9a65cf6 100644
  
  
  if __name__ == '__main__':
+-- 
+2.5.5
+
