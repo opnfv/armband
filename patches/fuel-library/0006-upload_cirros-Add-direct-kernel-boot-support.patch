@@ -8,11 +8,11 @@ images (disk formats `AKI` and `ARI`).
 
 Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
 ---
- .../osnailyfacter/modular/astute/upload_cirros.rb  | 53 ++++++++++++++++++++--
- 1 file changed, 50 insertions(+), 3 deletions(-)
+ .../osnailyfacter/modular/astute/upload_cirros.rb  | 52 +++++++++++++++++++++-
+ 1 file changed, 50 insertions(+), 2 deletions(-)
 
 diff --git a/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb b/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
-index f0441b0..cefc3ed 100755
+index f0441b0..a619f3f 100755
 --- a/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
 +++ b/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
 @@ -56,7 +56,7 @@ def image_list
@@ -30,7 +30,7 @@ index f0441b0..cefc3ed 100755
  
 +# Calls glance update-image with a given property and value
 +def update_image(image_id, property, value)
-+  command = "/usr/bin/glance image-update --#{property} #{value} #{image_id}"
++  command = "/usr/bin/openstack image set --property #{property}=#{value} #{image_id}"
 +  puts command
 +  stdout = `#{command}`
 +  return_code = $?.exitstatus
@@ -93,13 +93,12 @@ index f0441b0..cefc3ed 100755
  ########################
  
  wait_for_glance
-@@ -167,7 +213,8 @@ test_vm_images.each do |image|
-   # retry upload 5 times with a 1 minute sleep between tries
-   5.times.each do |retries|
-     if upload_image(image)
--      success = true
-+      if connect_dependant_images(test_vm_images) == 0
-+        success = true
-       break
-     end
-     sleep 60
+@@ -180,6 +226,8 @@ if errors > 0
+     cleanup_image(image)
+   end
+   exit 1
++elsif connect_dependant_images(test_vm_images) > 0
++  exit 2
+ end
+
+ exit 0

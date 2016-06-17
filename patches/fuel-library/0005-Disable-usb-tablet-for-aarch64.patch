@@ -1,6 +1,6 @@
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Tue, 15 Mar 2016 11:33:52 +0100
-Subject: [PATCH] Disable usb tablet for aarch64
+Subject: [PATCH] nova config: Disable usb tablet for aarch64
 
 ---
  deployment/puppet/openstack_tasks/manifests/roles/compute.pp | 12 ++++++++++++
@@ -18,15 +18,3 @@ index ca1b2c4..c0349dc 100644
 +    };
      'libvirt/live_migration_flag':  value => 'VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST';
      'libvirt/block_migration_flag': value => 'VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_NON_SHARED_INC';
-@@ -364,3 +368,11 @@ class openstack::compute (
-     libvirt_service_name                       => $::nova::params::libvirt_service_name,
-+  } ->
-+  package { 'vgabios':
-+    ensure => present;
-+  } ->
-+  file { '/usr/share/qemu/vgabios-stdvga.bin':
-+    ensure  => link,
-+    target  => '/usr/share/vgabios/vgabios.bin',
-+    replace => false,
-   }
- 
