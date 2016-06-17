@@ -51,7 +51,7 @@ index ed5bc99..9f14e35 100644
  
  from common import (
      N,
-@@ -248,6 +250,38 @@ class Reap(object):
+@@ -248,6 +250,40 @@ class Reap(object):
              if key not in ['ipaddress', 'netmask',
                             'dhcp_pool_start', 'dhcp_pool_end', 'ssh_network']:
                  del fuel['ADMIN_NETWORK'][key]
@@ -78,6 +78,8 @@ index ed5bc99..9f14e35 100644
 +            ifcfg_f = ('/etc/sysconfig/network-scripts/ifcfg-%s' % ifcfg_name)
 +            with open(ifcfg_f) as f:
 +                for line in f:
++                    if line.startswith('#'):
++                        continue
 +                    (key, val) = line.split('=')
 +                    ifcfg_data[key.lower()] = val.rstrip()
 +
