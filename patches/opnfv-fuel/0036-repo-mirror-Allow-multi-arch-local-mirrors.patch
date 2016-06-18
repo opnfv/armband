@@ -1,0 +1,87 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 18 Jun 2016 19:42:15 +0200
+Subject: [PATCH] repo mirror: Allow multi-arch local mirrors
+
+This patch allows specifying multiple architectures via UBUNTU_ARCH in
+form of a list of space separated architectures. The first architecture
+in the list is considered primary and will be used for building all the
+deb packages by fuel-main. Additional architectures are added to allow
+targets of other architectures to use the mirror.
+
+NOTE: this imposes a requirement that all packages built are arch
+independent (which is true so far).
+
+[ Alexandru Avadanii ]
+Reworked for applying on top of fuel@OPNFV.
+
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/Makefile                            |  1 +
+ build/repo-multi-arch-local-mirrors.patch | 45 +++++++++++++++++++++++++++++++
+ 2 files changed, 46 insertions(+)
+ create mode 100644 build/repo-multi-arch-local-mirrors.patch
+
+diff --git a/build/Makefile b/build/Makefile
+index 2d33aa4..0490bab 100644
+--- a/build/Makefile
++++ b/build/Makefile
+@@ -139,6 +139,7 @@ $(ISOCACHE):
+ 	cd /tmp/fuel-main && git config user.email "fuel@opnfv.org"
+ 	cd /tmp/fuel-main && git am $(TOPDIR)/bootstrap_admin_node.sh.patch
+ 	cd /tmp/fuel-main && git am $(TOPDIR)/isolinux.cfg.patch
++	cd /tmp/fuel-main && git am $(TOPDIR)/repo-multi-arch-local-mirrors.patch
+ 	# Repeat build up to three times
+ 	sudo -E ./fuel_build_loop
+ 	cp /tmp/fuel-main/build/artifacts/fuel*.iso .
+diff --git a/build/repo-multi-arch-local-mirrors.patch b/build/repo-multi-arch-local-mirrors.patch
+new file mode 100644
+index 0000000..c3ff26a
+--- /dev/null
++++ b/build/repo-multi-arch-local-mirrors.patch
+@@ -0,0 +1,45 @@
++From: Stanislaw Kardach <stanislaw.kardach@cavium.com>
++Date: Thu, 25 Feb 2016 13:31:19 +0100
++Subject: repo mirror: Allow multi-arch local mirrors
++
++This patch allows specifying multiple architectures via UBUNTU_ARCH in
++form of a list of space separated architectures. The first architecture
++in the list is considered primary and will be used for building all the
++deb packages by fuel-main. Additional architectures are added to allow
++targets of other architectures to use the mirror.
++NOTE: this imposes a requirement that all packages built are arch
++independent (which is true so far).
++
++Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ mirror/ubuntu/module.mk | 2 +-
++ sandbox.mk              | 2 +-
++ 2 files changed, 2 insertions(+), 2 deletions(-)
++
++diff --git a/mirror/ubuntu/module.mk b/mirror/ubuntu/module.mk
++index 7a9466e..fe1ada2 100644
++--- a/mirror/ubuntu/module.mk
+++++ b/mirror/ubuntu/module.mk
++@@ -81,7 +81,7 @@ $(BUILD_DIR)/mirror/ubuntu/mirror.done:
++ 	--root=$(MIRROR_MOS_UBUNTU_ROOT) \
++ 	--dist=$(MIRROR_MOS_UBUNTU_SUITE) \
++ 	--section=$(subst $(space),$(comma),$(MIRROR_MOS_UBUNTU_SECTION)) \
++-	--arch=$(UBUNTU_ARCH) \
+++	--arch=$(shell echo $(UBUNTU_ARCH) | tr ' ' ',') \
++ 	$(LOCAL_MIRROR_UBUNTU)/
++ 	rm -rf $(LOCAL_MIRROR_UBUNTU)/.temp $(LOCAL_MIRROR_UBUNTU)/project
++ 	$(ACTION.TOUCH)
++diff --git a/sandbox.mk b/sandbox.mk
++index 4bc3962..5ffddbd 100644
++--- a/sandbox.mk
+++++ b/sandbox.mk
++@@ -188,7 +188,7 @@ touch $(SANDBOX_UBUNTU)/etc/init.d/.legacy-bootordering
++ mkdir -p $(SANDBOX_UBUNTU)/usr/sbin
++ cp -a $(BUILD_DIR)/policy-rc.d $(SANDBOX_UBUNTU)/usr/sbin
++ echo "Running debootstrap"
++-sudo debootstrap --no-check-gpg --include=ca-certificates --arch=$(UBUNTU_ARCH) $(MIRROR_UBUNTU_SUITE) $(SANDBOX_UBUNTU) $(MIRROR_UBUNTU_METHOD)://$(MIRROR_UBUNTU)$(MIRROR_UBUNTU_ROOT)
+++sudo debootstrap --no-check-gpg --include=ca-certificates --arch=$(word 1,$(UBUNTU_ARCH)) $(MIRROR_UBUNTU_SUITE) $(SANDBOX_UBUNTU) $(MIRROR_UBUNTU_METHOD)://$(MIRROR_UBUNTU)$(MIRROR_UBUNTU_ROOT)
++ if [ -e $(SANDBOX_UBUNTU)/etc/resolv.conf ]; then sudo cp -a $(SANDBOX_UBUNTU)/etc/resolv.conf $(SANDBOX_UBUNTU)/etc/resolv.conf.orig; fi
++ sudo cp /etc/resolv.conf $(SANDBOX_UBUNTU)/etc/resolv.conf
++ if [ -e $(SANDBOX_UBUNTU)/etc/hosts ]; then sudo cp -a $(SANDBOX_UBUNTU)/etc/hosts $(SANDBOX_UBUNTU)/etc/hosts.orig; fi
