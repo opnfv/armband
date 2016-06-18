@@ -34,28 +34,25 @@ diff --git a/build/bootstrap_admin_node.sh.patch b/build/bootstrap_admin_node.sh
 index b1ea90b..7f16d0b 100644
 --- a/build/bootstrap_admin_node.sh.patch
 +++ b/build/bootstrap_admin_node.sh.patch
-@@ -24,6 +24,21 @@
-   nodes over PXE, they will be discovered and become available for installing \
-   OpenStack on them"
- ***************
-+*** 239,244 ****
-+--- 239,250 ----
-+  # /etc/fuel_openstack_version is provided by 'fuel-openstack-metadata' package
-+  OPENSTACK_VERSION=$(cat /etc/fuel_openstack_version)
+@@ -24,5 +24,18 @@
+  nodes over PXE, they will be discovered and become available for installing \
+  OpenStack on them"
++@@ -239,6 +239,12 @@
++ # /etc/fuel_openstack_version is provided by 'fuel-openstack-metadata' package
++ OPENSTACK_VERSION=$(cat /etc/fuel_openstack_version)
 +
-++ # FIXME(armband): This part might be moved to an earlier stage later
-++ # /etc/fuel_openstack_arch is constructed based on local mirror metadata
-++ grep -oP "^Architectures: \K.*$" \
-++     ${wwwdir}/${OPENSTACK_VERSION}/ubuntu/x86_64/dists/mos${FUEL_RELEASE}/Release > \
-++     /etc/fuel_openstack_arch
+++# FIXME(armband): This part might be moved to an earlier stage later
+++# /etc/fuel_openstack_arch is constructed based on local mirror metadata
+++grep -oP "^Architectures: \K.*$" \
+++    ${wwwdir}/${OPENSTACK_VERSION}/ubuntu/x86_64/dists/mos${FUEL_RELEASE}/Release > \
+++    /etc/fuel_openstack_arch
 ++
-+  # We do not ship debian-installer kernel and initrd on ISO.
-+  # But we still need to be able to create ubuntu cobbler distro
-+  # which requires kernel and initrd to be available. So, we
-+***************
- *** 339,346 ****
-   set +x
-   echo "Done!"
++ # We do not ship debian-installer kernel and initrd on ISO.
++ # But we still need to be able to create ubuntu cobbler distro
++ # which requires kernel and initrd to be available. So, we
+ @@ -339,8 +339,22 @@ fuelmenu --save-only --iface=$ADMIN_INTERFACE || fail
+  set +x
+  echo "Done!"
 diff --git a/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh b/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
 new file mode 100755
 index 0000000..d33d1d1

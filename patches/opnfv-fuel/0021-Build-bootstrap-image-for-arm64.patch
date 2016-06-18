@@ -10,30 +10,18 @@ per supported arch. This requires Fuel refactoring.
  1 file changed, 17 insertions(+)
 
 diff --git a/build/bootstrap_admin_node.sh.patch b/build/bootstrap_admin_node.sh.patch
-index aeef3f7..c66b497 100644
 --- a/build/bootstrap_admin_node.sh.patch
 +++ b/build/bootstrap_admin_node.sh.patch
-@@ -53,6 +53,23 @@
-   # Enable iptables
-   systemctl enable iptables.service
- ***************
-+*** 484,490 ****
-+          local ret=1
-+          echo ${bs_progress_message} >&2
-+          set_ui_bootstrap_error "${bs_progress_message}" >&2
-+!         if fuel-bootstrap -v --debug build --activate >>"$bs_build_log" 2>&1; then
-+            ret=0
-+            fuel notify --topic "done" --send "${bs_done_message}"
-+          else
-+--- 484,490 ----
-+          local ret=1
-+          echo ${bs_progress_message} >&2
-+          set_ui_bootstrap_error "${bs_progress_message}" >&2
-+!         if fuel-bootstrap -v --debug build --target_arch arm64 --activate >>"$bs_build_log" 2>&1; then
-+            ret=0
-+            fuel notify --topic "done" --send "${bs_done_message}"
-+          else
-+***************
- *** 529,534 ****
- --- 541,556 ----
-   
+@@ -53,3 +53,12 @@
+  # Enable iptables
+  systemctl enable iptables.service
++@@ -484,7 +490,7 @@
++         local ret=1
++         echo ${bs_progress_message} >&2
++         set_ui_bootstrap_error "${bs_progress_message}" >&2
++-        if fuel-bootstrap -v --debug build --activate >>"$bs_build_log" 2>&1; then
+++        if fuel-bootstrap -v --debug build --target_arch arm64 --activate >>"$bs_build_log" 2>&1; then
++           ret=0
++           fuel notify --topic "done" --send "${bs_done_message}"
++         else
+ @@ -532,6 +545,16 @@ systemctl start ntpd
