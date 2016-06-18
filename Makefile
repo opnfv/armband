@@ -37,9 +37,15 @@ patches-import:
 			git am ${root}/patches/$$name/*.patch; \
 		fi'
 clean-docker:
-	docker stop FUEL_CENTOS_8.0 || true
-	docker rm $(shell docker ps -a -q) || true
-	docker rmi -f $(shell docker images -q) || true
+	@if [ -d ${root}/upstream/fuel/build ]; then \
+		sudo make -C ${root}/upstream/fuel/build deepclean; \
+	fi
+	@for container in $(shell sudo docker ps -a -q); do \
+		sudo docker rm -f -v $${container}; \
+	done
+	@for image in $(shell sudo docker images -q); do \
+		sudo docker rmi -f $${image}; \
+	done
 
 clean-build:
 	sudo rm -rf /tmp/fuel-main
