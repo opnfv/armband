@@ -2,10 +2,6 @@
 	path = upstream/fuel
 	url = https://gerrit.opnfv.org/gerrit/fuel
 	branch = master
-[submodule "fuel-main"]
-	path = upstream/fuel-main
-	url = https://github.com/openstack/fuel-main.git
-	branch = stable/mitaka
 [submodule "fuel-library"]
 	path = upstream/fuel-library
 	url = https://github.com/openstack/fuel-library.git
