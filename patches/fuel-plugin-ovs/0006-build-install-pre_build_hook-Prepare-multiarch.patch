@@ -1,0 +1,381 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 26 Jun 2016 20:17:59 +0200
+Subject: [PATCH] build, install, pre_build_hook: Prepare multiarch
+
+install.sh: Factor out dpkg arch into var, read it from dpkg.
+install.sh: Relax DPDK/OVS/OVS-DPDK version hardcodes
+
+Instead of putting all debs in one archive, and possibly wasting
+bandwidth / space with unused foreign packages, split plugin
+archive(s) into arch-specific archives, with <_${arch}> suffix.
+E.g. <ovs-dpdk.tar.gz> for <amd64> becomes <ovs-dpdk_amd64.tar.gz>
+
+Since only one (DPDK/OVS/OVS-DPDK) set of packages is shipped per
+archive, we can safely wildcard the installed version of libdpdk,
+which previously hardcoded 2.2.0 and 16.04 for NSH/non-NSH.
+
+This is helpful for arm64, which has a custom deb subversion
+for DPDK16.07 and also requires DPDK16.07 for OVS-DPDK-NSH, instead
+of 2.2.0.
+
+Pass UBUNTU_ARCH from pre_build_hook and make install.sh more
+arch-independant.
+
+CHANGE:
+ UBUNTU_ARCH specifies the complete list of supported architectures
+ of the resulting RPM, in `dpkg --print-architecture` format.
+ e.g. UBUNTU_ARCH='arm64 amd64' will result in x86 + AArch64 support
+
+Change-Id: I04ac0a78319b460270545708efc4b53f02f7dd05
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deployment_scripts/install.sh   | 51 +++++++++++-----------
+ ovs_build/build-ovs-dpdk.sh     | 64 ++++++++++++++++------------
+ ovs_build/build-ovs-nsh-dpdk.sh | 93 ++++++++++++++++++++++++-----------------
+ pre_build_hook                  | 24 +++++++----
+ 4 files changed, 136 insertions(+), 96 deletions(-)
+
+diff --git a/deployment_scripts/install.sh b/deployment_scripts/install.sh
+index efbed72..46d74bb 100644
+--- a/deployment_scripts/install.sh
++++ b/deployment_scripts/install.sh
+@@ -9,34 +9,33 @@ host=$1
+ nsh=$2
+ dpdk=$3
+ dpdk_socket_mem=${4:-''}
++arch=$(dpkg --print-architecture)
++ovs="ovs-dpdk_${arch}.tar.gz"
+ 
+-if [ $nsh = 'true' ]
+-then
+-    curl  http://$host:8080/plugins/fuel-plugin-ovs-0.9/repositories/ubuntu/ovs-nsh-dpdk.tar.gz | tar -xzv
+-    dpkg -i openvswitch-datapath-dkms_2.5.90-1.nsh_all.deb
+-    dpkg -i openvswitch-common_2.5.90-1.nsh_amd64.deb
+-    dpkg -i openvswitch-switch_2.5.90-1.nsh_amd64.deb
+-    dpkg -i python-openvswitch_2.5.90-1.nsh_all.deb
+-    if [ $dpdk = 'true' ]
+-    then
++if [ $nsh = 'true' ]; then
++    ovs="ovs-nsh-dpdk_${arch}.tar.gz"
++fi
++ 
++curl  http://$host:8080/plugins/fuel-plugin-ovs-0.9/repositories/ubuntu/${ovs} | tar -xzv
++dpkg -i openvswitch-datapath-dkms_*.deb
++dpkg -i openvswitch-common_*.deb
++dpkg -i openvswitch-switch_*.deb
++dpkg -i python-openvswitch_*.deb
++if [ $dpdk = 'true' ]; then
++    if [ $nsh = 'true' -o -n $dpdk_socket_mem ]; then
+         dpkg -i libxenstore3.0*.deb
+-        dpkg -i libdpdk0_2.2.0-1_amd64.deb
+-        dpkg -i dpdk_2.2.0-1_amd64.deb
+-        dpkg -i openvswitch-switch-dpdk_2.5.90-1.nsh_amd64.deb
++        if [ $arch = 'arm64' ]; then
++          # FIXME(armband): arm64 DPDK ships individual libs, install them all
++          dpdk_deb_name=$(ls dpdk_*)
++          dpdk_deb_suffix=${dpdk_deb_name#dpdk_}
++          dpkg -i *${dpdk_deb_suffix%_*}*.deb
++        else
++          dpkg -i libdpdk0_*.deb
++          dpkg -i dpdk_*.deb
++        fi
++        dpkg -i openvswitch-switch-dpdk_*.deb
+     fi
+-else
+-    curl  http://$host:8080/plugins/fuel-plugin-ovs-0.9/repositories/ubuntu/ovs-dpdk.tar.gz | tar -xzv
+-    dpkg -i openvswitch-datapath-dkms_2.5.90-1_all.deb
+-    dpkg -i openvswitch-common_2.5.90-1_amd64.deb
+-    dpkg -i openvswitch-switch_2.5.90-1_amd64.deb
+-    dpkg -i python-openvswitch_2.5.90-1_all.deb
+-    if [[ $dpdk = 'true' && -n $dpdk_socket_mem ]]
+-    then
+-        dpkg -i libxenstore3.0*.deb
+-        dpkg -i libdpdk0_16.07-1_amd64.deb
+-        dpkg -i dpdk_16.07-1_amd64.deb
+-        dpkg -i openvswitch-switch-dpdk_2.5.90-1_amd64.deb
+-
++    if ! [ $nsh = 'true' -a -n $dpdk_socket_mem ]; then
+         #Set to 0, dpdk init script mount hugepages but don't change current allocation
+         sed -i "s/[# ]*\(NR_2M_PAGES=\).*/\10/" /etc/dpdk/dpdk.conf
+         service dpdk start
+@@ -47,3 +46,5 @@ else
+         service openvswitch-switch restart
+     fi
+ fi
++
++rm -rf $INSTALL_HOME
+diff --git a/ovs_build/build-ovs-dpdk.sh b/ovs_build/build-ovs-dpdk.sh
+index dd9c6ff..a14f5fd 100755
+--- a/ovs_build/build-ovs-dpdk.sh
++++ b/ovs_build/build-ovs-dpdk.sh
+@@ -10,18 +10,27 @@ BUILD_DEST=${BUILD_DEST:-/tmp/ovs-dpdk}
+ 
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
+-sudo apt-get -y --force-yes install devscripts dpkg-dev wget
++# Keep track of native arch (BUILD_ARCH) and target arch(s) (UBUNTU_ARCH)
++# All archs should be represented in `dpkg --print-architecture` format
++# UBUNTU_ARCH holds a space-separated list of target arch(s)
++# FIXME(armband): For now, only native building is supported!
++BUILD_ARCH=$(dpkg --print-architecture)
++UBUNTU_ARCH=${UBUNTU_ARCH:-${BUILD_ARCH}}
+ 
+-rm -rf ${BUILD_DEST}; mkdir -p ${BUILD_DEST}
++# Build and/or fetch precompiled packages for all arch(s) in UBUNTU_ARCH
++for ARCH in ${UBUNTU_ARCH}; do
++  rm -rf ${BUILD_DEST}; mkdir -p ${BUILD_DEST}; cd ${BUILD_DEST}
++  if [ ${ARCH} = ${BUILD_ARCH} ]; then
++    # Native building for: DPDK, OVS-DPDK, OVS
++    sudo apt-get -y --force-yes install devscripts dpkg-dev wget
+ 
+-cd ${BUILD_DEST}
+-wget -c http://fast.dpdk.org/rel/dpdk-16.07.tar.xz
+-xz -d dpdk-16.07.tar.xz; tar xvf dpdk-16.07.tar
+-cd dpdk-16.07
+-cp -r ${BUILD_SRC}/dpdk_16.07/debian .
++    wget -c http://fast.dpdk.org/rel/dpdk-16.07.tar.xz
++    xz -d dpdk-16.07.tar.xz; tar xvf dpdk-16.07.tar
++    cd dpdk-16.07
++    cp -r ${BUILD_SRC}/dpdk_16.07/debian .
+ 
+-# copy from debian/control
+-sudo apt-get install -y --force-yes debhelper \
++    # DPDK build-dep install: copy from debian/control
++    sudo apt-get install -y --force-yes debhelper \
+                dh-python \
+                dh-systemd \
+                doxygen  \
+@@ -35,15 +44,15 @@ sudo apt-get install -y --force-yes debhelper \
+                python-sphinx  \
+                texlive-fonts-recommended  \
+                texlive-latex-extra
+-debian/rules build; fakeroot debian/rules binary
++    debian/rules build; fakeroot debian/rules binary
+ 
+-cd ${BUILD_DEST}
+-sudo dpkg -i *.deb
+-apt-get download libxenstore3.0
++    cd ${BUILD_DEST}
++    sudo dpkg -i *.deb
++    apt-get download libxenstore3.0
+ 
+-sudo apt-get build-dep openvswitch -y --force-yes
+-# copy from debian/control
+-sudo apt-get install -y --force-yes autoconf \
++    sudo apt-get build-dep openvswitch -y --force-yes
++    # OVS-DPDK build-dep install: copy from debian/control
++    sudo apt-get install -y --force-yes autoconf \
+                automake \
+                bzip2 \
+                debhelper \
+@@ -62,16 +71,19 @@ sudo apt-get install -y --force-yes autoconf \
+                python-zopeinterface \
+                python-six
+ 
+-wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
+-tar xzf ${OVS_COMMIT}.tar.gz; mv ovs-${OVS_COMMIT} ovs
+-cp -r ovs ovs-dpdk
++    wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
++    tar xzf ${OVS_COMMIT}.tar.gz; mv ovs-${OVS_COMMIT} ovs
++    cp -r ovs ovs-dpdk
+ 
+-cd ovs-dpdk
+-cp -r ${BUILD_SRC}/openvswitch-dpdk_2.5.90/debian .
+-debian/rules build; fakeroot debian/rules binary
++    cd ovs-dpdk
++    cp -r ${BUILD_SRC}/openvswitch-dpdk_2.5.90/debian .
++    debian/rules build; fakeroot debian/rules binary
+ 
+-cd ${BUILD_DEST}/ovs
+-debian/rules build; fakeroot debian/rules binary
++    cd ${BUILD_DEST}/ovs
++    debian/rules build; fakeroot debian/rules binary
++  fi
+ 
+-cp -r ${BUILD_DEST}/*.deb ${BUILD_DEB}
+-rm -rf ${BUILD_DEST}
++  # Store DEBs in <${BUILD_DEB}/${ARCH}/> dir and cleanup
++  rm -rf ${BUILD_DEB}/${ARCH}; mkdir -p ${BUILD_DEB}/${ARCH}; cd ${BUILD_DEB}/${ARCH}
++  cp ${BUILD_DEST}/*.deb .; rm -rf ${BUILD_DEST}
++done
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index 3751c02..a65a2bb 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -11,16 +11,24 @@ DIR="$(dirname `readlink -f $0`)"
+ 
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
+-sudo apt-get build-dep openvswitch -y --force-yes
+-sudo apt-get -y --force-yes install devscripts dpkg-dev wget
++# Keep track of native arch (BUILD_ARCH) and target arch(s) (UBUNTU_ARCH)
++# All archs should be represented in `dpkg --print-architecture` format
++# UBUNTU_ARCH holds a space-separated list of target arch(s)
++# FIXME(armband): For now, only native building is supported!
++BUILD_ARCH=$(dpkg --print-architecture)
++UBUNTU_ARCH=${UBUNTU_ARCH:-${BUILD_ARCH}}
+ 
+-rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
++# Build and/or fetch precompiled packages for all arch(s) in UBUNTU_ARCH
++for ARCH in ${UBUNTU_ARCH}; do
++  rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}; cd ${BUILD_HOME}
++  if [ ${ARCH} = ${BUILD_ARCH} ]; then
++    # Native building for: DPDK, OVS-DPDK, OVS
++    sudo apt-get build-dep openvswitch -y --force-yes
++    sudo apt-get -y --force-yes install devscripts dpkg-dev wget
++    dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/dpdk_2.2.0-0ubuntu8.dsc
+ 
+-cd ${BUILD_HOME}
+-dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/dpdk_2.2.0-0ubuntu8.dsc
+-
+-# copy from debian/control
+-sudo apt-get install -y --force-yes debhelper \
++    # DPDK build-dep install: copy from debian/control
++    sudo apt-get install -y --force-yes debhelper \
+                dh-python \
+                dh-systemd \
+                doxygen  \
+@@ -35,21 +43,22 @@ sudo apt-get install -y --force-yes debhelper \
+                texlive-fonts-recommended  \
+                texlive-latex-extra
+ 
+-cd dpdk-2.2.0; rm -rf debian/patches/
+-cat << EOF > debian/changelog
++    cd dpdk-2.2.0; rm -rf debian/patches/
++    cat << EOF > debian/changelog
+ dpdk (2.2.0-1) unstable; urgency=low
+   * DPDK 2.2.0
+  -- DPDK team <dev@dpdk.org>  $(date --rfc-2822)
+ EOF
+-debian/rules build; fakeroot debian/rules binary
+-cd ${BUILD_HOME}; sudo dpkg -i *.deb
+-apt-get download libxenstore3.0
++    # DPDK build & install (required for following native build of OVS-NSH)
++    debian/rules build; fakeroot debian/rules binary
++    cd ${BUILD_HOME}; sudo dpkg -i *.deb
++    apt-get download libxenstore3.0
+ 
+-cd ${BUILD_HOME}
+-dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/openvswitch-dpdk_2.4.0-0ubuntu1.dsc
++    cd ${BUILD_HOME}
++    dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/openvswitch-dpdk_2.4.0-0ubuntu1.dsc
+ 
+-# copy from debian/control
+-sudo apt-get install -y --force-yes autoconf \
++    # OVS-NSH build-dep install: copy from debian/control
++    sudo apt-get install -y --force-yes autoconf \
+                automake \
+                bzip2 \
+                debhelper \
+@@ -68,33 +77,41 @@ sudo apt-get install -y --force-yes autoconf \
+                python-zopeinterface \
+                python-six
+ 
+-wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
+-tar xzf ${OVS_COMMIT}.tar.gz; mv ovs-${OVS_COMMIT} ovs
+-PATCHES=$(cd ${DIR}/patches; echo *patch)
+-for patch in ${PATCHES}
+-do
+-    patch -p1 < ${DIR}/patches/${patch}
+-done
+-cd ${BUILD_HOME}; tar czvf ovs.tar.gz ovs
+-rm -rf openvswitch-dpdk-${OVS_VER}*
+-cd openvswitch-dpdk-2.4.0; uupdate -v ${OVS_VER} ../ovs.tar.gz
+-cd ../openvswitch-dpdk-${OVS_VER}
+-sed -i "s/include\/rte_config.h/include\/dpdk\/rte_config.h/" acinclude.m4
+-sed -i 's/DPDK_INCLUDE=.*/DPDK_INCLUDE=$RTE_SDK\/include\/dpdk/'  acinclude.m4
+-autoreconf --install
+-rm -rf debian/patches/
+-cat << EOF > debian/changelog
++    # OVS-NSH build preparations: download sources, patch if needed
++    wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
++    tar xzf ${OVS_COMMIT}.tar.gz; mv ovs-${OVS_COMMIT} ovs; cd ovs
++
++    # Apply OVS-NSH patches, create a new orig tar archive
++    PATCHES=$(cd ${DIR}/patches; echo *patch)
++    for patch in ${PATCHES}
++    do
++      patch -p1 < ${DIR}/patches/${patch}
++    done
++    cd ${BUILD_HOME}; tar czvf ovs.tar.gz ovs
++    rm -rf openvswitch-dpdk-${OVS_VER}*
++    cd openvswitch-dpdk-2.4.0; uupdate -v ${OVS_VER} ../ovs.tar.gz
++    cd ../openvswitch-dpdk-${OVS_VER}
++    sed -i "s/include\/rte_config.h/include\/dpdk\/rte_config.h/" acinclude.m4
++    sed -i 's/DPDK_INCLUDE=.*/DPDK_INCLUDE=$RTE_SDK\/include\/dpdk/'  acinclude.m4
++    autoreconf --install
++    rm -rf debian/patches/
++    cat << EOF > debian/changelog
+ openvswitch-dpdk (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
+  -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+-debian/rules build; fakeroot debian/rules binary
++    debian/rules build; fakeroot debian/rules binary
+ 
+-cd ${BUILD_HOME}/ovs
+-cat << EOF > debian/changelog
++    cd ${BUILD_HOME}/ovs
++    cat << EOF > debian/changelog
+ openvswitch (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
+  -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+-debian/rules build; fakeroot debian/rules binary
+-cp ${BUILD_HOME}/*.deb ${BUILD_DEST}
++    debian/rules build; fakeroot debian/rules binary
++  fi
++
++  # Store DEBs in <${BUILD_DEST}/${ARCH}/> dir and cleanup
++  rm -rf ${BUILD_DEST}/${ARCH}; mkdir -p ${BUILD_DEST}/${ARCH}; cd ${BUILD_DEST}/${ARCH}
++  cp ${BUILD_HOME}/*.deb .
++done
+diff --git a/pre_build_hook b/pre_build_hook
+index b9ae6bb..3e46a37 100755
+--- a/pre_build_hook
++++ b/pre_build_hook
+@@ -10,6 +10,11 @@ if [ `uname -m` = 'aarch64' ]; then
+   USE_DOCKER=false
+ fi
+ 
++# Pass target arch(s) (UBUNTU_ARCH) to build scripts.
++# All archs should be represented in `dpkg --print-architecture` format
++# UBUNTU_ARCH holds a space-separated list of target arch(s)
++export UBUNTU_ARCH=${UBUNTU_ARCH:-$(dpkg --print-architecture)}
++
+ function build_pkg {
+   case $1 in
+     ubuntu)
+@@ -23,8 +28,10 @@ function build_pkg {
+       cd ${DIR}/ovs_build
+       if [ "${USE_DOCKER}" = true ]; then
+         sudo docker build -t ovs_build .
+-        sudo docker run -v ${DEB_DIR}:/deb -t ovs_build /ovs_build/build-ovs-dpdk.sh
+-        sudo docker run -v ${DEB_DIR_NSH}:/deb -t ovs_build /ovs_build/build-ovs-nsh-dpdk.sh
++        sudo docker run -e "UBUNTU_ARCH=${UBUNTU_ARCH}" -v ${DEB_DIR}:/deb \
++          -t ovs_build /ovs_build/build-ovs-dpdk.sh
++        sudo docker run -e "UBUNTU_ARCH=${UBUNTU_ARCH}" -v ${DEB_DIR_NSH}:/deb \
++          -t ovs_build /ovs_build/build-ovs-nsh-dpdk.sh
+       else
+         rm -rf /tmp/ovs-build-{,nsh-}dpdk; mkdir -p /tmp/ovs-build-{,nsh-}dpdk
+         BUILD_HOME=/tmp/ovs-build-dpdk BUILD_DEB=${DEB_DIR} ./build-ovs-dpdk.sh
+@@ -32,11 +39,14 @@ function build_pkg {
+         rm -rf /tmp/ovs-build-{,nsh-}dpdk
+       fi
+ 
+-      cd ${DEB_DIR}; tar czvf ../repositories/ubuntu/ovs-dpdk.tar.gz .;
+-      cd ..; rm -rf ${DEB_DIR}
+-
+-      cd ${DEB_DIR_NSH}; tar czvf ../repositories/ubuntu/ovs-nsh-dpdk.tar.gz .;
+-      cd ..; rm -rf ${DEB_DIR_NSH}
++      # Gather packages for each arch(s) in UBUNTU_ARCH in a separate archive
++      for ARCH in ${UBUNTU_ARCH}; do
++        cd ${DEB_DIR}/${ARCH}
++        tar czvf ../../repositories/ubuntu/ovs-dpdk_${ARCH}.tar.gz .
++        cd ${DEB_DIR_NSH}/${ARCH}
++        tar czvf ../../repositories/ubuntu/ovs-nsh-dpdk_${ARCH}.tar.gz .
++      done
++      cd ${DIR}; sudo rm -rf ${DEB_DIR} ${DEB_DIR_NSH}
+ 
+       ;;
+     *) echo "Not supported system"; exit 1;;
