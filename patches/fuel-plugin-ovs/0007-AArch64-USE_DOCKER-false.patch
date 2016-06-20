@@ -1,0 +1,23 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 22 Jun 2016 15:40:17 +0200
+Subject: [PATCH] AArch64: USE_DOCKER=false.
+
+---
+ pre_build_hook | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/pre_build_hook b/pre_build_hook
+index 4c5fad2..d428dda 100755
+--- a/pre_build_hook
++++ b/pre_build_hook
+@@ -6,6 +6,10 @@ BUILD_FOR=${BUILD_FOR:-ubuntu}
+ USE_DOCKER=${USE_DOCKER:-true}
+ DIR="$(dirname `readlink -f $0`)"
+ 
++if [ `uname -m` = 'aarch64' ]; then
++  USE_DOCKER=false
++fi
++
+ function build_pkg {
+   case $1 in
+     ubuntu)

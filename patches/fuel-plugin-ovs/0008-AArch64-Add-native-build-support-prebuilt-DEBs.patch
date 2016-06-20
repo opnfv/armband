@@ -1,0 +1,407 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 22 Jun 2016 15:54:00 +0200
+Subject: [PATCH] AArch64: Add native build support / prebuilt DEBs
+
+Add support for building on AArch64.
+
+Add support for downloading amd64 binaries for a multiarch
+RPM while building on different architectures too.
+
+Both native arm64 builds and fetching prebuilt DEBs rely on
+Armband DEB repository for <mos9.0-fuel-plugin-ovs>.
+
+CHANGE:
+ UBUNTU_ARCH specifies the complete list of supported architectures
+ of the resulting RPM, in `dpkg --print-architecture` format.
+ e.g. UBUNTU_ARCH='arm64 amd64' will result in x86 + AArch64 support
+---
+ ovs_build/build-ovs-dpdk.sh     | 141 ++++++++++++++++++++++++++--------
+ ovs_build/build-ovs-nsh-dpdk.sh | 163 +++++++++++++++++++++++++++++++---------
+ 2 files changed, 236 insertions(+), 68 deletions(-)
+
+diff --git a/ovs_build/build-ovs-dpdk.sh b/ovs_build/build-ovs-dpdk.sh
+index 9323d3e..62de72f 100755
+--- a/ovs_build/build-ovs-dpdk.sh
++++ b/ovs_build/build-ovs-dpdk.sh
+@@ -10,18 +10,33 @@ BUILD_DEST=${BUILD_DEST:-/deb}
+ 
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
+-sudo apt-get build-dep openvswitch -y --force-yes
+-sudo apt-get -y --force-yes install devscripts dpkg-dev wget
++# AArch64 specifics, repository base URL, debian build versions
++AARCH64_REPO=${AARCH64_REPO:-'https://linux.enea.com/mos-repos/ubuntu/9.0'}
++AARCH64_DPDK_DEBV=${AARCH64_DPDK_DEBV:-'0~u14.04+mos1+mos9.0+amos2'}
++AARCH64_OVS_DEBV=${AARCH64_OVS_DEBV:-'1+amos1'}
++AARCH64_OVS_DPDK_DEBV=${AARCH64_OVS_DPDK_DEBV:-${AARCH64_OVS_DEBV}}
++# AArch64 original source version for prebuilt OVS (~MM.DD suffixed)
++AARCH64_OVS_VER=${AARCH64_OVS_VER:-'2.5.90~05.24'}
++
++# Keep track of native arch (BUILD_ARCH) and target arch(s) (UBUNTU_ARCH)
++# All archs should be represented in `dpkg --print-architecture` format
++# UBUNTU_ARCH holds a space-separated list of target arch(s)
++# FIXME(armband): For now, only native building is supported!
++BUILD_ARCH=$(dpkg --print-architecture)
++UBUNTU_ARCH=${UBUNTU_ARCH:-${BUILD_ARCH}}
+ 
+ rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
+-cp `dirname $0`/rules ${BUILD_HOME}
+ 
+-cd ${BUILD_HOME}
+-dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/dpdk_2.2.0-0ubuntu8.dsc
+-wget -c http://fast.dpdk.org/rel/dpdk-16.04.tar.xz
++# Build and/or fetch precompiled packages for all arch(s) in UBUNTU_ARCH
++for ARCH in ${UBUNTU_ARCH}; do
++  cd ${BUILD_HOME}
++  if [ ${ARCH} = ${BUILD_ARCH} ]; then
++    # Native building for: DPDK, OVS-DPDK, OVS
++    sudo apt-get build-dep openvswitch -y --force-yes
++    sudo apt-get -y --force-yes install devscripts dpkg-dev wget
+ 
+-# copy from debian/control
+-sudo apt-get install -y --force-yes debhelper \
++    # DPDK build-dep install: copy from debian/control
++    sudo apt-get install -y --force-yes debhelper \
+                dh-python \
+                dh-systemd \
+                doxygen  \
+@@ -36,24 +51,32 @@ sudo apt-get install -y --force-yes debhelper \
+                texlive-fonts-recommended  \
+                texlive-latex-extra
+ 
+-cd dpdk-2.2.0; rm -rf debian/patches/; uupdate -v 16.04 ../dpdk-16.04.tar.xz
+-cd ${BUILD_HOME}/dpdk-16.04
+-cat << EOF > debian/changelog
++    # DPDK build preparations: download sources, patch if needed
++    if [ ${ARCH} = 'arm64' ]; then
++      # Armband: arm64 already has debian control archive for DPDK 16.04
++      dget -x -u ${AARCH64_REPO}/pool/main/d/dpdk/dpdk_16.04-${AARCH64_DPDK_DEBV}.dsc
++    else
++      # Other archs have yet to build their DPDK 16.04 debian archive, base this on 2.2.0
++      dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/dpdk_2.2.0-0ubuntu8.dsc
++      wget -c http://fast.dpdk.org/rel/dpdk-16.04.tar.xz
++      cd dpdk-2.2.0; rm -rf debian/patches/; uupdate -v 16.04 ../dpdk-16.04.tar.xz
++      cat << EOF > ${BUILD_HOME}/dpdk-16.04/debian/changelog
+ dpdk (16.04-1) unstable; urgency=low
+   * DPDK 16.04
+  -- DPDK team <dev@dpdk.org>  $(date --rfc-2822)
+ EOF
+-mv debian/rules debian/rules.orig
+-cp ${BUILD_HOME}/rules debian/rules
+-debian/rules build; fakeroot debian/rules binary
+-cd ${BUILD_HOME}; sudo dpkg -i *.deb
+-apt-get download libxenstore3.0
++      cp --backup --suffix=orig `dirname $0`/rules \
++        ${BUILD_HOME}/dpdk-16.04/debian/rules
++    fi
++
++    # DPDK build & install (required for following native build of OVS-DPDK)
++    cd ${BUILD_HOME}/dpdk-16.04; debian/rules build; fakeroot debian/rules binary
++    cd ${BUILD_HOME}; sudo dpkg -i *.deb
+ 
+-cd ${BUILD_HOME}
+-dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/openvswitch-dpdk_2.4.0-0ubuntu1.dsc
++    apt-get download libxenstore3.0
+ 
+-# copy from debian/control
+-sudo apt-get install -y --force-yes autoconf \
++    # OVS-DPDK build-dep install: copy from debian/control
++    sudo apt-get install -y --force-yes autoconf \
+                automake \
+                bzip2 \
+                debhelper \
+@@ -72,22 +95,76 @@ sudo apt-get install -y --force-yes autoconf \
+                python-zopeinterface \
+                python-six
+ 
+-wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
+-tar xf ${OVS_COMMIT}.tar.gz
+-rm -rf openvswitch-dpdk-${OVS_VER}*
+-cd openvswitch-dpdk-2.4.0; uupdate -v ${OVS_VER} ../${OVS_COMMIT}.tar.gz
+-cd ../openvswitch-dpdk-${OVS_VER}
+-#sed -i 's~DPDK_LIB_DIR=.*~DPDK_LIB_DIR="$with_dpdk/x86_64-linux-gnu/lib"~'  acinclude.m4
+-autoreconf --install
+-rm -rf debian/patches/
+-cat << EOF > debian/changelog
++    # OVS-DPDK build preparations: download sources, patch if needed
++    OLD_OVS_VER='2.4.0'
++    if [ ${ARCH} = 'arm64' ]; then
++      # Armband: arm64 already has debian control archive for OVS-DPDK 2.5.90~05.24
++      OLD_OVS_VER=${AARCH64_OVS_VER}
++      dget -x -u ${AARCH64_REPO}/pool/main/o/openvswitch-dpdk/openvswitch-dpdk_${AARCH64_OVS_VER}-${AARCH64_OVS_DPDK_DEBV}.dsc
++    else
++      # Other archs have yet to build their ovs-dpdk debian archive for 2.5, based on 2.4
++      dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/openvswitch-dpdk_2.4.0-0ubuntu1.dsc
++    fi
++
++    wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
++    tar xf ${OVS_COMMIT}.tar.gz
++
++    rm -rf ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}{,.orig*}
++    cd ${BUILD_HOME}/openvswitch-dpdk-${OLD_OVS_VER}
++    uupdate -v ${OVS_VER} ../${OVS_COMMIT}.tar.gz
++    cat << EOF > ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}/debian/changelog
+ openvswitch-dpdk (${OVS_VER}-1) unstable; urgency=low
+   * New upstream version
+  -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+-debian/rules build; fakeroot debian/rules binary
+ 
+-cd ${BUILD_HOME}/ovs-${OVS_COMMIT}
+-debian/rules build; fakeroot debian/rules binary
++    # OVS-DPDK build
++    cd ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}
++    if [ ${ARCH} = 'arm64' ]; then
++      # Re-apply patches from debian control archive, they are required for arm64 builds
++      PATCHES=$(cat "${BUILD_HOME}/openvswitch-dpdk-${AARCH64_OVS_VER}/debian/patches/series")
++      for pfile in ${PATCHES}; do patch -p1 < "debian/patches/${pfile}"; done
++    else
++      rm -rf ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}/debian/patches/
++    fi
++    autoreconf --install
++    debian/rules build; fakeroot debian/rules binary
++
++    # OVS build
++    cd ${BUILD_HOME}/ovs-${OVS_COMMIT}
++    debian/rules build; fakeroot debian/rules binary
++  else
++    # FIXME(armband): We do not support cross-building yet, only fetching precompiled debs
++    if [ ${ARCH} = 'arm64' ]; then
++      function armband_fetch() {
++        local name=$1
++        local ver=${2//\+/\\\+}
++        local found=false
++        L=$(grep -Pzo "(?s)(?<=^Package: ${name}\n^Binary: )(\N*?)(?=\n^Version: ${ver})" \
++          Sources | tr -d ',')
++        for deb_binary in ${L}; do
++          D=$(grep -Po "(?<=^Filename: )(.*?\/${deb_binary}_${ver}_.*?\.deb)" Packages)
++          wget -c "${AARCH64_REPO}/${D}" && found=true
++        done
++        if [ ${found} = false ]; then
++          echo "ERROR: Could not find DEBs for pkg/ver: ${name}/${ver}"
++          exit 1
++        fi
++      }
++      # Fetch Sources/Packages from Armband and construct list of packages to download
++      wget -c "${AARCH64_REPO}/dists/mos9.0-fuel-plugin-ovs/main/source/Sources"
++      wget -c "${AARCH64_REPO}/dists/mos9.0-fuel-plugin-ovs/main/binary-arm64/Packages"
++      # Fetch DEB binaries for: DPDK, OVS-DPDK, OVS
++      armband_fetch 'dpdk' "16.04-${AARCH64_DPDK_DEBV}"
++      armband_fetch 'openvswitch-dpdk' "${AARCH64_OVS_VER}-${AARCH64_OVS_DPDK_DEBV}"
++      armband_fetch 'openvswitch' "${AARCH64_OVS_VER}-${AARCH64_OVS_DEBV}"
++      # libxenstore (equivalent to `apt-get download` for native build)
++      AARCH64_LIBXENSTORE='libxenstore3.0_4.4.2-0ubuntu0.14.04.6_arm64.deb'
++      wget -c "http://ports.ubuntu.com/pool/main/x/xen/${AARCH64_LIBXENSTORE}"
++    else
++      echo "WARNING: Architecture [${ARCH}] does not provide precompiled DEBs, skipping!"
++    fi
++  fi
++done
+ 
+ cp ${BUILD_HOME}/*.deb ${BUILD_DEST}
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index f1ebe24..3f8d96f 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -11,16 +11,33 @@ DIR="$(dirname `readlink -f $0`)"
+ 
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
+-sudo apt-get build-dep openvswitch -y --force-yes
+-sudo apt-get -y --force-yes install devscripts dpkg-dev wget
++# AArch64 specifics, repository base URL, debian build versions
++AARCH64_REPO=${AARCH64_REPO:-'https://linux.enea.com/mos-repos/ubuntu/9.0'}
++AARCH64_DPDK_DEBV=${AARCH64_DPDK_DEBV:-'0~u14.04+mos1+mos9.0+amos2'}
++AARCH64_OVS_DEBV=${AARCH64_OVS_DEBV:-'1.nsh+amos2'}
++AARCH64_OVS_DPDK_DEBV=${AARCH64_OVS_DPDK_DEBV:-${AARCH64_OVS_DEBV}}
++# AArch64 original source version for prebuilt OVS (~MM.DD suffixed)
++AARCH64_OVS_VER=${AARCH64_OVS_VER:-'2.5.90~04.05'}
++
++# Keep track of native arch (BUILD_ARCH) and target arch(s) (UBUNTU_ARCH)
++# All archs should be represented in `dpkg --print-architecture` format
++# UBUNTU_ARCH holds a space-separated list of target arch(s)
++# FIXME(armband): For now, only native building is supported!
++BUILD_ARCH=$(dpkg --print-architecture)
++UBUNTU_ARCH=${UBUNTU_ARCH:-${BUILD_ARCH}}
+ 
+ rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
+ 
+-cd ${BUILD_HOME}
+-dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/dpdk_2.2.0-0ubuntu8.dsc
++# Build and/or fetch precompiled packages for all arch(s) in UBUNTU_ARCH
++for ARCH in ${UBUNTU_ARCH}; do
++  cd ${BUILD_HOME}
++  if [ ${ARCH} = ${BUILD_ARCH} ]; then
++    # Native building for: DPDK, OVS-DPDK, OVS
++    sudo apt-get build-dep openvswitch -y --force-yes
++    sudo apt-get -y --force-yes install devscripts dpkg-dev wget
+ 
+-# copy from debian/control
+-sudo apt-get install -y --force-yes debhelper \
++    # DPDK build-dep install: copy from debian/control
++    sudo apt-get install -y --force-yes debhelper \
+                dh-python \
+                dh-systemd \
+                doxygen  \
+@@ -35,21 +52,31 @@ sudo apt-get install -y --force-yes debhelper \
+                texlive-fonts-recommended  \
+                texlive-latex-extra
+ 
+-cd dpdk-2.2.0; rm -rf debian/patches/;
+-cat << EOF > debian/changelog
++    # DPDK build preparations: download sources, patch if needed
++    if [ ${ARCH} = 'arm64' ]; then
++      # arm64 requires DPDK 16.04 or newer
++      # Armband: arm64 already has debian control archive for DPDK 16.04
++      dget -x -u ${AARCH64_REPO}/pool/main/d/dpdk/dpdk_16.04-${AARCH64_DPDK_DEBV}.dsc
++      cd ${BUILD_HOME}/dpdk-16.04
++    else
++      # Other archs have use DPDK 2.2.0
++      dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/dpdk_2.2.0-0ubuntu8.dsc
++      cd ${BUILD_HOME}/dpdk-2.2.0; rm -rf debian/patches/
++      cat << EOF > debian/changelog
+ dpdk (2.2.0-1) unstable; urgency=low
+   * DPDK 2.2.0
+  -- DPDK team <dev@dpdk.org>  $(date --rfc-2822)
+ EOF
+-debian/rules build; fakeroot debian/rules binary
+-cd ${BUILD_HOME}; sudo dpkg -i *.deb
+-apt-get download libxenstore3.0
++    fi
++
++    # DPDK build & install (required for following native build of OVS-NSH)
++    debian/rules build; fakeroot debian/rules binary
++    cd ${BUILD_HOME}; sudo dpkg -i *.deb
+ 
+-cd ${BUILD_HOME}
+-dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/openvswitch-dpdk_2.4.0-0ubuntu1.dsc
++    apt-get download libxenstore3.0
+ 
+-# copy from debian/control
+-sudo apt-get install -y --force-yes autoconf \
++    # OVS-NSH build-dep install: copy from debian/control
++    sudo apt-get install -y --force-yes autoconf \
+                automake \
+                bzip2 \
+                debhelper \
+@@ -68,35 +95,99 @@ sudo apt-get install -y --force-yes autoconf \
+                python-zopeinterface \
+                python-six
+ 
+-wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
+-tar xf ${OVS_COMMIT}.tar.gz
++    # OVS-NSH build preparations: download sources, patch if needed
++    OLD_OVS_VER='2.4.0'
++    if [ ${ARCH} = 'arm64' ]; then
++      # Armband: arm64 already has debian control archive for OVS-DPDK 2.5.90
++      OLD_OVS_VER=${AARCH64_OVS_VER}
++      dget -x -u ${AARCH64_REPO}/pool/main/o/openvswitch-dpdk/openvswitch-dpdk_${AARCH64_OVS_VER}-${AARCH64_OVS_DPDK_DEBV}.dsc
++    else
++      # Other archs have yet to build their ovs-dpdk debian archive for 2.5, based on 2.4
++      dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/openvswitch-dpdk_2.4.0-0ubuntu1.dsc
++    fi
+ 
+-cd ovs-${OVS_COMMIT}
+-PATCHES=$(cd ${DIR}/patches; echo *patch)
+-for patch in ${PATCHES}
+-do
+-    patch -p1 < ${DIR}/patches/${patch}
+-done
+-cd ${BUILD_HOME}; tar czvf ovs-nsh.tar.gz ovs-${OVS_COMMIT}
+-rm -rf openvswitch-dpdk-${OVS_VER}*
+-cd openvswitch-dpdk-2.4.0; uupdate -v ${OVS_VER} ../ovs-nsh.tar.gz
+-cd ../openvswitch-dpdk-${OVS_VER}
+-sed -i "s/include\/rte_config.h/include\/dpdk\/rte_config.h/" acinclude.m4
+-sed -i 's/DPDK_INCLUDE=.*/DPDK_INCLUDE=$RTE_SDK\/include\/dpdk/'  acinclude.m4
+-autoreconf --install
+-rm -rf debian/patches/
+-cat << EOF > debian/changelog
++    wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
++    tar xf ${OVS_COMMIT}.tar.gz
++
++    # Apply OVS-NSH patches, create a new orig tar archive
++    cd ovs-${OVS_COMMIT}
++    DIR="$(dirname `readlink -f $0`)"
++    PATCHES=$(cd patches; echo *patch; cd ..)
++    for patch in ${PATCHES}
++    do
++      patch -p1 < {DIR}/patches/${patch}
++    done
++    cd ${BUILD_HOME}; tar czvf ovs-nsh.tar.gz ovs-${OVS_COMMIT}
++
++    rm -rf ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}{,.orig*}
++    cd ${BUILD_HOME}/openvswitch-dpdk-${OLD_OVS_VER}
++
++    if [ ${ARCH} = 'arm64' ]; then
++      # arm64 package has NSH patches (+ specific fixes) embedded in debian ar
++      uupdate -v ${OVS_VER} ../${OVS_COMMIT}.tar.gz
++      # Re-apply patches from debian control archive, required for arm64 builds + NSH
++      cd ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}
++      PATCHES=$(cat "${BUILD_HOME}/openvswitch-dpdk-${AARCH64_OVS_VER}/debian/patches/series")
++      for pfile in ${PATCHES}; do patch -p1 < "debian/patches/${pfile}"; done
++    else
++      uupdate -v ${OVS_VER} ../ovs-nsh.tar.gz
++      sed -i -e "s/include\/rte_config.h/include\/dpdk\/rte_config.h/" \
++        -e 's/DPDK_INCLUDE=.*/DPDK_INCLUDE=$RTE_SDK\/include\/dpdk/' \
++        ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}/acinclude.m4
++      rm -rf ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}/debian/patches/
++    fi
++
++    cat << EOF > ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}/debian/changelog
+ openvswitch-dpdk (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
+  -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+-debian/rules build; fakeroot debian/rules binary
+ 
+-cd ${BUILD_HOME}/ovs-${OVS_COMMIT}
+-cat << EOF > debian/changelog
++    # OVS-NSH-DPDK build
++    cd ${BUILD_HOME}/openvswitch-dpdk-${OVS_VER}
++    autoreconf --install
++    debian/rules build; fakeroot debian/rules binary
++
++    # OVS-NSH build
++    cd ${BUILD_HOME}/ovs-${OVS_COMMIT}
++    cat << EOF > debian/changelog
+ openvswitch (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
+  -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+-debian/rules build; fakeroot debian/rules binary
++    debian/rules build; fakeroot debian/rules binary
++  else
++    # FIXME(armband): We do not support cross-building yet, only fetching precompiled debs
++    if [ ${ARCH} = 'arm64' ]; then
++      function armband_fetch() {
++        local name=$1
++        local ver=${2//\+/\\\+}
++        local found=false
++        L=$(grep -Pzo "(?s)(?<=^Package: ${name}\n^Binary: )(\N*?)(?=\n^Version: ${ver})" \
++          Sources | tr -d ',')
++        for deb_binary in ${L}; do
++          D=$(grep -Po "(?<=^Filename: )(.*?\/${deb_binary}_${ver}_.*?\.deb)" Packages)
++          wget -c "${AARCH64_REPO}/${D}" && found=true
++        done
++        if [ ${found} = false ]; then
++          echo "ERROR: Could not find DEBs for pkg/ver: ${name}/${ver}"
++          exit 1
++        fi
++      }
++      # Fetch Sources/Packages from Armband and construct list of packages to download
++      wget -c "${AARCH64_REPO}/dists/mos9.0-fuel-plugin-ovs/main/source/Sources"
++      wget -c "${AARCH64_REPO}/dists/mos9.0-fuel-plugin-ovs/main/binary-arm64/Packages"
++      # Fetch DEB binaries for: DPDK, OVS-DPDK, OVS
++      armband_fetch 'dpdk' "16.04-${AARCH64_DPDK_DEBV}"
++      armband_fetch 'openvswitch-dpdk' "${AARCH64_OVS_VER}-${AARCH64_OVS_DPDK_DEBV}"
++      armband_fetch 'openvswitch' "${AARCH64_OVS_VER}-${AARCH64_OVS_DEBV}"
++      # libxenstore (equivalent to `apt-get download` for native build)
++      AARCH64_LIBXENSTORE='libxenstore3.0_4.4.2-0ubuntu0.14.04.6_arm64.deb'
++      wget -c "http://ports.ubuntu.com/pool/main/x/xen/${AARCH64_LIBXENSTORE}"
++    else
++      echo "WARNING: Architecture [${ARCH}] does not provide precompiled DEBs, skipping!"
++    fi
++  fi
++done
++
+ cp ${BUILD_HOME}/*.deb ${BUILD_DEST}

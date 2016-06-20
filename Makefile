@@ -62,7 +62,7 @@ endif
 build:
 	cd ${root}/upstream/fuel/build && \
 		make \
-			BUILD_FUEL_PLUGINS="f_odlpluginbuild f_bgpvpn-pluginbuild" \
+			BUILD_FUEL_PLUGINS="f_odlpluginbuild f_bgpvpn-pluginbuild f_ovs-nsh-dpdk-pluginbuild" \
 			UBUNTU_ARCH="amd64 arm64" \
 			PRODNO="OPNFV_ARMBAND_FUEL" \
 			OPNFV_GIT_SHA=$(shell git rev-parse HEAD) \
