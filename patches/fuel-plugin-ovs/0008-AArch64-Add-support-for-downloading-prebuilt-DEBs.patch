@@ -1,0 +1,144 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 12 Sep 2016 18:02:42 +0200
+Subject: [PATCH] AArch64: Add support for downloading prebuilt DEBs
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ovs_build/build-ovs-armband-fetch.sh | 45 ++++++++++++++++++++++++++++++++++++
+ ovs_build/build-ovs-dpdk.sh          | 21 ++++++++++++++++-
+ ovs_build/build-ovs-nsh-dpdk.sh      | 17 +++++++++++++-
+ 3 files changed, 81 insertions(+), 2 deletions(-)
+ create mode 100755 ovs_build/build-ovs-armband-fetch.sh
+
+diff --git a/ovs_build/build-ovs-armband-fetch.sh b/ovs_build/build-ovs-armband-fetch.sh
+new file mode 100755
+index 0000000..2a041e2
+--- /dev/null
++++ b/ovs_build/build-ovs-armband-fetch.sh
+@@ -0,0 +1,45 @@
++#!/bin/bash
++
++set -eux
++
++# armband_fetch will download all binaries for one debian source package
++#
++# Usage:
++#   armband_fetch <src_deb_name> <src_deb_version> \
++#                 [<repo_base_url> \
++#                 [<repo_Sources_relative_url> \
++#                 [<repo_Packages_relative_url>]]] \
++#
++# e.g.:
++#   armband_fetch dpdk 16.07-0~u14.04+mos1+mos9.0+amos1 \
++#     https://linux.enea.com/mos-repos/ubuntu/9.0 \
++#     dists/mos9.0-fuel-plugin-ovs/main/source/Sources \
++#     dists/mos9.0-fuel-plugin-ovs/main/binary-arm64/Packages
++function armband_fetch() {
++  local name=$1
++  local ver=${2//\+/\\\+}
++  local repo_base_url=${3:-https://linux.enea.com/mos-repos/ubuntu/9.0}
++  local repo_Sources_url=${4:-dists/mos9.0-fuel-plugin-ovs/main/source/Sources}
++  local repo_Packages_url=${5:-dists/mos9.0-fuel-plugin-ovs/main/binary-arm64/Packages}
++  local found=false
++
++  # Fetch Sources & Packages files if not already present
++  if [ ! -f Sources -o ! -f Packages ]; then
++    sudo apt-get -y --force-yes install wget
++    wget -c "${repo_base_url}/${repo_Sources_url}"
++    wget -c "${repo_base_url}/${repo_Packages_url}"
++  fi
++
++  L=$(grep -Pzo "(?s)(?<=^Package: ${name}\n^Binary: )(\N*?)(?=\n^Version: ${ver})" \
++    Sources | tr -d ',')
++  for deb_binary in ${L}; do
++    D=$(grep -Po "(?<=^Filename: )(.*?\/${deb_binary}_${ver}_.*?\.deb)" Packages) || true
++    if [ -n "${D}" ]; then
++      wget -c "${repo_base_url}/${D}" && found=true
++    fi
++  done
++  if [ ${found} = false ]; then
++    echo "ERROR: Could not find DEBs for pkg/ver: ${name}/${ver}"
++    exit 1
++  fi
++}
+diff --git a/ovs_build/build-ovs-dpdk.sh b/ovs_build/build-ovs-dpdk.sh
+index f3c2e5b..ed8f126 100755
+--- a/ovs_build/build-ovs-dpdk.sh
++++ b/ovs_build/build-ovs-dpdk.sh
+@@ -13,11 +13,16 @@ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ # AArch64 specifics, repository base URL, debian build versions
+ AARCH64_REPO=${AARCH64_REPO:-'https://linux.enea.com/mos-repos/ubuntu/9.0'}
+ AARCH64_DPDK_DEBV=${AARCH64_DPDK_DEBV:-'0~u14.04+mos1+mos9.0+amos1'}
++AARCH64_OVS_DEBV=${AARCH64_OVS_DEBV:-'1+amos1'}
++AARCH64_OVS_DPDK_DEBV=${AARCH64_OVS_DPDK_DEBV:-${AARCH64_OVS_DEBV}}
++# AArch64 original source version for prebuilt OVS (~MM.DD suffixed)
++AARCH64_OVS_VER=${AARCH64_OVS_VER:-'2.5.90~08.08'}
+ 
+ # Keep track of native arch (BUILD_ARCH) and target arch(s) (UBUNTU_ARCH)
+ # All archs should be represented in `dpkg --print-architecture` format
+ # UBUNTU_ARCH holds a space-separated list of target arch(s)
+-# FIXME(armband): For now, only native building is supported!
++# FIXME(armband): For now, only native building and/or downloading prebuilt
++# debian binaries is supported!
+ BUILD_ARCH=$(dpkg --print-architecture)
+ UBUNTU_ARCH=${UBUNTU_ARCH:-${BUILD_ARCH}}
+ 
+@@ -91,6 +96,20 @@ for ARCH in ${UBUNTU_ARCH}; do
+ 
+     cd ${BUILD_DEST}/ovs
+     debian/rules build; fakeroot debian/rules binary
++  else
++    # FIXME(armband): No cross-build support yet, download prebuilt DEBs
++    if [ ${ARCH} = 'arm64' ]; then
++      source ${BUILD_SRC}/build-ovs-armband-fetch.sh
++      # Fetch Sources/Packages from Armband and construct list of packages to download
++      armband_fetch 'dpdk' "16.07-${AARCH64_DPDK_DEBV}"
++      armband_fetch 'openvswitch-dpdk' "${AARCH64_OVS_VER}-${AARCH64_OVS_DPDK_DEBV}"
++      armband_fetch 'openvswitch' "${AARCH64_OVS_VER}-${AARCH64_OVS_DEBV}"
++      # libxenstore (equivalent to `apt-get download` for native build)
++      AARCH64_LIBXENSTORE='libxenstore3.0_4.4.2-0ubuntu0.14.04.6_arm64.deb'
++      wget -c "http://ports.ubuntu.com/pool/main/x/xen/${AARCH64_LIBXENSTORE}"
++    else
++      echo "WARNING: Architecture [${ARCH}] does not provide precompiled DEBs, skipping!"
++    fi
+   fi
+ 
+   # Store DEBs in <${BUILD_DEB}/${ARCH}/> dir and cleanup
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index 59d8a79..9f026ac 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -11,10 +11,16 @@ DIR="$(dirname `readlink -f $0`)"
+ 
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
++# AArch64 specifics, repository base URL, debian build versions
++AARCH64_OVS_DEBV=${AARCH64_OVS_DEBV:-'1.nsh+amos2'}
++# AArch64 original source version for prebuilt OVS (~MM.DD suffixed)
++AARCH64_OVS_VER=${AARCH64_OVS_VER:-'2.5.90~04.05'}
++
+ # Keep track of native arch (BUILD_ARCH) and target arch(s) (UBUNTU_ARCH)
+ # All archs should be represented in `dpkg --print-architecture` format
+ # UBUNTU_ARCH holds a space-separated list of target arch(s)
+-# FIXME(armband): For now, only native building is supported!
++# FIXME(armband): For now, only native building and/or downloading prebuilt
++# debian binaries is supported!
+ BUILD_ARCH=$(dpkg --print-architecture)
+ UBUNTU_ARCH=${UBUNTU_ARCH:-${BUILD_ARCH}}
+ 
+@@ -119,6 +125,15 @@ openvswitch (${OVS_VER}-1.nsh) unstable; urgency=low
+  -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+     debian/rules build; fakeroot debian/rules binary
++  else
++    # FIXME(armband): No cross-build support yet, download prebuilt DEBs
++    if [ ${ARCH} = 'arm64' ]; then
++      source ${DIR}/build-ovs-armband-fetch.sh
++      # FIXME(armband): https://jira.opnfv.org/browse/ARMBAND-86
++      armband_fetch 'openvswitch' "${AARCH64_OVS_VER}-${AARCH64_OVS_DEBV}"
++    else
++      echo "WARNING: Architecture [${ARCH}] does not provide precompiled DEBs, skipping!"
++    fi
+   fi
+ 
+   # Store DEBs in <${BUILD_DEST}/${ARCH}/> dir and cleanup
