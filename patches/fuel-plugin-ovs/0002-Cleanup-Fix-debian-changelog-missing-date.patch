@@ -1,0 +1,69 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 27 Jun 2016 19:57:04 +0200
+Subject: [PATCH] Cleanup: Fix debian changelog missing date.
+
+See [1] for debian/changelog format.
+Signature line should contain the date, separated with 2 spaces,
+in RFC 2822 format.
+
+[1] https://www.debian.org/doc/debian-policy/ch-source.html
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ovs_build/build-ovs-dpdk.sh     | 4 ++--
+ ovs_build/build-ovs-nsh-dpdk.sh | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/ovs_build/build-ovs-dpdk.sh b/ovs_build/build-ovs-dpdk.sh
+index 66334f2..83f4278 100755
+--- a/ovs_build/build-ovs-dpdk.sh
++++ b/ovs_build/build-ovs-dpdk.sh
+@@ -44,7 +44,7 @@ cd ${BUILD_HOME}/dpdk-16.04
+ cat << EOF > debian/changelog
+ dpdk (16.04-1) unstable; urgency=low
+   * DPDK 16.04
+- -- DPDK team <dev@dpdk.org>
++ -- DPDK team <dev@dpdk.org>  $(date --rfc-2822)
+ EOF
+ mv debian/rules debian/rules.orig
+ cp ${BUILD_HOME}/rules debian/rules
+@@ -90,7 +90,7 @@ rm -rf debian/patches/ .git;
+ cat << EOF > debian/changelog
+ openvswitch-dpdk (${OVS_VER}-1) unstable; urgency=low
+   * New upstream version
+- -- Open vSwitch team <dev@openvswitch.org>
++ -- Open vSwitch team <dev@openvswitch.org  $(date --rfc-2822)
+ EOF
+ debian/rules build; fakeroot debian/rules binary
+ 
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index c7bdeba..5ac2909 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -39,7 +39,7 @@ cd dpdk-2.2.0; rm -rf debian/patches/;
+ cat << EOF > debian/changelog
+ dpdk (2.2.0-1) unstable; urgency=low
+   * DPDK 2.2.0
+- -- DPDK team <dev@dpdk.org>
++ -- DPDK team <dev@dpdk.org>  $(date --rfc-2822)
+ EOF
+ debian/rules build; fakeroot debian/rules binary
+ cd ${BUILD_HOME}; sudo dpkg -i *.deb
+@@ -90,7 +90,7 @@ rm -rf debian/patches/ .git;
+ cat << EOF > debian/changelog
+ openvswitch-dpdk (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
+- -- Open vSwitch team <dev@openvswitch.org>
++ -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+ debian/rules build; fakeroot debian/rules binary
+ 
+@@ -98,7 +98,7 @@ cd ${BUILD_HOME}/ovs
+ cat << EOF > debian/changelog
+ openvswitch (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
+- -- Open vSwitch team <dev@openvswitch.org>
++ -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+ debian/rules build; fakeroot debian/rules binary
+ cp ${BUILD_HOME}/*.deb ${BUILD_DEST}

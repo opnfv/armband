@@ -1,0 +1,160 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 27 Jun 2016 15:48:14 +0200
+Subject: [PATCH] install.sh,pre_build_hook: Factor out archive arch.
+
+Instead of putting all debs in one arch, and possibly wasting
+bandwidth / space with unused foreign packages, split plugin
+archive(s) into arch-specific archives, with <_${arch}> suffix.
+
+E.g. <ovs-dpdk.tar.gz> for <amd64> becomes <ovs-dpdk_amd64.tar.gz>
+
+While at it, pass UBUNTU_ARCH from pre_build_hook and make
+install.sh more arch-independant.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deployment_scripts/install.sh   | 18 +++++++++---------
+ ovs_build/build-ovs-dpdk.sh     |  9 ++++-----
+ ovs_build/build-ovs-nsh-dpdk.sh |  9 ++++-----
+ pre_build_hook                  | 23 +++++++++++++++++------
+ 4 files changed, 34 insertions(+), 25 deletions(-)
+
+diff --git a/deployment_scripts/install.sh b/deployment_scripts/install.sh
+index 886389e..733db14 100644
+--- a/deployment_scripts/install.sh
++++ b/deployment_scripts/install.sh
+@@ -9,22 +9,22 @@ host=$1
+ nsh=$2
+ dpdk=$3
+ arch=$(dpkg --print-architecture)
+-ovs='ovs-dpdk.tar.gz'
++ovs="ovs-dpdk_${arch}.tar.gz"
+ 
+ if [ $nsh = 'true' ]; then
+-    ovs='ovs-nsh-dpdk.tar.gz'
++    ovs="ovs-nsh-dpdk_${arch}.tar.gz"
+ fi
+ 
+ curl  http://$host:8080/plugins/fuel-plugin-ovs-0.9/repositories/ubuntu/${ovs} | tar -xzv
+-dpkg -i openvswitch-datapath-dkms_*_all.deb
+-dpkg -i openvswitch-common_*_${arch}.deb
+-dpkg -i openvswitch-switch_*_${arch}.deb
+-dpkg -i python-openvswitch_*_all.deb
++dpkg -i openvswitch-datapath-dkms_*.deb
++dpkg -i openvswitch-common_*.deb
++dpkg -i openvswitch-switch_*.deb
++dpkg -i python-openvswitch_*.deb
+ if [ $dpdk = 'true' ]; then
+     dpkg -i libxenstore3.0*.deb
+-    dpkg -i libdpdk0_*_${arch}.deb
+-    dpkg -i dpdk_*_${arch}.deb
+-    dpkg -i openvswitch-switch-dpdk_*_${arch}.deb
++    dpkg -i libdpdk0_*.deb
++    dpkg -i dpdk_*.deb
++    dpkg -i openvswitch-switch-dpdk_*.deb
+ fi
+ 
+ rm -rf $INSTALL_HOME
+diff --git a/ovs_build/build-ovs-dpdk.sh b/ovs_build/build-ovs-dpdk.sh
+index 0f3f37a..e8a3781 100755
+--- a/ovs_build/build-ovs-dpdk.sh
++++ b/ovs_build/build-ovs-dpdk.sh
+@@ -25,11 +25,9 @@ AARCH64_OVS_VER=${AARCH64_OVS_VER:-'2.5.90~05.24'}
+ BUILD_ARCH=$(dpkg --print-architecture)
+ UBUNTU_ARCH=${UBUNTU_ARCH:-${BUILD_ARCH}}
+ 
+-rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
+-
+ # Build and/or fetch precompiled packages for all arch(s) in UBUNTU_ARCH
+ for ARCH in ${UBUNTU_ARCH}; do
+-  cd ${BUILD_HOME}
++  rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}; cd ${BUILD_HOME}
+   if [ ${ARCH} = ${BUILD_ARCH} ]; then
+     # Native building for: DPDK, OVS-DPDK, OVS
+     sudo apt-get build-dep openvswitch -y --force-yes
+@@ -165,6 +163,7 @@ EOF
+       echo "WARNING: Architecture [${ARCH}] does not provide precompiled DEBs, skipping!"
+     fi
+   fi
++  # Store DEBs in <${arch}> dir and cleanup
++  rm -rf ${BUILD_DEST}/${ARCH}; mkdir -p ${BUILD_DEST}/${ARCH}; cd ${BUILD_DEST}/${ARCH}
++  cp ${BUILD_HOME}/*.deb .; rm -rf ${BUILD_HOME}
+ done
+-
+-cp ${BUILD_HOME}/*.deb ${BUILD_DEST}
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index 92a342a..d80b82d 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -23,11 +23,9 @@ AARCH64_OVS_VER=${AARCH64_OVS_VER:-'2.5.90~04.05'}
+ BUILD_ARCH=$(dpkg --print-architecture)
+ UBUNTU_ARCH=${UBUNTU_ARCH:-${BUILD_ARCH}}
+ 
+-rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
+-
+ # Build and/or fetch precompiled packages for all arch(s) in UBUNTU_ARCH
+ for ARCH in ${UBUNTU_ARCH}; do
+-  cd ${BUILD_HOME}
++  rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}; cd ${BUILD_HOME}
+   if [ ${ARCH} = ${BUILD_ARCH} ]; then
+     # Native building for: DPDK, OVS-DPDK, OVS
+     sudo apt-get build-dep openvswitch -y --force-yes
+@@ -185,6 +183,7 @@ EOF
+       echo "WARNING: Architecture [${ARCH}] does not provide precompiled DEBs, skipping!"
+     fi
+   fi
++  # Store DEBs in <${arch}> dir and cleanup
++  rm -rf ${BUILD_DEST}/${ARCH}; mkdir -p ${BUILD_DEST}/${ARCH}; cd ${BUILD_DEST}/${ARCH}
++  cp ${BUILD_HOME}/*.deb .; rm -rf ${BUILD_HOME}
+ done
+-
+-cp ${BUILD_HOME}/*.deb ${BUILD_DEST}
+diff --git a/pre_build_hook b/pre_build_hook
+index d428dda..2e3a3c7 100755
+--- a/pre_build_hook
++++ b/pre_build_hook
+@@ -10,6 +10,11 @@ if [ `uname -m` = 'aarch64' ]; then
+   USE_DOCKER=false
+ fi
+ 
++# Pass target arch(s) (UBUNTU_ARCH) to build scripts.
++# All archs should be represented in `dpkg --print-architecture` format
++# UBUNTU_ARCH holds a space-separated list of target arch(s)
++export UBUNTU_ARCH=${UBUNTU_ARCH:-$(dpkg --print-architecture)}
++
+ function build_pkg {
+   case $1 in
+     ubuntu)
+@@ -23,8 +28,10 @@ function build_pkg {
+       cd ${DIR}/ovs_build
+       if [ "${USE_DOCKER}" = true ]; then
+         sudo docker build -t ovs_build .
+-        sudo docker run -v ${DEB_DIR}:/deb -t ovs_build /ovs_build/build-ovs-dpdk.sh
+-        sudo docker run -v ${DEB_DIR_NSH}:/deb -t ovs_build /ovs_build/build-ovs-nsh-dpdk.sh
++        sudo docker run -e "UBUNTU_ARCH=${UBUNTU_ARCH}" -v ${DEB_DIR}:/deb \
++          -t ovs_build /ovs_build/build-ovs-dpdk.sh
++        sudo docker run -e "UBUNTU_ARCH=${UBUNTU_ARCH}" -v ${DEB_DIR_NSH}:/deb \
++          -t ovs_build /ovs_build/build-ovs-nsh-dpdk.sh
+       else
+         rm -rf /tmp/ovs-build-{,nsh-}dpdk; mkdir -p /tmp/ovs-build-{,nsh-}dpdk
+         BUILD_HOME=/tmp/ovs-build-dpdk BUILD_DEST=${DEB_DIR} ./build-ovs-dpdk.sh
+@@ -32,11 +39,15 @@ function build_pkg {
+         rm -rf /tmp/ovs-build-{,nsh-}dpdk
+       fi
+ 
+-      cd ${DEB_DIR}; tar czvf ../repositories/ubuntu/ovs-dpdk.tar.gz .;
+-      cd ..; rm -rf ${DEB_DIR}
++      # Gather packages for each arch(s) in UBUNTU_ARCH in a separate archive
++      for ARCH in ${UBUNTU_ARCH}; do
++        cd ${DEB_DIR}/${ARCH}
++        tar czvf ../../repositories/ubuntu/ovs-dpdk_${ARCH}.tar.gz .;
++        cd ${DEB_DIR_NSH}/${ARCH};
++        tar czvf ../../repositories/ubuntu/ovs-nsh-dpdk_${ARCH}.tar.gz .;
++      done
+ 
+-      cd ${DEB_DIR_NSH}; tar czvf ../repositories/ubuntu/ovs-nsh-dpdk.tar.gz .;
+-      cd ..; rm -rf ${DEB_DIR_NSH}
++      cd ${DEB_DIR}/..; sudo rm -rf ${DEB_DIR} ${DEB_DIR_NSH}
+ 
+       ;;
+     *) echo "Not supported system"; exit 1;;
