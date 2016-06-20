@@ -1,0 +1,75 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 26 Jun 2016 20:23:03 +0200
+Subject: [PATCH] install.sh: Relax DPDK/OVS/OVS-DPDK hardcodes.
+
+Since only one DPDK/OVS/OVS-DPDK set of packages is shipped per
+archive, we can safely wildcard the installed version of libdpdk,
+which previously hardcoded 2.2.0 and 16.04 for NSH/non-NSH.
+
+This is helpful for arm64, which has a custom deb subversion
+for DPDK16.04 and also requires DPDK16.04 for OVS-DPDK-NSH, instead
+of 2.2.0.
+
+Since we're at it, refactor install.sh using the same mechanism.
+This allows Armband to use DEB versions that slightly differ,
+without breaking compatibility with the install script.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deployment_scripts/install.sh | 44 +++++++++++++++++--------------------------
+ 1 file changed, 17 insertions(+), 27 deletions(-)
+
+diff --git a/deployment_scripts/install.sh b/deployment_scripts/install.sh
+index 6e762a0..886389e 100644
+--- a/deployment_scripts/install.sh
++++ b/deployment_scripts/install.sh
+@@ -9,32 +9,22 @@ host=$1
+ nsh=$2
+ dpdk=$3
+ arch=$(dpkg --print-architecture)
++ovs='ovs-dpdk.tar.gz'
+ 
+-if [ $nsh = 'true' ]
+-then
+-    curl  http://$host:8080/plugins/fuel-plugin-ovs-0.9/repositories/ubuntu/ovs-nsh-dpdk.tar.gz | tar -xzv
+-    dpkg -i openvswitch-datapath-dkms_2.5.90-1.nsh_all.deb
+-    dpkg -i openvswitch-common_2.5.90-1.nsh_${arch}.deb
+-    dpkg -i openvswitch-switch_2.5.90-1.nsh_${arch}.deb
+-    dpkg -i python-openvswitch_2.5.90-1.nsh_all.deb
+-    if [ $dpdk = 'true' ]
+-    then
+-        dpkg -i libxenstore3.0*.deb
+-        dpkg -i libdpdk0_2.2.0-1_${arch}.deb
+-        dpkg -i dpdk_2.2.0-1_${arch}.deb
+-        dpkg -i openvswitch-switch-dpdk_2.5.90-1.nsh_${arch}.deb
+-    fi
+-else
+-    curl  http://$host:8080/plugins/fuel-plugin-ovs-0.9/repositories/ubuntu/ovs-dpdk.tar.gz | tar -xzv
+-    dpkg -i openvswitch-datapath-dkms_2.5.90-1_all.deb
+-    dpkg -i openvswitch-common_2.5.90-1_${arch}.deb
+-    dpkg -i openvswitch-switch_2.5.90-1_${arch}.deb
+-    dpkg -i python-openvswitch_2.5.90-1_all.deb
+-    if [ $dpdk = 'true' ]
+-    then
+-        dpkg -i libxenstore3.0*.deb
+-        dpkg -i libdpdk0_16.04-1_${arch}.deb
+-        dpkg -i dpdk_16.04-1_${arch}.deb
+-        dpkg -i openvswitch-switch-dpdk_2.5.90-1_${arch}.deb
+-    fi
++if [ $nsh = 'true' ]; then
++    ovs='ovs-nsh-dpdk.tar.gz'
+ fi
++
++curl  http://$host:8080/plugins/fuel-plugin-ovs-0.9/repositories/ubuntu/${ovs} | tar -xzv
++dpkg -i openvswitch-datapath-dkms_*_all.deb
++dpkg -i openvswitch-common_*_${arch}.deb
++dpkg -i openvswitch-switch_*_${arch}.deb
++dpkg -i python-openvswitch_*_all.deb
++if [ $dpdk = 'true' ]; then
++    dpkg -i libxenstore3.0*.deb
++    dpkg -i libdpdk0_*_${arch}.deb
++    dpkg -i dpdk_*_${arch}.deb
++    dpkg -i openvswitch-switch-dpdk_*_${arch}.deb
++fi
++
++rm -rf $INSTALL_HOME

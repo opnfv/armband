@@ -1,0 +1,60 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 26 Jun 2016 20:17:59 +0200
+Subject: [PATCH] install.sh: Enable multiarch support.
+
+Factor out dpkg arch into var, read it from dpkg.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deployment_scripts/install.sh | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/deployment_scripts/install.sh b/deployment_scripts/install.sh
+index 8d20628..6e762a0 100644
+--- a/deployment_scripts/install.sh
++++ b/deployment_scripts/install.sh
+@@ -8,33 +8,33 @@ cd $INSTALL_HOME
+ host=$1
+ nsh=$2
+ dpdk=$3
+-
++arch=$(dpkg --print-architecture)
+ 
+ if [ $nsh = 'true' ]
+ then
+     curl  http://$host:8080/plugins/fuel-plugin-ovs-0.9/repositories/ubuntu/ovs-nsh-dpdk.tar.gz | tar -xzv
+     dpkg -i openvswitch-datapath-dkms_2.5.90-1.nsh_all.deb
+-    dpkg -i openvswitch-common_2.5.90-1.nsh_amd64.deb
+-    dpkg -i openvswitch-switch_2.5.90-1.nsh_amd64.deb
++    dpkg -i openvswitch-common_2.5.90-1.nsh_${arch}.deb
++    dpkg -i openvswitch-switch_2.5.90-1.nsh_${arch}.deb
+     dpkg -i python-openvswitch_2.5.90-1.nsh_all.deb
+     if [ $dpdk = 'true' ]
+     then
+         dpkg -i libxenstore3.0*.deb
+-        dpkg -i libdpdk0_2.2.0-1_amd64.deb
+-        dpkg -i dpdk_2.2.0-1_amd64.deb
+-        dpkg -i openvswitch-switch-dpdk_2.5.90-1.nsh_amd64.deb
++        dpkg -i libdpdk0_2.2.0-1_${arch}.deb
++        dpkg -i dpdk_2.2.0-1_${arch}.deb
++        dpkg -i openvswitch-switch-dpdk_2.5.90-1.nsh_${arch}.deb
+     fi
+ else
+     curl  http://$host:8080/plugins/fuel-plugin-ovs-0.9/repositories/ubuntu/ovs-dpdk.tar.gz | tar -xzv
+     dpkg -i openvswitch-datapath-dkms_2.5.90-1_all.deb
+-    dpkg -i openvswitch-common_2.5.90-1_amd64.deb
+-    dpkg -i openvswitch-switch_2.5.90-1_amd64.deb
++    dpkg -i openvswitch-common_2.5.90-1_${arch}.deb
++    dpkg -i openvswitch-switch_2.5.90-1_${arch}.deb
+     dpkg -i python-openvswitch_2.5.90-1_all.deb
+     if [ $dpdk = 'true' ]
+     then
+         dpkg -i libxenstore3.0*.deb
+-        dpkg -i libdpdk0_16.04-1_amd64.deb
+-        dpkg -i dpdk_16.04-1_amd64.deb
+-        dpkg -i openvswitch-switch-dpdk_2.5.90-1_amd64.deb
++        dpkg -i libdpdk0_16.04-1_${arch}.deb
++        dpkg -i dpdk_16.04-1_${arch}.deb
++        dpkg -i openvswitch-switch-dpdk_2.5.90-1_${arch}.deb
+     fi
+ fi
