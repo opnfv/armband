@@ -62,7 +62,7 @@ endif
 build:
 	cd ${root}/upstream/fuel/build && \
 		make \
-			BUILD_FUEL_PLUGINS=f_odlpluginbuild \
+			BUILD_FUEL_PLUGINS="f_odlpluginbuild f_ovs-nsh-dpdk-pluginbuild" \
 			FUEL_MAIN_REPO=${root}/upstream/fuel-main \
 			FUEL_MAIN_TAG= \
 			UBUNTU_ARCH="amd64 arm64" \
