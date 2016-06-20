@@ -73,6 +73,8 @@ build:
 			FUEL_MIRROR_REPO=${root}/upstream/fuel-mirror \
 			ODL_REPO=${root}/upstream/fuel-plugin-opendaylight \
 			ODL_CHANGE= \
+			OVS_NSH_DPDK_REPO=${root}/upstream/fuel-plugin-ovs \
+			OVS_NSH_DPDK_BRANCH=HEAD \
 			FUELLIB_COMMIT=HEAD \
 			NAILGUN_COMMIT=HEAD \
 			FUEL_AGENT_COMMIT=HEAD \

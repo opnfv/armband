@@ -1,0 +1,22 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 20 Jun 2016 17:49:51 +0200
+Subject: [PATCH] Allow overriding ovs git info.
+
+---
+ build/f_isoroot/f_ovs-nsh-dpdk-pluginbuild/config.mk | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/build/f_isoroot/f_ovs-nsh-dpdk-pluginbuild/config.mk b/build/f_isoroot/f_ovs-nsh-dpdk-pluginbuild/config.mk
+index 819379e..97dc4e1 100644
+--- a/build/f_isoroot/f_ovs-nsh-dpdk-pluginbuild/config.mk
++++ b/build/f_isoroot/f_ovs-nsh-dpdk-pluginbuild/config.mk
+@@ -7,6 +7,6 @@
+ # http://www.apache.org/licenses/LICENSE-2.0
+ ##############################################################################
+ 
+-OVS_NSH_DPDK_BRANCH=fd77b5d48782e67306c3763dc1908f0fb342c51d
+-OVS_NSH_DPDK_REPO=https://review.openstack.org/openstack/fuel-plugin-ovs
+-OVS_NSH_DPDK_CHANGE=
++OVS_NSH_DPDK_BRANCH?=fd77b5d48782e67306c3763dc1908f0fb342c51d
++OVS_NSH_DPDK_REPO?=https://review.openstack.org/openstack/fuel-plugin-ovs
++OVS_NSH_DPDK_CHANGE?=
