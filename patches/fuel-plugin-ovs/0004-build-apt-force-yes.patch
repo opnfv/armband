@@ -1,0 +1,84 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 22 Jun 2016 15:41:53 +0200
+Subject: [PATCH] build: apt: --force-yes.
+
+For arm64 builds, some packages are fetched from linux.enea.com,
+leading to package version being reported as "older", although in
+fact it is newer (dpkg version comparison is not that great with
+suffixes). Also, since we don't explicitly add the GPG key of
+the linux.enea.com repo, apt is complaining about unverified
+package sources.
+
+Bypass the above by using "--force-yes", next to "-y".
+
+---
+ ovs_build/build-ovs-dpdk.sh     | 8 ++++----
+ ovs_build/build-ovs-nsh-dpdk.sh | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/ovs_build/build-ovs-dpdk.sh b/ovs_build/build-ovs-dpdk.sh
+index 25dc628..9323d3e 100755
+--- a/ovs_build/build-ovs-dpdk.sh
++++ b/ovs_build/build-ovs-dpdk.sh
+@@ -10,8 +10,8 @@ BUILD_DEST=${BUILD_DEST:-/deb}
+ 
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
+-sudo apt-get build-dep openvswitch -y
+-sudo apt-get -y install devscripts dpkg-dev wget
++sudo apt-get build-dep openvswitch -y --force-yes
++sudo apt-get -y --force-yes install devscripts dpkg-dev wget
+ 
+ rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
+ cp `dirname $0`/rules ${BUILD_HOME}
+@@ -21,7 +21,7 @@ dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/dpdk_2.2.0-0ubun
+ wget -c http://fast.dpdk.org/rel/dpdk-16.04.tar.xz
+ 
+ # copy from debian/control
+-sudo apt-get install -y debhelper \
++sudo apt-get install -y --force-yes debhelper \
+                dh-python \
+                dh-systemd \
+                doxygen  \
+@@ -53,7 +53,7 @@ cd ${BUILD_HOME}
+ dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/openvswitch-dpdk_2.4.0-0ubuntu1.dsc
+ 
+ # copy from debian/control
+-sudo apt-get install -y autoconf \
++sudo apt-get install -y --force-yes autoconf \
+                automake \
+                bzip2 \
+                debhelper \
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index 278c093..f1ebe24 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -11,8 +11,8 @@ DIR="$(dirname `readlink -f $0`)"
+ 
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
+-sudo apt-get build-dep openvswitch -y
+-sudo apt-get -y install devscripts dpkg-dev wget
++sudo apt-get build-dep openvswitch -y --force-yes
++sudo apt-get -y --force-yes install devscripts dpkg-dev wget
+ 
+ rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
+ 
+@@ -20,7 +20,7 @@ cd ${BUILD_HOME}
+ dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/dpdk_2.2.0-0ubuntu8.dsc
+ 
+ # copy from debian/control
+-sudo apt-get install -y debhelper \
++sudo apt-get install -y --force-yes debhelper \
+                dh-python \
+                dh-systemd \
+                doxygen  \
+@@ -49,7 +49,7 @@ cd ${BUILD_HOME}
+ dget -x -u https://launchpad.net/ubuntu/+archive/primary/+files/openvswitch-dpdk_2.4.0-0ubuntu1.dsc
+ 
+ # copy from debian/control
+-sudo apt-get install -y autoconf \
++sudo apt-get install -y --force-yes autoconf \
+                automake \
+                bzip2 \
+                debhelper \

@@ -1,0 +1,124 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 24 Jun 2016 17:14:20 +0200
+Subject: [PATCH] Cleanup: Drop git dependency.
+
+We only use git to fetch upstream contents, this can be achieved
+with a simple wget.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ovs_build/build-ovs-dpdk.sh     | 15 +++++++--------
+ ovs_build/build-ovs-nsh-dpdk.sh | 18 ++++++++++--------
+ 2 files changed, 17 insertions(+), 16 deletions(-)
+
+diff --git a/ovs_build/build-ovs-dpdk.sh b/ovs_build/build-ovs-dpdk.sh
+index d261812..25dc628 100755
+--- a/ovs_build/build-ovs-dpdk.sh
++++ b/ovs_build/build-ovs-dpdk.sh
+@@ -3,7 +3,7 @@
+ set -eux
+ 
+ OVS_COMMIT=7d8eadce4df70f563a0c0123c612f6117c8ff864
+-URL_OVS=https://github.com/openvswitch/ovs.git
++URL_OVS_ARCHIVE=https://github.com/openvswitch/ovs/archive
+ OVS_VER=${OVS_VER:-2.5.90}
+ BUILD_HOME=$HOME/dpdk
+ BUILD_DEST=${BUILD_DEST:-/deb}
+@@ -11,7 +11,7 @@ BUILD_DEST=${BUILD_DEST:-/deb}
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
+ sudo apt-get build-dep openvswitch -y
+-sudo apt-get -y install devscripts dpkg-dev git wget
++sudo apt-get -y install devscripts dpkg-dev wget
+ 
+ rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
+ cp `dirname $0`/rules ${BUILD_HOME}
+@@ -72,15 +72,14 @@ sudo apt-get install -y autoconf \
+                python-zopeinterface \
+                python-six
+ 
+-git clone https://github.com/openvswitch/ovs.git
+-cd ovs; git checkout ${OVS_COMMIT}
+-cd ${BUILD_HOME}; tar czvf ovs.tar.gz ovs
++wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
++tar xzf ${OVS_COMMIT}.tar.gz
+ rm -rf openvswitch-dpdk-${OVS_VER}*
+-cd openvswitch-dpdk-2.4.0; uupdate -v ${OVS_VER} ../ovs.tar.gz
++cd openvswitch-dpdk-2.4.0; uupdate -v ${OVS_VER} ../${OVS_COMMIT}.tar.gz
+ cd ../openvswitch-dpdk-${OVS_VER}
+ #sed -i 's~DPDK_LIB_DIR=.*~DPDK_LIB_DIR="$with_dpdk/x86_64-linux-gnu/lib"~'  acinclude.m4
+ autoreconf --install
+-rm -rf debian/patches/ .git;
++rm -rf debian/patches/
+ cat << EOF > debian/changelog
+ openvswitch-dpdk (${OVS_VER}-1) unstable; urgency=low
+   * New upstream version
+@@ -88,7 +87,7 @@ openvswitch-dpdk (${OVS_VER}-1) unstable; urgency=low
+ EOF
+ debian/rules build; fakeroot debian/rules binary
+ 
+-cd ${BUILD_HOME}/ovs
++cd ${BUILD_HOME}/ovs-${OVS_COMMIT}
+ debian/rules build; fakeroot debian/rules binary
+ 
+ cp ${BUILD_HOME}/*.deb ${BUILD_DEST}
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index 3d7edea..278c093 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -3,7 +3,7 @@
+ set -eux
+ 
+ OVS_COMMIT=7d433ae57ebb90cd68e8fa948a096f619ac4e2d8
+-URL_OVS=https://github.com/openvswitch/ovs.git
++URL_OVS_ARCHIVE=https://github.com/openvswitch/ovs/archive
+ OVS_VER=${OVS_VER:-2.5.90}
+ BUILD_HOME=$HOME/nsh
+ BUILD_DEST=${BUILD_DEST:-/deb}
+@@ -12,7 +12,7 @@ DIR="$(dirname `readlink -f $0`)"
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
+ sudo apt-get build-dep openvswitch -y
+-sudo apt-get -y install devscripts dpkg-dev git wget
++sudo apt-get -y install devscripts dpkg-dev wget
+ 
+ rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
+ 
+@@ -68,21 +68,23 @@ sudo apt-get install -y autoconf \
+                python-zopeinterface \
+                python-six
+ 
+-git clone https://github.com/openvswitch/ovs.git
+-cd ovs; git checkout ${OVS_COMMIT}
++wget -c ${URL_OVS_ARCHIVE}/${OVS_COMMIT}.tar.gz
++tar xzf ${OVS_COMMIT}.tar.gz
++
++cd ovs-${OVS_COMMIT}
+ PATCHES=$(cd ${DIR}/patches; echo *patch)
+ for patch in ${PATCHES}
+ do
+     patch -p1 < ${DIR}/patches/${patch}
+ done
+-cd ${BUILD_HOME}; tar czvf ovs.tar.gz ovs
++cd ${BUILD_HOME}; tar czvf ovs-nsh.tar.gz ovs-${OVS_COMMIT}
+ rm -rf openvswitch-dpdk-${OVS_VER}*
+-cd openvswitch-dpdk-2.4.0; uupdate -v ${OVS_VER} ../ovs.tar.gz
++cd openvswitch-dpdk-2.4.0; uupdate -v ${OVS_VER} ../ovs-nsh.tar.gz
+ cd ../openvswitch-dpdk-${OVS_VER}
+ sed -i "s/include\/rte_config.h/include\/dpdk\/rte_config.h/" acinclude.m4
+ sed -i 's/DPDK_INCLUDE=.*/DPDK_INCLUDE=$RTE_SDK\/include\/dpdk/'  acinclude.m4
+ autoreconf --install
+-rm -rf debian/patches/ .git;
++rm -rf debian/patches/
+ cat << EOF > debian/changelog
+ openvswitch-dpdk (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
+@@ -90,7 +92,7 @@ openvswitch-dpdk (${OVS_VER}-1.nsh) unstable; urgency=low
+ EOF
+ debian/rules build; fakeroot debian/rules binary
+ 
+-cd ${BUILD_HOME}/ovs
++cd ${BUILD_HOME}/ovs-${OVS_COMMIT}
+ cat << EOF > debian/changelog
+ openvswitch (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
