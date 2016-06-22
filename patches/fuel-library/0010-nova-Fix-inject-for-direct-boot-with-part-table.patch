@@ -84,7 +84,7 @@ index 46b1801..d42d6a1 100644
 +    unless  => "patch -p1 -R -N --dry-run < ${nova_path}/libvirt-inject.patch",
 +    cwd     => $nova_path,
 +    require => [Package['patch']],
-+  }
++  } ->
    # FIXME(armband): Workaround for missing arm defaults in nova libvirt driver
    file { "${nova_path}/libvirt-vga-console.patch":
      ensure => "file",
