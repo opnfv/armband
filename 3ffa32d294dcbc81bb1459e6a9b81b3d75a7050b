@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a7ca5a3_b6264bb9",
+        "filename": "Makefile",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-06-27T14:31:12Z",
+      "side": 1,
+      "message": "Missing quotes :)",
+      "revId": "3ffa32d294dcbc81bb1459e6a9b81b3d75a7050b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
