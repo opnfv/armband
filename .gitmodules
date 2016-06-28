@@ -34,3 +34,7 @@
 	path = upstream/vswitchperf
 	url = https://gerrit.opnfv.org/gerrit/vswitchperf.git
 	branch = master
+[submodule "yardstick"]
+	path = upstream/yardstick
+	url = https://gerrit.opnfv.org/gerrit/yardstick.git
+	branch = master
