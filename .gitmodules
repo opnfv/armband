@@ -30,3 +30,7 @@
 	path = upstream/fuel-plugin-ovs
 	url = https://github.com/openstack/fuel-plugin-ovs
 	branch = master
+[submodule "yardstick"]
+	path = upstream/yardstick
+	url = https://gerrit.opnfv.org/gerrit/yardstick.git
+	branch = master

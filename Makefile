@@ -79,6 +79,9 @@ build:
 			FUEL_NAILGUN_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_COMMIT=HEAD \
 			ODL_BRANCH=armband-workbench \
+			YARDSTICK_REPO=${root}/upstream/yardstick \
+			YARDSTICK_BRANCH=armband-workbench \
+			YARDSTICK_CHANGE= \
 			EXTRA_RPM_REPOS="armband,http://linux.enea.com/mos-repos/centos/mos9.0-centos7/armband/x86_64,10" \
 			MIRROR_MOS_UBUNTU=linux.enea.com \
 			JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_arm64.deb \

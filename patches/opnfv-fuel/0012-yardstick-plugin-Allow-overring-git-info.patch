@@ -1,0 +1,22 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 28 Jun 2016 19:06:57 +0200
+Subject: [PATCH] yardstick plugin: Allow overring git info.
+
+---
+ build/f_isoroot/f_yardstick-pluginbuild/config.mk | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/build/f_isoroot/f_yardstick-pluginbuild/config.mk b/build/f_isoroot/f_yardstick-pluginbuild/config.mk
+index 36df8f1..f671aa9 100644
+--- a/build/f_isoroot/f_yardstick-pluginbuild/config.mk
++++ b/build/f_isoroot/f_yardstick-pluginbuild/config.mk
+@@ -8,6 +8,6 @@
+ # http://www.apache.org/licenses/LICENSE-2.0
+ ##############################################################################
+ 
+-YARDSTICK_BRANCH=675eef731a098f83aa98c2021b151b7e5ba1da7d
+-YARDSTICK_REPO=https://gerrit.opnfv.org/gerrit/yardstick.git
+-YARDSTICK_CHANGE=
++YARDSTICK_BRANCH?=675eef731a098f83aa98c2021b151b7e5ba1da7d
++YARDSTICK_REPO?=https://gerrit.opnfv.org/gerrit/yardstick.git
++YARDSTICK_CHANGE?=
