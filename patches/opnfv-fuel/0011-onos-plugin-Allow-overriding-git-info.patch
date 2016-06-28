@@ -1,0 +1,21 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 28 Jun 2016 18:05:57 +0200
+Subject: [PATCH] onos plugin: Allow overriding git info.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/f_isoroot/f_onosfwpluginbuild/config.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/build/f_isoroot/f_onosfwpluginbuild/config.mk b/build/f_isoroot/f_onosfwpluginbuild/config.mk
+index 19d9d00..ecdd102 100644
+--- a/build/f_isoroot/f_onosfwpluginbuild/config.mk
++++ b/build/f_isoroot/f_onosfwpluginbuild/config.mk
+@@ -7,5 +7,5 @@
+ # http://www.apache.org/licenses/LICENSE-2.0
+ ##############################################################################
+ 
+-ONOS_BRANCH=Mitaka
+-ONOS_REPO=git://git.openstack.org/openstack/fuel-plugin-onos
++ONOS_BRANCH?=Mitaka
++ONOS_REPO?=git://git.openstack.org/openstack/fuel-plugin-onos

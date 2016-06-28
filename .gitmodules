@@ -30,3 +30,7 @@
 	path = upstream/fuel-plugin-ovs
 	url = https://github.com/openstack/fuel-plugin-ovs
 	branch = master
+[submodule "fuel-plugin-onos"]
+	path = upstream/fuel-plugin-onos
+	url = https://git.openstack.org/openstack/fuel-plugin-onos
+	branch = Mitaka

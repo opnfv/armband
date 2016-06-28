@@ -73,6 +73,8 @@ build:
 			ODL_CHANGE= \
 			OVS_NSH_DPDK_REPO=${root}/upstream/fuel-plugin-ovs \
 			OVS_NSH_DPDK_BRANCH=HEAD \
+			ONOS_REPO=${root}/upstream/fuel-plugin-onos \
+			ONOS_BRANCH=armband-workbench \
 			FUELLIB_COMMIT=HEAD \
 			NAILGUN_COMMIT=HEAD \
 			FUEL_AGENT_COMMIT=HEAD \
