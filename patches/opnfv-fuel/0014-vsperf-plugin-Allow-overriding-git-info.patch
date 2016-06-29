@@ -1,0 +1,23 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 28 Jun 2016 20:42:58 +0200
+Subject: [PATCH] vsperf plugin: Allow overriding git info.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/f_isoroot/f_vsperfpluginbuild/config.mk | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/build/f_isoroot/f_vsperfpluginbuild/config.mk b/build/f_isoroot/f_vsperfpluginbuild/config.mk
+index 1bf1ef0..576018d 100644
+--- a/build/f_isoroot/f_vsperfpluginbuild/config.mk
++++ b/build/f_isoroot/f_vsperfpluginbuild/config.mk
+@@ -7,6 +7,6 @@
+ # http://www.apache.org/licenses/LICENSE-2.0
+ ##############################################################################
+ 
+-VSPERF_BRANCH=5e3b6ae0427963520357453728411327ac8efafe
+-VSPERF_REPO=https://gerrit.opnfv.org/gerrit/vswitchperf.git
+-VSPERF_CHANGE=
++VSPERF_BRANCH?=5e3b6ae0427963520357453728411327ac8efafe
++VSPERF_REPO?=https://gerrit.opnfv.org/gerrit/vswitchperf.git
++VSPERF_CHANGE?=
