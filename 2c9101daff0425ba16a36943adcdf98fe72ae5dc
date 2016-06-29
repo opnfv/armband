@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a7ca5a3_d949b78c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-06-29T12:55:31Z",
+      "side": 1,
+      "message": "Isn\u0027t that already done by upstream fuel-plugin-opendaylight? We\u0027re pulling master now, aren\u0027t we?",
+      "revId": "2c9101daff0425ba16a36943adcdf98fe72ae5dc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a7ca5a3_f94a7382",
+        "filename": "patches/fuel-plugin-opendaylight/0001-arm64-support-for-OpenDaylight-Fuel-Plugin.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-06-29T12:55:31Z",
+      "side": 1,
+      "message": "If so then remove this, not comment. Otherwise it\u0027s a confusing, dead code.",
+      "revId": "2c9101daff0425ba16a36943adcdf98fe72ae5dc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
