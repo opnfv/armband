@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5a7ca5a3_790c2343",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-06-29T13:18:46Z",
+      "side": 1,
+      "message": "In terms of the upstart script it doesn\u0027t hard-code it in pre_build_hook: https://github.com/openstack/fuel-plugin-opendaylight/blob/master/odl_package/ubuntu/opendaylight#L24.\n\nAs for puppet manifests you have to be aware that puppet catalogue (so a collection of manifests to apply) is constructed on puppet master so you won\u0027t be to detect any path on the target node in puppet statements, you will have to resort to intelligent usage of \"exec\" statement.",
+      "parentUuid": "5a7ca5a3_99225fb8",
+      "revId": "2c9101daff0425ba16a36943adcdf98fe72ae5dc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a7ca5a3_592cc7ab",
         "filename": "patches/fuel-plugin-opendaylight/0001-arm64-support-for-OpenDaylight-Fuel-Plugin.patch",
         "patchSetId": 1
@@ -48,6 +66,30 @@
       "writtenOn": "2016-06-29T13:03:56Z",
       "side": 1,
       "message": "JAVA_HOME :)",
+      "range": {
+        "startLine": 183,
+        "startChar": 226,
+        "endLine": 183,
+        "endChar": 235
+      },
+      "revId": "2c9101daff0425ba16a36943adcdf98fe72ae5dc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a7ca5a3_9909ff33",
+        "filename": "patches/fuel-plugin-opendaylight/0001-arm64-support-for-OpenDaylight-Fuel-Plugin.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-06-29T13:18:46Z",
+      "side": 1,
+      "message": "You\u0027re right but I don\u0027t have any idea on how to really fix it.",
+      "parentUuid": "5a7ca5a3_592cc7ab",
       "range": {
         "startLine": 183,
         "startChar": 226,
