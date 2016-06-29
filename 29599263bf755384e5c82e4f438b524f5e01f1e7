@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a7ca5a3_f931130c",
+        "filename": "patches/fuel-plugin-ovs/0009-AArch64-Add-native-build-support-prebuilt-DEBs.patch",
+        "patchSetId": 3
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1726
+      },
+      "writtenOn": "2016-06-29T12:58:00Z",
+      "side": 1,
+      "message": "I fail to see why this approach is better than defining the deb URIs as environment variables and fetching them via wget here. That way is a way easier to read and you can immediately spot the location of the package as opposed to going through the \"Package\" and \"Sources\" files.",
+      "revId": "29599263bf755384e5c82e4f438b524f5e01f1e7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
