@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "5a7ca5a3_dc5d25eb",
+        "filename": "patches/fuel-plugin-ovs/0002-Cleanup-Fix-debian-changelog-missing-date.patch",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 3859
+      },
+      "writtenOn": "2016-06-29T16:15:19Z",
+      "side": 1,
+      "message": "missing \u0027\u003e\u0027 here?",
+      "range": {
+        "startLine": 35,
+        "startChar": 43,
+        "endLine": 35,
+        "endChar": 45
+      },
+      "revId": "29599263bf755384e5c82e4f438b524f5e01f1e7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a7ca5a3_f931130c",
         "filename": "patches/fuel-plugin-ovs/0009-AArch64-Add-native-build-support-prebuilt-DEBs.patch",
         "patchSetId": 3
