@@ -19,6 +19,47 @@
     },
     {
       "key": {
+        "uuid": "5a7ca5a3_99225fb8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-06-29T13:03:56Z",
+      "side": 1,
+      "message": "Yes, but upstream does that in pre_build_hook, we also have a \"JAVA_HOME\" construction hardcoded in the puppet manifests.",
+      "parentUuid": "5a7ca5a3_d949b78c",
+      "revId": "2c9101daff0425ba16a36943adcdf98fe72ae5dc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a7ca5a3_592cc7ab",
+        "filename": "patches/fuel-plugin-opendaylight/0001-arm64-support-for-OpenDaylight-Fuel-Plugin.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-06-29T13:03:56Z",
+      "side": 1,
+      "message": "JAVA_HOME :)",
+      "range": {
+        "startLine": 183,
+        "startChar": 226,
+        "endLine": 183,
+        "endChar": 235
+      },
+      "revId": "2c9101daff0425ba16a36943adcdf98fe72ae5dc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a7ca5a3_f94a7382",
         "filename": "patches/fuel-plugin-opendaylight/0001-arm64-support-for-OpenDaylight-Fuel-Plugin.patch",
         "patchSetId": 1
@@ -30,6 +71,24 @@
       "writtenOn": "2016-06-29T12:55:31Z",
       "side": 1,
       "message": "If so then remove this, not comment. Otherwise it\u0027s a confusing, dead code.",
+      "revId": "2c9101daff0425ba16a36943adcdf98fe72ae5dc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a7ca5a3_792503c1",
+        "filename": "patches/fuel-plugin-opendaylight/0001-arm64-support-for-OpenDaylight-Fuel-Plugin.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-06-29T13:03:56Z",
+      "side": 1,
+      "message": "I will rework this later based on UBUNTU_ARCH, so all needed debs are in the RPM.",
+      "parentUuid": "5a7ca5a3_f94a7382",
       "revId": "2c9101daff0425ba16a36943adcdf98fe72ae5dc",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
