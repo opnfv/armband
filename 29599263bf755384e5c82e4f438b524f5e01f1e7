@@ -16,6 +16,24 @@
       "revId": "29599263bf755384e5c82e4f438b524f5e01f1e7",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a7ca5a3_3c4bf95a",
+        "filename": "patches/fuel-plugin-ovs/0009-AArch64-Add-native-build-support-prebuilt-DEBs.patch",
+        "patchSetId": 3
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-06-29T13:44:50Z",
+      "side": 1,
+      "message": "There are lots of packages to keep updating the exact URL for ...\nEvery time we\u0027ll build a new version, we\u0027ll have to update the URLs for (OVS package number + 1 OVS-DPDK) x 2 (without, with NSH) + 2 x dpdk package number ...\nI can switch to hardcoded wgets, but the idea behind it was \"fetch all packages built from X package sources\".",
+      "parentUuid": "5a7ca5a3_f931130c",
+      "revId": "29599263bf755384e5c82e4f438b524f5e01f1e7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
