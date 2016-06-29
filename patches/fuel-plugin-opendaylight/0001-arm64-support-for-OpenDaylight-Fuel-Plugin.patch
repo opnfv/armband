@@ -10,7 +10,12 @@ when deploying ODL. This is done when running odl-install puppet manifest.
 For more info about this ODL limitation, read here:
 https://bugs.opendaylight.org/show_bug.cgi?id=3973
 
+[ Alexandru.Avadanii@enea.com ]
+Remove JAVA8 changes after upstream rework.
+
 Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  .../modules/opendaylight/files/leveldb-arm64.patch |  35 +++++
  .../opendaylight/files/leveldbjni-native.patch     |  23 ++++
@@ -18,7 +23,6 @@ Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
  .../modules/opendaylight/manifests/install.pp      |  12 +-
  .../modules/opendaylight/manifests/leveldbjni.pp   | 150 +++++++++++++++++++++
  deployment_tasks.yaml                              |   2 +-
- odl_package/ubuntu/opendaylight                    |   4 +-
  pre_build_hook                                     |   7 +-
  8 files changed, 233 insertions(+), 8 deletions(-)
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
@@ -176,7 +180,7 @@ index 0000000..c599370
 +  $libsnappy_dir = '/usr/lib'
 +  $leveldb_dir = "${target}/leveldb"
 +  $leveldbjni_dir = "${target}/leveldbjni"
-+  $environment = ["SNAPPY_HOME=${libsnappy_dir}", "LEVELDB_HOME=${leveldb_dir}", "LEVELDBJNI_HOME=${leveldbjni_dir}", "LIBRARY_PATH=${libsnappy_dir}", "C_INCLUDE_PATH=${libsnappy_dir}", "CPLUS_INCLUDE_PATH=${libsnappy_dir}","JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-${::opendaylight::arch}"]
++  $environment = ["SNAPPY_HOME=${libsnappy_dir}", "LEVELDB_HOME=${leveldb_dir}", "LEVELDBJNI_HOME=${leveldbjni_dir}", "LIBRARY_PATH=${libsnappy_dir}", "C_INCLUDE_PATH=${libsnappy_dir}", "CPLUS_INCLUDE_PATH=${libsnappy_dir}","JAVA_HOME=/usr/lib/jvm/java-8-openjdk-${::opendaylight::arch}"]
 +  $parallel_jobs = ($processorcount + 1)/2
 +
 +  if ! defined(Package['git']) {
@@ -214,8 +218,8 @@ index 0000000..c599370
 +      ensure => 'present',
 +    }
 +  }
-+  if ! defined(Package['openjdk-7-jdk']) {
-+    package { 'openjdk-7-jdk':
++  if ! defined(Package['openjdk-8-jdk']) {
++    package { 'openjdk-8-jdk':
 +      ensure => 'present',
 +    }
 +  }
@@ -317,43 +321,12 @@ index 3706678..841bfee 100644
  - id: netconfig
    type: puppet
    version: 2.0.0
-diff --git a/odl_package/ubuntu/opendaylight b/odl_package/ubuntu/opendaylight
-index 756dd95..2945d02 100644
---- a/odl_package/ubuntu/opendaylight
-+++ b/odl_package/ubuntu/opendaylight
-@@ -9,7 +9,7 @@ setgid odl
- setuid odl
- 
- env KARAF_HOME="/opt/opendaylight"
--env JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
-+env JAVA_HOME="/usr/lib/jvm/java-7-openjdk-arm64"
- env JAVA_OPTS="-server -Xms256M -Xmx2048M -XX:+UnlockDiagnosticVMOptions -XX:+UnsyncloadClass -XX:MaxPermSize=512M -Dcom.sun.management.jmxremote"
- env OPTS="-Dkaraf.startLocalConsole=false -Dkaraf.startRemoteShell=true"
- env MAIN="org.apache.karaf.main.Main"
-@@ -37,6 +37,6 @@ script
-         fi
-     done
- 
--    exec /usr/bin/java $JAVA_OPTS -Djava.endorsed.dirs="${JAVA_ENDORSED_DIRS}" -Djava.ext.dirs="${JAVA_EXT_DIRS}" -Dkaraf.instances="${KARAF_HOME}/instances" -Dkaraf.home="$KARAF_HOME" -Dkaraf.base="$KARAF_BASE" -Dkaraf.data="$KARAF_DATA" -Dkaraf.etc="$KARAF_ETC" -Djava.io.tmpdir="$KARAF_DATA/tmp" -Djava.util.logging.config.file="$KARAF_BASE/etc/java.util.logging.properties" $KARAF_OPTS $OPTS -classpath "$CLASSPATH" $MAIN
-+    exec ${JAVA_HOME}/bin/java $JAVA_OPTS -Djava.endorsed.dirs="${JAVA_ENDORSED_DIRS}" -Djava.ext.dirs="${JAVA_EXT_DIRS}" -Dkaraf.instances="${KARAF_HOME}/instances" -Dkaraf.home="$KARAF_HOME" -Dkaraf.base="$KARAF_BASE" -Dkaraf.data="$KARAF_DATA" -Dkaraf.etc="$KARAF_ETC" -Djava.io.tmpdir="$KARAF_DATA/tmp" -Djava.util.logging.config.file="$KARAF_BASE/etc/java.util.logging.properties" $KARAF_OPTS $OPTS -classpath "$CLASSPATH" $MAIN
- 
- end script
 diff --git a/pre_build_hook b/pre_build_hook
 index c37da5d..6f4a917 100755
 --- a/pre_build_hook
 +++ b/pre_build_hook
-@@ -61,7 +61,7 @@ fi
- 
- function cleanup {
-   rm -rf "${TMP_DIR}"
--  sed -i -e "s/java-8-openjdk-amd64/java-7-openjdk-amd64/" "${DIR}/odl_package/ubuntu/opendaylight"
-+  sed -i -e "s/java-8-openjdk-arm64/java-7-openjdk-arm64/" "${DIR}/odl_package/ubuntu/opendaylight"
- }
- 
- function download {
-@@ -192,7 +192,8 @@ function build_pkg {
+@@ -192,6 +192,7 @@ function build_pkg {
        fpm --architecture all --force -s python -t deb -m 'mskalski@mirantis.com' --python-install-lib /usr/lib/python2.7/dist-packages ${TMP_DIR}/networking_odl/setup.py
-       download_dependencies ${1}
        popd
 -      add_opnfv_quagga "${DIR}/repositories/${1}/"
 +      # We are adding arm64 opnfv quagga in our local repository
@@ -361,12 +334,3 @@ index c37da5d..6f4a917 100755
        ;;
      *) echo "Not supported system"; exit 1;;
    esac
-@@ -204,7 +205,7 @@ cleanup
- 
- if [ "$USE_JAVA8" = true ]
- then
--  sed -i -e "s/java-7-openjdk-amd64/java-8-openjdk-amd64/" "${DIR}/odl_package/ubuntu/opendaylight"
-+  sed -i -e "s/java-7-openjdk-arm64/java-8-openjdk-arm64/" "${DIR}/odl_package/ubuntu/opendaylight"
- fi
- 
- mkdir -p "${TMP_DIR}"
