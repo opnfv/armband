@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a7ca5a3_f98fd321",
+        "filename": "patches/opnfv-fuel/0012-yardstick-plugin-Allow-overring-git-info.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 3859
+      },
+      "writtenOn": "2016-06-29T10:41:45Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 3,
+        "startChar": 41,
+        "endLine": 3,
+        "endChar": 49
+      },
+      "revId": "32bdaf50cfb6978e118e2c1d72032379d3488ba1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
