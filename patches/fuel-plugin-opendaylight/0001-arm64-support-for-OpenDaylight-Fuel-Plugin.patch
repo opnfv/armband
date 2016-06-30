@@ -144,7 +144,7 @@ index b229757..0979d86 100644
      owner   => 'odl',
      content => template('opendaylight/jetty.xml.erb')
 @@ -71,6 +78,7 @@ class opendaylight::install (
-   Package['opendaylight'] ->
+   Package[$odl_package] ->
    Ini_setting <||> ->
    Firewall <||> ->
 -  File <||> ->
