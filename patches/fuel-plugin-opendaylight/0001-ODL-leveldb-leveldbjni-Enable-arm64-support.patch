@@ -1,14 +1,19 @@
 From: Florin Dumitrascu <florin.dumitrascu@enea.com>
 Date: Thu, 17 Mar 2016 18:15:42 +0100
-Subject: [PATCH] arm64 support for OpenDaylight Fuel Plugin
+Subject: [PATCH] ODL leveldb, leveldbjni: Enable arm64 support.
 
 ODL depends on a native library (leveldb).
-ODL Beryllium version is still using a native x86 version of
-this library (wrapped in leveldbjni). There is no upstream version
-of leveldbjni supporting arm64 leveldb, so we need to compile it
-when deploying ODL. This is done when running odl-install puppet manifest.
-For more info about this ODL limitation, read here:
-https://bugs.opendaylight.org/show_bug.cgi?id=3973
+
+ODL Beryllium and Boron versions are still using a native x86 version
+of this library (wrapped in leveldbjni).
+
+There is no upstream version of leveldbjni supporting arm64 leveldb,
+so we need to compile it when deploying ODL.
+This is done when running odl-install puppet manifest.
+
+For more info about this ODL limitation, see [1].
+
+[1] https://bugs.opendaylight.org/show_bug.cgi?id=3973
 
 [ Alexandru.Avadanii@enea.com ]
 Remove JAVA8 changes after upstream rework.
@@ -23,8 +28,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  .../modules/opendaylight/manifests/install.pp      |  12 +-
  .../modules/opendaylight/manifests/leveldbjni.pp   | 150 +++++++++++++++++++++
  deployment_tasks.yaml                              |   2 +-
- pre_build_hook                                     |   7 +-
- 8 files changed, 233 insertions(+), 8 deletions(-)
+ 6 files changed, 227 insertions(+), 3 deletions(-)
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/files/leveldb-arm64.patch
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/files/leveldbjni-native.patch
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
@@ -100,10 +104,10 @@ index 0000000..08a528b
 +          </instructions>
 +         </configuration>
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
-index 69cc23a..791ceba 100644
+index a322f70..f71bfc8 100644
 --- a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
-@@ -9,4 +9,12 @@ class opendaylight {
+@@ -10,4 +10,12 @@ class opendaylight {
    $odl_mgmt_ips = values($odl_mgmt_ips_hash)
    $odl_nodes_names = keys($odl_mgmt_ips_hash)
    $node_internal_address = $odl_mgmt_ips_hash["node-${node_uid}"]
@@ -117,10 +121,10 @@ index 69cc23a..791ceba 100644
 +  }
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
-index b229757..0979d86 100644
+index 924a840..d55a311 100644
 --- a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
-@@ -18,6 +18,12 @@ class opendaylight::install (
+@@ -17,6 +17,12 @@ class opendaylight::install (
      ensure  => installed,
    }
  
@@ -130,9 +134,9 @@ index b229757..0979d86 100644
 +    }
 +  }
 +
-   package {'opnfv-quagga':
-     ensure => installed,
-   }
+   # quagga
+   class { 'opendaylight::quagga':
+     before => Service['opendaylight']
 @@ -35,7 +41,8 @@ class opendaylight::install (
  
    debug("Set odl rest api port to ${rest_port}")
@@ -154,7 +158,7 @@ index b229757..0979d86 100644
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 new file mode 100644
-index 0000000..c599370
+index 0000000..5125fc7
 --- /dev/null
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 @@ -0,0 +1,150 @@
@@ -321,16 +325,3 @@ index 3706678..841bfee 100644
  - id: netconfig
    type: puppet
    version: 2.0.0
-diff --git a/pre_build_hook b/pre_build_hook
-index c37da5d..6f4a917 100755
---- a/pre_build_hook
-+++ b/pre_build_hook
-@@ -192,6 +192,7 @@ function build_pkg {
-       fpm --architecture all --force -s python -t deb -m 'mskalski@mirantis.com' --python-install-lib /usr/lib/python2.7/dist-packages ${TMP_DIR}/networking_odl/setup.py
-       popd
--      add_opnfv_quagga "${DIR}/repositories/${1}/"
-+      # We are adding arm64 opnfv quagga in our local repository
-+      #add_opnfv_quagga "${DIR}/repositories/${1}/"
-       ;;
-     *) echo "Not supported system"; exit 1;;
-   esac

@@ -65,20 +65,21 @@ build:
 			BUILD_FUEL_PLUGINS=f_odlpluginbuild \
 			UBUNTU_ARCH="amd64 arm64" \
 			FUELLIB_REPO=${root}/upstream/fuel-library \
+			FUELLIB_COMMIT=HEAD \
 			NAILGUN_REPO=${root}/upstream/fuel-web \
+			NAILGUN_COMMIT=HEAD \
 			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
+			FUEL_AGENT_COMMIT=HEAD \
 			FUEL_NAILGUN_AGENT_REPO=${root}/upstream/fuel-nailgun-agent \
+			FUEL_NAILGUN_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_REPO=${root}/upstream/fuel-mirror \
+			FUEL_MIRROR_COMMIT=HEAD \
 			ODL_REPO=${root}/upstream/fuel-plugin-opendaylight \
+			ODL_BRANCH=armband-workbench \
 			ODL_CHANGE= \
+			OPNFV_QUAGGE_PACKAGING_REPO="https://github.com/alexandruavadanii/opnfv-quagga-packaging" \
 			OVS_NSH_DPDK_REPO=${root}/upstream/fuel-plugin-ovs \
 			OVS_NSH_DPDK_BRANCH=HEAD \
-			FUELLIB_COMMIT=HEAD \
-			NAILGUN_COMMIT=HEAD \
-			FUEL_AGENT_COMMIT=HEAD \
-			FUEL_NAILGUN_AGENT_COMMIT=HEAD \
-			FUEL_MIRROR_COMMIT=HEAD \
-			ODL_BRANCH=armband-workbench \
 			VSPERF_REPO=${root}/upstream/vswitchperf \
 			VSPERF_BRANCH=armband-workbench \
 			VSPERF_CHANGE= \
@@ -87,7 +88,6 @@ build:
 			YARDSTICK_CHANGE= \
 			EXTRA_RPM_REPOS="armband,http://linux.enea.com/mos-repos/centos/mos9.0-centos7/armband/x86_64,10" \
 			MIRROR_MOS_UBUNTU=linux.enea.com \
-			JAVA8_URL=https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+files/openjdk-8-jre-headless_8u72-b15-1~trusty1_arm64.deb \
 			$(EXTRA_PARAMS) \
 			iso 2>&1 | tee ${root}/build.log
 
