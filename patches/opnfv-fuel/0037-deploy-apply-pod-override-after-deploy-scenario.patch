@@ -1,0 +1,62 @@
+From: Paul Vaduva <Paul.Vaduva@enea.com>
+Date: Mon, 27 Jun 2016 16:37:03 +0200
+Subject: [PATCH] deploy: apply pod override after deploy scenario
+
+Sometimes the pod-override config needs to override configs that
+appear in the scenario dea-override-config section e.g. the list
+of nodes and the corresponding interfaces and transformations that
+may differ if e.g. not all nodes are the same in the pod.
+
+Signed-off-by: Paul Vaduva <Paul.Vaduva@enea.com>
+---
+ deploy/deploy-config.py | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/deploy/deploy-config.py b/deploy/deploy-config.py
+index 88a1111..15de017 100644
+--- a/deploy/deploy-config.py
++++ b/deploy/deploy-config.py
+@@ -168,21 +168,6 @@ dea_base_comment = dea_base_conf['dea-base-config-metadata']['comment']
+ dea_base_conf.pop('dea-base-config-metadata')
+ final_dea_conf = dea_base_conf
+ 
+-# Fetch dea-pod-override, extract and purge meta-data, merge with previous dea data structure
+-print 'Parsing the dea-pod-override from: ' + kwargs["dea_pod_override_uri"] + "...."
+-response = urllib2.urlopen(kwargs["dea_pod_override_uri"])
+-dea_pod_override_conf = yaml.load(response.read())
+-if dea_pod_override_conf:
+-    dea_pod_title = dea_pod_override_conf['dea-pod-override-config-metadata']['title']
+-    dea_pod_version = dea_pod_override_conf['dea-pod-override-config-metadata']['version']
+-    dea_pod_creation = dea_pod_override_conf['dea-pod-override-config-metadata']['created']
+-    dea_pod_sha = sha_uri(kwargs["dea_pod_override_uri"])
+-    dea_pod_comment = dea_pod_override_conf['dea-pod-override-config-metadata']['comment']
+-    print 'Merging dea-base and dea-pod-override configuration ....'
+-    dea_pod_override_conf.pop('dea-pod-override-config-metadata')
+-    if dea_pod_override_conf:
+-        final_dea_conf = dict(mergedicts(final_dea_conf, dea_pod_override_conf))
+-
+ # Fetch deployment-scenario, extract and purge meta-data, merge deployment-scenario/
+ # dea-override-configith previous dea data structure
+ print 'Parsing deployment-scenario from: ' + kwargs["scenario"] + "...."
+@@ -213,6 +198,21 @@ if dea_scenario_override_conf:
+     print 'Merging dea-base-, dea-pod-override- and deployment-scenario configuration into final dea.yaml configuration....'
+     final_dea_conf = dict(mergedicts(final_dea_conf, dea_scenario_override_conf))
+ 
++# Fetch dea-pod-override, extract and purge meta-data, merge with previous dea data structure
++print 'Parsing the dea-pod-override from: ' + kwargs["dea_pod_override_uri"] + "...."
++response = urllib2.urlopen(kwargs["dea_pod_override_uri"])
++dea_pod_override_conf = yaml.load(response.read())
++if dea_pod_override_conf:
++    dea_pod_title = dea_pod_override_conf['dea-pod-override-config-metadata']['title']
++    dea_pod_version = dea_pod_override_conf['dea-pod-override-config-metadata']['version']
++    dea_pod_creation = dea_pod_override_conf['dea-pod-override-config-metadata']['created']
++    dea_pod_sha = sha_uri(kwargs["dea_pod_override_uri"])
++    dea_pod_comment = dea_pod_override_conf['dea-pod-override-config-metadata']['comment']
++    print 'Merging dea-base and dea-pod-override configuration ....'
++    dea_pod_override_conf.pop('dea-pod-override-config-metadata')
++    if dea_pod_override_conf:
++        final_dea_conf = dict(mergedicts(final_dea_conf, dea_pod_override_conf))
++
+ # Fetch plugin-configuration configuration files, extract and purge meta-data,
+ # merge/append with previous dea data structure, override plugin-configuration with
+ # deploy-scenario/module-config-override
