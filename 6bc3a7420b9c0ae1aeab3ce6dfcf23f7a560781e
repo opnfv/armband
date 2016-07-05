@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a7ca5a3_9b57aa02",
+        "filename": "Makefile",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-07-05T13:14:38Z",
+      "side": 1,
+      "message": "we need to put this in quotation marks, right?",
+      "range": {
+        "startLine": 65,
+        "startChar": 22,
+        "endLine": 65,
+        "endChar": 59
+      },
+      "revId": "6bc3a7420b9c0ae1aeab3ce6dfcf23f7a560781e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
