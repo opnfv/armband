@@ -45,7 +45,7 @@ index e57a4fb..9a65cf6 100644
  )
  
  ASTUTE_YAML = '/etc/fuel/astute.yaml'
-@@ -35,15 +39,47 @@ def parse_arguments():
+@@ -35,15 +39,45 @@ def parse_arguments():
      check_file_exists(dea_file)
      return dea_file
  
@@ -88,8 +88,6 @@ index e57a4fb..9a65cf6 100644
 +        exec_cmd('echo "DEFROUTE=no" >> %s' % admin_ifcfg)
 +        log('At least one interface was reconfigured, restart network manager')
 +        exec_cmd('systemctl restart network')
-+        log('At least one interface was reconfigured, accept SSH on all')
-+        exec_cmd('iptables -A INPUT -p tcp --dport ssh -j ACCEPT')
      return astute
  
  
