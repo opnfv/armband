@@ -130,7 +130,7 @@ index 924a840..d55a311 100644
  
 +  if ($::osfamily == 'Debian' and $::opendaylight::arch == 'arm64') {
 +    class { 'opendaylight::leveldbjni':
-+      require => Package['opendaylight'],
++      require => Package[$odl_package],
 +    }
 +  }
 +
