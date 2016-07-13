@@ -1,0 +1,58 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 13 Jul 2016 21:29:22 +0200
+Subject: [PATCH] kernel-flavor: linux-image-generic-lts-xenial
+
+Ubuntu arm64: switch from using kernel 4.2 for Trusty
+(linux-image-generic-lts-trusty) to kernel 4.4 backported from Xenial
+(linux-image-generic-lts-xenial).
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample            | 2 +-
+ fuel_agent/drivers/nailgun.py                                         | 4 ++--
+ fuel_agent/tests/test_nailgun_build_image.py                          | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample
+index e1a2fc2..d6b766f 100644
+--- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample
++++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample
+@@ -17,7 +17,7 @@ extra_dirs:
+ # Save generated bootstrap container to
+ output_dir: /tmp/
+ # Defines kernel version
+-kernel_flavor: linux-image-generic-lts-trusty
++kernel_flavor: linux-image-generic-lts-xenial
+ # Define packages list
+ packages:
+   - fuel-agent
+diff --git a/fuel_agent/drivers/nailgun.py b/fuel_agent/drivers/nailgun.py
+index 5ff1cf6..1463f22 100644
+--- a/fuel_agent/drivers/nailgun.py
++++ b/fuel_agent/drivers/nailgun.py
+@@ -734,8 +734,8 @@ class NailgunBuildImage(BaseDataDriver):
+         "i40e-dkms",
+         "linux-firmware",
+         "linux-firmware-nonfree",
+-        "linux-headers-generic-lts-trusty",
+-        "linux-image-generic-lts-trusty",
++        "linux-headers-generic-lts-xenial",
++        "linux-image-generic-lts-xenial",
+         "lvm2",
+         "mcollective",
+         "mdadm",
+diff --git a/fuel_agent/tests/test_nailgun_build_image.py b/fuel_agent/tests/test_nailgun_build_image.py
+index 826e6a9..684bbfd 100644
+--- a/fuel_agent/tests/test_nailgun_build_image.py
++++ b/fuel_agent/tests/test_nailgun_build_image.py
+@@ -40,8 +40,8 @@ DEFAULT_TRUSTY_PACKAGES = [
+     "i40e-dkms",
+     "linux-firmware",
+     "linux-firmware-nonfree",
+-    "linux-headers-generic-lts-trusty",
+-    "linux-image-generic-lts-trusty",
++    "linux-headers-generic-lts-xenial",
++    "linux-image-generic-lts-xenial",
+     "lvm2",
+     "mcollective",
+     "mdadm",

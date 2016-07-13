@@ -1,0 +1,35 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 13 Jul 2016 21:31:18 +0200
+Subject: [PATCH] kernel-flavor: linux-image-generic-lts-xenial
+
+Ubuntu arm64: switch from using kernel 4.2 for Trusty
+(linux-image-generic-lts-trusty) to kernel 4.4 backported from Xenial
+(linux-image-generic-lts-xenial).
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb b/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
+index 25f8067..e366b50 100644
+--- a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
++++ b/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
+@@ -31,7 +31,7 @@ $SNIPPET('ubuntu_partition')
+ 
+ #set fuel_version=$getVar('fuel_version', '')
+ #if $fuel_version >= '6.0'
+-d-i base-installer/kernel/image string linux-image-generic-lts-trusty
++d-i base-installer/kernel/image string linux-image-generic-lts-xenial
+ #else
+ d-i base-installer/kernel/image string linux-image-3.11
+ #end if
+@@ -148,7 +148,7 @@ echo 'Acquire::ForceIPv4 "true";' > /target/etc/apt/apt.conf.d/03force-ipv4 && \
+ in-target apt-get update; \
+ in-target apt-get upgrade -y; \
+ #if $fuel_version >= '6.0'
+-in-target apt-get -y install linux-image-generic-lts-trusty linux-headers-generic-lts-trusty; \
++in-target apt-get -y install linux-image-generic-lts-xenial linux-headers-generic-lts-xenial; \
+ #else
+ in-target apt-get -y install linux-image-3.11 linux-headers-3.11; \
+ #end if
