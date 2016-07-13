@@ -1,0 +1,28 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 13 Jul 2016 21:33:04 +0200
+Subject: [PATCH] kernel-flavor: linux-image-generic-lts-xenial
+
+Ubuntu arm64: switch from using kernel 4.2 for Trusty
+(linux-image-generic-lts-trusty) to kernel 4.4 backported from Xenial
+(linux-image-generic-lts-xenial).
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ contrib/fuel_mirror/data/ubuntu.yaml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/contrib/fuel_mirror/data/ubuntu.yaml b/contrib/fuel_mirror/data/ubuntu.yaml
+index 2ec4f1d..b8c0ae4 100644
+--- a/contrib/fuel_mirror/data/ubuntu.yaml
++++ b/contrib/fuel_mirror/data/ubuntu.yaml
+@@ -98,8 +98,8 @@ packages: &packages
+      - "libapache2-mod-fastcgi"
+      - "libnss3-tools"
+      - "linux-firmware-nonfree"
+-     - "linux-headers-generic-lts-trusty"
+-     - "linux-image-generic-lts-trusty"
++     - "linux-headers-generic-lts-xenial"
++     - "linux-image-generic-lts-xenial"
+      - "live-boot"
+      - "livecd-rootfs"
+      - "lshw"

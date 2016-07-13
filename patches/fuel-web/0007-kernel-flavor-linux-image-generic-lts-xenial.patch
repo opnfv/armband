@@ -1,0 +1,92 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 13 Jul 2016 21:34:34 +0200
+Subject: [PATCH] kernel-flavor: linux-image-generic-lts-xenial
+
+Ubuntu arm64: switch from using kernel 4.2 for Trusty
+(linux-image-generic-lts-trusty) to kernel 4.4 backported from Xenial
+(linux-image-generic-lts-xenial).
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ nailgun/nailgun/fixtures/openstack.yaml                      |  8 ++++----
+ .../nailgun/test/integration/test_provisioning_serializer.py | 12 ++++++------
+ nailgun/nailgun/test/unit/test_tasks_templates.py            |  4 ++--
+ 3 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
+index 9c34a05..6848424 100644
+--- a/nailgun/nailgun/fixtures/openstack.yaml
++++ b/nailgun/nailgun/fixtures/openstack.yaml
+@@ -2103,8 +2103,8 @@
+               i40e-dkms
+               linux-firmware
+               linux-firmware-nonfree
+-              linux-headers-generic-lts-trusty
+-              linux-image-generic-lts-trusty
++              linux-headers-generic-lts-xenial
++              linux-image-generic-lts-xenial
+               lvm2
+               mcollective
+               mdadm
+@@ -2447,8 +2447,8 @@
+               i40e-dkms
+               linux-firmware
+               linux-firmware-nonfree
+-              linux-headers-generic-lts-trusty
+-              linux-image-generic-lts-trusty
++              linux-headers-generic-lts-xenial
++              linux-image-generic-lts-xenial
+               lvm2
+               mcollective
+               mdadm
+diff --git a/nailgun/nailgun/test/integration/test_provisioning_serializer.py b/nailgun/nailgun/test/integration/test_provisioning_serializer.py
+index d6ad26c..b81acd1 100644
+--- a/nailgun/nailgun/test/integration/test_provisioning_serializer.py
++++ b/nailgun/nailgun/test/integration/test_provisioning_serializer.py
+@@ -236,16 +236,16 @@ class TestProvisioningSerializer61(BaseIntegrationTest):
+             'packages': """
+                 linux-firmware
+                 linux-firmware-nonfree
+-                linux-headers-generic-lts-trusty
+-                linux-image-generic-lts-trusty"""
++                linux-headers-generic-lts-xenial
++                linux-image-generic-lts-xenial"""
+         }
+         packages = self.serializer._make_provisioning_package_list(
+             provisioning_data)
+         self.assertEqual(packages, [
+             'linux-firmware',
+             'linux-firmware-nonfree',
+-            'linux-headers-generic-lts-trusty',
+-            'linux-image-generic-lts-trusty',
++            'linux-headers-generic-lts-xenial',
++            'linux-image-generic-lts-xenial',
+         ])
+ 
+     def test_ubuntu_prov_task_for_images(self):
+@@ -258,8 +258,8 @@ class TestProvisioningSerializer61(BaseIntegrationTest):
+         self.cluster.attributes.editable['provision']['packages'] = """
+             linux-firmware
+             linux-firmware-nonfree
+-            linux-headers-generic-lts-trusty
+-            linux-image-generic-lts-trusty
++            linux-headers-generic-lts-xenial
++            linux-image-generic-lts-xenial
+         """
+ 
+         serialized_info = self.serializer.serialize(self.cluster, [])
+diff --git a/nailgun/nailgun/test/unit/test_tasks_templates.py b/nailgun/nailgun/test/unit/test_tasks_templates.py
+index 695e53d..1e6271d 100644
+--- a/nailgun/nailgun/test/unit/test_tasks_templates.py
++++ b/nailgun/nailgun/test/unit/test_tasks_templates.py
+@@ -123,8 +123,8 @@ class TestMakeTask(base.BaseTestCase):
+         packages = [
+             'linux-firmware',
+             'linux-firmware-nonfree',
+-            'linux-headers-generic-lts-trusty',
+-            'linux-image-generic-lts-trusty',
++            'linux-headers-generic-lts-xenial',
++            'linux-image-generic-lts-xenial',
+         ]
+         result = tasks_templates.make_provisioning_images_task(
+             [1, 2, 3],
