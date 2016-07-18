@@ -64,8 +64,8 @@ build:
 		make \
 			BUILD_FUEL_PLUGINS="f_odlpluginbuild f_bgpvpn-pluginbuild" \
 			UBUNTU_ARCH="amd64 arm64" \
-			FUELLIB_REPO=${root}/upstream/fuel-library \
-			FUELLIB_COMMIT=HEAD \
+			ASTUTE_REPO=${root}/upstream/fuel-astute \
+			ASTUTE_COMMIT=HEAD \
 			NAILGUN_REPO=${root}/upstream/fuel-web \
 			NAILGUN_COMMIT=HEAD \
 			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
@@ -74,6 +74,8 @@ build:
 			FUEL_NAILGUN_AGENT_COMMIT=HEAD \
 			FUEL_MIRROR_REPO=${root}/upstream/fuel-mirror \
 			FUEL_MIRROR_COMMIT=HEAD \
+			FUELLIB_REPO=${root}/upstream/fuel-library \
+			FUELLIB_COMMIT=HEAD \
 			ODL_REPO=${root}/upstream/fuel-plugin-opendaylight \
 			ODL_BRANCH=armband-workbench \
 			ODL_CHANGE= \
