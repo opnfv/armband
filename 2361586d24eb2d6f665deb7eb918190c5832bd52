@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_561272b5",
+        "filename": "patches/opnfv-fuel/0002-deploy-Delete-old-Fuel-env-if-present.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-07-18T16:19:46Z",
+      "side": 1,
+      "message": "not needed",
+      "range": {
+        "startLine": 44,
+        "startChar": 13,
+        "endLine": 44,
+        "endChar": 24
+      },
+      "revId": "2361586d24eb2d6f665deb7eb918190c5832bd52",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
