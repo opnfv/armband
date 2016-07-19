@@ -10,8 +10,7 @@
 set -e
 
 cd $WORKSPACE
-make submodules-init
-make patches-import
+make submodules-clean submodules-init patches-import
 
 # source local environment variables
 if ! [ -z $LAB_CONFIG_URL ]; then
