@@ -42,7 +42,6 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  build/bootstrap_admin_node.sh.patch  | 167 +++++++++++++++--------------------
  build/fuel-main_docker_version.patch |  20 -----
  build/isolinux.cfg.patch             |  43 +++++----
- build/repo-mirror-cz.patch           |  32 +++----
  5 files changed, 113 insertions(+), 166 deletions(-)
  delete mode 100644 build/fuel-main_docker_version.patch
 
@@ -50,16 +49,12 @@ diff --git a/build/Makefile b/build/Makefile
 index 956183c..69e5690 100644
 --- a/build/Makefile
 +++ b/build/Makefile
-@@ -109,9 +109,9 @@ $(ISOCACHE):
+@@ -109,7 +109,7 @@ $(ISOCACHE):
  		cd /tmp && git clone $(FUEL_MAIN_REPO); \
  	fi
  	cd /tmp/fuel-main && git checkout $(FUEL_MAIN_TAG)
 -	@echo "fuel" `git -C /tmp/fuel-main show | grep commit | head -1 | cut -d " " -f2` >> $(VERSION_FILE)
--	# Patch for using the Czech Fuel mirror
--	cd /tmp/fuel-main && patch -p0 < $(TOPDIR)/repo-mirror-cz.patch
 +	@echo "fuel" `git -C /tmp/fuel-main rev-parse HEAD` >> $(VERSION_FILE)
-+	# Patch for using the Czech Fuel mirror (non-committed)
-+	cd /tmp/fuel-main && git apply $(TOPDIR)/repo-mirror-cz.patch
  	# Remove Docker optimizations, otherwise multistrap will fail during
  	# Fuel build.
  	sudo rm -f /etc/apt/apt.conf.d/docker*
@@ -327,40 +322,3 @@ index ebd991b..7ca7a5c 100644
 +   kernel vmlinuz
 +-  append initrd=initrd.img inst.repo=cdrom:LABEL=will_be_substituted_with_ISO_VOLUME_ID:/ inst.ks=cdrom:LABEL=will_be_substituted_with_ISO_VOLUME_ID:/ks.cfg ip=10.20.0.2::10.20.0.1:255.255.255.0:fuel.domain.tld:adminif:off::: nameserver=10.20.0.1 ifname=adminif:XX:XX:XX:XX:XX:XX
 ++  append initrd=initrd.img inst.repo=cdrom:LABEL=will_be_substituted_with_ISO_VOLUME_ID:/ inst.ks=cdrom:LABEL=will_be_substituted_with_ISO_VOLUME_ID:/ks.cfg ip=10.20.0.2::10.20.0.1:255.255.255.0:fuel.domain.tld:adminif:off::: nameserver=10.20.0.1 ifname=adminif:XX:XX:XX:XX:XX:XX showmenu=yes
-diff --git a/build/repo-mirror-cz.patch b/build/repo-mirror-cz.patch
-index aa8eaf9..4b5643c 100644
---- a/build/repo-mirror-cz.patch
-+++ b/build/repo-mirror-cz.patch
-@@ -1,19 +1,13 @@
--*** config.mk.orig	Thu Jan  7 23:30:38 2016
----- config.mk	Thu Jan  7 23:32:36 2016
--***************
--*** 153,159 ****
--  # 'msk', 'srt', 'usa', 'hrk', 'cz'
--  # Setting any other value or removing of this variable will cause
--  # download of all the packages directly from internet
--! USE_MIRROR?=ext
--  
--  ifeq ($(USE_MIRROR),ext)
--  MIRROR_FUEL?=http://mirror.fuel-infra.org/mos-repos/centos/$(PRODUCT_NAME)$(PRODUCT_VERSION)-centos$(CENTOS_MAJOR)-fuel/os/x86_64/
----- 153,159 ----
--  # 'msk', 'srt', 'usa', 'hrk', 'cz'
--  # Setting any other value or removing of this variable will cause
--  # download of all the packages directly from internet
--! USE_MIRROR?=cz
--  
--  ifeq ($(USE_MIRROR),ext)
--  MIRROR_FUEL?=http://mirror.fuel-infra.org/mos-repos/centos/$(PRODUCT_NAME)$(PRODUCT_VERSION)-centos$(CENTOS_MAJOR)-fuel/os/x86_64/
-+diff --git a/config.mk b/config.mk
-+index 2a512cf..3193ecf 100644
-+--- a/config.mk
-++++ b/config.mk
-+@@ -133,7 +133,7 @@ LOCAL_MIRROR_UBUNTU_OS_BASEURL:=$(LOCAL_MIRROR_UBUNTU)
-+ # 'msk', 'srt', 'usa', 'hrk', 'cz'
-+ # Setting any other value or removing of this variable will cause
-+ # download of all the packages directly from internet
-+-USE_MIRROR?=ext
-++USE_MIRROR?=cz
-+ 
-+ ifeq ($(USE_MIRROR),ext)
-+ MIRROR_FUEL?=http://mirror.fuel-infra.org/mos-repos/centos/$(PRODUCT_NAME)$(PRODUCT_VERSION)-centos$(CENTOS_MAJOR)/os/x86_64/
