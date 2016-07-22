@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_d202050b",
+        "filename": "patches/fuel-plugin-ovs/0003-Cleanup-Drop-git-dependency.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-07-22T16:57:27Z",
+      "side": 1,
+      "message": "Some internal tar magic detects gz, I suppose :) should be fixed, though",
+      "parentUuid": "1a76adc5_32e8197c",
+      "range": {
+        "startLine": 44,
+        "startChar": 5,
+        "endLine": 44,
+        "endChar": 7
+      },
+      "revId": "47064c4e32e4eec9bc171e0ae470465ab309c9a9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_729531e3",
         "filename": "patches/fuel-plugin-ovs/0004-build-apt-force-yes.patch",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2016-07-22T16:32:47Z",
       "side": 1,
       "message": "I think you should make it clearer why we need --force-yes",
+      "range": {
+        "startLine": 3,
+        "startChar": 40,
+        "endLine": 3,
+        "endChar": 41
+      },
+      "revId": "47064c4e32e4eec9bc171e0ae470465ab309c9a9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_75ff5b02",
+        "filename": "patches/fuel-plugin-ovs/0004-build-apt-force-yes.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-07-22T16:57:27Z",
+      "side": 1,
+      "message": "Agreed, to be fixed.",
+      "parentUuid": "1a76adc5_729531e3",
       "range": {
         "startLine": 3,
         "startChar": 40,
