@@ -64,7 +64,7 @@ build:
 		make \
 			BUILD_FUEL_PLUGINS="f_odlpluginbuild f_bgpvpn-pluginbuild" \
 			UBUNTU_ARCH="amd64 arm64" \
-			PRODNO="OPNFV_FUEL_AARCH64" \
+			PRODNO="OPNFV_ARMBAND_FUEL" \
 			OPNFV_GIT_SHA=$(shell git rev-parse HEAD) \
 			ASTUTE_REPO=${root}/upstream/fuel-astute \
 			ASTUTE_COMMIT=HEAD \
