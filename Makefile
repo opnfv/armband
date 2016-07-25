@@ -1,4 +1,5 @@
 root:=$(shell pwd)
+-include ${root}/upstream/fuel/build/config.mk
 
 all: build
 
@@ -28,6 +29,18 @@ patches-export:
 
 # apply patches from patches/* to respective submodules
 patches-import:
+	@cd ${root}/upstream/fuel-agent && \
+		git checkout -q ${FUEL_AGENT_COMMIT}
+	@cd ${root}/upstream/fuel-astute && \
+		git checkout -q ${ASTUTE_COMMIT}
+	@cd ${root}/upstream/fuel-library && \
+		git checkout -q ${FUELLIB_COMMIT}
+	@cd ${root}/upstream/fuel-mirror && \
+		git checkout -q ${FUEL_MIRROR_COMMIT}
+	@cd ${root}/upstream/fuel-nailgun-agent && \
+		git checkout -q ${FUEL_NAILGUN_AGENT_COMMIT}
+	@cd ${root}/upstream/fuel-web && \
+		git checkout -q ${NAILGUN_COMMIT}
 	@git submodule -q foreach 'mkdir -p ${root}/patches/$$name'
 	@git submodule -q foreach 'git tag armband-workbench-root'
 	@git submodule -q foreach 'git checkout -q -b armband-workbench'
