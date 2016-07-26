@@ -20,8 +20,7 @@ diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoro
 index 15d9e9d..b45a14a 100644
 --- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
 +++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
-@@ -17,6 +17,7 @@
-     - linux-headers-generic
+@@ -17,5 +17,6 @@
      - live-boot
      - live-boot-initramfs-tools
 +    - lshw
