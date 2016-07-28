@@ -1,0 +1,93 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 26 Jul 2016 18:07:55 +0200
+Subject: [PATCH] deploy: Allow DEA to override bootstrap config
+
+This commit does not change the current behavior in OPNFV, the
+preconfigured fuel_bootstrap_cli.yaml from OPNFV ISO is still
+used to replace the default settings / fuel-menu bootstrap cfg.
+
+The only addition is the possibility to override the preconfigured
+fuel_bootstrap_cli.yaml info using DEA.
+
+JIRA: FUEL-155
+
+Change-Id: I4e66b789fdf0a5b1af512a3efc84fedb72ce3b05
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deploy/install_fuel_master.py      |  6 +++---
+ deploy/transplant_fuel_settings.py | 17 +++++++++++++++++
+ 2 files changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/deploy/install_fuel_master.py b/deploy/install_fuel_master.py
+index 5adccef..808d0b1 100644
+--- a/deploy/install_fuel_master.py
++++ b/deploy/install_fuel_master.py
+@@ -84,8 +84,8 @@ class InstallFuelMaster(object):
+         log('Wait until Fuel menu is up')
+         fuel_menu_pid = self.wait_until_fuel_menu_up()
+ 
+-        log('Inject our own astute.yaml settings')
+-        self.inject_own_astute_yaml()
++        log('Inject our own astute.yaml and fuel_bootstrap_cli.yaml settings')
++        self.inject_own_astute_and_bootstrap_yaml()
+ 
+         log('Let the Fuel deployment continue')
+         log('Found FUEL menu as PID %s, now killing it' % fuel_menu_pid)
+@@ -181,7 +181,7 @@ class InstallFuelMaster(object):
+             ret = self.ssh.exec_cmd(cmd, check=check)
+         return ret
+ 
+-    def inject_own_astute_yaml(self):
++    def inject_own_astute_and_bootstrap_yaml(self):
+         with self.ssh as s:
+             s.exec_cmd('rm -rf %s' % self.work_dir, False)
+             s.exec_cmd('mkdir %s' % self.work_dir)
+diff --git a/deploy/transplant_fuel_settings.py b/deploy/transplant_fuel_settings.py
+index e57a4fb..318c633 100644
+--- a/deploy/transplant_fuel_settings.py
++++ b/deploy/transplant_fuel_settings.py
+@@ -18,6 +18,7 @@ from common import (
+ )
+ 
+ ASTUTE_YAML = '/etc/fuel/astute.yaml'
++FUEL_BOOTSTRAP_CLI_YAML = '/opt/opnfv/fuel_bootstrap_cli.yaml'
+ 
+ 
+ def usage():
+@@ -47,18 +48,35 @@ def transplant(dea, astute):
+     return astute
+ 
+ 
++def transplant_bootstrap(astute, fuel_bootstrap_cli):
++    if 'BOOTSTRAP' in astute:
++        for skey in astute['BOOTSTRAP'].iterkeys():
++            # FIXME: astute.yaml repos point to public ones instead of
++            # local mirrors, this filter should be removed when in sync
++            if skey != 'repos':
++                fuel_bootstrap_cli[skey] = astute['BOOTSTRAP'][skey]
++    return fuel_bootstrap_cli
++
+ def main():
+     dea_file = parse_arguments()
+     check_file_exists(ASTUTE_YAML)
++    check_file_exists(FUEL_BOOTSTRAP_CLI_YAML)
+     dea = DeploymentEnvironmentAdapter(dea_file)
+     log('Reading astute file %s' % ASTUTE_YAML)
+     with io.open(ASTUTE_YAML) as stream:
+         astute = yaml.load(stream)
+     log('Initiating transplant')
+     transplant(dea, astute)
+     with io.open(ASTUTE_YAML, 'w') as stream:
+         yaml.dump(astute, stream, default_flow_style=False)
+-    log('Transplant done')
++    log('Transplant done for astute.yaml')
++    # Update bootstrap config yaml with info from DEA/astute.yaml
++    with io.open(FUEL_BOOTSTRAP_CLI_YAML) as stream:
++        fuel_bootstrap_cli = yaml.load(stream)
++    transplant_bootstrap(astute, fuel_bootstrap_cli)
++    with io.open(FUEL_BOOTSTRAP_CLI_YAML, 'w') as stream:
++        yaml.dump(fuel_bootstrap_cli, stream, default_flow_style=False)
++    log('Transplant done for fuel_bootstrap_cli.yaml')
+ 
+ 
+ if __name__ == '__main__':
