@@ -1,7 +1,7 @@
 Armband Fuel@OPNFV
 ==================
 
-This repository holds build scripts for Fuel 8.0 OPNFV installer
+This repository holds build scripts for Fuel 9.0 OPNFV installer
 for AArch64 machines.
 
 Workflow
@@ -17,7 +17,8 @@ The standard workflow should look as follows:
    $ make patches-import
 
    This will result in creation of:
-   - a tag called `armband-workbench-root` at the `HEAD` of the submodule;
+   - a tag called `armband-workbench-root` at the same commit as Fuel@OPNFV
+   hard sets in `build/config.mk` (inside fuel submodule);
    - a new branch `armband-workbench` which will hold all the armband work.
    Then each patch is applied on this new branch with `git-am`.
 
@@ -38,7 +39,7 @@ The standard workflow should look as follows:
    Commiting changed submodules (`git diff` will list something like:
    `Subproject commit: {hash}`) will break the repo, as the new commit hash
    is non-existant in the upstream repo, hence anybody cloning the repository
-   later will fail on `make submodules-init`. 
+   later will fail on `make submodules-init`.
 
 7. Clean workbench branches and tags with:
    $ make submodules-clean
@@ -49,5 +50,5 @@ If you need to add another subproject, you can do it with `git submodule`.
 Make sure that you specify branch (with `-b`), short name (with `--name`)
 and point it to `upstream/*` directory, i.e.:
 
-   $ git submodule -b stable/8.0 add --name fuel-web \
+   $ git submodule -b stable/mitaka add --name fuel-web \
      https://github.com/openstack/fuel-web.git upstream/fuel-web
