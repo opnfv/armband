@@ -1,0 +1,51 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 4 Aug 2016 12:50:19 +0200
+Subject: [PATCH] kernel-flavor: linux-image-generic-lts-xenial
+
+Ubuntu arm64: switch from using kernel 4.2 for Trusty
+(linux-image-generic-lts-trusty) to kernel 4.4 backported from Xenial
+(linux-image-generic-lts-xenial).
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml | 4 ++--
+ deploy/config/dea_base.yaml                         | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+index daef3d5..2985619 100644
+--- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
++++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+@@ -5,7 +5,7 @@
+   extra_dirs:
+     - /usr/share/fuel_bootstrap_cli/files/trusty
+   output_dir: /tmp/
+-  kernel_flavor: linux-image-generic-lts-trusty
++  kernel_flavor: linux-image-generic-lts-xenial
+   packages:
+     - fuel-agent
+     - hwloc
+@@ -13,6 +13,6 @@
+     - i40e-dkms
+     - linux-firmware
+     - linux-firmware-nonfree
+-    - linux-headers-generic
++    - linux-headers-generic-lts-xenial
+     - live-boot
+     - live-boot-initramfs-tools
+diff --git a/deploy/config/dea_base.yaml b/deploy/config/dea_base.yaml
+index 658b328..5f3c156 100644
+--- a/deploy/config/dea_base.yaml
++++ b/deploy/config/dea_base.yaml
+@@ -474,9 +474,9 @@ settings:
+ 
+           linux-firmware-nonfree
+ 
+-          linux-headers-generic-lts-trusty
++          linux-headers-generic-lts-xenial
+ 
+-          linux-image-generic-lts-trusty
++          linux-image-generic-lts-xenial
+ 
+           lvm2
+ 
