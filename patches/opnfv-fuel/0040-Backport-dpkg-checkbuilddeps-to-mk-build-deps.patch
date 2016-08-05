@@ -17,9 +17,7 @@ diff --git a/build/Makefile b/build/Makefile
 index d917f26..ec5d27a 100644
 --- a/build/Makefile
 +++ b/build/Makefile
-@@ -140,6 +140,7 @@ $(ISOCACHE):
- 	cd /tmp/fuel-main && git am $(TOPDIR)/bootstrap_admin_node.sh.patch
- 	cd /tmp/fuel-main && git am $(TOPDIR)/isolinux.cfg.patch
+@@ -140,4 +140,5 @@ $(ISOCACHE):
  	cd /tmp/fuel-main && git am $(TOPDIR)/repo-multi-arch-local-mirrors.patch
 +	cd /tmp/fuel-main && git am $(TOPDIR)/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
  	# Repeat build up to three times
