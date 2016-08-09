@@ -1,10 +1,16 @@
 root:=$(shell pwd)
+
+# Fist, inherit Fuel submodule commit references from Fuel@OPNFV
+# These values will be overriden at build time by armband.mk
 include config.mk
+
+export REVSTATE
 
 all: build
 
 config.mk: submodules-init
-	@ln -s -f ${root}/upstream/fuel/build/config.mk ${root}/config.mk
+	@ln -sf ${root}/upstream/fuel/build/config.mk ${root}/config.mk
+	@ln -sf ${root}/upstream/fuel/ci/clean_cache.sh ${root}/ci/clean_cache.sh
 
 .PHONY: submodules-init submodules-clean
 submodules-init:
@@ -56,7 +62,7 @@ patches-import:
 		fi'
 clean-docker:
 	@if [ -d ${root}/upstream/fuel/build ]; then \
-		sudo make -C ${root}/upstream/fuel/build deepclean; \
+		sudo $(MAKE) -C ${root}/upstream/fuel/build deepclean; \
 	fi
 	@for container in $(shell sudo docker ps -a -q); do \
 		sudo docker rm -f -v $${container}; \
@@ -73,43 +79,5 @@ clean-build:
 release: export LC_ALL=en_US.UTF-8
 release: submodules-clean clean-docker clean-build submodules-init patches-import build
 
-ifneq ($(REVSTATE),)
-    EXTRA_PARAMS="REVSTATE=$(REVSTATE)"
-endif
-
 build:
-	cd ${root}/upstream/fuel/build && \
-		make \
-			BUILD_FUEL_PLUGINS="f_odlpluginbuild f_bgpvpn-pluginbuild" \
-			UBUNTU_ARCH="amd64 arm64" \
-			PRODNO="OPNFV_A_FUEL" \
-			OPNFV_GIT_SHA=$(shell git rev-parse HEAD) \
-			ASTUTE_REPO=${root}/upstream/fuel-astute \
-			ASTUTE_COMMIT=HEAD \
-			NAILGUN_REPO=${root}/upstream/fuel-web \
-			NAILGUN_COMMIT=HEAD \
-			FUEL_AGENT_REPO=${root}/upstream/fuel-agent \
-			FUEL_AGENT_COMMIT=HEAD \
-			FUEL_NAILGUN_AGENT_REPO=${root}/upstream/fuel-nailgun-agent \
-			FUEL_NAILGUN_AGENT_COMMIT=HEAD \
-			FUEL_MIRROR_REPO=${root}/upstream/fuel-mirror \
-			FUEL_MIRROR_COMMIT=HEAD \
-			FUELLIB_REPO=${root}/upstream/fuel-library \
-			FUELLIB_COMMIT=HEAD \
-			ODL_REPO=${root}/upstream/fuel-plugin-opendaylight \
-			ODL_BRANCH=armband-workbench \
-			ODL_CHANGE= \
-			OPNFV_QUAGGE_PACKAGING_REPO="https://github.com/alexandruavadanii/opnfv-quagga-packaging" \
-			OVS_NSH_DPDK_REPO=${root}/upstream/fuel-plugin-ovs \
-			OVS_NSH_DPDK_BRANCH=HEAD \
-			VSPERF_REPO=${root}/upstream/vswitchperf \
-			VSPERF_BRANCH=armband-workbench \
-			VSPERF_CHANGE= \
-			YARDSTICK_REPO=${root}/upstream/yardstick \
-			YARDSTICK_BRANCH=armband-workbench \
-			YARDSTICK_CHANGE= \
-			EXTRA_RPM_REPOS="armband,http://linux.enea.com/mos-repos/centos/mos9.0-centos7/armband/x86_64,10" \
-			MIRROR_MOS_UBUNTU=linux.enea.com \
-			$(EXTRA_PARAMS) \
-			iso 2>&1 | tee ${root}/build.log
-
+	$(MAKE) --no-print-directory -C ${root}/upstream/fuel/build all
