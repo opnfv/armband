@@ -16,36 +16,12 @@ write_gitinfo() {
     echo "$git_url: $git_rev"
 }
 
-if [ $# -eq 0 ]; then
-    OUTPUT_DIR=$(pwd)
-else
-    OUTPUT_DIR=$(readlink -f $1)
-    shift
-fi
-
-mkdir -p $OUTPUT_DIR || error_exit "Could not create directory $OUTPUT_DIR"
-
-echo "Building armband, output dir: $OUTPUT_DIR"
-cd ..
-
 SCRIPT_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
-BUILD_BASE="${SCRIPT_DIR}/upstream/fuel/build"
-RESULT_DIR="${BUILD_BASE}/release"
-
-make REVSTATE="${OPNFV_ARTIFACT_VERSION}" release ||
-    error_exit "Make release failed"
+BUILD_BASE=$(readlink -e ${SCRIPT_DIR}/../upstream/fuel/build)
+ARMBAND_BASE=$(readlink -e ${SCRIPT_DIR}/..)
 
 write_gitinfo >> ${BUILD_BASE}/gitinfo_armband.txt
 
-echo "Moving results to $OUTPUT_DIR"
-sort ${BUILD_BASE}/gitinfo*.txt > ${OUTPUT_DIR}/gitinfo.txt
-mv ${RESULT_DIR}/*.iso ${OUTPUT_DIR}/
-mv ${RESULT_DIR}/*.iso.txt ${OUTPUT_DIR}/
-
-# We need to build our own ODL plugin, and when this happens, fuel
-# renames the iso to unofficial-opnfv-${REVSTATE}.iso, so here we remove
-# the prefix:
-pushd ${OUTPUT_DIR} > /dev/null
-rename 's/^unofficial-//' *.iso
-rename 's/^unofficial-//' *.iso.txt
-popd > /dev/null
+# Initialize Armband git submodules & apply patches first
+make -C ${ARMBAND_BASE} submodules-clean submodules-init patches-import
+${ARMBAND_BASE}/upstream/fuel/ci/build.sh $1
