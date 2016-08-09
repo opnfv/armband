@@ -1,0 +1,105 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 11 Aug 2016 15:34:32 +0200
+Subject: [PATCH] build: Add armband.mk config
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/Makefile   | 10 ++++++++++
+ build/armband.mk | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+)
+ create mode 100644 build/armband.mk
+
+diff --git a/build/Makefile b/build/Makefile
+index 4454c35..377ecc6 100644
+--- a/build/Makefile
++++ b/build/Makefile
+@@ -14,6 +14,9 @@ SHELL = /bin/bash
+ # settings.
+ -include environment.mk
+ 
++# Override Armband specific information & git commit references
++-include armband.mk
++
+ ############################################################################
+ # BEGIN of variables to customize
+ #
+@@ -129,6 +132,9 @@ $(ISOCACHE):
+ 	sudo docker info
+ 	cd /tmp/fuel-main && make repos
+ 	$(REPOINFO) -r /tmp/fuel-main > gitinfo_fuel.txt
++	@if test -n $(ARMBAND_BASE); then \
++		$(REPOINFO) -r $(ARMBAND_BASE) >> gitinfo_fuel.txt; \
++	fi
+ 	# OPNFV patches at Fuel build time
+ 	# Need to be commited in order for them to be considered by the Fuel
+ 	# build system
+@@ -228,6 +234,10 @@ debug:
+ 	sha1sum *.patch >> .cachedata
+ 	sha1sum fuel_build_loop >> .cachedata
+ 	sha1sum config.mk >> .cachedata
++	@if test -n $(ARMBAND_BASE); then \
++		sha1sum armband.mk >> .cachedata; \
++		$(REPOINFO) $(ARMBAND_BASE) >> .cachedata; \
++	fi
+ 	sha1sum Makefile >> .cachedata
+ 	$(CACHETOOL) getbiweek >> .cachedata
+ 	cat .cachedata | $(CACHETOOL) getid > .cacheid
+diff --git a/build/armband.mk b/build/armband.mk
+new file mode 100644
+index 0000000..1e772f0
+--- /dev/null
++++ b/build/armband.mk
+@@ -0,0 +1,53 @@
++##############################################################################
++# Copyright (c) 2016 Enea AB and others.
++# Alexandru.Avadanii@enea.com
++# All rights reserved. This program and the accompanying materials
++# are made available under the terms of the Apache License, Version 2.0
++# which accompanies this distribution, and is available at
++# http://www.apache.org/licenses/LICENSE-2.0
++##############################################################################
++
++# Only configure Armband stuff when ARMBAND_BASE is set
++ifdef ARMBAND_BASE
++    # Armband plugins, supported archs & specific info
++    export PLUGINS           := f_odlpluginbuild f_bgpvpn-pluginbuild
++    export UBUNTU_ARCH       := amd64 arm64
++    export PRODNO            := OPNFV_A_FUEL
++    export MIRROR_MOS_UBUNTU := linux.enea.com
++    export EXTRA_RPM_REPOS   := armband,http://linux.enea.com/mos-repos/centos/mos9.0-centos7/armband/x86_64,10
++
++    # Armband git submodules for Fuel/OPNFV components
++    export ASTUTE_REPO   := ${ARMBAND_BASE}/upstream/fuel-astute
++    export ASTUTE_COMMIT := HEAD
++
++    export NAILGUN_REPO   := ${ARMBAND_BASE}/upstream/fuel-web
++    export NAILGUN_COMMIT := HEAD
++
++    export FUEL_AGENT_REPO   := ${ARMBAND_BASE}/upstream/fuel-agent
++    export FUEL_AGENT_COMMIT := HEAD
++
++    export FUEL_NAILGUN_AGENT_REPO   := ${ARMBAND_BASE}/upstream/fuel-nailgun-agent
++    export FUEL_NAILGUN_AGENT_COMMIT := HEAD
++
++    export FUEL_MIRROR_REPO   := ${ARMBAND_BASE}/upstream/fuel-mirror
++    export FUEL_MIRROR_COMMIT := HEAD
++
++    export FUELLIB_REPO   := ${ARMBAND_BASE}/upstream/fuel-library
++    export FUELLIB_COMMIT := HEAD
++
++    export ODL_REPO   := ${ARMBAND_BASE}/upstream/fuel-plugin-opendaylight
++    export ODL_BRANCH := armband-workbench
++    export ODL_CHANGE := HEAD
++    export OPNFV_QUAGGE_PACKAGING_REPO := https://github.com/alexandruavadanii/opnfv-quagga-packaging
++
++    export OVS_NSH_DPDK_REPO   := ${ARMBAND_BASE}/upstream/fuel-plugin-ovs
++    export OVS_NSH_DPDK_BRANCH := HEAD
++
++    export VSPERF_REPO   := ${ARMBAND_BASE}/upstream/vswitchperf
++    export VSPERF_BRANCH := armband-workbench
++    export VSPERF_CHANGE := HEAD
++
++    export YARDSTICK_REPO   := ${ARMBAND_BASE}/upstream/yardstick
++    export YARDSTICK_BRANCH := armband-workbench
++    export YARDSTICK_CHANGE := HEAD
++endif

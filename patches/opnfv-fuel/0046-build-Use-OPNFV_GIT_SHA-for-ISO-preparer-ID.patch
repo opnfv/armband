@@ -1,0 +1,34 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 17 Aug 2016 21:56:22 +0200
+Subject: [PATCH] build: Use OPNFV_GIT_SHA for ISO preparer ID
+
+isoinfo -i lists the following information for Fuel@OPNFV ISO:
+"Data preparer id: 86aafaf5454a846c417848bb94f264c4420160f3"
+where the SHA hash is Fuel git repo HEAD SHA.
+
+However, Armband overrides OPNFV_GIT_SHA to the Armband git repo
+commit hash, so the ISO metadata should also reflect this.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/install/install.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/build/install/install.sh b/build/install/install.sh
+index f6308fb..9e003bb 100755
+--- a/build/install/install.sh
++++ b/build/install/install.sh
+@@ -210,8 +210,12 @@ make_iso_image() {
+     find . -name TRANS.TBL -exec rm {} \;
+     rm -rf rr_moved
+ 
++    if [[ -z "$OPNFV_GIT_SHA" ]]; then
++        OPNFV_GIT_SHA=$(git rev-parse --verify HEAD)
++    fi
++
+     mkisofs --quiet -r -V "$VOLUMEID" -publisher "$PUBLISHER" \
+-        -p `git rev-parse --verify HEAD` -J -R -b isolinux/isolinux.bin \
++        -p "$OPNFV_GIT_SHA" -J -R -b isolinux/isolinux.bin \
+         -no-emul-boot \
+         -boot-load-size 4 -boot-info-table \
+         --hide-rr-moved \

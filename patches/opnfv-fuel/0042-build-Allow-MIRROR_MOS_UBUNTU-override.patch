@@ -1,0 +1,22 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 16 Aug 2016 18:45:10 +0200
+Subject: [PATCH] build: Allow MIRROR_MOS_UBUNTU override
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/Makefile b/build/Makefile
+index 4a4bb2e..6e18ddd 100644
+--- a/build/Makefile
++++ b/build/Makefile
+@@ -60,7 +60,7 @@ export MIRROR_UBUNTU_ROOT := $(shell echo -n '/' ; echo "$(MIRROR_UBUNTU_URL)" |
+ 
+ export LATEST_MIRROR_ID_URL := http://$(shell ./select_closest_fuel_mirror.py)
+ 
+-export MIRROR_MOS_UBUNTU := $(shell echo "$(LATEST_MIRROR_ID_URL)" | cut -d'/' -f3)
++export MIRROR_MOS_UBUNTU ?= $(shell echo "$(LATEST_MIRROR_ID_URL)" | cut -d'/' -f3)
+ export LATEST_TARGET_UBUNTU := $(shell curl -sSf "$(MIRROR_MOS_UBUNTU)/mos-repos/ubuntu/$(MOSVERSION).target.txt" | head -1)
+ export MIRROR_MOS_UBUNTU_ROOT := /mos-repos/ubuntu/$(LATEST_TARGET_UBUNTU)
+ 
