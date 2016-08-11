@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_9126b015",
+        "filename": "ci/build.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-08-11T14:55:58Z",
+      "side": 1,
+      "message": "not used anymore",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 1
+      },
+      "revId": "3cf662ee58bd1116daa8c0fe600e4f645a0d4311",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_d10c2897",
+        "filename": "ci/build.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 486
+      },
+      "writtenOn": "2016-08-11T14:55:58Z",
+      "side": 1,
+      "message": "normally ci/build.sh is called from within the ci directory itself. I don\u0027t know if there are any consequences to doing it differently, probably not.",
+      "range": {
+        "startLine": 27,
+        "startChar": 1,
+        "endLine": 27,
+        "endChar": 41
+      },
+      "revId": "3cf662ee58bd1116daa8c0fe600e4f645a0d4311",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
