@@ -7,11 +7,11 @@
 Fuel configuration
 ==================
 This section provides guidelines on how to install and
-configure the Brahmaputra release of OPNFV when using Fuel as a
+configure the Colorado release of OPNFV when using Fuel as a
 deployment tool including required software and hardware
 configurations.
 
-For detailed instructions on how to install the Brahmaputra release using
+For detailed instructions on how to install the Colorado release using
 Fuel, see *Reference 13* in section *"Fuel associated references"* below.
 
 Pre-configuration activities
@@ -19,7 +19,7 @@ Pre-configuration activities
 
 Planning the deployment
 
-Before starting the installation of the Brahmaputra release of
+Before starting the installation of the Colorado release of
 OPNFV when using Fuel as a deployment tool, some planning must be
 done.
 
@@ -56,7 +56,7 @@ Before the installation can start, a number of deployment specific parameters mu
 Retrieving the ISO image
 ^^^^^^^^^^^^^^^^^^^^^^^^
 First of all, the Fuel deployment ISO image needs to be retrieved, the
-Fuel .iso image of the Brahmaputra release can be found at *Reference: 2*
+Fuel .iso image of the Colorado release can be found at *Reference: 2*
 
 Alternatively, you may build the .iso from source by cloning the
 opnfv/fuel git repository. Detailed instructions on how to build
@@ -131,7 +131,7 @@ and another for jump-host communication with the OPNFV cluster.
 
 Install the Fuel jump-host
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-Mount the Fuel Brahmaputra ISO file as a boot device to the jump host
+Mount the Fuel Colorado ISO file as a boot device to the jump host
 server, reboot it, and install the Fuel Jumphost in accordance with installation instructions, see *Reference 13* in section *"Fuel associated references"*
 below.
 
@@ -149,7 +149,7 @@ Fuel offers an open source framework for creating these plugins, so there’s
 a wide range of capabilities that you can enable Fuel to add to your OpenStack
 clouds.
 
-The OPNFV Brahmaputra version of Fuel provides a set of pre-packaged plugins
+The OPNFV Colorado version of Fuel provides a set of pre-packaged plugins
 developed by OPNFV:
 
 +--------------------+------------------------------------------------------+
@@ -161,19 +161,19 @@ developed by OPNFV:
 |                    | network control, "Service Function Chaining",        |
 |                    | routing, networking policies, etc.                   |
 |                    | More information on OpenDaylight in the OPNFV        |
-|                    | Brahmaputra release can be found in a separate       |
+|                    | Colorado release can be found in a separate       |
 |                    | section in this document.                            |
 +--------------------+------------------------------------------------------+
 | ONOS               | ONOS is another open-source SDN controller which     |
 |                    | in essense fill the same role as OpenDaylight.       |
 |                    | More information on ONOS in the OPNFV                |
-|                    | Brahmaputra release can be found in a separate       |
+|                    | Colorado release can be found in a separate       |
 |                    | section in this document.                            |
 |                    |                                                      |
 +--------------------+------------------------------------------------------+
 | BGP-VPN            | BGP-VPN provides an BGP/MPLS VPN service             |
 |                    | More information on BGP-VPN in the OPNFV             |
-|                    | Brahmaputra release can be found in a separate       |
+|                    | Colorado release can be found in a separate       |
 |                    | section in this document.                            |
 |                    |                                                      |
 +--------------------+------------------------------------------------------+
@@ -181,7 +181,7 @@ developed by OPNFV:
 |                    | which supports "Network Service Headers" needed      |
 |                    | for the "Service function chaining" feature          |
 |                    | More information on "Service Function Chaining"      |
-|                    | in the OPNFV Brahmaputra release can be found in a   |
+|                    | in the OPNFV Colorado release can be found in a   |
 |                    | in a separate section in this document.              |
 |                    |                                                      |
 +--------------------+------------------------------------------------------+
@@ -189,7 +189,7 @@ developed by OPNFV:
 |                    | with carrier grade characteristics essential for     |
 |                    | NFV workloads.                                       |
 |                    | More information on OVS-NFV                          |
-|                    | in the OPNFV Brahmaputra release can be found in a   |
+|                    | in the OPNFV Colorado release can be found in a   |
 |                    | in a separate section in this document.              |
 |                    |                                                      |
 +--------------------+------------------------------------------------------+
@@ -197,7 +197,7 @@ developed by OPNFV:
 |                    | virtualization characteristics essential for NFV     |
 |                    | workloads.                                           |
 |                    | More information on KVM-NFV                          |
-|                    | in the OPNFV Brahmaputra release can be found in a   |
+|                    | in the OPNFV Colorado release can be found in a   |
 |                    | in a separate section in this document.              |
 |                    |                                                      |
 +--------------------+------------------------------------------------------+
@@ -205,7 +205,7 @@ developed by OPNFV:
 |                    | bench that facilitates characteristics/performance   |
 |                    | evaluation of vSwithches                             |
 |                    | More information on VSPERF                           |
-|                    | in the OPNFV Brahmaputra release can be found in a   |
+|                    | in the OPNFV Colorado release can be found in a   |
 |                    | in a separate section in this document.              |
 |                    |                                                      |
 +--------------------+------------------------------------------------------+
@@ -267,7 +267,7 @@ For detailed guide-lines on node allocation, please refer to the installation in
 
 Off-line deployment
 ^^^^^^^^^^^^^^^^^^^
-The OPNFV Brahmaputra version of Fuel can be deployed using on-line upstream
+The OPNFV Colorado version of Fuel can be deployed using on-line upstream
 repositories (default) or off-line using built-in local repositories on the
 Fuel jump-start server.
 
@@ -277,7 +277,7 @@ in section *"Fuel associated references"* below.
 
 Deployment
 ^^^^^^^^^^
-You should now be ready to deploy your OPNFV Brahmaputra environment - but before doing so you may want to verify your network settings.
+You should now be ready to deploy your OPNFV Colorado environment - but before doing so you may want to verify your network settings.
 
 For further details on network verification and deployment, please refer to
 the installation instructions found in, *Reference 13*, provided in section
@@ -310,13 +310,13 @@ Fuel
 
 6) `The Fuel OpenStack project <https://wiki.openstack.org/wiki/Fuel>`_
 
-7) `Fuel documentation overview <https://docs.fuel-infra.org/openstack/fuel/fuel-8.0/>`_
+7) `Fuel documentation overview <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/>`_
 
-8) `Fuel planning guide <https://docs.fuel-infra.org/openstack/fuel/fuel-8.0/mos-planning-guide.html>`_
+8) `Fuel planning guide <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/mos-planning-guide.html>`_
 
-9) `Fuel quick start guide <https://docs.mirantis.com/openstack/fuel/fuel-8.0/quickstart-guide.html>`_
+9) `Fuel quick start guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/quickstart-guide.html>`_
 
-10) `Fuel operations guide <https://docs.mirantis.com/openstack/fuel/fuel-8.0/operations.html>`_
+10) `Fuel operations guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html>`_
 
 11) `Fuel Plugin Developers Guide <https://wiki.openstack.org/wiki/Fuel/Plugins>`_
 
@@ -325,8 +325,8 @@ Fuel
 Fuel in OPNFV
 ~~~~~~~~~~~~~
 
-13) `OPNFV Installation instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/installation-instruction.html>`_
+13) `OPNFV Installation instruction for the Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/docs/installation-instruction.html>`_
 
-14) `OPNFV Build instruction for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/build-instruction.html>`_
+14) `OPNFV Build instruction for the Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/docs/build-instruction.html>`_
 
-15) `OPNFV Release Note for the Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/brahmaputra/docs/release-notes.html>`_
+15) `OPNFV Release Note for the Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/docs/release-notes.html>`_

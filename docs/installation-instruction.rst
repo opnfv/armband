@@ -1,5 +1,5 @@
 ====================================================================================================================
-OPNFV Installation instruction for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool
+OPNFV Installation instruction for the AArch64 Colorado 1.0 release of OPNFV when using Fuel as a deployment tool
 ====================================================================================================================
 
 License
@@ -12,7 +12,7 @@ License. .. http://creativecommons.org/licenses/by/4.0 ..
 Abstract
 ========
 
-This document describes how to install the Brahmaputra 3.0 release of
+This document describes how to install the Colorado 1.0 release of
 OPNFV when using Fuel as a deployment tool, with an AArch64 (only) target
 node pool.
 
@@ -20,7 +20,7 @@ Introduction
 ============
 
 This document provides guidelines on how to install and
-configure the Brahmaputra 3.0 release of OPNFV when using Fuel as a
+configure the Colorado 1.0 release of OPNFV when using Fuel as a
 deployment tool, with an AArch64 (only) target node pool,
 including required software and hardware configurations.
 
@@ -28,7 +28,7 @@ Although the available installation options give a high degree of
 freedom in how the system is set-up, including architecture, services
 and features, etc., said permutations may not provide an OPNFV
 compliant reference architecture. This instruction provides a
-step-by-step guide that results in an OPNFV Brahmaputra compliant
+step-by-step guide that results in an OPNFV Colorado compliant
 deployment.
 
 The audience of this document is assumed to have good knowledge in
@@ -36,7 +36,7 @@ networking and Unix/Linux administration.
 
 Preface
 =======
-Before starting the installation of the AArch64 Brahmaputra 3.0 release of
+Before starting the installation of the AArch64 Colorado 1.0 release of
 OPNFV, using Fuel as a deployment tool, some planning must be
 done.
 
@@ -44,7 +44,7 @@ Retrieving the ISO image
 ------------------------
 
 First of all, the Fuel deployment ISO image needs to be retrieved, the
-ArmbandFuel .iso image of the AArch64 Brahmaputra release can be found
+ArmbandFuel .iso image of the AArch64 Colorado release can be found
 at *Reference: 2*
 
 Building the ISO image
@@ -52,18 +52,18 @@ Building the ISO image
 
 Alternatively, you may build the ArmbandFuel .iso from source by cloning the
 opnfv/armband git repository. To retrieve the repository for the AArch64
-Brahmaputra 3.0 release use the following command:
+Colorado 1.0 release use the following command:
 
 .. code-block:: bash
 
     $ git clone https://gerrit.opnfv.org/gerrit/armband
 
-Check-out the Brahmaputra release tag to set the HEAD to the
-baseline required to replicate the Brahmaputra release:
+Check-out the Colorado release tag to set the HEAD to the
+baseline required to replicate the Colorado release:
 
 .. code-block:: bash
 
-    $ git checkout brahmaputra.3.0
+    $ git checkout colorado.1.0
 
 Go to the armband directory and build the .iso:
 
@@ -113,7 +113,7 @@ Hardware requirements
 =====================
 
 The following minimum hardware requirements must be met for the
-installation of AArch64 Brahmaputra 3.0 using Fuel:
+installation of AArch64 Colorado 1.0 using Fuel:
 
 +--------------------+------------------------------------------------------+
 | **HW Aspect**      | **Requirement**                                      |
@@ -186,7 +186,7 @@ the Fuel OPNFV reference platform. All the networks involved in the OPNFV
 infrastructure as well as the provider networks and the private tenant
 VLANs needs to be manually configured.
 
-Manual configuration of the Brahmaputra hardware platform should
+Manual configuration of the Colorado hardware platform should
 be carried out according to the OPNFV Pharos specification:
 <https://wiki.opnfv.org/pharos/pharos_specification>
 
@@ -199,7 +199,7 @@ reference platform stack across a server cluster.
 
 Install Fuel master
 -------------------
-#. Mount the Brahmaputra Fuel ISO file/media as a boot device to the jump host server.
+#. Mount the Colorado Fuel ISO file/media as a boot device to the jump host server.
 
 #. Reboot the jump host to establish the Fuel server.
 
@@ -338,7 +338,7 @@ Install additional Plugins/Features on the FUEL node
 
         Plugin ....... was successfully installed.
 
-    **NOTE**: AArch64 Brahmaputra 3.0 ships only with Opendaylight plugin,
+    **NOTE**: AArch64 Colorado 1.0 ships only with Opendaylight plugin,
     see *Reference 15*.
 
    .. figure:: img/plugin_install.png
@@ -550,7 +550,7 @@ Allocate nodes to environment and assign functional roles
 OPTIONAL - UNTESTED - Set Local Mirror Repos
 ---------------------------------
 
-**NOTE**: AArch64 Brahmaputra 3.0 does not fully support local Ubuntu mirrors,
+**NOTE**: AArch64 Colorado 1.0 does not fully support local Ubuntu mirrors,
 or at least does not ship with arm64 packages in local repos by default.
 In order to use local (partial) Ubuntu mirrors, one should add arm64 packages
 by hand to the existing amd64 mirrors and re-generate repo metadata.
@@ -723,13 +723,13 @@ Fuel
 ----
 6) `The Fuel OpenStack project <https://wiki.openstack.org/wiki/Fuel>`_
 
-7) `Fuel documentation overview <https://docs.fuel-infra.org/openstack/fuel/fuel-8.0/>`_
+7) `Fuel documentation overview <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/>`_
 
-8) `Fuel planning guide <https://docs.fuel-infra.org/openstack/fuel/fuel-8.0/mos-planning-guide.html>`_
+8) `Fuel planning guide <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/mos-planning-guide.html>`_
 
-9) `Fuel quick start guide <https://docs.mirantis.com/openstack/fuel/fuel-8.0/quickstart-guide.html>`_
+9) `Fuel quick start guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/quickstart-guide.html>`_
 
-10) `Fuel operations guide <https://docs.mirantis.com/openstack/fuel/fuel-8.0/operations.html>`_
+10) `Fuel operations guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html>`_
 
 11) `Fuel Plugin Developers Guide <https://wiki.openstack.org/wiki/Fuel/Plugins>`_
 
@@ -738,8 +738,8 @@ Fuel
 Fuel in OPNFV
 -------------
 
-13) `OPNFV Installation instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/installation-instruction.html>`_
+13) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/installation-instruction.html>`_
 
-14) `OPNFV Build instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/build-instruction.html>`_
+14) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/build-instruction.html>`_
 
-15) `OPNFV Release Note for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/release-notes.html>`_
+15) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/release-notes.html>`_

@@ -1,5 +1,5 @@
 ============================================================================================
-OPNFV Release Note for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool
+OPNFV Release Note for the AArch64 Colorado 1.0 release of OPNFV when using Fuel as a deployment tool
 ============================================================================================
 
 License
@@ -12,7 +12,7 @@ License. .. http://creativecommons.org/licenses/by/4.0 ..
 Abstract
 ========
 
-This document compiles the release notes for the Brahmaputra 3.0 release of
+This document compiles the release notes for the Colorado 1.0 release of
 OPNFV when using Fuel as a deployment tool, with an AArch64 (only) target
 node pool.
 
@@ -20,9 +20,9 @@ Important notes
 ===============
 
 These notes provide release information for the use of Fuel as deployment
-tool for the AArch64 Brahmaputra 3.0 release of OPNFV.
+tool for the AArch64 Colorado 1.0 release of OPNFV.
 
-The goal of the Brahmaputra release and this Fuel-based deployment process is
+The goal of the Colorado release and this Fuel-based deployment process is
 to establish a lab ready platform accelerating further development
 of the OPNFV infrastructure on AArch64 architecture.
 
@@ -37,10 +37,14 @@ Carefully follow the installation-instructions provided in *Reference 13*.
 Summary
 =======
 
-For AArch64 Brahmaputra, the typical use of Fuel as an OpenStack installer is
+For AArch64 Colorado, the typical use of Fuel as an OpenStack installer is
 supplemented with OPNFV unique components such as:
 
-- `OpenDaylight <http://www.opendaylight.org/software>`_ version "Berylium SR1"
+- `OpenDaylight <http://www.opendaylight.org/software>`_ version "Berylium SR3"
+
+- `Open vSwitch for NFV <https://wiki.opnfv.org/ovsnfv>`_
+
+- `VSPERF <https://wiki.opnfv.org/characterize_vswitch_performance_for_telco_nfv_use_cases>`_
 
 The following OPNFV plugins are not yet ported for AArch64:
 
@@ -52,13 +56,9 @@ The following OPNFV plugins are not yet ported for AArch64:
 
 - `NFV Hypervisors-KVM <https://wiki.opnfv.org/nfv-kvm>`_
 
-- `Open vSwitch for NFV <https://wiki.opnfv.org/ovsnfv>`_
-
-- `VSPERF <https://wiki.opnfv.org/characterize_vswitch_performance_for_telco_nfv_use_cases>`_
-
 As well as OPNFV-unique configurations of the Hardware- and Software stack.
 
-This Brahmaputra artifact provides Fuel as the deployment stage tool in the
+This Colorado artifact provides Fuel as the deployment stage tool in the
 OPNFV CI pipeline including:
 
 - Documentation built by Jenkins
@@ -71,11 +71,11 @@ OPNFV CI pipeline including:
 
   - build-instructions
 
-- The Brahmaputra Fuel installer image for AArch64 (.iso) built by Jenkins
+- The Colorado Fuel installer image for AArch64 (.iso) built by Jenkins
 
-- Automated deployment of Brahmaputra with running on bare metal or a nested hypervisor environment (KVM)
+- Automated deployment of Colorado with running on bare metal or a nested hypervisor environment (KVM)
 
-- Automated validation of the Brahmaputra deployment
+- Automated validation of the Colorado deployment
 
 Release Data
 ============
@@ -84,20 +84,20 @@ Release Data
 | **Project**                          | fuel                                 |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/tag**                         | brahmaputra.3.0                      |
+| **Repo/tag**                         | colorado.1.0                      |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release designation**              | Brahmaputra 3.0 follow-up release    |
+| **Release designation**              | Colorado 1.0 follow-up release    |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release date**                     | May 6 2016                           |
+| **Release date**                     | Sep 22 2016                          |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Purpose of the delivery**          | Brahmaputra alignment to Released    |
-|                                      | Fuel 8.0 baseline + Bug-fixes for    |
+| **Purpose of the delivery**          | Colorado alignment to Released    |
+|                                      | Fuel 9.0 baseline + Bug-fixes for    |
 |                                      | the following feaures/scenarios:     |
 |                                      | - Added AArch64 target support       |
-|                                      | - OpenDaylight SR1                   |
+|                                      | - OpenDaylight SR3                   |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
@@ -106,21 +106,21 @@ Version change
 
 Module version changes
 ~~~~~~~~~~~~~~~~~~~~~~
-This is the first AArch64 release for Brahmaputra 3.0. It is based on
+This is the first AArch64 release for Colorado 1.0. It is based on
 following upstream versions:
 
-- Fuel 8.0 Base release
+- Fuel 9.0 Base release
 
 - OpenStack Liberty release
 
-- OPNFV Fuel Brahmaputra 3.0 release
+- OPNFV Fuel Colorado 1.0 release
 
-- OpenDaylight Beryllium SR1 release
+- OpenDaylight Beryllium SR3 release
 
 
 Document changes
 ~~~~~~~~~~~~~~~~
-This is based upon a follow-up release to Brahmaputra 1.0. It
+This is based upon a follow-up release to Colorado 1.0. It
 comes with the following documentation:
 
 - Installation instructions - *Reference 13* - **Changed**
@@ -206,12 +206,12 @@ Workarounds
 
 Test results
 ============
-The Brahmaputra 3.0 release with the Fuel deployment tool has undergone QA test
+The Colorado 1.0 release with the Fuel deployment tool has undergone QA test
 runs, see separate test results.
 
 References
 ==========
-For more information on the OPNFV Brahmaputra release, please see:
+For more information on the OPNFV Colorado release, please see:
 
 OPNFV
 -----
@@ -237,13 +237,13 @@ Fuel
 
 6) `The Fuel OpenStack project <https://wiki.openstack.org/wiki/Fuel>`_
 
-7) `Fuel documentation overview <https://docs.fuel-infra.org/openstack/fuel/fuel-8.0/>`_
+7) `Fuel documentation overview <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/>`_
 
-8) `Fuel planning guide <https://docs.fuel-infra.org/openstack/fuel/fuel-8.0/mos-planning-guide.html>`_
+8) `Fuel planning guide <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/mos-planning-guide.html>`_
 
-9) `Fuel quick start guide <https://docs.mirantis.com/openstack/fuel/fuel-8.0/quickstart-guide.html>`_
+9) `Fuel quick start guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/quickstart-guide.html>`_
 
-10) `Fuel operations guide <https://docs.mirantis.com/openstack/fuel/fuel-8.0/operations.html>`_
+10) `Fuel operations guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html>`_
 
 11) `Fuel Plugin Developers Guide <https://wiki.openstack.org/wiki/Fuel/Plugins>`_
 
@@ -252,8 +252,8 @@ Fuel
 Fuel in OPNFV
 -------------
 
-13) `OPNFV Installation instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/installation-instruction.html>`_
+13) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/installation-instruction.html>`_
 
-14) `OPNFV Build instruction for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/build-instruction.html>`_
+14) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/build-instruction.html>`_
 
-15) `OPNFV Release Note for the AArch64 Brahmaputra release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/release-notes.html>`_
+15) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/release-notes.html>`_

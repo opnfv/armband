@@ -1,5 +1,5 @@
 =================================================================================================
-OPNFV Build instruction for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool
+OPNFV Build instruction for the AArch64 Colorado 1.0 release of OPNFV when using Fuel as a deployment tool
 =================================================================================================
 
 License
@@ -13,14 +13,14 @@ Abstract
 ========
 
 This document describes how to build the Fuel deployment tool for the
-AArch64 Brahmaputra release of OPNFV build system, dependencies and
+AArch64 Colorado release of OPNFV build system, dependencies and
 required system resources.
 
 Introduction
 ============
 
 This document describes the build system used to build the Fuel
-deployment tool for the AArch64 Brahmaputra release of OPNFV, required
+deployment tool for the AArch64 Colorado release of OPNFV, required
 dependencies and minimum requirements on the host to be used for the
 build system.
 
@@ -131,12 +131,12 @@ Now it is time to clone the code repository:
 Now you should have the OPNFV ARMBAND repository with its
 directories stored locally on your build host.
 
-Check out the Brahmaputra release:
+Check out the Colorado release:
 
 .. code-block:: bash
 
     $ cd armband
-    $ git checkout brahmaputra.3.0
+    $ git checkout colorado.1.0
 
 Clone the armband@OPNFV code Git repository without a SSH key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -241,7 +241,7 @@ Configure your build environment
 --------------------------------
 
 ** Configuring the build environment should not be performed if building
-standard Brahmaputra release **
+standard Colorado release **
 
 Select the versions of the components you want to build by editing the
 <armband/upstream/fuel/build/config.mk> file.
@@ -337,8 +337,8 @@ The artifacts produced are:
 References
 ==========
 
-1)  `OPNFV Installation instruction for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/installation-instruction.html>`_
+1)  `OPNFV Installation instruction for the AArch64 Colorado 1.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/installation-instruction.html>`_
 
-2) `OPNFV Build instruction for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/build-instruction.html>`_
+2) `OPNFV Build instruction for the AArch64 Colorado 1.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/build-instruction.html>`_
 
-3) `OPNFV Release Note for the AArch64 Brahmaputra 3.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/brahmaputra/docs/release-notes.html>`_
+3) `OPNFV Release Note for the AArch64 Colorado 1.0 release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/release-notes.html>`_
