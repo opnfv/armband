@@ -237,13 +237,13 @@ Fuel
 
 6) `The Fuel OpenStack project <https://wiki.openstack.org/wiki/Fuel>`_
 
-7) `Fuel documentation overview <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/>`_
+7) `Fuel documentation overview <https://docs.mirantis.com/openstack/fuel/fuel-9.0/>`_
 
-8) `Fuel planning guide <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/mos-planning-guide.html>`_
+8) `Fuel planning guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/mos-planning-guide.html>`_
 
 9) `Fuel quick start guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/quickstart-guide.html>`_
 
-10) `Fuel operations guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html>`_
+10) `Fuel user guide <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide.html>`_
 
 11) `Fuel Plugin Developers Guide <https://wiki.openstack.org/wiki/Fuel/Plugins>`_
 
