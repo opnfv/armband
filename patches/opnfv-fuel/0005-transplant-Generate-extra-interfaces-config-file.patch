@@ -92,8 +92,8 @@ index e57a4fb..9a65cf6 100644
  
  
 @@ -51,11 +85,14 @@ def main():
-     dea_file = parse_arguments()
      check_file_exists(ASTUTE_YAML)
+     check_file_exists(FUEL_BOOTSTRAP_CLI_YAML)
      dea = DeploymentEnvironmentAdapter(dea_file)
 +    log('Reading astute file %s' % ASTUTE_YAML)
      with io.open(ASTUTE_YAML) as stream:
@@ -103,6 +103,6 @@ index e57a4fb..9a65cf6 100644
      with io.open(ASTUTE_YAML, 'w') as stream:
          yaml.dump(astute, stream, default_flow_style=False)
 +    log('Transplant done')
- 
- 
- if __name__ == '__main__':
+     # Update bootstrap config yaml with info from DEA/astute.yaml
+     with io.open(FUEL_BOOTSTRAP_CLI_YAML) as stream:
+         fuel_bootstrap_cli = yaml.load(stream)
