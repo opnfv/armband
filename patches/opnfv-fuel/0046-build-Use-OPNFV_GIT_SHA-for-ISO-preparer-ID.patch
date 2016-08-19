@@ -1,0 +1,48 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 17 Aug 2016 21:56:22 +0200
+Subject: [PATCH] build: Use OPNFV_GIT_SHA for ISO preparer ID
+
+isoinfo -i lists the following information for Fuel@OPNFV ISO:
+"Data preparer id: 86aafaf5454a846c417848bb94f264c4420160f3"
+where the SHA hash is Fuel git repo HEAD SHA.
+
+However, Armband overrides OPNFV_GIT_SHA to the Armband git repo
+commit hash, so the ISO metadata should also reflect this.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/docker/runcontext  | 2 +-
+ build/install/install.sh | 6 +++++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/build/docker/runcontext b/build/docker/runcontext
+index e4874df..07b0dc1 100755
+--- a/build/docker/runcontext
++++ b/build/docker/runcontext
+@@ -119,7 +119,7 @@ RUN_CONTEXT_OPT="--cidfile $CID_FILE --privileged=true --rm \
+     -e HOME=$HOME -e CACHEDEBUG -e CACHETRANSPORT -e CACHEMAXAGE -e CACHEBASE \
+     -e BUILD_FUEL_PLUGINS -e MIRROR_UBUNTU -e MIRROR_UBUNTU_ROOT \
+     -e MIRROR_MOS_UBUNTU -e MIRROR_MOS_UBUNTU_ROOT -e MIRROR_FUEL \
+-    -e LATEST_TARGET_UBUNTU -e UBUNTU_ARCH -e ARMBAND_BASE \
++    -e LATEST_TARGET_UBUNTU -e UBUNTU_ARCH -e ARMBAND_BASE -e OPNFV_GIT_SHA \
+     -u $USER_ID:$GROUP_ID -w $PWD \
+     -v $GITROOT:$GITROOT -v /sys/fs/cgroup:/sys/fs/cgroup:ro $CACHEMOUNT"
+ 
+diff --git a/build/install/install.sh b/build/install/install.sh
+index f6308fb..9e003bb 100755
+--- a/build/install/install.sh
++++ b/build/install/install.sh
+@@ -210,8 +210,12 @@ make_iso_image() {
+     find . -name TRANS.TBL -exec rm {} \;
+     rm -rf rr_moved
+ 
++    if [[ -z "$OPNFV_GIT_SHA" ]]; then
++        OPNFV_GIT_SHA=$(git rev-parse --verify HEAD)
++    fi
++
+     mkisofs --quiet -r -V "$VOLUMEID" -publisher "$PUBLISHER" \
+-        -p `git rev-parse --verify HEAD` -J -R -b isolinux/isolinux.bin \
++        -p "$OPNFV_GIT_SHA" -J -R -b isolinux/isolinux.bin \
+         -no-emul-boot \
+         -boot-load-size 4 -boot-info-table \
+         --hide-rr-moved \
