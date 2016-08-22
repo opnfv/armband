@@ -79,14 +79,14 @@ patches-export: submodules-init
 # For repos pinned in Fuel@OPNFV's config.mk, checkout pinned commit first
 .PHONY: patches-import
 patches-import: submodules-init
-	@git -C ${FUEL_BASE} checkout -q master
-	@git -C ${SUBMOD_DIR}/fuel-agent checkout -q ${FUEL_AGENT_COMMIT}
-	@git -C ${SUBMOD_DIR}/fuel-astute checkout -q ${ASTUTE_COMMIT}
-	@git -C ${SUBMOD_DIR}/fuel-library checkout -q ${FUELLIB_COMMIT}
-	@git -C ${SUBMOD_DIR}/fuel-mirror checkout -q ${FUEL_MIRROR_COMMIT}
-	@git -C ${SUBMOD_DIR}/fuel-nailgun-agent \
-		checkout -q ${FUEL_NAILGUN_AGENT_COMMIT}
-	@git -C ${SUBMOD_DIR}/fuel-web checkout -q ${NAILGUN_COMMIT}
+	@cd ${FUEL_BASE} && git checkout -q master
+	@cd ${SUBMOD_DIR}/fuel-agent && git checkout -q ${FUEL_AGENT_COMMIT}
+	@cd ${SUBMOD_DIR}/fuel-astute && git checkout -q ${ASTUTE_COMMIT}
+	@cd ${SUBMOD_DIR}/fuel-library && git checkout -q ${FUELLIB_COMMIT}
+	@cd ${SUBMOD_DIR}/fuel-mirror && git checkout -q ${FUEL_MIRROR_COMMIT}
+	@cd ${SUBMOD_DIR}/fuel-nailgun-agent && \
+		git checkout -q ${FUEL_NAILGUN_AGENT_COMMIT}
+	@cd ${SUBMOD_DIR}/fuel-web && git checkout -q ${NAILGUN_COMMIT}
 	@git submodule -q foreach ' \
 		mkdir -p ${PATCH_DIR}/$$name; \
 		git tag armband-workbench-root; \
