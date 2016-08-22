@@ -1,8 +1,10 @@
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Thu, 18 Aug 2016 19:21:34 +0200
-Subject: [PATCH] build: ubuntu mirror: blacklist ftp.acc.umu.se
+Subject: [PATCH] build: ubuntu mirror: blacklist two FTP SE mirrors
 
-Another SE mirror acting up lately ...
+Some SE mirrors are acting up lately, blacklist them:
+- ftp.acc.umu.se
+- ftp.lysator.liu.se
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
@@ -18,7 +20,7 @@ index 4bca6bd..67219cb 100755
  # as they are discoved they can be added to the blacklist below in order
  # for them not to be considered.
 -BLACKLIST="mirrors.se.eu.kernel.org mirror.its.dal.ca"
-+BLACKLIST="mirrors.se.eu.kernel.org ftp.acc.umu.se mirror.its.dal.ca"
++BLACKLIST="mirrors.se.eu.kernel.org mirror.its.dal.ca ftp.acc.umu.se ftp.lysator.liu.se"
  
  return_url=0
  
