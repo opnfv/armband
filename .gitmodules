@@ -1,7 +1,7 @@
 [submodule "opnfv-fuel"]
 	path = upstream/fuel
 	url = https://gerrit.opnfv.org/gerrit/fuel
-	branch = master
+	branch = stable/colorado
 [submodule "fuel-library"]
 	path = upstream/fuel-library
 	url = https://github.com/openstack/fuel-library.git
@@ -33,7 +33,7 @@
 [submodule "vswitchperf"]
 	path = upstream/vswitchperf
 	url = https://gerrit.opnfv.org/gerrit/vswitchperf.git
-	branch = master
+	branch = stable/colorado
 [submodule "fuel-astute"]
 	path = upstream/fuel-astute
 	url = https://github.com/openstack/fuel-astute.git
