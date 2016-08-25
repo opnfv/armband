@@ -5,6 +5,8 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 
+set -e
+
 SCRIPT_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
 BUILD_BASE=$(readlink -e ${SCRIPT_DIR}/../upstream/fuel/build)
 
