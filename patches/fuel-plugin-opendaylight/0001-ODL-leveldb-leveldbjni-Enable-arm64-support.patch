@@ -322,6 +322,6 @@ index 3706678..841bfee 100644
      puppet_modules: puppet/modules:/etc/puppet/modules
 -    timeout: 720
 +    timeout: 3600
+
  - id: netconfig
    type: puppet
-   version: 2.0.0
