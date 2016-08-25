@@ -51,7 +51,7 @@ new file mode 100644
 index 0000000..1e772f0
 --- /dev/null
 +++ b/build/armband.mk
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,54 @@
 +##############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -69,6 +69,11 @@ index 0000000..1e772f0
 +    export PRODNO            := OPNFV_A_FUEL
 +    export MIRROR_MOS_UBUNTU := linux.enea.com
 +    export EXTRA_RPM_REPOS   := armband,http://linux.enea.com/mos-repos/centos/mos9.0-centos7/armband/x86_64,10
++
++    # Temporary fuel-plugin-builder repo info for runtime patching
++    export FPB_REPO      := https://github.com/openstack/fuel-plugins
++    export FPB_BRANCH    := master
++    export FPB_CHANGE    := refs/changes/31/311031/2
 +
 +    # Armband git submodules for Fuel/OPNFV components
 +    export ASTUTE_REPO   := ${ARMBAND_BASE}/upstream/fuel-astute
