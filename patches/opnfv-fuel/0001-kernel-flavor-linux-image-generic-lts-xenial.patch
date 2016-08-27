@@ -6,14 +6,22 @@ Ubuntu arm64: switch from using kernel 4.2 for Trusty
 (linux-image-generic-lts-trusty) to kernel 4.4 backported from Xenial
 (linux-image-generic-lts-xenial).
 
+Keep old 4.2 kernel in local repos.
+
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml | 4 ++--
- deploy/config/dea_base.yaml                         | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ .../f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml  |  4 +--
+ ...nel-flavor-linux-image-generic-lts-xenial.patch | 28 ++++++++++++++++
+ ...flavor-Add-linux-image-generic-lts-xenial.patch | 26 +++++++++++++++
+ ...nel-flavor-linux-image-generic-lts-xenial.patch | 39 ++++++++++++++++++++++
+ deploy/config/dea_base.yaml                        |  4 +--
+ 5 files changed, 97 insertions(+), 4 deletions(-)
+ create mode 100644 build/patch-repos/build/repos/fuel-agent/0099-kernel-flavor-linux-image-generic-lts-xenial.patch
+ create mode 100644 build/patch-repos/build/repos/fuel-mirror/0099-kernel-flavor-Add-linux-image-generic-lts-xenial.patch
+ create mode 100644 build/patch-repos/build/repos/fuel-nailgun/0099-kernel-flavor-linux-image-generic-lts-xenial.patch
 
 diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
-index daef3d5..2985619 100644
+index d8fab97..ce09641 100644
 --- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
 +++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
 @@ -5,7 +5,7 @@
@@ -33,8 +41,118 @@ index daef3d5..2985619 100644
 +    - linux-headers-generic-lts-xenial
      - live-boot
      - live-boot-initramfs-tools
+diff --git a/build/patch-repos/build/repos/fuel-agent/0099-kernel-flavor-linux-image-generic-lts-xenial.patch b/build/patch-repos/build/repos/fuel-agent/0099-kernel-flavor-linux-image-generic-lts-xenial.patch
+new file mode 100644
+index 0000000..c94bc4a
+--- /dev/null
++++ b/build/patch-repos/build/repos/fuel-agent/0099-kernel-flavor-linux-image-generic-lts-xenial.patch
+@@ -0,0 +1,28 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Thu, 4 Aug 2016 12:44:53 +0200
++Subject: [PATCH] kernel-flavor: linux-image-generic-lts-xenial
++
++Ubuntu arm64: switch from using kernel 4.2 for Trusty
++(linux-image-generic-lts-trusty) to kernel 4.4 backported from Xenial
++(linux-image-generic-lts-xenial).
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ fuel_agent/drivers/nailgun.py | 4 ++--
++ 1 file changed, 2 insertions(+), 2 deletions(-)
++
++diff --git a/fuel_agent/drivers/nailgun.py b/fuel_agent/drivers/nailgun.py
++index 5ff1cf6..1463f22 100644
++--- a/fuel_agent/drivers/nailgun.py
+++++ b/fuel_agent/drivers/nailgun.py
++@@ -734,8 +734,8 @@ class NailgunBuildImage(BaseDataDriver):
++         "i40e-dkms",
++         "linux-firmware",
++         "linux-firmware-nonfree",
++-        "linux-headers-generic-lts-trusty",
++-        "linux-image-generic-lts-trusty",
+++        "linux-headers-generic-lts-xenial",
+++        "linux-image-generic-lts-xenial",
++         "lvm2",
++         "mcollective",
++         "mdadm",
+diff --git a/build/patch-repos/build/repos/fuel-mirror/0099-kernel-flavor-Add-linux-image-generic-lts-xenial.patch b/build/patch-repos/build/repos/fuel-mirror/0099-kernel-flavor-Add-linux-image-generic-lts-xenial.patch
+new file mode 100644
+index 0000000..6be21da
+--- /dev/null
++++ b/build/patch-repos/build/repos/fuel-mirror/0099-kernel-flavor-Add-linux-image-generic-lts-xenial.patch
+@@ -0,0 +1,25 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Wed, 13 Jul 2016 21:33:04 +0200
++Subject: [PATCH] kernel-flavor: Add linux-image-generic-lts-xenial
++
++Ubuntu arm64: While keeping kernel 4.2 for Trusty
++(linux-image-generic-lts-trusty), add 4.4 backported from Xenial
++(linux-image-generic-lts-xenial) to local mirror in Armband ISO.
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ contrib/fuel_mirror/data/ubuntu.yaml | 4 ++--
++ 1 file changed, 2 insertions(+), 2 deletions(-)
++
++diff --git a/contrib/fuel_mirror/data/ubuntu.yaml b/contrib/fuel_mirror/data/ubuntu.yaml
++index 2ec4f1d..b8c0ae4 100644
++--- a/contrib/fuel_mirror/data/ubuntu.yaml
+++++ b/contrib/fuel_mirror/data/ubuntu.yaml
++@@ -98,5 +98,7 @@ packages: &packages
++      - "linux-firmware-nonfree"
++      - "linux-headers-generic-lts-trusty"
++      - "linux-image-generic-lts-trusty"
+++     - "linux-headers-generic-lts-xenial"
+++     - "linux-image-generic-lts-xenial"
++      - "live-boot"
++      - "livecd-rootfs"
+diff --git a/build/patch-repos/build/repos/fuel-nailgun/0099-kernel-flavor-linux-image-generic-lts-xenial.patch b/build/patch-repos/build/repos/fuel-nailgun/0099-kernel-flavor-linux-image-generic-lts-xenial.patch
+new file mode 100644
+index 0000000..5a068d6
+--- /dev/null
++++ b/build/patch-repos/build/repos/fuel-nailgun/0099-kernel-flavor-linux-image-generic-lts-xenial.patch
+@@ -0,0 +1,39 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Thu, 4 Aug 2016 12:47:50 +0200
++Subject: [PATCH] kernel-flavor: linux-image-generic-lts-xenial
++
++Ubuntu arm64: switch from using kernel 4.2 for Trusty
++(linux-image-generic-lts-trusty) to kernel 4.4 backported from Xenial
++(linux-image-generic-lts-xenial).
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ nailgun/nailgun/fixtures/openstack.yaml | 8 ++++----
++ 1 file changed, 4 insertions(+), 4 deletions(-)
++
++diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
++index 9c34a05..6848424 100644
++--- a/nailgun/nailgun/fixtures/openstack.yaml
+++++ b/nailgun/nailgun/fixtures/openstack.yaml
++@@ -2103,8 +2103,8 @@
++               i40e-dkms
++               linux-firmware
++               linux-firmware-nonfree
++-              linux-headers-generic-lts-trusty
++-              linux-image-generic-lts-trusty
+++              linux-headers-generic-lts-xenial
+++              linux-image-generic-lts-xenial
++               lvm2
++               mcollective
++               mdadm
++@@ -2447,8 +2447,8 @@
++               i40e-dkms
++               linux-firmware
++               linux-firmware-nonfree
++-              linux-headers-generic-lts-trusty
++-              linux-image-generic-lts-trusty
+++              linux-headers-generic-lts-xenial
+++              linux-image-generic-lts-xenial
++               lvm2
++               mcollective
++               mdadm
 diff --git a/deploy/config/dea_base.yaml b/deploy/config/dea_base.yaml
-index 658b328..5f3c156 100644
+index 0b8485b..d84648d 100644
 --- a/deploy/config/dea_base.yaml
 +++ b/deploy/config/dea_base.yaml
 @@ -474,9 +474,9 @@ settings:
