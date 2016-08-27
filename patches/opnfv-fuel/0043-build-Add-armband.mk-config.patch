@@ -51,7 +51,7 @@ new file mode 100644
 index 0000000..1e772f0
 --- /dev/null
 +++ b/build/armband.mk
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,48 @@
 +##############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -81,9 +81,6 @@ index 0000000..1e772f0
 +
 +    export FUEL_AGENT_REPO   := ${ARMBAND_BASE}/upstream/fuel-agent
 +    export FUEL_AGENT_COMMIT := HEAD
-+
-+    export FUEL_NAILGUN_AGENT_REPO   := ${ARMBAND_BASE}/upstream/fuel-nailgun-agent
-+    export FUEL_NAILGUN_AGENT_COMMIT := HEAD
 +
 +    export FUEL_MIRROR_REPO   := ${ARMBAND_BASE}/upstream/fuel-mirror
 +    export FUEL_MIRROR_COMMIT := HEAD

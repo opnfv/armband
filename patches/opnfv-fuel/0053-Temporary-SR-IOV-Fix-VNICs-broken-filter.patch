@@ -1,0 +1,51 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 28 Aug 2016 00:51:10 +0200
+Subject: [PATCH 2/2] Temporary: SR-IOV: Fix VNICs broken filter.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ...-Temporary-SR-IOV-Fix-VNICs-broken-filter.patch | 35 ++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+ create mode 100644 build/patch-repos/build/repos/nailgun-agent/0020-Temporary-SR-IOV-Fix-VNICs-broken-filter.patch
+
+diff --git a/build/patch-repos/build/repos/nailgun-agent/0020-Temporary-SR-IOV-Fix-VNICs-broken-filter.patch b/build/patch-repos/build/repos/nailgun-agent/0020-Temporary-SR-IOV-Fix-VNICs-broken-filter.patch
+new file mode 100644
+index 0000000..a3cb1ea
+--- /dev/null
++++ b/build/patch-repos/build/repos/nailgun-agent/0020-Temporary-SR-IOV-Fix-VNICs-broken-filter.patch
+@@ -0,0 +1,35 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Thu, 7 Jul 2016 13:58:34 +0200
++Subject: [PATCH] Temporary: SR-IOV: Fix VNICs broken filter.
++
++Some blades have VNICs (VFs on a PCI device), which are not
++SR-IOV VFs.
++
++Bug report: "VNICs ignored due to SR-IOV filtering" [1]
++
++HACK: Instead of checking for "physfn", we now rely on testing
++for "sriov_totalvfs" file to determine whether current eth is
++a SR-IOV VF or something else (thus keeping VNICs).
++
++FIXME: Revert this patch once upstream closes bug [1].
++
++[1] https://bugs.launchpad.net/fuel/+bug/1597775
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ agent | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/agent b/agent
++index 89ab60f..eb2bfb4 100755
++--- a/agent
+++++ b/agent
++@@ -406,7 +406,7 @@ class NodeAgent
++         next if File.exist?("/sys/class/net/#{int}/phy80211") ||
++                 File.exist?("/sys/class/net/#{int}/wireless")
++         # Skip virtual functions
++-        next if File.exists?("/sys/class/net/#{int}/device/physfn")
+++        next if File.exists?("/sys/class/net/#{int}/device/sriov_totalvfs")
++         int_meta = {:name => int}
++         int_meta[:interface_properties] = {}
++         int_meta[:state] = intinfo[:state]

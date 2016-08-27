@@ -22,10 +22,6 @@
 	path = upstream/fuel-plugin-opendaylight
 	url = https://github.com/openstack/fuel-plugin-opendaylight.git
 	branch = master
-[submodule "fuel-nailgun-agent"]
-	path = upstream/fuel-nailgun-agent
-	url = https://github.com/openstack/fuel-nailgun-agent
-	branch = stable/mitaka
 [submodule "fuel-plugin-ovs"]
 	path = upstream/fuel-plugin-ovs
 	url = https://github.com/openstack/fuel-plugin-ovs

@@ -83,8 +83,6 @@ patches-import: submodules-init
 	@cd ${SUBMOD_DIR}/fuel-agent && git checkout -q ${FUEL_AGENT_COMMIT}
 	@cd ${SUBMOD_DIR}/fuel-library && git checkout -q ${FUELLIB_COMMIT}
 	@cd ${SUBMOD_DIR}/fuel-mirror && git checkout -q ${FUEL_MIRROR_COMMIT}
-	@cd ${SUBMOD_DIR}/fuel-nailgun-agent && \
-		git checkout -q ${FUEL_NAILGUN_AGENT_COMMIT}
 	@cd ${SUBMOD_DIR}/fuel-web && git checkout -q ${NAILGUN_COMMIT}
 	@git submodule -q foreach ' \
 		mkdir -p ${PATCH_DIR}/$$name; \
