@@ -1,0 +1,32 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 29 Aug 2016 22:58:49 +0200
+Subject: [PATCH] build: docker: Use host's network stack
+
+See [1] for full description.
+This change simplifies the network abstraction during build by
+NOT containerizing the containers' networking.
+
+The original motivation was pointing to local mirrors via host's
+"/etc/hosts", for which an alternative solution could be passing
+"-v /etc/hosts:/etc/hosts".
+
+[1] https://docs.docker.com/v1.8/articles/networking/
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/docker/runcontext | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/docker/runcontext b/build/docker/runcontext
+index 07b0dc1..b0d6d37 100755
+--- a/build/docker/runcontext
++++ b/build/docker/runcontext
+@@ -115,7 +115,7 @@ if [ -n "$CACHEBASE" ]; then
+     fi
+ fi
+
+-RUN_CONTEXT_OPT="--cidfile $CID_FILE --privileged=true --rm \
++RUN_CONTEXT_OPT="--cidfile $CID_FILE --privileged=true --rm --net=host \
+     -e HOME=$HOME -e CACHEDEBUG -e CACHETRANSPORT -e CACHEMAXAGE -e CACHEBASE \
+     -e BUILD_FUEL_PLUGINS -e MIRROR_UBUNTU -e MIRROR_UBUNTU_ROOT \
+     -e MIRROR_MOS_UBUNTU -e MIRROR_MOS_UBUNTU_ROOT -e MIRROR_FUEL \
