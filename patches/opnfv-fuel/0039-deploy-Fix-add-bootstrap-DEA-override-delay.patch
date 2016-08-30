@@ -8,18 +8,19 @@ one minute sleep before checking for completition of fuel install.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- deploy/install_fuel_master.py | 1 +
- 1 file changed, 1 insertion(+)
+ deploy/install_fuel_master.py | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/deploy/install_fuel_master.py b/deploy/install_fuel_master.py
-index 808d0b1..609a335 100644
+index 808d0b1..404474c 100644
 --- a/deploy/install_fuel_master.py
 +++ b/deploy/install_fuel_master.py
-@@ -201,6 +201,7 @@ class InstallFuelMaster(object):
+@@ -201,6 +201,8 @@ class InstallFuelMaster(object):
          CMD = 'ps -ef | grep %s | grep -v grep' % BOOTSTRAP_ADMIN
  
          install_completed = False
 +        time.sleep(60)
++        self.wait_for_node_up()
          with self.ssh:
              for i in range(WAIT_LOOP):
                  ret = self.ssh.exec_cmd(CMD)
