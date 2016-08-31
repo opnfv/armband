@@ -1,0 +1,142 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 27 Aug 2016 17:13:32 +0200
+Subject: [PATCH] build: Move patches to <patch-repos> dir
+
+Decouple main Makefile and repository patches by moving all Fuel
+component patches to a subdir, <patch-repo>.
+
+Proposed structure of <patch-repos> dir:
+- patch-repos/*.patch are intended for <fuel-main> git repo;
+- patch-repos/build/repo/<fuel-module>/*.patch are intended for
+  <fuel-module>, e.g. "fuel-nailgun";
+
+Full list of Fuel submodules supported by this mechanism at [1].
+
+While at it, replace all occurences of </tmp/fuel-main> with
+<FUEL_MAIN_DIR> in main Makefile and rewrite a few git/make calls
+to use the "-C" arg.
+
+NOTE: `git -C` is available starting with git 1.8.5.
+
+[1] https://github.com/openstack/fuel-main/blob/stable/mitaka/repos.mk
+    #L32-L44
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/Makefile                                     | 42 ++++++++++++----------
+ .../0010-bootstrap_admin_node.sh.patch}            |  0
+ .../0020-isolinux.cfg.patch}                       |  0
+ .../0030-repo-multi-arch-local-mirrors.patch}      |  0
+ ...e-dpkg-checkbuilddeps-with-mk-build-deps.patch} |  0
+ ...tel-82599-10-Gigabit-NIC-as-DPDK-capable.patch} |  0
+ 6 files changed, 24 insertions(+), 18 deletions(-)
+ rename build/{bootstrap_admin_node.sh.patch => patch-repos/0010-bootstrap_admin_node.sh.patch} (100%)
+ rename build/{isolinux.cfg.patch => patch-repos/0020-isolinux.cfg.patch} (100%)
+ rename build/{repo-multi-arch-local-mirrors.patch => patch-repos/0030-repo-multi-arch-local-mirrors.patch} (100%)
+ rename build/{replace-dpkg-checkbuilddeps-with-mk-build-deps.patch => patch-repos/0040-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch} (100%)
+ rename build/{Mark-Intel-82599-10-Gigabit-NIC-as-DPDK-capable.patch => patch-repos/build/repos/fuel-nailgun/0010-Mark-Intel-82599-10-Gigabit-NIC-as-DPDK-capable.patch} (100%)
+
+diff --git a/build/Makefile b/build/Makefile
+index 377ecc6..b234924 100644
+--- a/build/Makefile
++++ b/build/Makefile
+@@ -83,6 +83,11 @@ ORIGDIR := $(TOPDIR)/origiso
+ # END of variables to customize
+ #############################################################################
+ 
++# Fuel-main destination path and fuel-* submodule patching, for full list check:
++# https://github.com/openstack/fuel-main/blob/stable/mitaka/repos.mk#L32-L44
++FUEL_MAIN_DIR := /tmp/fuel-main
++FUEL_PATCHES  := $(shell find $(BUILD_BASE)/patch-repos -name '*.patch' | sort)
++
+ SUBCLEAN = $(addsuffix .clean,$(SUBDIRS))
+ 
+ .PHONY: all
+@@ -108,10 +113,10 @@ include cache.mk
+ 
+ $(ISOCACHE):
+ 	# Clone Fuel to non-persistent location and build
+-	sudo rm -rf /tmp/fuel-main
+-	cd /tmp && git clone $(FUEL_MAIN_REPO)
+-	cd /tmp/fuel-main && git checkout $(FUEL_MAIN_TAG)
+-	@echo "fuel" `git -C /tmp/fuel-main rev-parse HEAD` >> $(VERSION_FILE)
++	sudo rm -rf $(FUEL_MAIN_DIR)
++	git clone $(FUEL_MAIN_REPO) $(FUEL_MAIN_DIR)
++	git -C $(FUEL_MAIN_DIR) checkout $(FUEL_MAIN_TAG)
++	@echo "fuel" `git -C $(FUEL_MAIN_DIR) rev-parse HEAD` >> $(VERSION_FILE)
+ 	# Remove Docker optimizations, otherwise multistrap will fail during
+ 	# Fuel build.
+ 	sudo rm -f /etc/apt/apt.conf.d/docker*
+@@ -127,25 +132,26 @@ $(ISOCACHE):
+ 	sudo service docker stop || exit 0
+ 	sudo service docker start
+ 
+-	cd /tmp/fuel-main && ./prepare-build-env.sh
++	cd $(FUEL_MAIN_DIR) && ./prepare-build-env.sh
+ 	# Verify that Docker is alive
+ 	sudo docker info
+-	cd /tmp/fuel-main && make repos
+-	$(REPOINFO) -r /tmp/fuel-main > gitinfo_fuel.txt
++	# fuel-main Makefiles do not like `make -C`
++	cd $(FUEL_MAIN_DIR) && make repos
++	$(REPOINFO) -r $(FUEL_MAIN_DIR) > gitinfo_fuel.txt
+ 	@if test -n $(ARMBAND_BASE); then \
+ 		$(REPOINFO) -r $(ARMBAND_BASE) >> gitinfo_fuel.txt; \
+ 	fi
+ 	# OPNFV patches at Fuel build time
+ 	# Need to be commited in order for them to be considered by the Fuel
+ 	# build system
+-	cd /tmp/fuel-main && git am $(TOPDIR)/bootstrap_admin_node.sh.patch
+-	cd /tmp/fuel-main && git am $(TOPDIR)/isolinux.cfg.patch
+-	cd /tmp/fuel-main/build/repos/fuel-nailgun && git am $(TOPDIR)/Mark-Intel-82599-10-Gigabit-NIC-as-DPDK-capable.patch
+-	cd /tmp/fuel-main && git am $(TOPDIR)/repo-multi-arch-local-mirrors.patch
+-	cd /tmp/fuel-main && git am $(TOPDIR)/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
++	$(foreach patch,$(FUEL_PATCHES),git \
++		-C $(subst $(BUILD_BASE)/patch-repos,$(FUEL_MAIN_DIR),$(dir $(patch))) \
++		am --whitespace=nowarn --committer-date-is-author-date $(patch) || \
++		(echo 'Error: Failed patching Fuel repos!' ; exit 1);)
++
+ 	# Repeat build up to three times
+ 	sudo -E ./fuel_build_loop
+-	cp /tmp/fuel-main/build/artifacts/fuel*.iso .
++	cp $(FUEL_MAIN_DIR)/build/artifacts/fuel*.iso .
+ 	# Store artifact in cache straight away if caching is enabled
+ 	# (no .cacheid will be present unless this is a cached build)
+ 	test -f .cacheid && $(MAKE) -f Makefile put-cache || exit 0
+@@ -227,11 +233,11 @@ debug:
+ #   - The commit ID of the full Fuel repo structre
+ #   - The contents of all local Fuel patches
+ .cacheid:
+-	cd /tmp && git clone $(FUEL_MAIN_REPO)
+-	cd /tmp/fuel-main && git checkout $(FUEL_MAIN_TAG)
+-	cd /tmp/fuel-main && make repos
+-	$(REPOINFO) -r /tmp/fuel-main > .cachedata
+-	sha1sum *.patch >> .cachedata
++	git clone $(FUEL_MAIN_REPO) $(FUEL_MAIN_DIR)
++	git -C $(FUEL_MAIN_DIR) checkout $(FUEL_MAIN_TAG)
++	make -C $(FUEL_MAIN_DIR) repos
++	$(REPOINFO) -r $(FUEL_MAIN_DIR) > .cachedata
++	$(foreach patch,$(FUEL_PATCHES),sha1sum $(patch) >> .cachedata;)
+ 	sha1sum fuel_build_loop >> .cachedata
+ 	sha1sum config.mk >> .cachedata
+ 	@if test -n $(ARMBAND_BASE); then \
+diff --git a/build/bootstrap_admin_node.sh.patch b/build/patch-repos/0010-bootstrap_admin_node.sh.patch
+similarity index 100%
+rename from build/bootstrap_admin_node.sh.patch
+rename to build/patch-repos/0010-bootstrap_admin_node.sh.patch
+diff --git a/build/isolinux.cfg.patch b/build/patch-repos/0020-isolinux.cfg.patch
+similarity index 100%
+rename from build/isolinux.cfg.patch
+rename to build/patch-repos/0020-isolinux.cfg.patch
+diff --git a/build/repo-multi-arch-local-mirrors.patch b/build/patch-repos/0030-repo-multi-arch-local-mirrors.patch
+similarity index 100%
+rename from build/repo-multi-arch-local-mirrors.patch
+rename to build/patch-repos/0030-repo-multi-arch-local-mirrors.patch
+diff --git a/build/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch b/build/patch-repos/0040-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
+similarity index 100%
+rename from build/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
+rename to build/patch-repos/0040-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
+diff --git a/build/Mark-Intel-82599-10-Gigabit-NIC-as-DPDK-capable.patch b/build/patch-repos/build/repos/fuel-nailgun/0010-Mark-Intel-82599-10-Gigabit-NIC-as-DPDK-capable.patch
+similarity index 100%
+rename from build/Mark-Intel-82599-10-Gigabit-NIC-as-DPDK-capable.patch
+rename to build/patch-repos/build/repos/fuel-nailgun/0010-Mark-Intel-82599-10-Gigabit-NIC-as-DPDK-capable.patch
