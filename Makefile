@@ -79,7 +79,6 @@ patches-export: submodules-init
 # For repos pinned in Fuel@OPNFV's config.mk, checkout pinned commit first
 .PHONY: patches-import
 patches-import: submodules-init
-	@cd ${FUEL_BASE} && git checkout -q master
 	@cd ${SUBMOD_DIR}/fuel-agent && git checkout -q ${FUEL_AGENT_COMMIT}
 	@cd ${SUBMOD_DIR}/fuel-astute && git checkout -q ${ASTUTE_COMMIT}
 	@cd ${SUBMOD_DIR}/fuel-library && git checkout -q ${FUELLIB_COMMIT}
