@@ -25,18 +25,16 @@ index 4454c35..377ecc6 100644
  ############################################################################
  # BEGIN of variables to customize
  #
-@@ -129,6 +132,9 @@ $(ISOCACHE):
- 	sudo docker info
- 	cd /tmp/fuel-main && make repos
- 	$(REPOINFO) -r /tmp/fuel-main > gitinfo_fuel.txt
+@@ -129,5 +132,8 @@ $(ISOCACHE):
+ 	cd $(FUEL_MAIN_DIR) && make repos
+ 	$(REPOINFO) -r $(FUEL_MAIN_DIR) > gitinfo_fuel.txt
 +	@if test -n $(ARMBAND_BASE); then \
 +		$(REPOINFO) -r $(ARMBAND_BASE) >> gitinfo_fuel.txt; \
 +	fi
  	# OPNFV patches at Fuel build time
  	# Need to be commited in order for them to be considered by the Fuel
  	# build system
-@@ -228,6 +234,10 @@ debug:
- 	sha1sum *.patch >> .cachedata
+@@ -228,5 +234,9 @@ debug:
  	sha1sum fuel_build_loop >> .cachedata
  	sha1sum config.mk >> .cachedata
 +	@if test -n $(ARMBAND_BASE); then \

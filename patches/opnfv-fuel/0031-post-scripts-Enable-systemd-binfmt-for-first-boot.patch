@@ -30,10 +30,10 @@ Finally, this commit adds an OPNFV post-install script in
  2 files changed, 47 insertions(+)
  create mode 100755 build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
 
-diff --git a/build/bootstrap_admin_node.sh.patch b/build/bootstrap_admin_node.sh.patch
+diff --git a/build/patch-repos/0010-bootstrap_admin_node.sh.patch b/build/patch-repos/0010-bootstrap_admin_node.sh.patch
 index b1ea90b..7f16d0b 100644
---- a/build/bootstrap_admin_node.sh.patch
-+++ b/build/bootstrap_admin_node.sh.patch
+--- a/build/patch-repos/0010-bootstrap_admin_node.sh.patch
++++ b/build/patch-repos/0010-bootstrap_admin_node.sh.patch
 @@ -24,5 +24,18 @@
   nodes over PXE, they will be discovered and become available for installing \
   OpenStack on them"
