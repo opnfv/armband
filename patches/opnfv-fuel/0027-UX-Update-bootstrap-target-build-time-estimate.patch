@@ -11,10 +11,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  build/bootstrap_admin_node.sh.patch | 23 +++++++++++++++++++++++
  1 file changed, 23 insertions(+)
 
-diff --git a/build/bootstrap_admin_node.sh.patch b/build/bootstrap_admin_node.sh.patch
+diff --git a/build/patch-repos/0010-bootstrap_admin_node.sh.patch b/build/patch-repos/0010-bootstrap_admin_node.sh.patch
 index c66b497..46b53e6 100644
---- a/build/bootstrap_admin_node.sh.patch
-+++ b/build/bootstrap_admin_node.sh.patch
+--- a/build/patch-repos/0010-bootstrap_admin_node.sh.patch
++++ b/build/patch-repos/0010-bootstrap_admin_node.sh.patch
 @@ -8,5 +8,20 @@
  --- a/iso/bootstrap_admin_node.sh
  +++ b/iso/bootstrap_admin_node.sh

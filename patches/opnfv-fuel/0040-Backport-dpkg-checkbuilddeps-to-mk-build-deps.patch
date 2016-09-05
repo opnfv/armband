@@ -8,26 +8,15 @@ Backported from [1].
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- build/Makefile                                     |  1 +
  ...ce-dpkg-checkbuilddeps-with-mk-build-deps.patch | 38 ++++++++++++++++++++++
- 2 files changed, 39 insertions(+)
+ 1 files changed, 38 insertions(+)
  create mode 100644 build/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
 
-diff --git a/build/Makefile b/build/Makefile
-index d917f26..ec5d27a 100644
---- a/build/Makefile
-+++ b/build/Makefile
-@@ -140,4 +140,5 @@ $(ISOCACHE):
- 	cd /tmp/fuel-main && git am $(TOPDIR)/repo-multi-arch-local-mirrors.patch
-+	cd /tmp/fuel-main && git am $(TOPDIR)/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
- 	# Repeat build up to three times
- 	sudo -E ./fuel_build_loop
- 	cp /tmp/fuel-main/build/artifacts/fuel*.iso .
-diff --git a/build/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch b/build/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
+diff --git a/build/patch-repos/0040-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch b/build/patch-repos/0040-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
 new file mode 100644
 index 0000000..896f3cf
 --- /dev/null
-+++ b/build/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
++++ b/build/patch-repos/0040-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
 @@ -0,0 +1,38 @@
 +From: Sergii Golovatiuk <sgolovatiuk@mirantis.com>
 +Date: Fri, 3 Jun 2016 12:26:19 +0200
