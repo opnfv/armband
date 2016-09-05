@@ -13,12 +13,10 @@ diff --git a/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh b/build/f_isoroot
 index 4bca6bd..67219cb 100755
 --- a/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh
 +++ b/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh
-@@ -21,7 +21,7 @@ RSYNC="rsync -4 --contimeout 5 --no-motd --list-only"
+@@ -21,5 +21,5 @@ RSYNC="rsync -4 --contimeout 5 --no-motd --list-only"
  # Some Ubuntu mirrors seem less reliable for this type of mirroring -
  # as they are discoved they can be added to the blacklist below in order
  # for them not to be considered.
 -BLACKLIST="mirrors.se.eu.kernel.org mirror.its.dal.ca"
 +BLACKLIST="mirrors.se.eu.kernel.org ftp.acc.umu.se mirror.its.dal.ca"
- 
- return_url=0
  
