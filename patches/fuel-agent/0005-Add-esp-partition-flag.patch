@@ -1,0 +1,48 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 8 Mar 2016 16:29:39 +0100
+Subject: [PATCH] Add <esp> partition flag.
+
+Parted flag <esp> (see [1]) will mark EFI system partition, allowing us
+to properly format and mount it during do_partitioning deployment phase.
+
+[1] https://www.gnu.org/software/parted/manual/html_node/set.html
+---
+ fuel_agent/drivers/nailgun.py | 2 +-
+ fuel_agent/utils/partition.py | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fuel_agent/drivers/nailgun.py b/fuel_agent/drivers/nailgun.py
+index c2fef69..0ae81f9 100644
+--- a/fuel_agent/drivers/nailgun.py
++++ b/fuel_agent/drivers/nailgun.py
+@@ -324,7 +324,7 @@ class Nailgun(BaseDataDriver):
+             # uefi partition (for future use)
+             LOG.debug('Adding UEFI partition on disk %s: size=200' %
+                       disk['name'])
+-            parted.add_partition(size=200)
++            parted.add_partition(size=200, flags=['esp'])
+ 
+             LOG.debug('Looping over all volumes on disk %s' % disk['name'])
+             for volume in disk['volumes']:
+diff --git a/fuel_agent/utils/partition.py b/fuel_agent/utils/partition.py
+index acdd0b3..86349d2 100644
+--- a/fuel_agent/utils/partition.py
++++ b/fuel_agent/utils/partition.py
+@@ -93,7 +93,7 @@ def set_partition_flag(dev, num, flag, state='on'):
+     :param dev: A device file, e.g. /dev/sda.
+     :param num: Partition number
+     :param flag: Flag name. Must be one of 'bios_grub', 'legacy_boot',
+-    'boot', 'raid', 'lvm'
++    'boot', 'raid', 'lvm', 'esp'
+     :param state: Desiable flag state. 'on' or 'off'. Default is 'on'.
+ 
+     :returns: None
+@@ -103,7 +103,7 @@ def set_partition_flag(dev, num, flag, state='on'):
+     # parted supports more flags but we are interested in
+     # setting only this subset of them.
+     # not all of these flags are compatible with one another.
+-    if flag not in ('bios_grub', 'legacy_boot', 'boot', 'raid', 'lvm'):
++    if flag not in ('bios_grub', 'legacy_boot', 'boot', 'raid', 'lvm', 'esp'):
+         raise errors.WrongPartitionSchemeError(
+             'Unsupported partition flag: %s' % flag)
+     if state not in ('on', 'off'):
