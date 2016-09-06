@@ -34,3 +34,7 @@
 	path = upstream/vswitchperf
 	url = https://gerrit.opnfv.org/gerrit/vswitchperf.git
 	branch = master
+[submodule "fuel-astute"]
+	path = upstream/fuel-astute
+	url = https://github.com/openstack/fuel-astute.git
+	branch = stable/mitaka

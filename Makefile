@@ -80,6 +80,7 @@ patches-export: submodules-init
 .PHONY: patches-import
 patches-import: submodules-init
 	@cd ${SUBMOD_DIR}/fuel-agent && git checkout -q ${FUEL_AGENT_COMMIT}
+	@cd ${SUBMOD_DIR}/fuel-astute && git checkout -q ${ASTUTE_COMMIT}
 	@cd ${SUBMOD_DIR}/fuel-library && git checkout -q ${FUELLIB_COMMIT}
 	@cd ${SUBMOD_DIR}/fuel-mirror && git checkout -q ${FUEL_MIRROR_COMMIT}
 	@cd ${SUBMOD_DIR}/fuel-nailgun-agent && \
