@@ -8,14 +8,20 @@ one minute sleep before checking for completition of fuel install.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- deploy/install_fuel_master.py | 2 ++
- 1 file changed, 2 insertions(+)
+ deploy/install_fuel_master.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/deploy/install_fuel_master.py b/deploy/install_fuel_master.py
-index 808d0b1..404474c 100644
+index 808d0b1..1a7685a 100644
 --- a/deploy/install_fuel_master.py
 +++ b/deploy/install_fuel_master.py
-@@ -201,6 +201,8 @@ class InstallFuelMaster(object):
+@@ -196,11 +196,13 @@ class InstallFuelMaster(object):
+                      self.work_dir, os.path.basename(self.dea_file)))
+ 
+     def wait_until_installation_completed(self):
+-        WAIT_LOOP = 360
++        WAIT_LOOP = 720
+         SLEEP_TIME = 10
          CMD = 'ps -ef | grep %s | grep -v grep' % BOOTSTRAP_ADMIN
  
          install_completed = False
