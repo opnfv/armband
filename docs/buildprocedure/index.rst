@@ -4,16 +4,13 @@
 .. You should have received a copy of the license along with this work.
 .. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
-*****************
-ArmbandFuel@OPNFV
-*****************
+*********************************
+Build instruction for Fuel\@OPNFV
+*********************************
 
 .. toctree::
-   :maxdepth: 4
+   :numbered:
+   :maxdepth: 2
 
-   build-instruction.rst
-   installation-instruction.rst
-   release-notes.rst
-
-.. :titlesonly:
+   build.instruction.rst
 
