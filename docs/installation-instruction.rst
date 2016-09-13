@@ -582,6 +582,29 @@ that can be used for installation / deployment of openstack.
 Target specific configuration
 -----------------------------
 
+#. [AArch64 specific] Configure MySQL WSREP SST provider
+
+   **NOTE**: This option is only available for ArmbandFuel@OPNFV, since it
+   currently only affects AArch64 targets (see *Reference 15*).
+
+   When using some AArch64 platforms as controller nodes, WSREP SST
+   synchronisation using default backend provider (xtrabackup-v2) might fail,
+   so a mechanism that allows selecting a different WSREP SST provider
+   has been introduced.
+
+   In the FUEL UI of your Environment, click the <Settings> tab, click
+   <OpenStack Services> on the left side pane (see figure below), then
+   select one of the following options:
+
+   - xtrabackup-v2 (default provider, AArch64 stability issues);
+
+   - rsync (AArch64 validated, better or comparable speed to xtrabackup,
+     takes the donor node offline during state transfer);
+
+   - mysqldump (untested);
+
+   .. figure:: img/fuelwsrepsst.png
+
 #. Set up targets for provisioning with non-default "Offloading Modes"
 
    Some target nodes may require additional configuration after they are
