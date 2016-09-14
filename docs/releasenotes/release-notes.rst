@@ -9,18 +9,25 @@ Abstract
 ========
 
 This document compiles the release notes for the Colorado 1.0 release of
-OPNFV when using Fuel as a deployment tool.
+OPNFV when using Fuel as a deployment tool, with an AArch64 (only) target
+node pool.
 
 ===============
 Important notes
 ===============
 
 These notes provides release information for the use of Fuel as deployment
-tool for the Colorado 1.0 release of OPNFV.
+tool for the AArch64 Colorado 1.0 release of OPNFV.
 
-The goal of the Colorado release and this Fuel-based deployment process is
-to establish a lab ready platform accelerating further development
-of the OPNFV infrastructure.
+The goal of the AArch64 Colorado release and this Fuel-based deployment process
+is to establish a lab ready platform accelerating further development
+of the OPNFV on AArch64 infrastructure.
+
+Due to early docker and nodejs support on AArch64, we will still use an
+x86_64 Fuel Master to build and deploy an AArch64 target pool.
+
+Although not currently supported, mixing x86_64 and AArch64 architectures
+inside the target pool will be possible later.
 
 Carefully follow the installation-instructions provided in *Reference 13*.
 
@@ -28,10 +35,16 @@ Carefully follow the installation-instructions provided in *Reference 13*.
 Summary
 =======
 
-For Colorado, the typical use of Fuel as an OpenStack installer is
+For AArch64 Colorado, the typical use of Fuel as an OpenStack installer is
 supplemented with OPNFV unique components such as:
 
 - `OpenDaylight <http://www.opendaylight.org/software>`_ version "Beryllium SR3" [1]_ - 'http://www.opendaylight.org/software'
+
+- `Open vSwitch for NFV <https://wiki.opnfv.org/ovsnfv>`_ 'https://wiki.opnfv.org/ovsnfv'
+
+- `VSPERF <https://wiki.opnfv.org/characterize_vswitch_performance_for_telco_nfv_use_cases>`_ 'https://wiki.opnfv.org/characterize_vswitch_performance_for_telco_nfv_use_cases'
+
+The following OPNFV plugins are not yet ported for AArch64:
 
 - `ONOS <http://onosproject.org/>`_ version "Drake" - 'http://onosproject.org/'
 
@@ -40,10 +53,6 @@ supplemented with OPNFV unique components such as:
 - `SDN distributed routing and VPN <https://wiki.opnfv.org/sdnvpn>`_ 'https://wiki.opnfv.org/sdnvpn'
 
 - `NFV Hypervisors-KVM <https://wiki.opnfv.org/nfv-kvm>`_ 'https://wiki.opnfv.org/nfv-kvm'
-
-- `Open vSwitch for NFV <https://wiki.opnfv.org/ovsnfv>`_ 'https://wiki.opnfv.org/ovsnfv'
-
-- `VSPERF <https://wiki.opnfv.org/characterize_vswitch_performance_for_telco_nfv_use_cases>`_ 'https://wiki.opnfv.org/characterize_vswitch_performance_for_telco_nfv_use_cases'
 
 As well as OPNFV-unique configurations of the Hardware- and Software stack.
 
@@ -60,7 +69,7 @@ OPNFV CI pipeline including:
 
   - build-instructions
 
-- The Colorado Fuel installer image (.iso) built by Jenkins
+- The Colorado Fuel installer image AArch64 (.iso) built by Jenkins
 
 - Automated deployment of Colorado with running on bare metal or a nested hypervisor environment (KVM)
 
@@ -86,11 +95,8 @@ Release Data
 | **Purpose of the delivery**          | Colorado alignment to Released       |
 |                                      | Fuel 9.0 baseline + Bug-fixes for    |
 |                                      | the following feaures/scenarios:     |
-|                                      | - NFV Hypervisors-KVM                |
 |                                      | - Open vSwitch for NFV               |
 |                                      | - OpenDaylight                       |
-|                                      | - SDN distributed routing and VPN    |
-|                                      | - Service function chaining          |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
@@ -99,7 +105,7 @@ Version change
 
 Module version changes
 ----------------------
-This is a follow-up release to Colorado 1.0. It is based on
+This is a follow-up release to Brahmaputra 3.0. It is based on
 following upstream versions:
 
 - Fuel 9.0 Base release
@@ -108,11 +114,10 @@ following upstream versions:
 
 - OpenDaylight Beryllium SR3 release [1]_
 
-- ONOS Drake release
 
 Document changes
 ----------------
-This is a follow-up release to Colorado 1.0. It
+This is a follow-up release to Brahmaputra 3.0. It
 comes with the following documentation:
 
 - Installation instructions - *Reference 13* - **Changed**
@@ -136,7 +141,7 @@ Bug corrections
 
 **JIRA TICKETS:**
 
-`Workarounds <https://jira.opnfv.org/issues/?filter=11121>`_ 'https://jira.opnfv.org/issues/?filter=11121'
+`Workarounds <https://jira.opnfv.org/browse/FUEL-189?filter=11175>`_ 'https://jira.opnfv.org/browse/FUEL-189?filter=11175'
 
 (Also See respective Integrated feature project's bug tracking)
 
@@ -172,13 +177,16 @@ System Limitations
 
 - **Max number of networks:** 65k
 
+- **Fuel master arch:** x86_64
+
+- **Target node arch:** aarch64
 
 Known issues
 ============
 
 **JIRA TICKETS:**
 
-`Known issues <https://jira.opnfv.org/issues/?filter=11119>`_ 'https://jira.opnfv.org/issues/?filter=11119'
+`Known issues <https://jira.opnfv.org/browse/FUEL-189?filter=11176>`_ 'https://jira.opnfv.org/browse/FUEL-189?filter=11176'
 
 (Also See respective Integrated feature project's bug tracking)
 
@@ -187,7 +195,7 @@ Workarounds
 
 **JIRA TICKETS:**
 
-`Workarounds <https://jira.opnfv.org/issues/?filter=11120>`_ 'https://jira.opnfv.org/issues/?filter=11120'
+-
 
 (Also See respective Integrated feature project's bug tracking)
 
@@ -241,10 +249,10 @@ Fuel
 Fuel in OPNFV
 =============
 
-13) `OPNFV Installation instruction for the Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/colorado/docs/installation-instruction.html>`_ 'http://artifacts.opnfv.org/fuel/colorado/docs/installation-instruction.html'
+13) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/installationprocedure/index.html>`_ 'http://artifacts.opnfv.org/armband/colorado/docs/installationprocedure/index.html'
 
-14) `OPNFV Build instruction for the Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/colorado/docs/build-instruction.html>`_ 'http://artifacts.opnfv.org/fuel/colorado/docs/build-instruction.html'
+14) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/buildprocedure/index.html>`_ 'http://artifacts.opnfv.org/armband/colorado/docs/buildprocedure/index.html'
 
-15) `OPNFV Release Note for the Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/fuel/colorado/docs/release-notes.html>`_ 'http://artifacts.opnfv.org/fuel/colorado/docs/release-notes.html'
+15) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/releasenotes/index.html>`_ 'http://artifacts.opnfv.org/armband/colorado/docs/releasenotes/index.html'
 
 .. [1] OpenDaylight Boron RC2 is used when Service Function Chaining is enabled in Fuel plugin.
