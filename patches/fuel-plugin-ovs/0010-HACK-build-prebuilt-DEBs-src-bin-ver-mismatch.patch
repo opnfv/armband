@@ -1,0 +1,72 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 15 Sep 2016 19:41:58 +0200
+Subject: [PATCH] HACK: build: prebuilt DEBs: src/bin ver mismatch
+
+Our debian source version is not always in sync with the debian
+binaries versions, see related bug for a complete description of
+this issue.
+
+This is a temporary chance which should be dropped once the package
+versions are aligned.
+
+Related-bug: ARMBAND-89
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ovs_build/build-ovs-armband-fetch.sh | 16 ++++++++++++----
+ ovs_build/build-ovs-nsh-dpdk.sh      |  2 +-
+ 2 files changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/ovs_build/build-ovs-armband-fetch.sh b/ovs_build/build-ovs-armband-fetch.sh
+index a810b93..8ab22cc 100755
+--- a/ovs_build/build-ovs-armband-fetch.sh
++++ b/ovs_build/build-ovs-armband-fetch.sh
+@@ -17,7 +17,7 @@ set -eux
+ #     dists/mos9.0-fuel-plugin-ovs/main/binary-arm64/Packages
+ function armband_fetch() {
+   local name=$1
+-  local ver=${2//\+/\\\+}
++  local src_ver=${2//\+/\\\+}
+   local repo_base_url=${3:-http://linux.enea.com/mos-repos/ubuntu/9.0}
+   local repo_Sources_url=${4:-dists/mos9.0-fuel-plugin-ovs/main/source/Sources}
+   local repo_Packages_url=${5:-dists/mos9.0-fuel-plugin-ovs/main/binary-arm64/Packages}
+@@ -30,16 +30,24 @@ function armband_fetch() {
+     wget -c "${repo_base_url}/${repo_Packages_url}"
+   fi
+ 
+-  L=$(grep -Pzo "(?s)(?<=^Package: ${name}\n^Binary: )(\N*?)(?=\n^Version: ${ver})" \
++  L=$(grep -Pzo "(?s)(?<=^Package: ${name}\n^Binary: )(\N*?)(?=\n^Version: ${src_ver})" \
+     Sources | tr -d ',')
+   for deb_binary in ${L}; do
+-    D=$(grep -Po "(?<=^Filename: )(.*?\/${deb_binary}_${ver}_.*?\.deb)" Packages) || true
++    # FIXME(armband): https://jira.opnfv.org/browse/ARMBAND-89
++    # Until we align source and binaries versions for nsh, convert on the fly
++    # e.g.: debian source 2.5.90~04.05-1.nsh+amos2 => debian binary 2.5.90-1.nsh
++    deb_ver=${src_ver}
++    if [[ ${deb_ver} == *~*-* ]]; then
++      deb_ver=${deb_ver//~*-/-}
++      deb_ver=${deb_ver%\\\+*}
++    fi
++    D=$(grep -Po "(?<=^Filename: )(.*?\/${deb_binary}_${deb_ver}_.*?\.deb)" Packages) || true
+     if [ -n "${D}" ]; then
+       wget -c "${repo_base_url}/${D}" && found=true
+     fi
+   done
+   if [ ${found} = false ]; then
+-    echo "ERROR: Could not find DEBs for pkg/ver: ${name}/${ver}"
++    echo "ERROR: Could not find DEBs for pkg|src_ver|deb_ver: ${name}|${src_ver}|${deb_ver}"
+     exit 1
+   fi
+ }
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index 9d8a837..aebcb94 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -12,7 +12,7 @@ DIR="$(dirname `readlink -f $0`)"
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+ 
+ # AArch64 specifics, repository base URL, debian build versions
+-AARCH64_OVS_NSH_DEBV=${AARCH64_OVS_NSH_DEBV:-'2.5.90-1.nsh'}
++AARCH64_OVS_NSH_DEBV=${AARCH64_OVS_NSH_DEBV:-'2.5.90~04.05-1.nsh+amos2'}
+ 
+ # Keep track of native arch (BUILD_ARCH) and target arch(s) (UBUNTU_ARCH)
+ # All archs should be represented in `dpkg --print-architecture` format
