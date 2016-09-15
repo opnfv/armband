@@ -1,0 +1,30 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 15 Sep 2016 19:16:34 +0200
+Subject: [PATCH] build: docker: Use host's network stack
+
+Similar to Fuel@OPNFV build process, we want to mount /etc/hosts
+in the builder container to be able to use local mirror caches.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ pre_build_hook | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/pre_build_hook b/pre_build_hook
+index 3e46a37..4866219 100755
+--- a/pre_build_hook
++++ b/pre_build_hook
+@@ -28,9 +28,11 @@ function build_pkg {
+       cd ${DIR}/ovs_build
+       if [ "${USE_DOCKER}" = true ]; then
+         sudo docker build -t ovs_build .
+-        sudo docker run -e "UBUNTU_ARCH=${UBUNTU_ARCH}" -v ${DEB_DIR}:/deb \
++        sudo docker run -e "UBUNTU_ARCH=${UBUNTU_ARCH}" \
++          -v ${DEB_DIR}:/deb -v /etc/hosts:/etc/hosts \
+           -t ovs_build /ovs_build/build-ovs-dpdk.sh
+-        sudo docker run -e "UBUNTU_ARCH=${UBUNTU_ARCH}" -v ${DEB_DIR_NSH}:/deb \
++        sudo docker run -e "UBUNTU_ARCH=${UBUNTU_ARCH}" \
++          -v ${DEB_DIR_NSH}:/deb -v /etc/hosts:/etc/hosts \
+           -t ovs_build /ovs_build/build-ovs-nsh-dpdk.sh
+       else
+         rm -rf /tmp/ovs-build-{,nsh-}dpdk; mkdir -p /tmp/ovs-build-{,nsh-}dpdk
