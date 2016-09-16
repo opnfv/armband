@@ -1,6 +1,6 @@
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Tue, 22 Mar 2016 12:05:09 +0100
-Subject: [PATCH] Update vga, console defaults for armv7 and aarch64
+Subject: [PATCH] nova: Update vga, console defaults for armv7, aarch64
 
 Nova hardcodes default options for both video=cirrus and console.
 armv7 and aarch64 VMs require video=vga, and since most applications
