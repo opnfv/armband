@@ -1,0 +1,527 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_5ea0e09e",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "This is now optional, as patche-import make target now depends on submodules-init, so `make patches-import` is enough.",
+      "range": {
+        "startLine": 226,
+        "startChar": 0,
+        "endLine": 226,
+        "endChar": 26
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_7e9b5c72",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "armband/upstream/fuel/build/config.mk\nAlso, for Colorado, we added an \u003carmband/upstream/fuel/build/armband.mk\u003e.",
+      "range": {
+        "startLine": 237,
+        "startChar": 1,
+        "endLine": 237,
+        "endChar": 27
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_1e8a681b",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "make patches-import",
+      "range": {
+        "startLine": 243,
+        "startChar": 6,
+        "endLine": 243,
+        "endChar": 40
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_3e8de431",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "armband/upstream/fuel/f_isoroot/Makefile, but for armband we override this plugin selection in \u003carmband/upstream/fuel/build/armband.mk\u003e",
+      "range": {
+        "startLine": 254,
+        "startChar": 30,
+        "endLine": 254,
+        "endChar": 65
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_fe868c12",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "ODL, OVS, BGPVPN",
+      "range": {
+        "startLine": 264,
+        "startChar": 18,
+        "endLine": 264,
+        "endChar": 30
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_9e7d181f",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "in armband Colorado we support both methods too",
+      "range": {
+        "startLine": 270,
+        "startChar": 6,
+        "endLine": 270,
+        "endChar": 27
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_be78142c",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "- make submodules-clean patches-import build",
+      "range": {
+        "startLine": 285,
+        "startChar": 0,
+        "endLine": 287,
+        "endChar": 45
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_7e727c4a",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "we changed these to follow Fuel@OPNFV, so `make clean`, `make debug` from Fuel@OPNFV can be left untouched",
+      "range": {
+        "startLine": 313,
+        "startChar": 0,
+        "endLine": 315,
+        "endChar": 72
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_5eaea086",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "extra space",
+      "range": {
+        "startLine": 336,
+        "startChar": 114,
+        "endLine": 336,
+        "endChar": 115
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_7ea91c7a",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "Armband Fuel",
+      "range": {
+        "startLine": 53,
+        "startChar": 33,
+        "endLine": 53,
+        "endChar": 44
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_1eb828c7",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "we can leave make all in place, all\u003drelease for us",
+      "range": {
+        "startLine": 72,
+        "startChar": 23,
+        "endLine": 72,
+        "endChar": 30
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_3ebba4c5",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "Armband Fuel",
+      "range": {
+        "startLine": 207,
+        "startChar": 22,
+        "endLine": 207,
+        "endChar": 26
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_deb150e2",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "DO NOT select Quit Setup/Save and Quit - this triggers a bug in fuel menu used in Colorado :(",
+      "range": {
+        "startLine": 294,
+        "startChar": 16,
+        "endLine": 294,
+        "endChar": 60
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_feb44cd2",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "ODL, OVS, BGPVPN",
+      "range": {
+        "startLine": 347,
+        "startChar": 50,
+        "endLine": 347,
+        "endChar": 63
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_9ecbd852",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "missing space",
+      "range": {
+        "startLine": 553,
+        "startChar": 20,
+        "endLine": 553,
+        "endChar": 21
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_bec6d447",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 699,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "no longer an issue, we should keep the reference though",
+      "range": {
+        "startLine": 698,
+        "startChar": 68,
+        "endLine": 699,
+        "endChar": 73
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_5ec5403a",
+        "filename": "docs/releasenotes/release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "VSPERF did not make it into Colorado.1.0 :(",
+      "range": {
+        "startLine": 45,
+        "startChar": 3,
+        "endLine": 45,
+        "endChar": 9
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_dee870b6",
+        "filename": "docs/releasenotes/release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "+BGPVPN",
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_7ec03c2a",
+        "filename": "docs/releasenotes/release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "armband",
+      "range": {
+        "startLine": 83,
+        "startChar": 41,
+        "endLine": 83,
+        "endChar": 45
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_1edfc80e",
+        "filename": "docs/releasenotes/release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "main release? or whatever Fuel@OPNFV term used here.",
+      "range": {
+        "startLine": 89,
+        "startChar": 54,
+        "endLine": 89,
+        "endChar": 72
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_feebecad",
+        "filename": "docs/releasenotes/release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "see Fuel update here",
+      "range": {
+        "startLine": 108,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 46
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_9ed2f8fe",
+        "filename": "docs/releasenotes/release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 120,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 46
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_becd745f",
+        "filename": "docs/releasenotes/release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-16T14:35:29Z",
+      "side": 1,
+      "message": "AArch64 Fuel-based",
+      "range": {
+        "startLine": 154,
+        "startChar": 0,
+        "endLine": 154,
+        "endChar": 10
+      },
+      "revId": "3602b21f25b56d40fc5fb6f84ae13b6176d74d8e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
