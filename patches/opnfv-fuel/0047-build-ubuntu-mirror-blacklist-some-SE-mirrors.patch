@@ -20,6 +20,6 @@ index 4bca6bd..67219cb 100755
  # Some Ubuntu mirrors seem less reliable for this type of mirroring -
  # as they are discoved they can be added to the blacklist below in order
  # for them not to be considered.
--BLACKLIST="mirrors.se.eu.kernel.org mirror.its.dal.ca"
-+BLACKLIST="mirrors.se.eu.kernel.org mirror.its.dal.ca ftp.acc.umu.se ftp.lysator.liu.se ftp.availo.se"
+-BLACKLIST="mirror.clibre.uqam.ca"
++BLACKLIST="mirror.clibre.uqam.ca ftp.acc.umu.se ftp.lysator.liu.se ftp.availo.se"
  
