@@ -234,19 +234,19 @@ OpenDaylight
 Fuel
 ====
 
-6) `The Fuel OpenStack project <https://wiki.openstack.org/wiki/Fuel>`_ 'https://wiki.openstack.org/wiki/Fuel'
+6) `The Fuel OpenStack project <https://wiki.openstack.org/wiki/Fuel>`_: https://wiki.openstack.org/wiki/Fuel
 
-7) `Fuel documentation overview <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/>`_ 'https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/'
+7) `Fuel documentation overview <http://docs.openstack.org/developer/fuel-docs>`_: http://docs.openstack.org/developer/fuel-docs
 
-8) `Fuel planning guide <https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/mos-planning-guide.html>`_ 'https://docs.fuel-infra.org/openstack/fuel/fuel-9.0/mos-planning-guide.html'
+8) `Fuel Installation Guide <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-install-guide.html>`_: http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-install-guide.html
 
-9) `Fuel quick start guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/quickstart-guide.html>`_ 'https://docs.mirantis.com/openstack/fuel/fuel-9.0/quickstart-guide.html'
+9) `Fuel User Guide <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide.html>`_: http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide.html
 
-10) `Fuel reference architecture <https://docs.mirantis.com/openstack/fuel/fuel-9.0/reference-architecture.html>`_ 'https://docs.mirantis.com/openstack/fuel/fuel-9.0/reference-architecture.html'
+10) `Fuel Developer Guide <http://docs.openstack.org/developer/fuel-docs/devdocs/develop.html>`_: http://docs.openstack.org/developer/fuel-docs/devdocs/develop.html
 
-11) `Fuel Plugin Developers Guide <https://wiki.openstack.org/wiki/Fuel/Plugins>`_ 'https://wiki.openstack.org/wiki/Fuel/Plugins'
+11) `Fuel Plugin Developers Guide <http://docs.openstack.org/developer/fuel-docs/plugindocs/fuel-plugin-sdk-guide.html>`_: http://docs.openstack.org/developer/fuel-docs/plugindocs/fuel-plugin-sdk-guide.html
 
-12) `Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/products/openstack-drivers-and-plugins/hardware-compatibility-list>`_ 'https://www.mirantis.com/products/openstack-drivers-and-plugins/hardware-compatibility-list'
+12) `Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/products/openstack-drivers-and-plugins/hardware-compatibility-list>`_: https://www.mirantis.com/products/openstack-drivers-and-plugins/hardware-compatibility-list
 
 Fuel in OPNFV
 =============
