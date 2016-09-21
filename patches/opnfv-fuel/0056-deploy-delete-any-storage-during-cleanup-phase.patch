@@ -1,0 +1,34 @@
+From 1d25a8fc44c69215bb2e0683d13892b00b113784 Mon Sep 17 00:00:00 2001
+From: Stefan Sicleru <stefan.sicleru@enea.com>
+Date: Wed, 21 Sep 2016 16:03:20 +0200
+Subject: [PATCH] deploy: delete any storage during cleanup phase
+
+Deploys are not executed with root rights and even though
+check_if_root() calls were removed, virsh cannot properly undefine
+previous VMs, ie. old storage .raw and .iso files are not removed.
+
+Remove storage files from previous deploys through "rm -rf" commands
+so that future deploys will not complain about insufficient disk space.
+
+Signed-off-by: Stefan Sicleru <stefan.sicleru@enea.com>
+---
+ deploy/environments/execution_environment.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/deploy/environments/execution_environment.py b/deploy/environments/execution_environment.py
+index af0e130..31b5187 100644
+--- a/deploy/environments/execution_environment.py
++++ b/deploy/environments/execution_environment.py
+@@ -47,8 +47,10 @@ class ExecutionEnvironment(object):
+         log('Deleting VM %s with disks %s' % (vm_name, disk_files))
+         exec_cmd('virsh destroy %s' % vm_name, False)
+         exec_cmd('virsh undefine %s' % vm_name, False)
++        exec_cmd('rm -rf %s' % vm_name, False)
+         for file in disk_files:
+             delete(file)
++            exec_cmd('rm -rf %s' % file, False)
+
+     def overwrite_xml(self, vm_xml, vm_definition_overwrite):
+         if not vm_definition_overwrite:
+--
+1.9.1
