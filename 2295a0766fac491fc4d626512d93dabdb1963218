@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_92c892a9",
+        "filename": "patches/fuel-library/0001-Add-arm64-templates-to-cobbler-and-nailgun.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-27T10:55:16Z",
+      "side": 1,
+      "message": "We should add here:\n\n[ Matei ...]\n\u003cwhat you changed in this patch\u003e\n\nSigned-off-by: Stan... (he forgot to sign this)\nSigned-off-by: Matei ...",
+      "revId": "2295a0766fac491fc4d626512d93dabdb1963218",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_b2cd8eb9",
+        "filename": "patches/fuel-library/0001-Add-arm64-templates-to-cobbler-and-nailgun.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-09-27T10:55:16Z",
+      "side": 1,
+      "message": "since we semi-hardcode this path, we should document in the patch header above + ARMBAND ticket",
+      "range": {
+        "startLine": 102,
+        "startChar": 53,
+        "endLine": 102,
+        "endChar": 67
+      },
+      "revId": "2295a0766fac491fc4d626512d93dabdb1963218",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
