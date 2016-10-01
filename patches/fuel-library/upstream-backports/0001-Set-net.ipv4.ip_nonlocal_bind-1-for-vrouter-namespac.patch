@@ -1,0 +1,54 @@
+From: Bartosz Kupidura <bkupidura@mirantis.com>
+Date: Mon, 27 Jun 2016 13:12:29 +0200
+Subject: [PATCH] Set net.ipv4.ip_nonlocal_bind=1 for vrouter namespace
+
+Change-Id: I123af7e3b53f9a53fcd9d2818640c0bd4699e024
+Closes-Bug: #1595957
+(cherry picked from commit 244456a3b77074a6cd85fa9d33ebb03ac25decf8)
+---
+ files/fuel-ha-utils/ocf/ns_dns     | 3 ++-
+ files/fuel-ha-utils/ocf/ns_vrouter | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/files/fuel-ha-utils/ocf/ns_dns b/files/fuel-ha-utils/ocf/ns_dns
+index cdd814c..49cbd17 100644
+--- a/files/fuel-ha-utils/ocf/ns_dns
++++ b/files/fuel-ha-utils/ocf/ns_dns
+@@ -140,7 +140,7 @@ exit $OCF_SUCCESS
+
+ check_ns() {
+   local ns=`ip netns list | grep "$OCF_RESKEY_ns"`
+-  [ $ns != $OCF_RESKEY_ns ] && return $OCF_ERR_GENERIC
++  [ "$ns" != $OCF_RESKEY_ns ] && return $OCF_ERR_GENERIC
+   return $OCF_SUCCESS
+ }
+
+@@ -150,6 +150,7 @@ get_ns() {
+
+   ocf_run ip netns add $OCF_RESKEY_ns
+   rc=$?
++  ocf_run $RUN_IN_NS /sbin/sysctl -w net.ipv4.ip_nonlocal_bind=1
+   ocf_run $RUN_IN_NS ip link set up dev lo
+
+   return $rc
+diff --git a/files/fuel-ha-utils/ocf/ns_vrouter b/files/fuel-ha-utils/ocf/ns_vrouter
+index a65e9cf..5cc6c98 100644
+--- a/files/fuel-ha-utils/ocf/ns_vrouter
++++ b/files/fuel-ha-utils/ocf/ns_vrouter
+@@ -186,7 +186,7 @@ check_ns() {
+   local LH="${LL} check_ns():"
+   local ns=`ip netns list | grep "$OCF_RESKEY_ns"`
+   ocf_log debug "${LH} recieved netns list: ${ns}"
+-  [[ $ns != $OCF_RESKEY_ns ]] && return $OCF_ERR_GENERIC
++  [[ "$ns" != $OCF_RESKEY_ns ]] && return $OCF_ERR_GENERIC
+   return $OCF_SUCCESS
+ }
+
+@@ -197,6 +197,7 @@ get_ns() {
+
+   ocf_run ip netns add $OCF_RESKEY_ns
+   rc=$?
++  ocf_run $RUN_IN_NS /sbin/sysctl -w net.ipv4.ip_nonlocal_bind=1
+   ocf_run $RUN_IN_NS ip link set up dev lo
+   ocf_log debug "${LH} added netns ${OCF_RESKEY_ns} and set up lo"
+

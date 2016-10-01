@@ -30,21 +30,21 @@ branch "stable/colorado", including prebuilt binaries (DEBs) for:
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- pre_build_hook | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ pre_build_hook | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/pre_build_hook b/pre_build_hook
-index f973826..953e66c 100755
+index 0296821..a6d55e9 100755
 --- a/pre_build_hook
 +++ b/pre_build_hook
-@@ -41,9 +41,17 @@ NETWORKING_ODL_BRANCH=${NETWORKING_ODL_BRANCH:-stable/mitaka}
+@@ -53,9 +53,17 @@ NETWORKING_ODL_BRANCH=${NETWORKING_ODL_BRANCH:-stable/mitaka}
  OPNFV_QUAGGE_PACKAGING_REPO=${OPNFV_QUAGGE_PACKAGING_REPO:-https://github.com/nikolas-hermanns/opnfv-quagga-packaging}
  OPNFV_QUAGGE_PACKAGING_BRANCH=stable/colorado
- 
+
 -# For which systems odl package should be build
 +# For which systems odl package should be built
  BUILD_FOR=${BUILD_FOR:-ubuntu}
- 
+
 +# For which architecture(s) package should be built
 +# Only applicable when "BUILD_FOR=ubuntu"
 +# ODL itself is mostly arch-indep, but its deps are not
@@ -56,7 +56,7 @@ index f973826..953e66c 100755
  DIR="$(dirname `readlink -f $0`)"
  TMP_DIR="${DIR}/tmp"
  MODULES="${DIR}/deployment_scripts/puppet/modules"
-@@ -74,7 +82,10 @@ function add_opnfv_quagga {
+@@ -86,7 +94,10 @@ function add_opnfv_quagga {
                  sudo apt-get -y install `cat requirements.txt`
                  make -j6
              fi
@@ -67,4 +67,4 @@ index f973826..953e66c 100755
 +            done
          popd
      popd
- 
+

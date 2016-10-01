@@ -1,0 +1,31 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 9 Sep 2016 17:55:38 +0200
+Subject: [PATCH] FIXME: deploy: EFI: Skip re-ordering boot via IPMI
+
+On EFI systems deploys, altering the boot order via IPMI causes
+issues on some specific targets. Until we agree on an uniform
+solution for EFI systems + IPMI boot order handling, just skip
+altering it via IPMI.
+
+Related-bug: https://jira.opnfv.org/browse/ARMBAND-71
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deploy/deploy_env.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/deploy/deploy_env.py b/deploy/deploy_env.py
+index 93dc395..1d2dfeb 100644
+--- a/deploy/deploy_env.py
++++ b/deploy/deploy_env.py
+@@ -255,7 +255,9 @@ class CloudDeploy(object):
+
+     def set_boot_order_nodes(self):
+         self.power_off_nodes()
+-        self.set_boot_order(['pxe', 'disk'])
++        # ARMBAND FIXME: See https://jira.opnfv.org/browse/ARMBAND-71
++        # Until we choose an uniform design on EFI systems, just disable it
++        # self.set_boot_order(['pxe', 'disk'])
+         self.power_on_nodes()
+
+     def get_put_deploy_log(self):

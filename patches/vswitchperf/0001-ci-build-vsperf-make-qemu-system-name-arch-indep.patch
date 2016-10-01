@@ -10,7 +10,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/ci/build-vsperf.sh b/ci/build-vsperf.sh
-index 5370898..fc38747 100755
+index a02de00..fa0d46a 100755
 --- a/ci/build-vsperf.sh
 +++ b/ci/build-vsperf.sh
 @@ -87,14 +87,15 @@ TEST_REPORT_LOG_DIR="${HOME}/opnfv/$PROJECT/results/$BRANCH"
@@ -22,7 +22,7 @@ index 5370898..fc38747 100755
      sudo pkill python3 &> /dev/null
 -    sudo killall -9 qemu-system-x86_64 &> /dev/null
 +    sudo killall -9 "${qemu_system_name}" &> /dev/null
- 
+
      # sometimes qemu resists to terminate, so wait a bit and kill it again
 -    if pgrep qemu-system-x86_64 &> /dev/null ; then
 +    if pgrep "${qemu_system_name}" &> /dev/null ; then
@@ -31,4 +31,4 @@ index 5370898..fc38747 100755
 +        sudo killall -9 "${qemu_system_name}" &> /dev/null
          sleep 5
      fi
- 
+

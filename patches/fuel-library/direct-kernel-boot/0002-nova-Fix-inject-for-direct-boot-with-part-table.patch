@@ -1,0 +1,92 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 25 Mar 2016 16:12:08 +0100
+Subject: [PATCH] nova: Fix inject for direct boot with part table.
+
+See [1] for full bug description.
+For now, we detect direct kernel boot with a partition table inside
+disk image by passing target_partition when root kernel arg points
+to a partition (instead of the whole disk).
+
+[1] https://bugs.launchpad.net/nova/+bug/1290455
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+---
+ .../openstack/files/nova-libvirt-inject.patch      | 44 ++++++++++++++++++++++
+ .../openstack_tasks/manifests/roles/compute.pp     | 12 ++++++
+ 2 files changed, 56 insertions(+)
+ create mode 100644 deployment/puppet/openstack/files/nova-libvirt-inject.patch
+
+diff --git a/deployment/puppet/openstack/files/nova-libvirt-inject.patch b/deployment/puppet/openstack/files/nova-libvirt-inject.patch
+new file mode 100644
+index 0000000..b86927e
+--- /dev/null
++++ b/deployment/puppet/openstack/files/nova-libvirt-inject.patch
+@@ -0,0 +1,44 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Tue, 22 Mar 2016 12:05:09 +0100
++Subject: [PATCH] Fix inject for direct boot with partition table
++
++See [1] for full bug description.
++For now, we detect direct kernel boot with a partition table inside
++disk image by passing target_partition when root kernel arg points
++to a partition (instead of the whole disk).
++
++[1] https://bugs.launchpad.net/nova/+bug/1290455
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
++---
++
++diff --git a/virt/libvirt/driver.py b/virt/libvirt/driver.py
++index 920a283..751b140 100644
++--- a/virt/libvirt/driver.py
+++++ b/virt/libvirt/driver.py
++@@ -34,6 +34,7 @@
++ import mmap
++ import operator
++ import os
+++import re
++ import shutil
++ import tempfile
++ import time
++@@ -2820,7 +2821,15 @@
++         """
++         # Handles the partition need to be used.
++         target_partition = None
++-        if not instance.kernel_id:
+++        image_meta = objects.ImageMeta.from_instance(instance)
+++        # FIXME(armband): https://bugs.launchpad.net/nova/+bug/1290455
+++        # Support direct kernel boot with a partition table inside disk image:
+++        # pass target_partition when root kernel arg points to a partition
+++        # (instead of the whole disk).
+++        has_partition_table = re.search("root=/dev/.d.([1-9]+)",
+++            str(image_meta.properties.get("os_command_line")))
+++
+++        if not instance.kernel_id or has_partition_table:
++             target_partition = CONF.libvirt.inject_partition
++             if target_partition == 0:
++                 target_partition = None
+diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
+index dc61033..3fcfb51 100644
+--- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
++++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
+@@ -319,6 +319,18 @@ class openstack_tasks::roles::compute {
+     cinder_catalog_info                => pick($nova_hash_real['cinder_catalog_info'], 'volumev2:cinderv2:internalURL'),
+     rabbit_heartbeat_timeout_threshold => $::os_service_default,
+   } ->
++  # FIXME(armband): Fix inject for part image direct boot (bug LP #1469308)
++  file { "${nova_path}/libvirt-inject.patch":
++    ensure => "file",
++    source => "puppet:///modules/openstack/nova-libvirt-inject.patch",
++  } ->
++  exec { 'nova libvirt driver patch partitioned injection':
++    path    => ['/usr/bin'],
++    command => "patch -p1 < ${nova_path}/libvirt-inject.patch",
++    unless  => "patch -p1 -R -N --dry-run < ${nova_path}/libvirt-inject.patch",
++    cwd     => $nova_path,
++    require => [Package['patch']],
++  } ->
+   # FIXME(armband): Workaround for missing arm defaults in nova libvirt driver
+   file { "${nova_path}/libvirt-vga-console.patch":
+     ensure => "file",

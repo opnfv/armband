@@ -1,0 +1,33 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 15 Jul 2016 17:22:44 +0200
+Subject: [PATCH] compute: Fix virtlogd not started after install
+
+libvirt >= 1.3.0 installs additional services, including virtlogd,
+which need to be started explicitly after install, as the Ubuntu UCA
+package is currently broken.
+
+Fuel code already carries a fix for this, but only for UCA libvirt.
+Refactor the condition for the existing fix to check package version
+instead of origin.
+
+Closes-bug: https://jira.opnfv.org/browse/ARMBAND-37
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deployment/puppet/openstack_tasks/manifests/roles/compute.pp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
+index 164bd70..211fefa 100644
+--- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
++++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
+@@ -337,7 +337,8 @@ class openstack_tasks::roles::compute {
+
+     # TODO(aschultz): work around until https://review.openstack.org/#/c/306677/
+     # lands.
+-    if $::os_package_type == 'ubuntu' {
++    # Armband: also apply for our libvirt-bin deb package (>=1.3.0 version)
++    if (versioncmp($::libvirt_package_version, '1.3.0') >= 0) {
+       ensure_resource('service', ['virtlogd','virtlockd'], {
+         ensure => running,
+         enable => true,

@@ -10,21 +10,21 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/systems/ubuntu/build_base_machine.sh b/systems/ubuntu/build_base_machine.sh
-index a2b48a2..7cbe78e 100755
+index 1b42a79..b0f3740 100755
 --- a/systems/ubuntu/build_base_machine.sh
 +++ b/systems/ubuntu/build_base_machine.sh
-@@ -52,11 +52,12 @@ apt-get -y install libfuse-dev
+@@ -54,11 +54,12 @@ apt-get -y install libnuma-dev
  # packages related to VM
- 
+
  # a few manual fix up on a ubuntu
 -cd /lib/x86_64-linux-gnu
 +local arch=$(uname -m)
 +cd /lib/${arch}-linux-gnu
  ln -sf libssl.so.1.0.0 libssl.so
  ln -sf libcrypto.so.1.0.0 libcrypto.so
- 
+
 -cd /usr/lib/x86_64-linux-gnu
 +cd /usr/lib/${arch}-linux-gnu
  ln -sf libxml2.so.2 libxml2.so
- 
- 
+
+

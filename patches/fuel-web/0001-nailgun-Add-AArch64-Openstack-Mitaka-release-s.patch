@@ -7,14 +7,14 @@ Add the following Openstack releases:
 - Mitaka on Ubuntu 14.04 (aarch64)
 - Mitaka on Ubuntu+UCA 14.04 (aarch64)
 
-Signed-off-by: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  nailgun/nailgun/fixtures/openstack.yaml | 287 ++++++++++++++++++++++++++++++++
  1 file changed, 287 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index 62e6b73..9674d66 100644
+index d08a4fc..65646d4 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
 @@ -2314,3 +2314,290 @@
