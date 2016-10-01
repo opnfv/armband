@@ -1,16 +1,19 @@
+From 556e1bbb996bf59727f088d6ea5cbe4c67716fb7 Mon Sep 17 00:00:00 2001
 From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
 Date: Tue, 15 Mar 2016 11:33:52 +0100
 Subject: [PATCH] nova config: Disable usb tablet for aarch64
 
 ---
- deployment/puppet/openstack_tasks/manifests/roles/compute.pp | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ deployment/puppet/openstack_tasks/manifests/roles/compute.pp | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
-index ca1b2c4..c0349dc 100644
+index 211fefa..4240126 100644
 --- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
 +++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
-@@ -316,3 +316,7 @@ class openstack::compute (
+@@ -379,6 +379,10 @@ class openstack_tasks::roles::compute {
+   }
+ 
    nova_config {
 +    'libvirt/use_usb_tablet':       value => $::architecture ? {
 +        /(arm64|aarch64)/ => false,
@@ -18,3 +21,4 @@ index ca1b2c4..c0349dc 100644
 +    };
      'libvirt/live_migration_flag':  value => 'VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST';
      'libvirt/block_migration_flag': value => 'VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_NON_SHARED_INC';
+     'DEFAULT/connection_type':      value => 'libvirt';

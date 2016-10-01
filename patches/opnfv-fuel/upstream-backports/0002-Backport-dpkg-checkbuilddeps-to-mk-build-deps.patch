@@ -10,13 +10,13 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  ...ce-dpkg-checkbuilddeps-with-mk-build-deps.patch | 38 ++++++++++++++++++++++
  1 files changed, 38 insertions(+)
- create mode 100644 build/replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
+ create mode 100644 build/f_repos/patch/fuel-main/0005-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
 
-diff --git a/build/patch-repos/0040-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch b/build/patch-repos/0040-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
+diff --git a/build/f_repos/patch/fuel-main/0005-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch b/build/f_repos/patch/fuel-main/0005-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
 new file mode 100644
 index 0000000..896f3cf
 --- /dev/null
-+++ b/build/patch-repos/0040-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
++++ b/build/f_repos/patch/fuel-main/0005-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
 @@ -0,0 +1,38 @@
 +From: Sergii Golovatiuk <sgolovatiuk@mirantis.com>
 +Date: Fri, 3 Jun 2016 12:26:19 +0200

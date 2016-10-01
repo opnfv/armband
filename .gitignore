@@ -1,3 +1,4 @@
+.submodules*
 build.log
 config.mk
 ci/clean_cache.sh
