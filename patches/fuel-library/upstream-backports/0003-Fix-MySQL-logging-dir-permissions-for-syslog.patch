@@ -1,0 +1,90 @@
+From: Maksim Malchuk <mmalchuk@mirantis.com>
+Date: Wed, 24 Aug 2016 00:15:02 +0300
+Subject: [PATCH] Fix MySQL logging dir permissions for syslog
+
+This change fixes permissions for MySQL logging directory to enable
+syslogd create and write logs files into it.
+
+Closes-Bug: #1615680
+Change-Id: Id29aead6619ea8ed68811d0fd80895ee79f51687
+Signed-off-by: Maksim Malchuk <mmalchuk@mirantis.com>
+(cherry picked from commit 9c978278811eeebfb11ab4d2b42ebabe00c132c2)
+---
+ deployment/puppet/cluster/manifests/mysql.pp               | 14 +++++++++++---
+ .../puppet/cluster/spec/classes/cluster_mysql_spec.rb      | 11 ++++++++++-
+ tests/noop/spec/hosts/database/database_spec.rb            |  9 +++++++++
+ 3 files changed, 30 insertions(+), 4 deletions(-)
+
+diff --git a/deployment/puppet/cluster/manifests/mysql.pp b/deployment/puppet/cluster/manifests/mysql.pp
+index f483cf6..7bc8874 100644
+--- a/deployment/puppet/cluster/manifests/mysql.pp
++++ b/deployment/puppet/cluster/manifests/mysql.pp
+@@ -118,8 +118,16 @@ class cluster::mysql (
+     onlyif  => 'test -f /tmp/wsrep-init-file',
+   }
+
++  file { 'fix-log-dir':
++    ensure  => directory,
++    path    => '/var/log/mysql',
++    mode    => '0770',
++    require => Package['mysql-server'],
++  }
++
+   Exec['create-init-file'] ->
+-    Service<| title == $service_name |> ~>
+-      Exec['wait-for-sync'] ->
+-        Exec['rm-init-file']
++    File['fix-log-dir'] ->
++      Service<| title == $service_name |> ~>
++        Exec['wait-for-sync'] ->
++          Exec['rm-init-file']
+ }
+diff --git a/deployment/puppet/cluster/spec/classes/cluster_mysql_spec.rb b/deployment/puppet/cluster/spec/classes/cluster_mysql_spec.rb
+index 72c8c2f..ad3fc1b 100644
+--- a/deployment/puppet/cluster/spec/classes/cluster_mysql_spec.rb
++++ b/deployment/puppet/cluster/spec/classes/cluster_mysql_spec.rb
+@@ -33,7 +33,7 @@ describe 'cluster::mysql' do
+         should contain_exec('create-init-file').with_command(
+           /'username'@'localhost' IDENTIFIED BY 'password'/
+         )
+-        should contain_exec('create-init-file').that_comes_before('Service[mysqld]')
++        should contain_exec('create-init-file').that_comes_before('File[fix-log-dir]')
+         should contain_exec('create-init-file').that_notifies('Exec[wait-for-sync]')
+       end
+
+@@ -41,6 +41,15 @@ describe 'cluster::mysql' do
+         should contain_exec('rm-init-file')
+       end
+
++      it 'should have correct permissions for logging directory' do
++        should contain_file('fix-log-dir').with(
++          :ensure => 'directory',
++          :path   => '/var/log/mysql',
++          :mode   => '0770',
++        ).that_requires('Package[mysql-server]')
++        should contain_file('fix-log-dir').that_comes_before('Service[mysqld]')
++      end
++
+       it 'creates exec to wait initial database sync' do
+         should contain_exec('wait-for-sync').that_subscribes_to('Service[mysqld]')
+       end
+diff --git a/tests/noop/spec/hosts/database/database_spec.rb b/tests/noop/spec/hosts/database/database_spec.rb
+index d4ad8d0..2c4c5c5 100644
+--- a/tests/noop/spec/hosts/database/database_spec.rb
++++ b/tests/noop/spec/hosts/database/database_spec.rb
+@@ -261,6 +261,15 @@ describe manifest do
+       )
+     end
+
++    it 'should have correct permissions for logging directory' do
++      should contain_file('fix-log-dir').with(
++        :ensure => 'directory',
++        :path   => '/var/log/mysql',
++        :mode   => '0770',
++      ).that_requires('Package[mysql-server]')
++      should contain_file('fix-log-dir').that_comes_before('Service[mysqld]')
++    end
++
+     it 'should configure galera grants service and proper flow' do
+       if primary_controller
+         should contain_class('cluster::galera_grants').with(

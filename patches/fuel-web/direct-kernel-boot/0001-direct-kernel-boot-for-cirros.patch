@@ -1,0 +1,137 @@
+From: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+Date: Tue, 15 Mar 2016 15:01:51 +0100
+Subject: [PATCH] direct kernel boot for cirros
+
+---
+ nailgun/nailgun/orchestrator/base_serializers.py   | 16 +++--
+ .../nailgun/orchestrator/deployment_serializers.py | 68 ++++++++++++++++------
+ 2 files changed, 61 insertions(+), 23 deletions(-)
+
+diff --git a/nailgun/nailgun/orchestrator/base_serializers.py b/nailgun/nailgun/orchestrator/base_serializers.py
+index 2fb0da5..ac787ed 100644
+--- a/nailgun/nailgun/orchestrator/base_serializers.py
++++ b/nailgun/nailgun/orchestrator/base_serializers.py
+@@ -145,12 +145,16 @@ class MuranoMetadataSerializerMixin(object):
+
+     def inject_murano_settings(self, image_data):
+         """Adds murano metadata to the test image"""
+-        test_vm_image = image_data['test_vm_image']
+-        existing_properties = test_vm_image['glance_properties']
+-        murano_data = ' '.join(["""--property murano_image_info='{"title":"""
+-                               """ "Murano Demo", "type": "cirros.demo"}'"""])
+-        test_vm_image['glance_properties'] = existing_properties + murano_data
+-        return {'test_vm_image': test_vm_image}
++        test_vm_images = []
++        for test_vm_image in image_data['test_vm_image']:
++            existing_properties = test_vm_image['glance_properties']
++            murano_data = ' '.join(
++                ["""--property murano_image_info='{"title":"""
++                    """ "Murano Demo", "type": "cirros.demo"}'"""])
++            test_vm_image['glance_properties'] = existing_properties + \
++                murano_data
++            test_vm_images += [test_vm_image]
++        return {'test_vm_image': test_vm_images}
+
+
+ class VmwareDeploymentSerializerMixin(object):
+diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/nailgun/orchestrator/deployment_serializers.py
+index e561324..601301b 100644
+--- a/nailgun/nailgun/orchestrator/deployment_serializers.py
++++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
+@@ -283,6 +283,9 @@ class DeploymentMultinodeSerializer(object):
+         return {'glance': {'image_cache_max_size': image_cache_max_size}}
+
+     def generate_test_vm_image_data(self, node):
++        images = []
++        # By default always prepare the disk image
++
+         # Instantiate all default values in dict.
+         image_data = {
+             'container_format': 'bare',
+@@ -305,8 +308,8 @@ class DeploymentMultinodeSerializer(object):
+             arch = "x86_64"
+         elif arch == "arm64":
+             arch = "aarch64"
+-        image_data['img_path'] = '{0}cirros-{1}-disk.img'.format(img_dir,
+-            arch)
++        image_data['img_path'] = \
++            '{0}cirros-{1}-disk.img'.format(img_dir, arch)
+
+         glance_properties = []
+
+@@ -321,8 +324,38 @@ class DeploymentMultinodeSerializer(object):
+             glance_properties.append('--property hypervisor_type=vmware')
+
+         image_data['glance_properties'] = ' '.join(glance_properties)
++        images += [image_data]
++
++        # Now for aarch64 add also kernel and initrd because we direct
++        # kernel boot is used then
++        if arch == 'aarch64':
++            image_data['glance_properties'] += \
++                ' --property os_command_line=\'root=/dev/vda1 rw rootwait' + \
++                ' console=tty0 console=ttyS0 console=ttyAMA0\'' + \
++                ' --property hw_video_model=vga'
++            kernel_data = {
++                'container_format': 'aki',
++                'public': 'true',
++                'disk_format': 'aki',
++                'img_name': 'TestVM-kernel',
++                'img_path': '{0}cirros-{1}-kernel'.format(img_dir, arch),
++                'os_name': 'cirros',
++                'min_ram': 128,
++                'glance_properties': '',
++            }
++            initrd_data = {
++                'container_format': 'ari',
++                'public': 'true',
++                'disk_format': 'ari',
++                'img_name': 'TestVM-initramfs',
++                'img_path': '{0}cirros-{1}-initramfs'.format(img_dir, arch),
++                'os_name': 'cirros',
++                'min_ram': 128,
++                'glance_properties': '',
++            }
++            images += [kernel_data, initrd_data]
+
+-        return {'test_vm_image': image_data}
++        return {'test_vm_image': images}
+
+     @classmethod
+     def get_net_provider_serializer(cls, cluster):
+@@ -521,20 +554,21 @@ class DeploymentHASerializer61(DeploymentHASerializer,
+         images_data['test_vm_image'] = []
+         if attrs.get('editable', {}).get('common', {}). \
+            get('use_vcenter', {}).get('value') is True:
+-            image_vmdk_data = deepcopy(image_data['test_vm_image'])
+-            img_path = image_vmdk_data['img_path']. \
+-                replace('x86_64-disk.img', 'i386-disk.vmdk')
+-            image_vmdk_data.update({
+-                'img_name': 'TestVM-VMDK',
+-                'disk_format': 'vmdk',
+-                'img_path': img_path,
+-            })
+-            image_vmdk_data['glance_properties'] = ' '.join([
+-                '--property vmware_disktype=sparse',
+-                '--property vmware_adaptertype=lsiLogic',
+-                '--property hypervisor_type=vmware'])
+-            images_data['test_vm_image'].append(image_vmdk_data)
+-            images_data['test_vm_image'].append(image_data['test_vm_image'])
++            images_vmdk_data = deepcopy(image_data['test_vm_image'])
++            for image_vmdk_data in images_vmdk_data:
++                img_path = image_vmdk_data['img_path']. \
++                    replace('x86_64-disk.img', 'i386-disk.vmdk')
++                image_vmdk_data.update({
++                    'img_name': 'TestVM-VMDK',
++                    'disk_format': 'vmdk',
++                    'img_path': img_path,
++                })
++                image_vmdk_data['glance_properties'] = ' '.join([
++                    '--property vmware_disktype=sparse',
++                    '--property vmware_adaptertype=lsiLogic',
++                    '--property hypervisor_type=vmware'])
++                images_data['test_vm_image'] += [image_vmdk_data]
++            images_data['test_vm_image'] += image_data['test_vm_image']
+         else:
+             images_data = image_data
+
