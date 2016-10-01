@@ -1,0 +1,60 @@
+From: dmburmistrov <dmburmistrov@mirantis.com>
+Date: Thu, 18 Aug 2016 21:30:26 +0300
+Subject: [PATCH] Always wait for MySQL sync on service refresh
+
+Always trigger Exec['wait-for-sync'] on
+MySQL service refresh.
+
+Closes-bug: #1614647
+
+Change-Id: I82ec0d46eff217daedc1bd07c67069498c515c44
+---
+ deployment/puppet/cluster/manifests/mysql.pp                 | 6 +++---
+ deployment/puppet/cluster/spec/classes/cluster_mysql_spec.rb | 6 +++++-
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/deployment/puppet/cluster/manifests/mysql.pp b/deployment/puppet/cluster/manifests/mysql.pp
+index c36b65d..f483cf6 100644
+--- a/deployment/puppet/cluster/manifests/mysql.pp
++++ b/deployment/puppet/cluster/manifests/mysql.pp
+@@ -104,7 +104,7 @@ class cluster::mysql (
+     require => Package['mysql-server'],
+   } ~>
+
+-  exec { 'wait-initial-sync':
++  exec { 'wait-for-sync':
+     path        => '/bin:/sbin:/usr/bin:/usr/sbin',
+     command     => "mysql ${user_password_string} -Nbe \"show status like 'wsrep_local_state_comment'\" | grep -q -e Synced && sleep 10",
+     try_sleep   => 10,
+@@ -119,7 +119,7 @@ class cluster::mysql (
+   }
+
+   Exec['create-init-file'] ->
+-    Service<| title == $service_name |> ->
+-      Exec['wait-initial-sync'] ->
++    Service<| title == $service_name |> ~>
++      Exec['wait-for-sync'] ->
+         Exec['rm-init-file']
+ }
+diff --git a/deployment/puppet/cluster/spec/classes/cluster_mysql_spec.rb b/deployment/puppet/cluster/spec/classes/cluster_mysql_spec.rb
+index cf2c719..72c8c2f 100644
+--- a/deployment/puppet/cluster/spec/classes/cluster_mysql_spec.rb
++++ b/deployment/puppet/cluster/spec/classes/cluster_mysql_spec.rb
+@@ -34,12 +34,16 @@ describe 'cluster::mysql' do
+           /'username'@'localhost' IDENTIFIED BY 'password'/
+         )
+         should contain_exec('create-init-file').that_comes_before('Service[mysqld]')
+-        should contain_exec('create-init-file').that_notifies('Exec[wait-initial-sync]')
++        should contain_exec('create-init-file').that_notifies('Exec[wait-for-sync]')
+       end
+
+       it 'creates exec to remove init-file' do
+         should contain_exec('rm-init-file')
+       end
++
++      it 'creates exec to wait initial database sync' do
++        should contain_exec('wait-for-sync').that_subscribes_to('Service[mysqld]')
++      end
+     end
+
+   end

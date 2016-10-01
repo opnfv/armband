@@ -1,0 +1,118 @@
+From: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+Date: Tue, 15 Mar 2016 15:01:34 +0100
+Subject: [PATCH] upload_cirros: Add direct kernel boot support.
+
+AArch64 currently only supports direct kernel boot, so add the
+functionality of uploading and connecting kernel and initramfs
+images (disk formats `AKI` and `ARI`).
+
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+---
+ .../osnailyfacter/modular/astute/upload_cirros.rb  | 55 ++++++++++++++++++++--
+ 1 file changed, 51 insertions(+), 4 deletions(-)
+
+diff --git a/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb b/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
+index f0441b0..371d051 100755
+--- a/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
++++ b/deployment/puppet/osnailyfacter/modular/astute/upload_cirros.rb
+@@ -51,12 +51,12 @@ end
+ def image_list
+   stdout = `glance --verbose image-list`
+   return_code = $?.exitstatus
+-  images = []
++  images = Hash[]
+   stdout.split("\n").each do |line|
+     fields = line.split('|').map { |f| f.chomp.strip }
+     next if fields[1] == 'ID'
+     next unless fields[2]
+-    images << {fields[2] => fields[6]}
++    images[fields[2]] = { :id => fields[1], :status => fields[6] }
+   end
+   {:images => images, :exit_code => return_code}
+ end
+@@ -78,6 +78,16 @@ EOF
+   [ stdout, return_code ]
+ end
+
++# Calls glance update-image with a given property and value
++# Supported properties: 'kernel-id', 'ramdisk-id'
++def update_image(image_id, property, value)
++  command = "/usr/bin/openstack image set --#{property}=#{value} #{image_id}"
++  puts command
++  stdout = `#{command}`
++  return_code = $?.exitstatus
++  [ stdout, return_code ]
++end
++
+ # check if Glance is online
+ # waited until the glance is started because when vCenter used as a glance
+ # backend launch may takes up to 1 minute.
+@@ -133,7 +143,7 @@ end
+ # return true if image has been uploaded and active
+ def check_image(image)
+   list_of_images = image_list
+-  if list_of_images[:exit_code] == 0 && list_of_images[:images].include?(image['img_name'] => "active")
++  if list_of_images[:exit_code] == 0 && list_of_images[:images].select { |k,v| k == image['img_name'] and v[:status] == "active" }.count > 0
+     return true
+   end
+   return false
+@@ -144,7 +154,7 @@ end
+ # the first one
+ def cleanup_image(image)
+   list_of_images = image_list
+-  unless list_of_images[:images].select { |img_hash| img_hash.key?(image['img_name']) }.empty?
++  unless list_of_images[:images].select { |img_hash, v| img_hash == image['img_name'] }.count == 0
+     delete_image(image['img_name'])
+   end
+ end
+@@ -157,6 +167,41 @@ def delete_image(image_name)
+   [ stdout, return_code ]
+ end
+
++# For each disk image try to find a kernel and initramfs images and
++# attach then to it via kernel_id and ramdisk_id glance properties.
++def connect_dependant_images(images)
++  # for each image
++  # get image id from glance
++  img_list = image_list
++  return_code = img_list[:exit_code]
++  if return_code == 0
++    images.each do |image|
++      img_list[:images].each do |k,v|
++        if k == image['img_name']
++          image['id'] = v[:id]
++        end
++      end
++    end
++    # for each image that is not in [aki, ari]
++    images.each do |image|
++      next if ['aki', 'ari'].include?(image['disk_format'])
++      images.each do |i|
++        # find aki/ari image whose name starts with this image's name
++        if i['img_name'].start_with?(image['img_name'])
++          ret = 0
++          if i['disk_format'] == 'aki'
++            _, ret = update_image(image['id'], 'kernel-id', i['id'])
++          elsif i['disk_format'] == 'ari'
++            _, ret = update_image(image['id'], 'ramdisk-id', i['id'])
++          end
++          return_code += ret
++        end
++      end
++    end
++  end
++  return return_code
++end
++
+ ########################
+
+ wait_for_glance
+@@ -180,6 +225,8 @@ if errors > 0
+     cleanup_image(image)
+   end
+   exit 1
++elsif connect_dependant_images(test_vm_images) > 0
++  exit 2
+ end
+
+ exit 0

@@ -1,0 +1,49 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 9 Jun 2016 21:37:48 +0200
+Subject: [PATCH] mcagent: Increase max shell command timeout to 2h
+
+Since `execute_shell_command` mcagent is used for building the target
+image and the timeout provided in the astute task is just respected on
+the Astute level (on mcollective level this timeout is actually a
+minumum between value provided and ddl value) we need to increase it
+for Armband operation.
+
+Because Armband builds the target image via `qemu-debootstrap`, it can
+take more than 1 hour to finish the building. Therefore aside of
+increasing the timeout in the Astute task, the maximum timeout value
+for mcagent has to be increased.
+
+[ Alexandru Avadanii ]
+Repackaged, based on Stan's `fuel-astute` patch.
+
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../f_bootstrap/post-scripts/80_prepare_cross_builds.sh    | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh b/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
+index d33d1d1..d78b850 100755
+--- a/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
++++ b/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
+@@ -26,6 +26,20 @@ if which dpkg > /dev/null 2>&1; then
+       echo "Error starting systemd-binfmt!"
+       exit 1
+     fi
++
++    # Cross-build timeout adjustments
++    #
++    # Since `execute_shell_command` mcagent is used for building the target
++    # image and the timeout provided in the astute task is just respected on
++    # the Astute level (on mcollective level this timeout is actually a
++    # minumum between value provided and ddl value) we need to increase it
++    # for cross-build operations.
++
++    # Building the target image via `qemu-debootstrap` can take more than
++    # 1 hour. Therefore aside of increasing the timeout in the Astute task,
++    # the maximum timeout value for mcagent has to be increased (use 2h).
++    sed -i.bak -r 's/^(\s+:timeout\s*=>)\s*[[:digit:]]+$/\1 7200/' \
++      /usr/libexec/mcollective/mcollective/agent/execute_shell_command.ddl
+   fi
+ fi
+ 
