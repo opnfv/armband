@@ -1,0 +1,32 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 17 Aug 2016 16:18:26 +0200
+Subject: [PATCH] deploy: Fix/add bootstrap DEA override delay
+
+Previous change adding support for DEA to override bootstrap config
+did not account for slow execution on remote servers, so add a
+one minute sleep before checking for completition of fuel install.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deploy/install_fuel_master.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/deploy/install_fuel_master.py b/deploy/install_fuel_master.py
+index 808d0b1..1a7685a 100644
+--- a/deploy/install_fuel_master.py
++++ b/deploy/install_fuel_master.py
+@@ -196,11 +196,13 @@ class InstallFuelMaster(object):
+                      self.work_dir, os.path.basename(self.dea_file)))
+
+     def wait_until_installation_completed(self):
+-        WAIT_LOOP = 360
++        WAIT_LOOP = 720
+         SLEEP_TIME = 10
+         CMD = 'pgrep -f %s' % BOOTSTRAP_ADMIN
+
+         install_completed = False
++        time.sleep(60)
++        self.wait_for_node_up()
+         with self.ssh:
+             for i in range(WAIT_LOOP):
+                 ret = self.ssh.exec_cmd(CMD)

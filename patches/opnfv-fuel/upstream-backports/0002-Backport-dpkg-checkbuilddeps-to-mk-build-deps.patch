@@ -1,0 +1,58 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 6 Jul 2016 17:03:49 +0200
+Subject: [PATCH] Backport: dpkg-checkbuilddeps to mk-build-deps.
+
+Backported from [1].
+
+[1] https://review.openstack.org/#/c/325210/
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ...ce-dpkg-checkbuilddeps-with-mk-build-deps.patch | 38 ++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+ create mode 100644 build/f_repos/patch/fuel-main/0005-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
+
+diff --git a/build/f_repos/patch/fuel-main/0005-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch b/build/f_repos/patch/fuel-main/0005-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
+new file mode 100644
+index 0000000..896f3cf
+--- /dev/null
++++ b/build/f_repos/patch/fuel-main/0005-replace-dpkg-checkbuilddeps-with-mk-build-deps.patch
+@@ -0,0 +1,38 @@
++From: Sergii Golovatiuk <sgolovatiuk@mirantis.com>
++Date: Fri, 3 Jun 2016 12:26:19 +0200
++Subject: [PATCH] Replace dpkg-checkbuilddeps with mk-build-deps
++
++dpkg-checkbuilddeps doesn't check dependencies inside chroot as in many
++cases host system might not have required packages. This change replaces
++dpkg-checkbuilddeps with mk-build-deps in chroot
++
++Implements: mos-xenial
++Change-Id: I27a65893c1bd33e6d82c11bf3d08423562dbe4d2
++Signed-off-by: Sergii Golovatiuk <sgolovatiuk@mirantis.com>
++---
++ packages/deb/module.mk | 5 ++---
++ 1 file changed, 2 insertions(+), 3 deletions(-)
++
++diff --git a/packages/deb/module.mk b/packages/deb/module.mk
++index 6c93441..c0ba737 100644
++--- a/packages/deb/module.mk
+++++ b/packages/deb/module.mk
++@@ -10,7 +10,7 @@ clean-deb:
++ 	done
++ 	sudo rm -rf $(BUILD_DIR)/packages/deb
++
++-$(BUILD_DIR)/packages/deb/buildd.tar.gz: SANDBOX_DEB_PKGS:=wget bzip2 apt-utils build-essential python-setuptools python-pbr devscripts debhelper fakeroot
+++$(BUILD_DIR)/packages/deb/buildd.tar.gz: SANDBOX_DEB_PKGS:=wget bzip2 apt-utils build-essential fakeroot devscripts equivs debhelper python-setuptools python-pbr
++ $(BUILD_DIR)/packages/deb/buildd.tar.gz: SANDBOX_UBUNTU:=$(BUILD_DIR)/packages/deb/chroot
++ $(BUILD_DIR)/packages/deb/buildd.tar.gz: export SANDBOX_UBUNTU_UP:=$(SANDBOX_UBUNTU_UP)
++ $(BUILD_DIR)/packages/deb/buildd.tar.gz: export SANDBOX_UBUNTU_DOWN:=$(SANDBOX_UBUNTU_DOWN)
++@@ -47,8 +47,7 @@ $(BUILD_DIR)/packages/deb/$1.done: $(BUILD_DIR)/repos/repos.done
++ 		sudo -E dch -c $$(SANDBOX_UBUNTU)/tmp/$1/debian/changelog -D $(UBUNTU_RELEASE) -b --force-distribution \
++ 		-v $(PACKAGE_VERSION)-`awk -F'=' '/DEBRELEASE/ {print $$$$2}' $(BUILD_DIR)/packages/sources/$1/version` \
++ 		"`awk -F'=' '/DEBMSG/ {print $$$$2}' $(BUILD_DIR)/packages/sources/$1/version`"
++-	dpkg-checkbuilddeps $(BUILD_DIR)/repos/$1/debian/control 2>&1 | sed 's/^dpkg-checkbuilddeps: Unmet build dependencies: //g' | sed 's/([^()]*)//g;s/|//g' | sudo tee $$(SANDBOX_UBUNTU)/tmp/$1.installdeps
++-	sudo chroot $$(SANDBOX_UBUNTU) /bin/sh -c "cat /tmp/$1.installdeps | xargs --no-run-if-empty env LC_ALL=C DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get -y install"
+++	sudo chroot $$(SANDBOX_UBUNTU) /bin/sh -c "mk-build-deps --install --remove --tool 'apt-get --yes --no-remove --no-install-recommends' /tmp/$1/debian/control"
++ 	sudo chroot $$(SANDBOX_UBUNTU) /bin/sh -c "cd /tmp/$1 ; DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b -d"
++ 	cp $$(SANDBOX_UBUNTU)/tmp/*.deb $(BUILD_DIR)/packages/deb/packages
++ 	sudo sh -c "$$$${SANDBOX_UBUNTU_DOWN}"

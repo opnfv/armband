@@ -1,0 +1,22 @@
+From: Josep Puigdemont <josep.puigdemont@enea.com>
+Date: Mon, 11 Jul 2016 15:21:56 +0200
+Subject: [PATCH] dea_base: replace grub-pc by grub-efi-arm64
+
+Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
+---
+ deploy/config/dea_base.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/deploy/config/dea_base.yaml b/deploy/config/dea_base.yaml
+index 0b8485b..658b328 100644
+--- a/deploy/config/dea_base.yaml
++++ b/deploy/config/dea_base.yaml
+@@ -462,7 +462,7 @@ settings:
+
+           gdisk
+
+-          grub-pc
++          grub-efi-arm64
+
+           hpsa-dkms
+

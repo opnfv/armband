@@ -1,0 +1,30 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 24 May 2016 16:42:21 +0200
+Subject: [PATCH] bootstrap: Add lshw package.
+
+Until Ubuntu Trusty fixes the following bug on AArch64 [1]:
+"AArch64: slow cpuinfo due to redundant loop"
+we will be using a patched version of <lshw> from Armband MOS repos.
+
+This change enforces replacing the lshw from Ubuntu with our custom,
+patched package.
+
+[1] https://bugs.launchpad.net/ubuntu/+source/lshw/+bug/1582181
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+index fcf4257..264ae0e 100644
+--- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
++++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+@@ -24,6 +24,7 @@
+     - linux-headers-generic
+     - live-boot
+     - live-boot-initramfs-tools
++    - lshw
+     - mc
+     - mcollective
+     - msmtp-mta

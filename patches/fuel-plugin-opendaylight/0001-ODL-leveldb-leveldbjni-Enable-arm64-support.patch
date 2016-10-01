@@ -104,10 +104,10 @@ index 0000000..08a528b
 +          </instructions>
 +         </configuration>
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
-index a322f70..f71bfc8 100644
+index 69cc23a..791ceba 100644
 --- a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
-@@ -10,4 +10,12 @@ class opendaylight {
+@@ -9,4 +9,12 @@ class opendaylight {
    $odl_mgmt_ips = values($odl_mgmt_ips_hash)
    $odl_nodes_names = keys($odl_mgmt_ips_hash)
    $node_internal_address = $odl_mgmt_ips_hash["node-${node_uid}"]
@@ -121,13 +121,13 @@ index a322f70..f71bfc8 100644
 +  }
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
-index 924a840..d55a311 100644
+index 1962609..ca98532 100644
 --- a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
 @@ -17,6 +17,12 @@ class opendaylight::install (
      ensure  => installed,
    }
- 
+
 +  if ($::osfamily == 'Debian' and $::opendaylight::arch == 'arm64') {
 +    class { 'opendaylight::leveldbjni':
 +      require => Package[$odl_package],
@@ -138,9 +138,9 @@ index 924a840..d55a311 100644
    class { 'opendaylight::quagga':
      before => Service['opendaylight']
 @@ -35,7 +41,8 @@ class opendaylight::install (
- 
+
    debug("Set odl rest api port to ${rest_port}")
- 
+
 -  file { "${conf_dir}/jetty.xml":
 +  file { 'jetty.xml':
 +    path    => "${conf_dir}/jetty.xml",
@@ -313,10 +313,10 @@ index 0000000..5125fc7
 +  }
 +}
 diff --git a/deployment_tasks.yaml b/deployment_tasks.yaml
-index 3706678..841bfee 100644
+index 20bd24f..e324ff5 100644
 --- a/deployment_tasks.yaml
 +++ b/deployment_tasks.yaml
-@@ -17,7 +17,7 @@
+@@ -20,7 +20,7 @@
    parameters:
      puppet_manifest: puppet/manifests/odl-install.pp
      puppet_modules: puppet/modules:/etc/puppet/modules

@@ -1,0 +1,38 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 11 Jun 2016 23:34:48 +0200
+Subject: [PATCH] m1.micro: Increase profile RAM size to 128MB.
+
+TestVM (cirros) on aarch64 requires more than 64MB RAM.
+Keep profiles uniform across all archs.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../f_bootstrap/post-scripts/80_prepare_cross_builds.sh   | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh b/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
+index c106bc3..0b48ca2 100755
+--- a/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
++++ b/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
+@@ -66,6 +66,21 @@ if which dpkg > /dev/null 2>&1; then
+         ${PYTHON_SITEPKGS_DIR}/fuel_bootstrap/consts.py
+       echo "INFO: [xz] => [gzip] updated bootstrap initrd / rootfs compression."
+     fi
++
++    # TestVM (cirros) adjustments for cross-arch
++    #
++    # TestVM (cirros) on aarch64 requires more than 64MB RAM.
++    # Keep profiles uniform across all archs by bumping micro flavor specs.
++    # m1.micro: Increase profile RAM size to 128MB.
++    OPENSTACK_VERSION=$(cat /etc/fuel_openstack_version)
++    CONTROLLER_PP="/etc/puppet/${OPENSTACK_VERSION}/modules/openstack_tasks"
++    CONTROLLER_PP+="/manifests/openstack_controller/openstack_controller.pp"
++    if [ -f ${CONTROLLER_PP} ]; then
++      sed -i.bak -r \
++        's/^(.*flavor-create.*m1\.micro auto)\s+[[:digit:]]+(.*)$/\1 128\2/' \
++        ${CONTROLLER_PP}
++      echo "INFO: [64] => [128] updated m1.micro profile RAM size (MB)."
++    fi
+   fi
+ fi
+

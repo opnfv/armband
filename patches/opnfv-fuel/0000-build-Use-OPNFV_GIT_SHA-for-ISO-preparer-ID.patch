@@ -1,0 +1,76 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 17 Aug 2016 21:56:22 +0200
+Subject: [PATCH] build: Use OPNFV_GIT_SHA for ISO preparer ID
+
+isoinfo -i lists the following information for Fuel@OPNFV ISO:
+"Data preparer id: 86aafaf5454a846c417848bb94f264c4420160f3"
+where the SHA hash is Fuel git repo HEAD SHA.
+
+For Armband's build system, using only the Fuel commit ID is not
+enough to fully describe the state of the source code, as patches
+are also applied to other fuel modules (as git submodules).
+Instead, a pointer to a valid Armband commit ID should be used.
+
+However, Armband overrides OPNFV_GIT_SHA to the Armband git repo
+commit hash, so the ISO metadata should also reflect this.
+
+While at it, allow product name to be overriden, to signal the
+commit ID should be looked up inside the Armband repository.
+
+Change-Id: I33ad490f1afe28c1d439dda40e39cee1955e0ac2
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/Makefile           | 4 ++--
+ build/docker/runcontext  | 2 +-
+ build/install/install.sh | 6 +++++-
+ 3 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/build/Makefile b/build/Makefile
+index 56acb40..ac85498 100644
+--- a/build/Makefile
++++ b/build/Makefile
+@@ -21,11 +21,11 @@ SHELL = /bin/bash
+ export MOSVERSION = 9.0
+ export ISOSRC = file:$(shell pwd)/fuel-$(MOSVERSION).iso
+ export ISOCACHE = $(shell pwd)/$(shell basename $(ISOSRC))
+-export PRODNO = "OPNFV_FUEL"
++export PRODNO ?= "OPNFV_FUEL"
+ export REVSTATE = "P0000"
+ export USER ?= $(shell whoami)
+ export BUILD_DATE = $(shell date --utc +%Y-%m-%d:%H:%M)
+-export OPNFV_GIT_SHA = $(shell git rev-parse HEAD)
++export OPNFV_GIT_SHA ?= $(shell git rev-parse HEAD)
+ # Store in /etc/fuel_build_id on fuel master
+ export BUILD_ID := $(PRODNO)_$(BUILD_DATE)_$(OPNFV_GIT_SHA)
+
+diff --git a/build/docker/runcontext b/build/docker/runcontext
+index daad663..2d13562 100755
+--- a/build/docker/runcontext
++++ b/build/docker/runcontext
+@@ -115,7 +115,7 @@ RUN_CONTEXT_OPT="--cidfile $CID_FILE --privileged=true --rm \
+     -e HOME=$HOME -e CACHEDEBUG -e CACHETRANSPORT -e CACHEMAXAGE -e CACHEBASE \
+     -e BUILD_FUEL_PLUGINS -e MIRROR_UBUNTU -e MIRROR_UBUNTU_ROOT \
+     -e MIRROR_MOS_UBUNTU -e MIRROR_MOS_UBUNTU_ROOT -e MIRROR_FUEL \
+-    -e LATEST_TARGET_UBUNTU -e UBUNTU_ARCH \
++    -e LATEST_TARGET_UBUNTU -e UBUNTU_ARCH -e OPNFV_GIT_SHA \
+     -u $USER_ID:$GROUP_ID -w $PWD \
+     -v $GITROOT:$GITROOT -v /sys/fs/cgroup:/sys/fs/cgroup:ro $CACHEMOUNT"
+
+diff --git a/build/install/install.sh b/build/install/install.sh
+index c632419..866d304 100755
+--- a/build/install/install.sh
++++ b/build/install/install.sh
+@@ -196,8 +196,12 @@ make_iso_image() {
+     find . -name TRANS.TBL -exec rm {} \;
+     rm -rf rr_moved
+
++    if [[ -z "$OPNFV_GIT_SHA" ]]; then
++        OPNFV_GIT_SHA=$(git rev-parse --verify HEAD)
++    fi
++
+     mkisofs --quiet -r -V "$VOLUMEID" -publisher "$PUBLISHER" \
+-        -p `git rev-parse --verify HEAD` -J -R -b isolinux/isolinux.bin \
++        -p "$OPNFV_GIT_SHA" -J -R -b isolinux/isolinux.bin \
+         -no-emul-boot \
+         -boot-load-size 4 -boot-info-table \
+         --hide-rr-moved \

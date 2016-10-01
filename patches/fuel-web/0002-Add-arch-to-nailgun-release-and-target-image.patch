@@ -1,4 +1,4 @@
-From: Stanislaw Kardach <stanislaw.kardach@caviumnetworks.com>
+From: Stanislaw Kardach <stanislaw.kardach@cavium.com>
 Date: Wed, 24 Feb 2016 20:11:54 +0100
 Subject: [PATCH] Add arch to nailgun release and target image
 
@@ -10,23 +10,23 @@ As a bonus, it is also used when building the target image.
  .../alembic_migrations/versions/armband.py         | 53 ++++++++++++++++++++++
  nailgun/nailgun/db/sqlalchemy/models/release.py    |  8 ++++
  nailgun/nailgun/fixtures/openstack.yaml            |  5 ++
- .../nailgun/orchestrator/deployment_serializers.py |  9 +++-
+ .../nailgun/orchestrator/deployment_serializers.py |  8 +++-
  .../orchestrator/provisioning_serializers.py       |  3 +-
  nailgun/nailgun/orchestrator/tasks_templates.py    |  5 +-
  .../integration/test_cluster_changes_handler.py    | 12 ++---
  .../integration/test_orchestrator_serializer.py    |  4 +-
  nailgun/nailgun/test/unit/test_tasks_templates.py  |  6 ++-
- 10 files changed, 96 insertions(+), 14 deletions(-)
+ 10 files changed, 95 insertions(+), 14 deletions(-)
  create mode 100644 nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
 
 diff --git a/nailgun/nailgun/consts.py b/nailgun/nailgun/consts.py
-index 1ded0ba..5a1af0a 100644
+index 4900ec0..59b0c91 100644
 --- a/nailgun/nailgun/consts.py
 +++ b/nailgun/nailgun/consts.py
 @@ -38,6 +38,11 @@ RELEASE_OS = Enum(
      )
  )
- 
+
 +RELEASE_ARCHS = Enum(
 +    'amd64',
 +    'arm64'
@@ -37,7 +37,7 @@ index 1ded0ba..5a1af0a 100644
      'ha_full',
 diff --git a/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py b/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
 new file mode 100644
-index 0000000..8cca69c
+index 0000000..6e42b3f
 --- /dev/null
 +++ b/nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
 @@ -0,0 +1,53 @@
@@ -114,10 +114,10 @@ index 1b47de4..e209e72 100644
      operating_system = Column(String(50), nullable=False)
      state = Column(
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index 9674d66..d3226da 100644
+index 65646d4..874d4f0 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -1904,6 +1904,7 @@
+@@ -1907,6 +1907,7 @@
      name: "Mitaka on CentOS 6.5"
      state: "unavailable"
      version: "mitaka-9.0"
@@ -125,7 +125,7 @@ index 9674d66..d3226da 100644
      operating_system: "CentOS"
      description: "This option will install the OpenStack Mitaka packages using a CentOS based operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
      attributes_metadata:
-@@ -1978,6 +1979,7 @@
+@@ -1980,6 +1981,7 @@
    fields:
      name: "Mitaka on Ubuntu 14.04"
      version: "mitaka-9.0"
@@ -133,7 +133,7 @@ index 9674d66..d3226da 100644
      operating_system: "Ubuntu"
      description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
      attributes_metadata:
-@@ -2219,6 +2221,7 @@
+@@ -2220,6 +2222,7 @@
    fields:
      name: "Mitaka on Ubuntu+UCA 14.04"
      version: "mitaka-9.0"
@@ -158,7 +158,7 @@ index 9674d66..d3226da 100644
      attributes_metadata:
        editable:
 diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/nailgun/orchestrator/deployment_serializers.py
-index 699a599..6bb7990 100644
+index 08eb9c3..e561324 100644
 --- a/nailgun/nailgun/orchestrator/deployment_serializers.py
 +++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
 @@ -300,7 +300,13 @@ class DeploymentMultinodeSerializer(object):
@@ -173,11 +173,11 @@ index 699a599..6bb7990 100644
 +            arch = "aarch64"
 +        image_data['img_path'] = '{0}cirros-{1}-disk.img'.format(img_dir,
 +            arch)
- 
+
          glance_properties = []
- 
+
 diff --git a/nailgun/nailgun/orchestrator/provisioning_serializers.py b/nailgun/nailgun/orchestrator/provisioning_serializers.py
-index 48a4753..b1f3ca6 100644
+index 48a4753..aaac22a 100644
 --- a/nailgun/nailgun/orchestrator/provisioning_serializers.py
 +++ b/nailgun/nailgun/orchestrator/provisioning_serializers.py
 @@ -307,7 +307,8 @@ class ProvisioningSerializer61(ProvisioningSerializer):
@@ -187,7 +187,7 @@ index 48a4753..b1f3ca6 100644
 -                    packages))
 +                    packages,
 +                    cluster.release.arch))
- 
+
          # NOTE(kozhukalov): This pre-provision task is going to be
          # removed by 7.0 because we need this only for classic way of
 diff --git a/nailgun/nailgun/orchestrator/tasks_templates.py b/nailgun/nailgun/orchestrator/tasks_templates.py
@@ -195,8 +195,8 @@ index 51dfdf7..bc2bff9 100644
 --- a/nailgun/nailgun/orchestrator/tasks_templates.py
 +++ b/nailgun/nailgun/orchestrator/tasks_templates.py
 @@ -210,7 +210,7 @@ def make_reboot_task(uids, task):
- 
- 
+
+
  def make_provisioning_images_task(
 -        uids, repos, provision_data, cid, packages):
 +        uids, repos, provision_data, cid, packages, arch):
@@ -212,63 +212,63 @@ index 51dfdf7..bc2bff9 100644
 +                    "--input_data '{2}'").format(cid, arch, conf),
              'timeout': settings.PROVISIONING_IMAGES_BUILD_TIMEOUT,
              'retries': 1}})
- 
+
 diff --git a/nailgun/nailgun/test/integration/test_cluster_changes_handler.py b/nailgun/nailgun/test/integration/test_cluster_changes_handler.py
-index 0f212e5..da50eac 100644
+index fb82be0..450155d 100644
 --- a/nailgun/nailgun/test/integration/test_cluster_changes_handler.py
 +++ b/nailgun/nailgun/test/integration/test_cluster_changes_handler.py
-@@ -153,7 +153,7 @@ class TestHandlers(BaseIntegrationTest):
+@@ -154,7 +154,7 @@ class TestHandlers(BaseIntegrationTest):
          common_attrs['last_controller'] = controller_nodes[-1]['name']
          common_attrs['storage']['pg_num'] = 128
- 
+
 -        common_attrs['test_vm_image'] = {
 +        common_attrs['test_vm_image'] = [{
              'container_format': 'bare',
              'public': 'true',
              'disk_format': 'qcow2',
-@@ -165,7 +165,7 @@ class TestHandlers(BaseIntegrationTest):
+@@ -166,7 +166,7 @@ class TestHandlers(BaseIntegrationTest):
                  """--property murano_image_info="""
                  """'{"title": "Murano Demo", "type": "cirros.demo"}'"""
              ),
 -        }
 +        }]
- 
+
          critical_mapping = {
              'primary-controller': True,
-@@ -565,7 +565,7 @@ class TestHandlers(BaseIntegrationTest):
+@@ -566,7 +566,7 @@ class TestHandlers(BaseIntegrationTest):
          common_attrs['last_controller'] = controller_nodes[-1]['name']
          common_attrs['storage']['pg_num'] = 128
- 
+
 -        common_attrs['test_vm_image'] = {
 +        common_attrs['test_vm_image'] = [{
              'container_format': 'bare',
              'public': 'true',
              'disk_format': 'qcow2',
-@@ -577,7 +577,7 @@ class TestHandlers(BaseIntegrationTest):
+@@ -578,7 +578,7 @@ class TestHandlers(BaseIntegrationTest):
                  """--property murano_image_info="""
                  """'{"title": "Murano Demo", "type": "cirros.demo"}'"""
              ),
 -        }
 +        }]
- 
+
          critical_mapping = {
              'primary-controller': True,
-@@ -1049,7 +1049,7 @@ class TestHandlers(BaseIntegrationTest):
+@@ -1050,7 +1050,7 @@ class TestHandlers(BaseIntegrationTest):
          common_attrs['last_controller'] = controller_nodes[-1]['name']
          common_attrs['storage']['pg_num'] = 128
- 
+
 -        common_attrs['test_vm_image'] = {
 +        common_attrs['test_vm_image'] = [{
              'container_format': 'bare',
              'public': 'true',
              'disk_format': 'qcow2',
-@@ -1061,7 +1061,7 @@ class TestHandlers(BaseIntegrationTest):
+@@ -1062,7 +1062,7 @@ class TestHandlers(BaseIntegrationTest):
                  """--property murano_image_info="""
                  """'{"title": "Murano Demo", "type": "cirros.demo"}'"""
              ),
 -        }
 +        }]
- 
+
          critical_mapping = {
              'primary-controller': True,
 diff --git a/nailgun/nailgun/test/integration/test_orchestrator_serializer.py b/nailgun/nailgun/test/integration/test_orchestrator_serializer.py
@@ -276,22 +276,22 @@ index 5db8f4e..ef208cb 100644
 --- a/nailgun/nailgun/test/integration/test_orchestrator_serializer.py
 +++ b/nailgun/nailgun/test/integration/test_orchestrator_serializer.py
 @@ -2584,12 +2584,12 @@ class BaseDeploymentSerializer(BaseSerializerTest):
- 
+
      def check_no_murano_data(self):
          glance_properties = self.serializer.generate_test_vm_image_data(
 -            self.env.nodes[0])['test_vm_image']['glance_properties']
 +            self.env.nodes[0])['test_vm_image'][0]['glance_properties']
          self.assertNotIn('murano_image_info', glance_properties)
- 
+
      def check_murano_data(self):
          glance_properties = self.serializer.generate_test_vm_image_data(
 -            self.env.nodes[0])['test_vm_image']['glance_properties']
 +            self.env.nodes[0])['test_vm_image'][0]['glance_properties']
          self.assertIn('murano_image_info', glance_properties)
- 
- 
+
+
 diff --git a/nailgun/nailgun/test/unit/test_tasks_templates.py b/nailgun/nailgun/test/unit/test_tasks_templates.py
-index 4e81a19..d657518 100644
+index 4e81a19..695e53d 100644
 --- a/nailgun/nailgun/test/unit/test_tasks_templates.py
 +++ b/nailgun/nailgun/test/unit/test_tasks_templates.py
 @@ -140,7 +140,8 @@ class TestMakeTask(base.BaseTestCase):
@@ -302,7 +302,7 @@ index 4e81a19..d657518 100644
 +            packages=packages,
 +            arch='amd64'
          )
- 
+
          fuel_image_conf = {
 @@ -177,7 +178,8 @@ class TestMakeTask(base.BaseTestCase):
          cmd = result["parameters"]["cmd"].lstrip(
@@ -312,5 +312,5 @@ index 4e81a19..d657518 100644
 +            "--data_driver nailgun_build_image --target_arch amd64"
 +            " --input_data '").rstrip("'")
          self.assertEqual(jsonutils.loads(cmd), fuel_image_conf)
- 
+
      def test_generate_ironic_bootstrap_keys_task(self):

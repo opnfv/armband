@@ -1,0 +1,39 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 4 Aug 2016 12:47:50 +0200
+Subject: [PATCH] kernel-flavor: linux-image-generic-lts-xenial
+
+Ubuntu arm64: switch from using kernel 4.2 for Trusty
+(linux-image-generic-lts-trusty) to kernel 4.4 backported from Xenial
+(linux-image-generic-lts-xenial).
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ nailgun/nailgun/fixtures/openstack.yaml | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
+index 874d4f0..c5087b6 100644
+--- a/nailgun/nailgun/fixtures/openstack.yaml
++++ b/nailgun/nailgun/fixtures/openstack.yaml
+@@ -2081,8 +2081,8 @@
+               i40e-dkms
+               linux-firmware
+               linux-firmware-nonfree
+-              linux-headers-generic-lts-trusty
+-              linux-image-generic-lts-trusty
++              linux-headers-generic-lts-xenial
++              linux-image-generic-lts-xenial
+               lvm2
+               mcollective
+               mdadm
+@@ -2424,8 +2424,8 @@
+               i40e-dkms
+               linux-firmware
+               linux-firmware-nonfree
+-              linux-headers-generic-lts-trusty
+-              linux-image-generic-lts-trusty
++              linux-headers-generic-lts-xenial
++              linux-image-generic-lts-xenial
+               lvm2
+               mcollective
+               mdadm

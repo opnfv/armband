@@ -28,15 +28,15 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/pre_build_hook b/pre_build_hook
-index 4785917..c3dd664 100755
+index a6d55e9..21e7a99 100755
 --- a/pre_build_hook
 +++ b/pre_build_hook
-@@ -64,7 +64,7 @@ function cleanup {
+@@ -76,7 +76,7 @@ function cleanup {
  }
- 
+
  function download {
 -  wget "$1" -qO $2
 +  wget --no-check-certificate "$1" -qO $2
  }
- 
+
  function unpack {

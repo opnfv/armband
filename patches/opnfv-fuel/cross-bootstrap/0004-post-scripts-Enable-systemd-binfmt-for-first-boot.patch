@@ -1,0 +1,94 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 9 Jun 2016 19:46:56 +0200
+Subject: [PATCH] post-scripts: Enable systemd-binfmt for first boot.
+
+IMPORTANT:
+This commit introduces the following file on Fuel Master,
+containing the list of arch supported for target nodes:
+</etc/fuel_openstack_arch>.
+
+This file is created AFTER pre.d OPNFV scripts are ran, also by
+bootstrap_admin_node.sh, BEFORE the post.d scripts are executed.
+NOTE: Arch format is the same used by dpkg (e.g.: "amd64 arm64")
+
+Based on the number of foreign architectures we should support
+(the list of archs in /etc/fuel_openstack_arch minus native arch),
+we determine whether cross-builds are expected, in which case
+binfmt support should be functional during first Fuel Master boot.
+
+Since systemd-binfmt service has a series of preconditions for
+starting, which are tested early during first boot, some of them
+are NOT YET true (e.g. no binfmt handlers are present before
+qemu-user-static package is installed), so the service is not
+automatically started. Of course, this only affects the first boot.
+
+Finally, this commit adds an OPNFV post-install script in
+/opt/opnfv/bootstrap/post.d, which starts systemd-binfmt service.
+---
+ .../post-scripts/80_prepare_cross_builds.sh        | 32 ++++++++++++++++++++++
+ ...PNFV-Additions-to-bootstrap_admin_node.sh.patch | 13 +++++++++
+ 2 files changed, 45 insertions(+)
+ create mode 100755 build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
+
+diff --git a/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh b/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
+new file mode 100755
+index 0000000..01eb2e2
+--- /dev/null
++++ b/build/f_isoroot/f_bootstrap/post-scripts/80_prepare_cross_builds.sh
+@@ -0,0 +1,32 @@
++#/bin/sh
++##############################################################################
++# Copyright (c) 2016 Enea AB and others.
++# Alexandru.Avadanii@enea.com
++# All rights reserved. This program and the accompanying materials
++# are made available under the terms of the Apache License, Version 2.0
++# which accompanies this distribution, and is available at
++# http://www.apache.org/licenses/LICENSE-2.0
++##############################################################################
++
++echo "Preparing for cross-building bootstrap/target images"
++
++# Fmt handlers are set up by qemu-user-static (after systemd-binfmt
++# prerequisites are checked during first boot of Fuel Master node).
++
++# Cross-building support provides dpkg, as a fuel-agent dependency
++if which dpkg > /dev/null 2>&1; then
++  # /etc/fuel_openstack_arch is created by bootstrap_admin_node.sh
++  FOREIGN_ARCH_CNT=$(sed -e "s/$(dpkg --print-architecture)//" \
++    /etc/fuel_openstack_arch | wc -w)
++  if [ ${FOREIGN_ARCH_CNT} -gt 0 ]; then
++    # If no fmt handlers are configured, the service is not started,
++    # so request it explicitly (only necessary for the first boot).
++    systemctl start systemd-binfmt
++    if [ $? -ne 0 ]; then
++      echo "Error starting systemd-binfmt!"
++      exit 1
++    fi
++  fi
++fi
++
++echo "Done preparing cross-building"
+diff --git a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
+index 12d0dfb..81d196b 100644
+--- a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
++++ b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
+@@ -25,6 +25,19 @@ index 3197c91..db3123d 100755
+  bs_done_message="Default bootstrap image building done. Now you can boot new \
+  nodes over PXE, they will be discovered and become available for installing \
+  OpenStack on them"
++@@ -239,6 +239,12 @@
++ # /etc/fuel_openstack_version is provided by 'fuel-openstack-metadata' package
++ OPENSTACK_VERSION=$(cat /etc/fuel_openstack_version)
++
+++# FIXME(armband): This part might be moved to an earlier stage later
+++# /etc/fuel_openstack_arch is constructed based on local mirror metadata
+++grep -oP "^Architectures: \K.*$" \
+++    ${wwwdir}/${OPENSTACK_VERSION}/ubuntu/x86_64/dists/mos${FUEL_RELEASE}/Release > \
+++    /etc/fuel_openstack_arch
+++
++ # We do not ship debian-installer kernel and initrd on ISO.
++ # But we still need to be able to create ubuntu cobbler distro
++ # which requires kernel and initrd to be available. So, we
+ @@ -339,8 +339,22 @@ fuelmenu --save-only --iface=$ADMIN_INTERFACE || fail
+  set +x
+  echo "Done!"
