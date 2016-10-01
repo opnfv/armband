@@ -9,9 +9,9 @@ per supported arch. This requires Fuel refactoring.
  build/bootstrap_admin_node.sh.patch | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/build/patch-repos/0010-bootstrap_admin_node.sh.patch b/build/patch-repos/0010-bootstrap_admin_node.sh.patch
---- a/build/patch-repos/0010-bootstrap_admin_node.sh.patch
-+++ b/build/patch-repos/0010-bootstrap_admin_node.sh.patch
+diff --git a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
+--- a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
++++ b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
 @@ -53,3 +53,12 @@
   # Enable iptables
   systemctl enable iptables.service

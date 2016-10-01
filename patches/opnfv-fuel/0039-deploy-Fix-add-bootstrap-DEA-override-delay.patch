@@ -22,7 +22,7 @@ index 808d0b1..1a7685a 100644
 -        WAIT_LOOP = 360
 +        WAIT_LOOP = 720
          SLEEP_TIME = 10
-         CMD = 'ps -ef | grep %s | grep -v grep' % BOOTSTRAP_ADMIN
+         CMD = 'pgrep -f %s' % BOOTSTRAP_ADMIN
  
          install_completed = False
 +        time.sleep(60)

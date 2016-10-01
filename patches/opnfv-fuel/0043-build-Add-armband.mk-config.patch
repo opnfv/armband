@@ -15,9 +15,7 @@ diff --git a/build/Makefile b/build/Makefile
 index 4454c35..377ecc6 100644
 --- a/build/Makefile
 +++ b/build/Makefile
-@@ -14,6 +14,9 @@ SHELL = /bin/bash
- # settings.
- -include environment.mk
+@@ -14,4 +14,7 @@ SHELL = /bin/bash
  
 +# Override Armband specific information & git commit references
 +-include armband.mk
@@ -25,31 +23,12 @@ index 4454c35..377ecc6 100644
  ############################################################################
  # BEGIN of variables to customize
  #
-@@ -129,5 +132,8 @@ $(ISOCACHE):
- 	cd $(FUEL_MAIN_DIR) && make repos
- 	$(REPOINFO) -r $(FUEL_MAIN_DIR) > gitinfo_fuel.txt
-+	@if test -n $(ARMBAND_BASE); then \
-+		$(REPOINFO) -r $(ARMBAND_BASE) >> gitinfo_fuel.txt; \
-+	fi
- 	# OPNFV patches at Fuel build time
- 	# Need to be commited in order for them to be considered by the Fuel
- 	# build system
-@@ -228,5 +234,9 @@ debug:
- 	sha1sum fuel_build_loop >> .cachedata
- 	sha1sum config.mk >> .cachedata
-+	@if test -n $(ARMBAND_BASE); then \
-+		sha1sum armband.mk >> .cachedata; \
-+		$(REPOINFO) $(ARMBAND_BASE) >> .cachedata; \
-+	fi
- 	sha1sum Makefile >> .cachedata
- 	$(CACHETOOL) getbiweek >> .cachedata
- 	cat .cachedata | $(CACHETOOL) getid > .cacheid
 diff --git a/build/armband.mk b/build/armband.mk
 new file mode 100644
 index 0000000..1e772f0
 --- /dev/null
 +++ b/build/armband.mk
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,36 @@
 +##############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -74,24 +53,6 @@ index 0000000..1e772f0
 +    export FPB_CHANGE    := refs/changes/31/311031/2
 +
 +    # Armband git submodules for Fuel/OPNFV components
-+    export ASTUTE_REPO   := ${ARMBAND_BASE}/upstream/fuel-astute
-+    export ASTUTE_COMMIT := HEAD
-+
-+    export NAILGUN_REPO   := ${ARMBAND_BASE}/upstream/fuel-web
-+    export NAILGUN_COMMIT := HEAD
-+
-+    export FUEL_AGENT_REPO   := ${ARMBAND_BASE}/upstream/fuel-agent
-+    export FUEL_AGENT_COMMIT := HEAD
-+
-+    export FUEL_NAILGUN_AGENT_REPO   := ${ARMBAND_BASE}/upstream/fuel-nailgun-agent
-+    export FUEL_NAILGUN_AGENT_COMMIT := HEAD
-+
-+    export FUEL_MIRROR_REPO   := ${ARMBAND_BASE}/upstream/fuel-mirror
-+    export FUEL_MIRROR_COMMIT := HEAD
-+
-+    export FUELLIB_REPO   := ${ARMBAND_BASE}/upstream/fuel-library
-+    export FUELLIB_COMMIT := HEAD
-+
 +    export FUEL_PLUGIN_ODL_REPO        := ${ARMBAND_BASE}/upstream/fuel-plugin-opendaylight
 +    export FUEL_PLUGIN_ODL_BRANCH      := armband-workbench
 +    export FUEL_PLUGIN_ODL_CHANGE      := HEAD
