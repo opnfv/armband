@@ -1,0 +1,62 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 11 Aug 2016 15:34:32 +0200
+Subject: [PATCH] build: Add ARMBAND_BASE support
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/Makefile          | 10 ++++++++++
+ build/docker/Dockerfile |  2 +-
+ build/docker/runcontext |  6 +++++-
+ 3 files changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/build/Makefile b/build/Makefile
+index 4454c35..377ecc6 100644
+--- a/build/Makefile
++++ b/build/Makefile
+@@ -14,4 +14,9 @@ SHELL = /bin/bash
+ 
++# Only configure Armband specific stuff when ARMBAND_BASE is set
++ifdef ARMBAND_BASE
++    include ${ARMBAND_BASE}/armband-fuel-config.mk
++endif
++
+ ############################################################################
+ # BEGIN of variables to customize
+ #
+diff --git a/build/docker/Dockerfile b/build/docker/Dockerfile
+index b38ea4c..624f233 100644
+--- a/build/docker/Dockerfile
++++ b/build/docker/Dockerfile
+@@ -30,7 +30,7 @@ RUN echo "Defaults env_keep += \"ftp_proxy http_proxy https_proxy no_proxy RSYNC
+ # Keeping PWD is needed to build as root
+ RUN echo "Defaults env_keep += \"PWD\"" > /etc/sudoers.d/keep-pwd
+ # Keeping variables for ISO build
+-RUN echo "Defaults env_keep += \"MIRROR_UBUNTU MIRROR_UBUNTU_ROOT MIRROR_MOS_UBUNTU MIRROR_MOS_UBUNTU_ROOT MIRROR_FUEL LATEST_TARGET_UBUNTU UBUNTU_ARCH\"" > /etc/sudoers.d/keep-mos
++RUN echo "Defaults env_keep += \"MIRROR_UBUNTU MIRROR_UBUNTU_ROOT MIRROR_MOS_UBUNTU MIRROR_MOS_UBUNTU_ROOT MIRROR_FUEL LATEST_TARGET_UBUNTU UBUNTU_ARCH ARMBAND_BASE\"" > /etc/sudoers.d/keep-mos
+ RUN chmod 0440 /etc/sudoers.d/open-sudo
+ RUN chmod 0440 /etc/sudoers.d/keep-proxies
+ RUN chmod 0440 /etc/sudoers.d/keep-pwd
+diff --git a/build/docker/runcontext b/build/docker/runcontext
+index daad663..e4874df 100755
+--- a/build/docker/runcontext
++++ b/build/docker/runcontext
+@@ -42,6 +42,10 @@ GITROOT=`git rev-parse --show-toplevel`
+ CID_FILE=`mktemp -u -t runcontext.XXXXXXXXXX`
+ CONTEXT_DIR=`mktemp -d ${GITROOT}/.docker_contextXXXXXX`
+ 
++if [[ $ARMBAND_BASE ]]; then
++    GITROOT=$ARMBAND_BASE
++fi
++
+ # If RSYNC_CONNECT_PROG is used, we need to copy all of
+ # the SSH structure, should one of the keys need to be
+ # used.
+@@ -115,7 +119,7 @@ RUN_CONTEXT_OPT="--cidfile $CID_FILE --privileged=true --rm \
+     -e HOME=$HOME -e CACHEDEBUG -e CACHETRANSPORT -e CACHEMAXAGE -e CACHEBASE \
+     -e BUILD_FUEL_PLUGINS -e MIRROR_UBUNTU -e MIRROR_UBUNTU_ROOT \
+     -e MIRROR_MOS_UBUNTU -e MIRROR_MOS_UBUNTU_ROOT -e MIRROR_FUEL \
+-    -e LATEST_TARGET_UBUNTU -e UBUNTU_ARCH \
++    -e LATEST_TARGET_UBUNTU -e UBUNTU_ARCH -e ARMBAND_BASE \
+     -u $USER_ID:$GROUP_ID -w $PWD \
+     -v $GITROOT:$GITROOT -v /sys/fs/cgroup:/sys/fs/cgroup:ro $CACHEMOUNT"
+ 

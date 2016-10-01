@@ -1,0 +1,26 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 13 Jul 2016 21:33:04 +0200
+Subject: [PATCH] kernel-flavor: Add linux-image-generic-lts-xenial
+
+Ubuntu arm64: While keeping kernel 4.2 for Trusty
+(linux-image-generic-lts-trusty), add 4.4 backported from Xenial
+(linux-image-generic-lts-xenial) to local mirror in Armband ISO.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ contrib/fuel_mirror/data/ubuntu.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/contrib/fuel_mirror/data/ubuntu.yaml b/contrib/fuel_mirror/data/ubuntu.yaml
+index 2ec4f1d..6805847 100644
+--- a/contrib/fuel_mirror/data/ubuntu.yaml
++++ b/contrib/fuel_mirror/data/ubuntu.yaml
+@@ -100,6 +100,8 @@ packages: &packages
+      - "linux-firmware-nonfree"
+      - "linux-headers-generic-lts-trusty"
+      - "linux-image-generic-lts-trusty"
++     - "linux-headers-generic-lts-xenial"
++     - "linux-image-generic-lts-xenial"
+      - "live-boot"
+      - "livecd-rootfs"
+      - "lshw"

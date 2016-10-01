@@ -1,0 +1,63 @@
+From: Stefan Sicleru <stefan.sicleru@enea.com>
+Date: Tue, 30 Aug 2016 17:53:41 +0200
+Subject: [PATCH] net-check: add support for faulty operstate
+
+Some eth drivers, such as those for APM X-Gene Mustang Board's NICs, do
+not advertise operstate properly in sysfs, ie. it is advertised as
+"unknown" whereas ethtool shows the NIC as fully functional with link
+detected. This further affects "ip link show" output which is parsed
+within _check_iface_ready() method.
+
+Replace "ip link show" command with "ethtool" in order to obtain proper
+results when operstate is unknown.
+
+Signed-off-by: Stefan Sicleru <stefan.sicleru@enea.com>
+---
+ ...et-check-add-support-for-faulty-operstate.patch | 38 ++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+ create mode 100644 build/f_repos/patch/network-checker/0010-net-check-add-support-for-faulty-operstate.patch
+
+diff --git a/build/f_repos/patch/network-checker/0010-net-check-add-support-for-faulty-operstate.patch b/build/f_repos/patch/network-checker/0010-net-check-add-support-for-faulty-operstate.patch
+new file mode 100644
+index 0000000..71e7b73
+--- /dev/null
++++ b/build/f_repos/patch/network-checker/0010-net-check-add-support-for-faulty-operstate.patch
+@@ -0,0 +1,38 @@
++From: Stefan Sicleru <stefan.sicleru@enea.com>
++Date: Tue, 30 Aug 2016 17:30:24 +0200
++Subject: [PATCH] net-check: add support for faulty operstate
++
++Some eth drivers, such as those for APM X-Gene Mustang Board's NICs, do
++not advertise operstate properly in sysfs, ie. it is advertised as
++"unknown" whereas ethtool shows the NIC as fully functional with link
++detected. This further affects "ip link show" output which is parsed
++within _check_iface_ready() method.
++
++Replace "ip link show" command with "ethtool" in order to obtain proper
++results when operstate is unknown.
++
++Signed-off-by: Stefan Sicleru <stefan.sicleru@enea.com>
++---
++ network_checker/net_check/api.py | 9 ++++++++-
++ 1 file changed, 8 insertions(+), 1 deletion(-)
++
++diff --git a/network_checker/net_check/api.py b/network_checker/net_check/api.py
++index e3c3b4e..87aa257 100755
++--- a/network_checker/net_check/api.py
+++++ b/network_checker/net_check/api.py
++@@ -195,7 +195,14 @@ class Actor(object):
++     def _check_iface_ready(self, iface, vid=None):
++         check_iface = self._iface_name(iface, vid)
++         output = self._execute(['ip', '-o', 'link', 'show', check_iface])
++-        return 'state UP' in '\n'.join(output)
+++        if 'state UP' in '\n'.join(output):
+++            return True
+++
+++        if 'state UNKNOWN' in '\n'.join(output) and vid == None:
+++            output = self._execute(['ethtool', check_iface])
+++            return 'Link detected: yes' in '\n'.join(output).replace('\n', ' ')
+++
+++        return False
++ 
++     def _ensure_iface_up(self, iface, vid=None):
++         """Ensures interface is with vid up."""
