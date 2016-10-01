@@ -1,22 +1,36 @@
-From b7d5f0ca9a76de6d99fc5d6f5cbb8df864c62b7b Mon Sep 17 00:00:00 2001
-From: Josep Puigdemont <josep.puigdemont@enea.com>
-Date: Wed, 4 May 2016 14:27:23 +0200
-Subject: [PATCH] Remove check for root
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 6 May 2016 03:07:40 +0200
+Subject: [PATCH] deploy.sh: Remove check for root (rm umask 0000)
 
-Change-Id: Ic6bfaf07c0d9d347aec2df8724184d0314665503
+Patch(es) by Josep, signed by Alex only for upstreaming.
+
+[Alexandru Avadanii]
+Squashed two atomic commits into one change.
+
 Signed-off-by: Josep Puigdemont <josep.puigdemont@enea.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ci/deploy.sh                        | 5 -----
- deploy/deploy-config.py             | 1 -
- deploy/deploy.py                    | 2 --
- deploy/environments/virtual_fuel.py | 2 --
- 4 files changed, 10 deletions(-)
+ ci/deploy.sh                        | 11 -----------
+ deploy/deploy-config.py             |  1 -
+ deploy/deploy.py                    |  2 --
+ deploy/environments/virtual_fuel.py |  2 --
+ 4 files changed, 16 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index c08a94b..081806c 100755
+index 4e4586c..78437a9 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
-@@ -209,11 +209,6 @@ do
+@@ -81,9 +81,6 @@ Input parameters to the build script is:
+ -i .iso image to be deployed (needs to be provided in a URI
+    style, it can be a local resource: file:// or a remote resource http(s)://)
+ 
+-NOTE: Root priviledges are needed for this script to run
+-
+-
+ Examples:
+ sudo `basename $0` -b file:///home/jenkins/lab-config -l lf -p pod1 -s ha_odl-l3_heat_ceilometer -i file:///home/jenkins/myiso.iso
+ EOF
+@@ -201,11 +198,6 @@ do
      esac
  done
  
@@ -28,11 +42,21 @@ index c08a94b..081806c 100755
  if [ -z $BASE_CONFIG_URI ] || [ -z $TARGET_LAB ] || \
     [ -z $TARGET_POD ] || [ -z $DEPLOY_SCENARIO ] || \
     [ -z $ISO ]; then
+@@ -220,9 +212,6 @@ fi
+ # Enable the automatic exit trap
+ trap do_exit SIGINT SIGTERM EXIT
+ 
+-# Set no restrictive umask so that Jenkins can removeeee any residuals
+-umask 0000
+-
+ clean
+ 
+ pushd ${DEPLOY_DIR} > /dev/null
 diff --git a/deploy/deploy-config.py b/deploy/deploy-config.py
-index 65d51b2..88a1111 100644
+index 436002d..de4db3d 100644
 --- a/deploy/deploy-config.py
 +++ b/deploy/deploy-config.py
-@@ -40,7 +40,6 @@ from common import (
+@@ -41,7 +41,6 @@ from common import (
      check_file_exists,
      create_dir_if_not_exists,
      delete,
@@ -41,7 +65,7 @@ index 65d51b2..88a1111 100644
  )
  
 diff --git a/deploy/deploy.py b/deploy/deploy.py
-index 56e5bd5..a021e28 100755
+index 9e188eb..f3dc4c9 100755
 --- a/deploy/deploy.py
 +++ b/deploy/deploy.py
 @@ -33,7 +33,6 @@ from common import (
@@ -52,7 +76,7 @@ index 56e5bd5..a021e28 100755
      ArgParser,
  )
  
-@@ -234,7 +233,6 @@ class AutoDeploy(object):
+@@ -235,7 +234,6 @@ class AutoDeploy(object):
          return 0
  
      def run(self):
@@ -80,6 +104,3 @@ index b1a76e4..4ff68f6 100644
          self.cleanup_environment()
          self.create_vm()
  
--- 
-2.5.5
-

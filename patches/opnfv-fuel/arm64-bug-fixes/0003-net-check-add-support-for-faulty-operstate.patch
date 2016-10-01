@@ -15,13 +15,13 @@ Signed-off-by: Stefan Sicleru <stefan.sicleru@enea.com>
 ---
  ...et-check-add-support-for-faulty-operstate.patch | 38 ++++++++++++++++++++++
  1 file changed, 38 insertions(+)
- create mode 100644 build/patch-repos/build/repos/network-checker/0010-net-check-add-support-for-faulty-operstate.patch
+ create mode 100644 build/f_repos/patch/network-checker/0010-net-check-add-support-for-faulty-operstate.patch
 
-diff --git a/build/patch-repos/build/repos/network-checker/0010-net-check-add-support-for-faulty-operstate.patch b/build/patch-repos/build/repos/network-checker/0010-net-check-add-support-for-faulty-operstate.patch
+diff --git a/build/f_repos/patch/network-checker/0010-net-check-add-support-for-faulty-operstate.patch b/build/f_repos/patch/network-checker/0010-net-check-add-support-for-faulty-operstate.patch
 new file mode 100644
 index 0000000..71e7b73
 --- /dev/null
-+++ b/build/patch-repos/build/repos/network-checker/0010-net-check-add-support-for-faulty-operstate.patch
++++ b/build/f_repos/patch/network-checker/0010-net-check-add-support-for-faulty-operstate.patch
 @@ -0,0 +1,38 @@
 +From: Stefan Sicleru <stefan.sicleru@enea.com>
 +Date: Tue, 30 Aug 2016 17:30:24 +0200

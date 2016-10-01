@@ -15,5 +15,5 @@ export OPNFV_GIT_SHA=$(git rev-parse HEAD)
 export LOCAL_CACHE_ARCH_NAME="armband-cache"
 
 # Initialize Armband git submodules & apply patches first
-make -C ${ARMBAND_BASE} submodules-clean patches-import
+make -C ${ARMBAND_BASE} patches-import
 cd ${ARMBAND_BASE}/upstream/fuel/ci && ./build.sh $*
