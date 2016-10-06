@@ -1,3 +1,4 @@
+From 800aae6db0d0d79d01cec4df85075026073063dd Mon Sep 17 00:00:00 2001
 From: Josep Puigdemont <josep.puigdemont@enea.com>
 Date: Wed, 4 May 2016 14:27:23 +0200
 Subject: [PATCH] Fuel VM for the Enea Armband lab
@@ -19,9 +20,9 @@ index 0000000..8773ed4
 @@ -0,0 +1,88 @@
 +<domain type='kvm' id='1'>
 +  <name>fuel</name>
-+  <memory unit='KiB'>4194304</memory>
-+  <currentMemory unit='KiB'>4194304</currentMemory>
-+  <vcpu placement='static'>2</vcpu>
++  <memory unit='KiB'>8290304</memory>
++  <currentMemory unit='KiB'>8290304</currentMemory>
++  <vcpu placement='static'>8</vcpu>
 +  <resource>
 +    <partition>/machine</partition>
 +  </resource>
@@ -105,3 +106,6 @@ index 0000000..8773ed4
 +    </memballoon>
 +  </devices>
 +</domain>
+-- 
+2.5.5
+
