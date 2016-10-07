@@ -37,9 +37,7 @@ diff --git a/build/docker/Makefile b/build/docker/Makefile
 index d4423b0..226bbd0 100644
 --- a/build/docker/Makefile
 +++ b/build/docker/Makefile
-@@ -25,6 +25,10 @@ all:	.docker
- 
- .docker: $(FILES)
+@@ -25,4 +25,8 @@ all:	.docker
  	cp Dockerfile ubuntu-builder/Dockerfile
 +	# Only add FPB ENVs when set - needed to fetch, patch and install FPB
 +	test -n "${FPB_REPO}" && sed -i "s;INSERT_FPB_REPO;${FPB_REPO};" ubuntu-builder/Dockerfile || exit 0
