@@ -9,6 +9,8 @@
 #
 set -e
 
+export TERM="vt220"
+
 cd $WORKSPACE
 make patches-import
 

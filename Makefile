@@ -23,6 +23,8 @@
 # - Fuel@OPNFV is made aware of an Armband type build by passing
 #   the "ARMBAND_BASE" env var;
 
+SHELL = /bin/sh
+
 export ARMBAND_BASE  := $(shell pwd)
 export OPNFV_GIT_SHA := $(shell git rev-parse HEAD)
 export REVSTATE
