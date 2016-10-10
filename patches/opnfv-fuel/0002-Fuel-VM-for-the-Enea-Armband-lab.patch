@@ -21,7 +21,7 @@ index 0000000..8773ed4
 +  <name>fuel</name>
 +  <memory unit='KiB'>8290304</memory>
 +  <currentMemory unit='KiB'>8290304</currentMemory>
-+  <vcpu placement='static'>8</vcpu>
++  <vcpu placement='static'>4</vcpu>
 +  <resource>
 +    <partition>/machine</partition>
 +  </resource>
