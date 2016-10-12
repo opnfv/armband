@@ -20,7 +20,7 @@ index 07b0dc1..b0d6d37 100755
 +++ b/build/docker/runcontext
 @@ -121,6 +121,7 @@ RUN_CONTEXT_OPT="--cidfile $CID_FILE --privileged=true --rm --net=host \
      -e MIRROR_MOS_UBUNTU -e MIRROR_MOS_UBUNTU_ROOT -e MIRROR_FUEL \
-     -e LATEST_TARGET_UBUNTU -e UBUNTU_ARCH -e ARMBAND_BASE -e OPNFV_GIT_SHA \
+     -e LATEST_TARGET_UBUNTU -e UBUNTU_ARCH -e OPNFV_GIT_SHA -e ARMBAND_BASE \
      -u $USER_ID:$GROUP_ID -w $PWD \
 +    -v /etc/hosts:/etc/hosts \
      -v $GITROOT:$GITROOT -v /sys/fs/cgroup:/sys/fs/cgroup:ro $CACHEMOUNT"
