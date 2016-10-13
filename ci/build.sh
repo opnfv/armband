@@ -7,8 +7,6 @@
 
 set -e
 
-export TERM="vt220"
-
 SCRIPT_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
 BUILD_BASE=$(readlink -e ${SCRIPT_DIR}/../upstream/fuel/build)
 
