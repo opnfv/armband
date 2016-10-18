@@ -116,9 +116,11 @@ patches-import: .submodules-init .submodules-patched
 	@touch $@
 
 # Pass down clean/deepclean/build to Fuel@OPNFV
-.PHONY: clean
+.PHONY: clean debug
 clean: .submodules-init
-	$(MAKE) -e --no-print-directory -C ${F_BUILD_DIR} clean
+debug: patches-import
+clean debug:
+	$(MAKE) -e --no-print-directory -C ${F_BUILD_DIR} $@
 
 .PHONY: deepclean
 deepclean: clean
