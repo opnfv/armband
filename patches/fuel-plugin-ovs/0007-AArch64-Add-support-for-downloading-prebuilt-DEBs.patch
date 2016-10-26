@@ -2,6 +2,10 @@ From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Mon, 12 Sep 2016 18:02:42 +0200
 Subject: [PATCH] AArch64: Add support for downloading prebuilt DEBs
 
+[ anders.roxell@enea.com ]
+ovs_build/build-ovs-dpdk: libxenstore3.0: version bump
+
+Signed-off-by: Anders Roxell <anders.roxell@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  ovs_build/build-ovs-armband-fetch.sh | 45 ++++++++++++++++++++++++++++++++++++
@@ -93,7 +97,7 @@ index a0c50e3..8d70265 100755
 +      armband_fetch 'openvswitch-dpdk' "${AARCH64_OVS_DEBV}"
 +      armband_fetch 'openvswitch' "${AARCH64_OVS_DEBV}"
 +      # libxenstore (equivalent to `apt-get download` for native build)
-+      AARCH64_LIBXENSTORE='libxenstore3.0_4.4.2-0ubuntu0.14.04.6_arm64.deb'
++      AARCH64_LIBXENSTORE='libxenstore3.0_4.4.2-0ubuntu0.14.04.7_arm64.deb'
 +      wget -c "http://ports.ubuntu.com/pool/main/x/xen/${AARCH64_LIBXENSTORE}"
 +    else
 +      echo "WARNING: Architecture [${ARCH}] does not provide precompiled DEBs, skipping!"
