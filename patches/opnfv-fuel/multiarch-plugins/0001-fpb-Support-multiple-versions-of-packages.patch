@@ -17,7 +17,7 @@ diff --git a/build/docker/Dockerfile b/build/docker/Dockerfile
 index 624f233..ab0d0d3 100644
 --- a/build/docker/Dockerfile
 +++ b/build/docker/Dockerfile
-@@ -23,7 +23,14 @@ RUN apt-get install -y software-properties-common python-software-properties \
+@@ -23,5 +23,12 @@ RUN apt-get install -y software-properties-common python-software-properties \
      build-essential ruby-dev rubygems-integration python-pip git rpm createrepo dpkg-dev
 
  RUN gem install fpm
@@ -32,8 +32,6 @@ index 624f233..ab0d0d3 100644
 +    cd .. && rm -rf fuel-plugins
  # fuel-infra key
  RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BCE5CC461FA22B08
-
- RUN echo "ALL ALL=NOPASSWD: ALL" > /etc/sudoers.d/open-sudo
 index 783881e..74f6346 100644
 --- a/build/docker/Makefile
 +++ b/build/docker/Makefile
