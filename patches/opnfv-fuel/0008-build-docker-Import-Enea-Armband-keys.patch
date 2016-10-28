@@ -1,0 +1,24 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 28 Oct 2016 16:06:20 +0200
+Subject: [PATCH] build/docker: Import Enea Armband keys
+
+JIRA: ARMBAND-96
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/docker/Dockerfile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/build/docker/Dockerfile b/build/docker/Dockerfile
+index 4beb560..04c4d2b 100644
+--- a/build/docker/Dockerfile
++++ b/build/docker/Dockerfile
+@@ -33,6 +33,8 @@ RUN git clone -b INSERT_FPB_BRANCH INSERT_FPB_REPO && cd fuel-plugins && \
+     cd .. && rm -rf fuel-plugins
+ # fuel-infra key
+ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BCE5CC461FA22B08
++# Enea Armband key
++RUN apt-key adv --keyserver keys.gnupg.net --recv-keys DEAB90BA798AB1D1
+ 
+ RUN echo "ALL ALL=NOPASSWD: ALL" > /etc/sudoers.d/open-sudo
+ RUN echo "Defaults env_keep += \"ftp_proxy http_proxy https_proxy no_proxy RSYNC_PROXY RSYNC_CONNECT_PROG npm_config_registry\"" > /etc/sudoers.d/keep-proxies
