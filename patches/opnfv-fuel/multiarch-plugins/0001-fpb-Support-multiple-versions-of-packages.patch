@@ -30,10 +30,10 @@ index 624f233..ab0d0d3 100644
 +        (git fetch origin INSERT_FPB_CHANGE && git checkout FETCH_HEAD)) && \
 +    python setup.py sdist && pip install ./dist/fuel-plugin-builder-*.tar.gz && \
 +    cd .. && rm -rf fuel-plugins
+ # fuel-infra key
+ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BCE5CC461FA22B08
 
  RUN echo "ALL ALL=NOPASSWD: ALL" > /etc/sudoers.d/open-sudo
- RUN echo "Defaults env_keep += \"ftp_proxy http_proxy https_proxy no_proxy RSYNC_PROXY RSYNC_CONNECT_PROG npm_config_registry\"" > /etc/sudoers.d/keep-proxies
-diff --git a/build/docker/Makefile b/build/docker/Makefile
 index 783881e..74f6346 100644
 --- a/build/docker/Makefile
 +++ b/build/docker/Makefile
