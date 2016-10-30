@@ -49,7 +49,7 @@ new file mode 100644
 index 0000000..1e772f0
 --- /dev/null
 +++ b/build/armband.mk
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,57 @@
 +##############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -91,6 +91,9 @@ index 0000000..1e772f0
 +
 +    export FUELLIB_REPO   := ${ARMBAND_BASE}/upstream/fuel-library
 +    export FUELLIB_COMMIT := HEAD
++
++    export PACKETARY_REPO   := ${ARMBAND_BASE}/upstream/packetary
++    export PACKETARY_COMMIT := HEAD
 +
 +    export FUEL_PLUGIN_ODL_REPO        := ${ARMBAND_BASE}/upstream/fuel-plugin-opendaylight
 +    export FUEL_PLUGIN_ODL_BRANCH      := armband-workbench
