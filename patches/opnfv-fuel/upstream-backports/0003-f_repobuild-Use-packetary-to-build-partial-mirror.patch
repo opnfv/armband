@@ -1,0 +1,314 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 6 Jul 2016 17:03:49 +0200
+Subject: [PATCH] f_repobuild: Use packetary to build partial mirror
+
+Packetary [1] will replace fuel-mirror in upstream Fuel.
+fuel-mirror is using packetary under the hood already, so the
+transition should not be too hard.
+
+Adapt OPNFV Ubuntu partial mirror build:
+- obsolete opnfv-config.yaml (packetary uses CLI args for this);
+- split old ubuntu.yaml into:
+  * mos_mirror.yaml - MOS mirror cfg, only for dependency analysis;
+  * ubuntu_mirror.yaml - Ubuntu mirror cfg, for pkgs download;
+  * ubuntu_pkgs.yaml - Ubuntu packages to download;
+
+New workflow:
+1. Read "fuel-mirror/contrib/fuel_mirror/data/ubuntu.yaml", parse it,
+   and write correponding sections to new yaml files described above;
+
+   NOTE: Since fuel-mirror is going to be made obsolete, there are a
+   number of new ways we can gather the data currently passed via
+   fuel-mirror's "ubuntu.yaml" (e.g. use "mos-repos" from Fuel ISO
+   to determine MOS dependencies).
+
+2. Append plugin dependencies to the package list;
+
+3. Run `packetary unresolved` for MOS repos, gathering MOS deps that
+   should be fetched from Ubuntu. The new packages will be appended
+   to the predefined list from old "ubuntu.yaml";
+
+4. Run `packetary clone` to download all required pkgs for the
+   partial Ubuntu mirror.
+
+[1] https://wiki.openstack.org/wiki/Packetary
+
+JIRA: FUEL-218
+
+Change-Id: I0004830ae90b4f9f730d5cb2f18f8fdc3ebf569b
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/config.mk                                    |  5 ++
+ build/f_isoroot/f_repobuild/Makefile               | 34 ++++----
+ build/f_isoroot/f_repobuild/config.mk              | 14 ++++
+ build/f_isoroot/f_repobuild/opnfv_mirror_conf.py   | 57 --------------
+ build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py | 90 ++++++++++++++++++++++
+ 5 files changed, 124 insertions(+), 76 deletions(-)
+ create mode 100644 build/f_isoroot/f_repobuild/config.mk
+ delete mode 100755 build/f_isoroot/f_repobuild/opnfv_mirror_conf.py
+ create mode 100755 build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py
+
+diff --git a/build/config.mk b/build/config.mk
+index ab27858..7832978 100644
+--- a/build/config.mk
++++ b/build/config.mk
+@@ -17,6 +17,11 @@ FUEL_MAIN_TAG = 9.0.1
+ MOS_VERSION   = 9.0
+ OPENSTACK_VERSION = mitaka-9.0
+ 
++# List of space-separated Ubuntu architectures supported with current build
++# Format: same as `dpkg-architecture -qDEB_HOST_ARCH1`
++# NOTE: Currently only amd64 is supported by Fuel@OPNFV. Armband adds arm64.
++export UBUNTU_ARCH ?= "amd64"
++
+ # FIXME(alav): Disable remote tracking for now, stick to submodule commits
+ FUEL_TRACK_REMOTES =
+ 
+diff --git a/build/f_isoroot/f_repobuild/Makefile b/build/f_isoroot/f_repobuild/Makefile
+index 8beb882..2e6dc69 100644
+--- a/build/f_isoroot/f_repobuild/Makefile
++++ b/build/f_isoroot/f_repobuild/Makefile
+@@ -1,7 +1,8 @@
+ ##############################################################################
+-# Copyright (c) 2015 Ericsson AB and others.
++# Copyright (c) 2015,2016 Ericsson AB, Enea AB and others.
+ # stefan.k.berg@ericsson.com
+ # jonas.bjurel@ericsson.com
++# Alexandru.Avadanii@enea.com
+ # All rights reserved. This program and the accompanying materials
+ # are made available under the terms of the Apache License, Version 2.0
+ # which accompanies this distribution, and is available at
+@@ -10,41 +11,36 @@
+ 
+ SHELL := /bin/bash
+ TOP := $(shell pwd)
+-TMP_ROOT_DIR := $(shell echo "$(MIRROR_UBUNTU_ROOT)" | cut -d "/" -f2)
+ 
+ include ../../config.mk
++include config.mk
+ 
+ export MOS_VERSION
+-export OPENSTACK_VERSION
++export MIRROR_UBUNTU_OPNFV_PATH:=$(TOP)/nailgun/mirrors/ubuntu
+ 
+ .PHONY: all
+ all: nailgun
+ 
+ nailgun:
+-	sudo apt-get install -y git libxml2-dev libxslt-dev python-dev  python-pip libz-dev libyaml-dev createrepo python-yaml
+-	rm -Rf nailgun
+-	sudo mkdir -p /var/www/nailgun
++	sudo apt-get install -y createrepo git libxml2-dev libxslt1-dev \
++		python-dev zlib1g-dev
++	rm -Rf nailgun packetary
+ 	ln -sf ${F_SUBMOD_DIR}/fuel-mirror fuel-mirror
+-	sudo pip install -U -r ./fuel-mirror/requirements.txt
+-	sudo pip install ./fuel-mirror
+-	sudo pip install ./fuel-mirror/contrib/fuel_mirror
+-	./opnfv_mirror_conf.py
+-	sudo fuel-mirror --debug --config ./opnfv-config.yaml create --group ubuntu --pattern=ubuntu
+-	sudo chmod -R 755 /var/www/nailgun
+-	cp -Rp /var/www/nailgun .
+-	# In the end we want to have ubuntu repository in mirrors/ubuntu directory
+-	-if [ "$(MIRROR_UBUNTU_ROOT)" != "/ubuntu/" ]; then \
+-	  mkdir -p nailgun/mirrors/ubuntu;\
+-	  mv nailgun/mirrors$(MIRROR_UBUNTU_ROOT)* nailgun/mirrors/ubuntu;\
+-	  [ "$(MIRROR_UBUNTU_ROOT)" != "/" ] && rm -rf nailgun/mirrors/$(TMP_ROOT_DIR);\
++	git clone --quiet $(PACKETARY_REPO)
++	if [ -n $(PACKETARY_COMMIT) ]; then \
++		git -C packetary checkout $(PACKETARY_COMMIT); \
+ 	fi
++	sudo pip install -U -r ./packetary/requirements.txt
++	sudo pip install ./packetary
++	# Handle config and mirror build in one place
++	./opnfv_mirror_ubuntu.py
+ 	# Store artifact in cache straight away if caching is enabled
+ 	# (no .cacheid will be present unless this is a cached build)
+ 	test -f .cacheid && $(MAKE) -f Makefile put-cache || exit 0
+ 
+ .PHONY: clean
+ clean:
+-	@rm -rf ../release/opnfv/nailgun nailgun fuel-mirror opnfv-config.yaml ubuntu.yaml
++	@rm -rf ../release/opnfv/nailgun nailgun packetary fuel-mirror {ubuntu,mos}*.yaml
+ 
+ .PHONY: release
+ release:nailgun
+diff --git a/build/f_isoroot/f_repobuild/config.mk b/build/f_isoroot/f_repobuild/config.mk
+new file mode 100644
+index 0000000..513785c
+--- /dev/null
++++ b/build/f_isoroot/f_repobuild/config.mk
+@@ -0,0 +1,14 @@
++##############################################################################
++# Copyright (c) 2016 Ericsson AB, Enea AB and others.
++# stefan.k.berg@ericsson.com
++# jonas.bjurel@ericsson.com
++# Alexandru.Avadanii@enea.com
++# All rights reserved. This program and the accompanying materials
++# are made available under the terms of the Apache License, Version 2.0
++# which accompanies this distribution, and is available at
++# http://www.apache.org/licenses/LICENSE-2.0
++##############################################################################
++
++# Use a recent master commit, since tags/branches are not yet mature
++export PACKETARY_REPO?=https://github.com/openstack/packetary
++export PACKETARY_COMMIT?=c46465c3255a9f5e59a05b8701e06054df39f32f
+diff --git a/build/f_isoroot/f_repobuild/opnfv_mirror_conf.py b/build/f_isoroot/f_repobuild/opnfv_mirror_conf.py
+deleted file mode 100755
+index 1c7eb59..0000000
+--- a/build/f_isoroot/f_repobuild/opnfv_mirror_conf.py
++++ /dev/null
+@@ -1,57 +0,0 @@
+-#!/usr/bin/env python
+-##############################################################################
+-# Copyright (c) 2015 Ericsson AB and others.
+-# mskalski@mirantis.com
+-# All rights reserved. This program and the accompanying materials
+-# are made available under the terms of the Apache License, Version 2.0
+-# which accompanies this distribution, and is available at
+-# http://www.apache.org/licenses/LICENSE-2.0
+-##############################################################################
+-import os
+-import yaml
+-
+-current_snapshot =  os.environ["LATEST_TARGET_UBUNTU"]
+-mos_version = os.environ['MOS_VERSION']
+-openstack_version = os.environ['OPENSTACK_VERSION']
+-mos_ubuntu = os.environ['MIRROR_MOS_UBUNTU']
+-mos_ubuntu_root = os.environ['MIRROR_MOS_UBUNTU_ROOT']
+-mirror_ubuntu = os.environ['MIRROR_UBUNTU_URL']
+-if os.environ.get('BUILD_FUEL_PLUGINS'):
+-  plugins = os.environ['BUILD_FUEL_PLUGINS']
+-else:
+-  plugins = os.environ['PLUGINS']
+-
+-
+-configuration_file = open('fuel-mirror/contrib/fuel_mirror/etc/config.yaml').read()
+-conf = yaml.load(configuration_file)
+-conf['pattern_dir'] = '.'
+-conf['openstack_version'] = openstack_version
+-conf['mos_version'] = mos_version
+-
+-with open('opnfv-config.yaml', 'w') as outfile:
+-  outfile.write( yaml.dump(conf, default_flow_style=False) )
+-
+-pattern_file = open('fuel-mirror/contrib/fuel_mirror/data/ubuntu.yaml').read()
+-pattern = yaml.load(pattern_file)
+-pattern['mos_baseurl'] = "http://{}{}".format(mos_ubuntu, mos_ubuntu_root)
+-pattern['ubuntu_baseurl'] = mirror_ubuntu
+-for group in pattern['groups']['mos']:
+-  group['uri'] = pattern['mos_baseurl']
+-for group in pattern['groups']['ubuntu']:
+-  group['uri'] = pattern['ubuntu_baseurl']
+-
+-for plugin in plugins.split():
+-  path = "../{}/packages.yaml".format(plugin)
+-  if os.path.isfile(path):
+-    f = open(path).read()
+-    plugin_yaml = yaml.load(f)
+-    plugin_set = set(plugin_yaml['packages'])
+-    main_set = set(pattern['packages'])
+-    new_packages = plugin_set - main_set
+-    print "Plugin {} require new packages: {}".format(plugin, ', '.join(new_packages))
+-    pattern['packages'] = pattern['packages'] + list(new_packages)
+-
+-pattern['requirements']['ubuntu'] = pattern['packages']
+-
+-with open('ubuntu.yaml', 'w') as outfile:
+-  outfile.write( yaml.safe_dump(pattern, default_flow_style=False) )
+diff --git a/build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py b/build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py
+new file mode 100755
+index 0000000..2d59cc3
+--- /dev/null
++++ b/build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py
+@@ -0,0 +1,90 @@
++#!/usr/bin/env python
++##############################################################################
++# Copyright (c) 2015,2016 Ericsson AB, Mirantis Inc., Enea AB and others.
++# mskalski@mirantis.com
++# Alexandru.Avadanii@enea.com
++# All rights reserved. This program and the accompanying materials
++# are made available under the terms of the Apache License, Version 2.0
++# which accompanies this distribution, and is available at
++# http://www.apache.org/licenses/LICENSE-2.0
++##############################################################################
++import os
++import yaml
++import sys
++from contextlib import contextmanager
++from cStringIO import StringIO
++from packetary.cli.app import main
++
++@contextmanager
++def captureStdOut(output):
++    stdout = sys.stdout
++    sys.stdout = output
++    yield
++    sys.stdout = stdout
++
++mos_version = os.environ['MOS_VERSION']
++mos_ubuntu = os.environ['MIRROR_MOS_UBUNTU']
++mos_ubuntu_root = os.environ['MIRROR_MOS_UBUNTU_ROOT']
++mirror_ubuntu = os.environ['MIRROR_UBUNTU_URL']
++mirror_ubuntu_path = os.environ['MIRROR_UBUNTU_OPNFV_PATH']
++if os.environ.get('BUILD_FUEL_PLUGINS'):
++  plugins = os.environ['BUILD_FUEL_PLUGINS']
++else:
++  plugins = os.environ['PLUGINS']
++
++pattern_file = open('fuel-mirror/contrib/fuel_mirror/data/ubuntu.yaml').read()
++pattern = yaml.load(pattern_file)
++# Convert old fuel-mirror format as packetary input on the fly
++for group in pattern['groups']['mos']:
++  group['uri'] = "http://{}{}".format(mos_ubuntu, mos_ubuntu_root)
++  group['suite'] = group['suite'].replace('$mos_version', mos_version)
++  group['section'] = group['section'].split()
++for group in pattern['groups']['ubuntu']:
++  group['uri'] = mirror_ubuntu
++  group['path'] = mirror_ubuntu_path
++  group['section'] = group['section'].split()
++
++# MOS mirror config for packetary, just for MOS dependency resolution
++with open('mos_mirror.yaml', 'w') as outfile:
++  outfile.write( yaml.safe_dump(pattern['groups']['mos'], default_flow_style=False) )
++# Ubuntu mirror config for packetary, for fetching Ubuntu pkgs + MOS deps
++with open('ubuntu_mirror.yaml', 'w') as outfile:
++  outfile.write( yaml.safe_dump(pattern['groups']['ubuntu'], default_flow_style=False) )
++
++# OPNFV plugins dependency resolution
++for plugin in plugins.split():
++  path = "../{}/packages.yaml".format(plugin)
++  if os.path.isfile(path):
++    f = open(path).read()
++    plugin_yaml = yaml.load(f)
++    plugin_set = set(plugin_yaml['packages'])
++    main_set = set(pattern['packages'])
++    new_packages = plugin_set - main_set
++    print "Plugin {} require new packages: {}".format(plugin, ', '.join(new_packages))
++    pattern['packages'] = pattern['packages'] + list(new_packages)
++
++# Convert predefined package list from fuel-mirror to packetary pkg list
++unresolved_pkgs = dict()
++unresolved_pkgs['packages'] = list()
++unresolved_pkgs['mandatory'] = 'exact'
++for pkg in pattern['packages']:
++  unresolved_pkgs['packages'] += [ {'name': pkg} ]
++
++# Use packetary to determine unresolved MOS dependencies from Ubuntu
++packetary_output = StringIO()
++with captureStdOut(packetary_output):
++  main('unresolved -r mos_mirror.yaml -c name version --sep ;'.split(' '))
++
++for mos_dep_pkg in packetary_output.getvalue().splitlines():
++  if mos_dep_pkg.startswith('#'):
++    continue
++  dep = mos_dep_pkg.split(';')
++  unresolved_pkgs['packages'] += [ {'name': dep[0], 'version': dep[1]} ]
++
++# Ubuntu pkgs to fetch: predefined list + plugin deps + MOS deps
++with open('ubuntu_pkgs.yaml', 'w') as outfile:
++  outfile.write( yaml.safe_dump(unresolved_pkgs, default_flow_style=False) )
++
++# Packetary does not use a config file, pass old settings here (-d is ignored)
++main('clone -r ubuntu_mirror.yaml -R ubuntu_pkgs.yaml -d . '
++     '--ignore-errors-num 2 --retries-num 3 --threads-num 10'.split(' '))
