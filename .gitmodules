@@ -38,3 +38,8 @@
 	path = upstream/fuel-astute
 	url = https://github.com/openstack/fuel-astute.git
 	branch = stable/mitaka
+[submodule "packetary"]
+	path = upstream/packetary
+	url = https://github.com/openstack/packetary.git
+	branch = master
+	ignore = all
