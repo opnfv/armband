@@ -1,0 +1,28 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 27 Oct 2016 22:24:28 +0200
+Subject: [PATCH] deb_driver: Translate repository.architecture
+
+When generating repository metadata, the Release file gets the
+architecture list in an untranslated format, ending up with
+'x86_64' instead of 'amd64'.
+
+FIXME: Link to upstream bug report
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ packetary/drivers/deb_driver.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/packetary/drivers/deb_driver.py b/packetary/drivers/deb_driver.py
+index 0df1aa4..718075e 100644
+--- a/packetary/drivers/deb_driver.py
++++ b/packetary/drivers/deb_driver.py
+@@ -411,7 +411,7 @@ class DebRepositoryDriver(RepositoryDriverBase):
+         release.setdefault("Description", "The packages repository.")
+ 
+         keys = ("Architectures", "Components")
+-        values = (repository.architecture, repository.section[1])
++        values = (_ARCHITECTURES[repository.architecture], repository.section[1])
+         for key, value in six.moves.zip(keys, values):
+             if key in release:
+                 release[key] = utils.append_token_to_string(

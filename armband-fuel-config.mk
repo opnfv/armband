@@ -46,6 +46,9 @@ export VSPERF_REPO   := ${ARMBAND_BASE}/upstream/vswitchperf
 export VSPERF_BRANCH := opnfv-armband
 export VSPERF_CHANGE := ${A_OPNFV_TAG}
 
+export PACKETARY_REPO   := ${ARMBAND_BASE}/upstream/packetary
+export PACKETARY_COMMIT := ${A_OPNFV_TAG}
+
 # for the patches applying purposes (empty git config in docker build container)
 export GIT_COMMITTER_NAME?=Fuel OPNFV
 export GIT_COMMITTER_EMAIL?=fuel@opnfv.org
