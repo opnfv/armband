@@ -1,0 +1,43 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 1 Nov 2016 23:01:58 +0100
+Subject: [PATCH] clone: Create metadata for empty components
+
+In certain scenarios, mirror components (e.g. trusty-security)
+are present in both packetary configuration input, and in target
+system's apt source definitions, but contain no packages of interest.
+
+For such repository/requirements combinations, packetary currently
+skips creating metadata (Release, Packages) for those components,
+which leads to the partial mirror missing some critical files for apt,
+(an empty file would be enough).
+
+e.g.: Using packetary to create a partial Ubuntu mirror, then trying
+to build a bootstrap image from the new mirror leads to:
+
+W: Failed to fetch http://127.0.0.1:8080/mirrors/ubuntu/dists/\
+   trusty-security/multiverse/binary-amd64/Packages  404
+
+Closes-bug: 1638631
+
+Change-Id: I850b43d5b4d8742d99e9a5702cc9ad4de881a401
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ packetary/api/repositories.py | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/packetary/api/repositories.py b/packetary/api/repositories.py
+index ec8c54c..2c72e29 100644
+--- a/packetary/api/repositories.py
++++ b/packetary/api/repositories.py
+@@ -121,6 +121,11 @@ class RepositoryApi(object):
+         for pkg in all_packages:
+             package_groups[pkg.repository].add(pkg)
+
++        # Make sure we create metadata for all repos, even if empty
++        for repo in repositories:
++            if repo not in package_groups:
++                package_groups[repo] = set()
++
+         stat = CopyStatistics()
+         mirrors = defaultdict(set)
+         options = options or self.CopyOptions()
