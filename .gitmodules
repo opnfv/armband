@@ -18,3 +18,8 @@
 	url = https://gerrit.opnfv.org/gerrit/vswitchperf.git
 	branch = master
 	ignore = all
+[submodule "packetary"]
+	path = upstream/packetary
+	url = https://github.com/openstack/packetary.git
+	branch = master
+	ignore = all
