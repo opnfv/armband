@@ -1,0 +1,77 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 3 Sep 2016 20:04:59 +0200
+Subject: [PATCH] Cleanup: Fix debian changelog missing date
+
+See [1] for debian/changelog format.
+Signature line should contain the date, separated with 2 spaces,
+in RFC 2822 format.
+
+[1] https://www.debian.org/doc/debian-policy/ch-source.html
+
+Change-Id: I1eb79b5f425a1e632588e309a2cc8b0781766131
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ovs_build/build-ovs-nsh-dpdk.sh                        | 6 +++---
+ ovs_build/dpdk_16.07/debian/changelog                  | 2 +-
+ ovs_build/openvswitch-dpdk_2.5.90/debian/changelog     | 2 +-
+ ovs_build/openvswitch-nsh-dpdk_2.5.90/debian/changelog | 2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index 834409a..1b42df1 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -42,7 +42,7 @@ cd dpdk-2.2.0; rm -rf debian/patches/;
+ cat << EOF > debian/changelog
+ dpdk (2.2.0-1) unstable; urgency=low
+   * DPDK 2.2.0
+- -- DPDK team <dev@dpdk.org>
++ -- DPDK team <dev@dpdk.org>  $(date --rfc-2822)
+ EOF
+ debian/rules build; fakeroot debian/rules binary
+ cd ${BUILD_HOME}; sudo dpkg -i *.deb
+@@ -92,7 +92,7 @@ rm -rf debian/patches/ .git;
+ cat << EOF > debian/changelog
+ openvswitch-dpdk (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
+- -- Open vSwitch team <dev@openvswitch.org>
++ -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+ debian/rules build; fakeroot debian/rules binary
+ 
+@@ -100,7 +100,7 @@ cd ${BUILD_HOME}/ovs
+ cat << EOF > debian/changelog
+ openvswitch (${OVS_VER}-1.nsh) unstable; urgency=low
+   * Support NSH
+- -- Open vSwitch team <dev@openvswitch.org>
++ -- Open vSwitch team <dev@openvswitch.org>  $(date --rfc-2822)
+ EOF
+ debian/rules build; fakeroot debian/rules binary
+ cp ${BUILD_HOME}/*.deb ${BUILD_DEST}
+diff --git a/ovs_build/dpdk_16.07/debian/changelog b/ovs_build/dpdk_16.07/debian/changelog
+index 50a7491..dd30f27 100644
+--- a/ovs_build/dpdk_16.07/debian/changelog
++++ b/ovs_build/dpdk_16.07/debian/changelog
+@@ -1,3 +1,3 @@
+ dpdk (16.07-1) unstable; urgency=low
+   * DPDK 16.07
+- -- DPDK team <dev@dpdk.org>
++ -- DPDK team <dev@dpdk.org>  Sat, 03 Sep 2016 20:00:00 +0200
+diff --git a/ovs_build/openvswitch-dpdk_2.5.90/debian/changelog b/ovs_build/openvswitch-dpdk_2.5.90/debian/changelog
+index 7bcc564..796a6a1 100644
+--- a/ovs_build/openvswitch-dpdk_2.5.90/debian/changelog
++++ b/ovs_build/openvswitch-dpdk_2.5.90/debian/changelog
+@@ -1,3 +1,3 @@
+ openvswitch-dpdk (2.5.90-1) unstable; urgency=low
+   * New upstream version
+- -- Open vSwitch team <dev@openvswitch.org>
++ -- Open vSwitch team <dev@openvswitch.org>  Sat, 03 Sep 2016 20:00:00 +0200
+diff --git a/ovs_build/openvswitch-nsh-dpdk_2.5.90/debian/changelog b/ovs_build/openvswitch-nsh-dpdk_2.5.90/debian/changelog
+index 46d90d3..5c71403 100644
+--- a/ovs_build/openvswitch-nsh-dpdk_2.5.90/debian/changelog
++++ b/ovs_build/openvswitch-nsh-dpdk_2.5.90/debian/changelog
+@@ -1,3 +1,3 @@
+ openvswitch-dpdk (2.5.90-1.nsh) unstable; urgency=low
+   * Support NSH
+- -- Open vSwitch team <dev@openvswitch.org>
++ -- Open vSwitch team <dev@openvswitch.org>  Sat, 03 Sep 2016 20:00:00 +0200

@@ -11,7 +11,7 @@
 [submodule "fuel-plugin-ovs"]
 	path = upstream/fuel-plugin-ovs
 	url = https://github.com/openstack/fuel-plugin-ovs
-	branch = master
+	branch = stable/9.0
 	ignore = all
 [submodule "vswitchperf"]
 	path = upstream/vswitchperf
