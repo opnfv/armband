@@ -29,7 +29,7 @@
 [submodule "fuel-plugin-ovs"]
 	path = upstream/fuel-plugin-ovs
 	url = https://github.com/openstack/fuel-plugin-ovs
-	branch = master
+	branch = stable/9.0
 [submodule "vswitchperf"]
 	path = upstream/vswitchperf
 	url = https://gerrit.opnfv.org/gerrit/vswitchperf.git
