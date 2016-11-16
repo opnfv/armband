@@ -51,7 +51,7 @@ index d08a4fc..65646d4 100644
 +            value:
 +              - type: "deb"
 +                name: "ubuntu-local"
-+                uri: "http://{settings.MASTER_IP}:8080/ubuntu/x86_64"
++                uri: "http://{settings.MASTER_IP}:8080/mirrors/ubuntu"
 +                suite: "trusty"
 +                section: "main"
 +                priority: null
@@ -234,7 +234,7 @@ index d08a4fc..65646d4 100644
 +            value:
 +              - type: "deb"
 +                name: "ubuntu-local"
-+                uri: "http://{settings.MASTER_IP}:8080/ubuntu/x86_64"
++                uri: "http://{settings.MASTER_IP}:8080/mirrors/ubuntu"
 +                suite: "trusty"
 +                section: "main"
 +                priority: null
