@@ -17,7 +17,7 @@ diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/
 index 62e6b73..9674d66 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -2314,3 +2314,290 @@
+@@ -2314,3 +2314,302 @@
              weight: 61
              type: "checkbox"
              value: true
@@ -49,6 +49,12 @@ index 62e6b73..9674d66 100644
 +              Please make sure your Fuel master node has Internet access to the repository before attempting to create a mirror.
 +              For more details, please refer to the documentation (https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html#external-ubuntu-ops).
 +            value:
++              - type: "deb"
++                name: "ubuntu-local"
++                uri: "http://{settings.MASTER_IP}:8080/ubuntu/x86_64"
++                suite: "trusty"
++                section: "main"
++                priority: null
 +              - type: "deb"
 +                name: "ubuntu"
 +                uri: "http://ports.ubuntu.com/"
@@ -226,6 +232,12 @@ index 62e6b73..9674d66 100644
 +              Please make sure your Fuel master node has Internet access to the repository before attempting to create a mirror.
 +              For more details, please refer to the documentation (https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html#external-ubuntu-ops).
 +            value:
++              - type: "deb"
++                name: "ubuntu-local"
++                uri: "http://{settings.MASTER_IP}:8080/ubuntu/x86_64"
++                suite: "trusty"
++                section: "main"
++                priority: null
 +              - type: "deb"
 +                name: "ubuntu"
 +                uri: "http://ports.ubuntu.com/"
