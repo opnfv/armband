@@ -73,11 +73,12 @@ diff --git a/build/install/apt-ftparchive-release.conf b/build/install/apt-ftpar
 index e40ff68..ceaf71a 100644
 --- a/build/install/apt-ftparchive-release.conf
 +++ b/build/install/apt-ftparchive-release.conf
-@@ -13,6 +13,6 @@ APT::FTPArchive::Release::Label "mos9.0";
+@@ -13,6 +13,7 @@ APT::FTPArchive::Release::Label "mos9.0";
  APT::FTPArchive::Release::Suite "mos9.0";
  APT::FTPArchive::Release::Version "14.04";
  APT::FTPArchive::Release::Codename "mos9.0";
 -APT::FTPArchive::Release::Architectures "amd64";
++APT::FTPArchive::Release::Architectures "amd64 arm64";
  APT::FTPArchive::Release::Components "main";
  APT::FTPArchive::Release::Description "Ubuntu Trusty Tahr 14.04 LTS";
 +APT::FTPArchive::Contents "no";
