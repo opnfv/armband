@@ -19,7 +19,7 @@ F_SUB_DIR   := ${F_REPOS_DIR}/sub
 
 # To enable remote tracking, set the following var to any non-empty string.
 # Leaving this var empty will bind each git submodule to its saved commit.
-ARMBAND_TRACK_REMOTES ?= yes
+ARMBAND_TRACK_REMOTES ?=
 
 # Armband plugins, supported archs & specific info
 export PLUGINS           := f_odlpluginbuild f_bgpvpn-pluginbuild f_ovs-nsh-dpdk-pluginbuild f_tacker-pluginbuild
