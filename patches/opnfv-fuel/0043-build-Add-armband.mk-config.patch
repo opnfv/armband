@@ -49,7 +49,7 @@ new file mode 100644
 index 0000000..1e772f0
 --- /dev/null
 +++ b/build/armband.mk
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,55 @@
 +##############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -98,7 +98,8 @@ index 0000000..1e772f0
 +    export OPNFV_QUAGGE_PACKAGING_REPO := https://github.com/alexandruavadanii/opnfv-quagga-packaging
 +
 +    export OVS_NSH_DPDK_REPO   := ${ARMBAND_BASE}/upstream/fuel-plugin-ovs
-+    export OVS_NSH_DPDK_BRANCH := HEAD
++    export OVS_NSH_DPDK_BRANCH := armband-workbench
++    export OVS_NSH_DPDK_CHANGE := HEAD
 +
 +    export VSPERF_REPO   := ${ARMBAND_BASE}/upstream/vswitchperf
 +    export VSPERF_BRANCH := armband-workbench
