@@ -40,7 +40,8 @@ export FUEL_PLUGIN_ODL_CHANGE      := ${A_OPNFV_TAG}
 export OPNFV_QUAGGE_PACKAGING_REPO := https://github.com/alexandruavadanii/opnfv-quagga-packaging
 
 export OVS_NSH_DPDK_REPO   := ${ARMBAND_BASE}/upstream/fuel-plugin-ovs
-export OVS_NSH_DPDK_BRANCH := ${A_OPNFV_TAG}
+export OVS_NSH_DPDK_BRANCH := opnfv-armband
+export OVS_NSH_DPDK_CHANGE := ${A_OPNFV_TAG}
 
 export VSPERF_REPO   := ${ARMBAND_BASE}/upstream/vswitchperf
 export VSPERF_BRANCH := opnfv-armband
