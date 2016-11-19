@@ -112,10 +112,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  build/f_isoroot/f_repobuild/config.mk              |  26 +++
  .../f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml  |  14 +-
  build/f_isoroot/f_repobuild/opnfv_mirror_conf.py   |  57 -----
- build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py | 246 +++++++++++++++++++++
+ build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py | 247 +++++++++++++++++++++
  build/f_isoroot/f_repobuild/opnfv_packages.yaml    |  14 ++
  deploy/config/dea_base.yaml                        |  14 +-
- 9 files changed, 312 insertions(+), 102 deletions(-)
+ 9 files changed, 313 insertions(+), 102 deletions(-)
  create mode 100644 build/f_isoroot/f_repobuild/.gitignore
  create mode 100644 build/f_isoroot/f_repobuild/config.mk
  delete mode 100755 build/f_isoroot/f_repobuild/opnfv_mirror_conf.py
@@ -129,7 +129,7 @@ index ab27858..a62b7e9 100644
 @@ -17,6 +17,11 @@ FUEL_MAIN_TAG = 9.0.1
  MOS_VERSION   = 9.0
  OPENSTACK_VERSION = mitaka-9.0
- 
+
 +# List of space-separated Ubuntu architectures supported with current build
 +# Format: same as `dpkg-architecture -qDEB_HOST_ARCH1`
 +# NOTE: Currently only amd64 is supported by Fuel@OPNFV. Armband adds arm64.
@@ -137,7 +137,7 @@ index ab27858..a62b7e9 100644
 +
  # FIXME(alav): Disable remote tracking for now, stick to submodule commits
  FUEL_TRACK_REMOTES =
- 
+
 diff --git a/build/f_isoroot/f_repobuild/.gitignore b/build/f_isoroot/f_repobuild/.gitignore
 new file mode 100644
 index 0000000..cfedefb
@@ -149,7 +149,7 @@ index 0000000..cfedefb
 +nailgun
 +opnfv_config
 diff --git a/build/f_isoroot/f_repobuild/Makefile b/build/f_isoroot/f_repobuild/Makefile
-index 8beb882..a47441c 100644
+index ad1a934..5ab2650 100644
 --- a/build/f_isoroot/f_repobuild/Makefile
 +++ b/build/f_isoroot/f_repobuild/Makefile
 @@ -1,7 +1,8 @@
@@ -163,21 +163,21 @@ index 8beb882..a47441c 100644
  # are made available under the terms of the Apache License, Version 2.0
  # which accompanies this distribution, and is available at
 @@ -10,41 +11,36 @@
- 
+
  SHELL := /bin/bash
  TOP := $(shell pwd)
 -TMP_ROOT_DIR := $(shell echo "$(MIRROR_UBUNTU_ROOT)" | cut -d "/" -f2)
- 
+
  include ../../config.mk
 +include config.mk
- 
+
  export MOS_VERSION
 -export OPENSTACK_VERSION
 +export MIRROR_UBUNTU_OPNFV_PATH:=$(TOP)/nailgun/mirrors/ubuntu
- 
+
  .PHONY: all
  all: nailgun
- 
+
  nailgun:
 -	sudo apt-get install -y git libxml2-dev libxslt-dev python-dev  python-pip libz-dev libyaml-dev createrepo python-yaml
 -	rm -Rf nailgun
@@ -209,12 +209,12 @@ index 8beb882..a47441c 100644
  	# Store artifact in cache straight away if caching is enabled
  	# (no .cacheid will be present unless this is a cached build)
  	test -f .cacheid && $(MAKE) -f Makefile put-cache || exit 0
- 
+
  .PHONY: clean
  clean:
 -	@rm -rf ../release/opnfv/nailgun nailgun fuel-mirror opnfv-config.yaml ubuntu.yaml
 +	@rm -rf ../release/opnfv/nailgun nailgun packetary fuel-mirror opnfv_config
- 
+
  .PHONY: release
  release:nailgun
 diff --git a/build/f_isoroot/f_repobuild/config.mk b/build/f_isoroot/f_repobuild/config.mk
@@ -250,10 +250,10 @@ index 0000000..79e7d1a
 +# - fuel_bootstrap_cli.yaml
 +export MIRROR_UBUNTU_MERGE=true
 diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
-index fcf4257..647dcb6 100644
+index 19dea1c..52786fb 100644
 --- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
 +++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
-@@ -47,23 +47,11 @@
+@@ -48,23 +48,11 @@
    https_proxy: ""
    repos:
      - name: ubuntu
@@ -343,10 +343,10 @@ index 1c7eb59..0000000
 -  outfile.write( yaml.safe_dump(pattern, default_flow_style=False) )
 diff --git a/build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py b/build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py
 new file mode 100755
-index 0000000..89ec938
+index 0000000..da88445
 --- /dev/null
 +++ b/build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py
-@@ -0,0 +1,246 @@
+@@ -0,0 +1,247 @@
 +#!/usr/bin/env python
 +##############################################################################
 +# Copyright (c) 2015,2016 Ericsson AB, Mirantis Inc., Enea AB and others.
@@ -554,10 +554,6 @@ index 0000000..89ec938
 +  for pkg in pattern['packages']:
 +    unresolved_pkgs['packages'] += [ {'name': pkg} ]
 +
-+  # Package list (reduced, i.e. no MOS/OPNFV plugin deps)
-+  if mirror_ubuntu_resolve_main_deps or mirror_ubuntu_merge is None:
-+    write_cfg_file(cfg_p_ubuntu_main, unresolved_pkgs)
-+
 +  # OPNFV plugins dependency resolution
 +  for plugin in plugins.split():
 +    path = "../{}/packages.yaml".format(plugin)
@@ -571,6 +567,11 @@ index 0000000..89ec938
 +            .format(plugin, arch, ', '.join(new_packages)))
 +      for pkg in new_packages:
 +        unresolved_pkgs['packages'] += [ {'name': pkg} ]
++
++  # Package list (reduced, i.e. no MOS deps, but with OPNFV plugin deps)
++  # FIXME: This helps work around packetary solving main deps from universe
++  if mirror_ubuntu_resolve_main_deps or mirror_ubuntu_merge is None:
++    write_cfg_file(cfg_p_ubuntu_main, unresolved_pkgs)
 +
 +  # Mirror package list (full, including MOS/OPNFV plugin deps)
 +  unresolved_pkgs['packages'] += get_unres_pkgs(arch, cfg_m_mos)['packages']
@@ -614,7 +615,7 @@ index 0000000..3f5c59f
 +
 +packages:
 diff --git a/deploy/config/dea_base.yaml b/deploy/config/dea_base.yaml
-index c1a0606..786c231 100644
+index f5a03e2..370a75a 100644
 --- a/deploy/config/dea_base.yaml
 +++ b/deploy/config/dea_base.yaml
 @@ -633,22 +633,10 @@ settings:
