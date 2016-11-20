@@ -2,14 +2,19 @@ From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Sat, 19 Nov 2016 20:39:35 +0100
 Subject: [PATCH] f_odlpluginbuild: Armband prereq in packages.yaml
 
-We need to explicitily add our Armband leveldb patching prereq
-tools, like maven, git, make etc. to the ODL plugin's packages.yaml,
-so they are included in the offline Ubuntu mirror.
+We need to explicitily add our Armband leveldb patching prereq to
+the ODL plugin's packages.yaml, so they are included in the
+offline Ubuntu/MOS mirrors.
 
-While at it, also add openjdk-8-jre amos version additional dep:
-- libasound2
+After ARMBAND-114 was implemented, the dependency list is only:
+- armband-odl-leveldb-fix (for patching leveldbjni);
+- libasound2 (openjdk-8-jre amos version additional dep);
+
+Note: armband-odl-leveldb-fix MUST be also added to MOS mirror
+package list, since it's not present in Ubuntu repos.
 
 JIRA: ARMBAND-167
+JIRA: ARMBAND-114
 
 FIXME: These are only required for arm64, so maybe later we could
 filter out other archs by extending the packages.yaml with an <arch>
@@ -17,8 +22,8 @@ field.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- build/f_isoroot/f_odlpluginbuild/packages.yaml | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ build/f_isoroot/f_odlpluginbuild/packages.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
  create mode 100644 build/f_isoroot/f_odlpluginbuild/packages.yaml
 
 diff --git a/build/f_isoroot/f_odlpluginbuild/packages.yaml b/build/f_isoroot/f_odlpluginbuild/packages.yaml
@@ -26,15 +31,9 @@ new file mode 100644
 index 0000000..b1bf086
 --- /dev/null
 +++ b/build/f_isoroot/f_odlpluginbuild/packages.yaml
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,5 @@
 +# Armband: openjdk-8-jre depends on libasound2
-+# Armband: leveldb patching requires the other
++# Armband: leveldb patching requires armband-odl-leveldb-fix
 +packages:
-+  - git
-+  - build-essential
-+  - automake
-+  - make
-+  - libsnappy-dev
-+  - patch
-+  - maven
++  - armband-odl-leveldb-fix
 +  - libasound2
