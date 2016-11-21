@@ -102,6 +102,7 @@ as the source partial mirror.
 
 JIRA: FUEL-218
 JIRA: FUEL-223
+JIRA: ARMBAND-169
 
 Change-Id: If2ee86f348b7683c83bfaf686baba4f1b8f555f0
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
@@ -599,7 +600,7 @@ new file mode 100644
 index 0000000..3f5c59f
 --- /dev/null
 +++ b/build/f_isoroot/f_repobuild/opnfv_packages.yaml
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,15 @@
 +##############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -614,6 +615,7 @@ index 0000000..3f5c59f
 +# e.g.: additional kernels, bootloaders etc.
 +
 +packages:
++  - name: vgabios
 diff --git a/deploy/config/dea_base.yaml b/deploy/config/dea_base.yaml
 index f5a03e2..370a75a 100644
 --- a/deploy/config/dea_base.yaml
