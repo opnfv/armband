@@ -17,16 +17,26 @@ fixes persistent device names in the udev it ships out of the box.
 FIXME: Remove lshw package from this patch when Ubuntu Trusty on arm64
 fixes bug [1]: "AArch64: slow cpuinfo due to redundant loop".
 
+Added armband-odl-leveldb-fix for patching ODL's leveldbjni without
+building it for each deploy.
+
+JIRA: ARMBAND-114
+
 [1] https://bugs.launchpad.net/ubuntu/+source/lshw/+bug/1582181
 ---
- contrib/fuel_mirror/data/ubuntu.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ contrib/fuel_mirror/data/ubuntu.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/contrib/fuel_mirror/data/ubuntu.yaml b/contrib/fuel_mirror/data/ubuntu.yaml
-index cd86ec9..2ec4f1d 100644
+index cd86ec9..18fb1ee 100644
 --- a/contrib/fuel_mirror/data/ubuntu.yaml
 +++ b/contrib/fuel_mirror/data/ubuntu.yaml
-@@ -77,6 +77,7 @@ packages: &packages
+@@ -73,10 +73,12 @@ packages: &packages
+      - "acpi-support"
+      - "anacron"
+      - "aptitude"
++     - "armband-odl-leveldb-fix"
+      - "atop"
       - "acct"
       - "bash-completion"
       - "bc"
@@ -34,7 +44,7 @@ index cd86ec9..2ec4f1d 100644
       - "build-essential"
       - "cloud-init"
       - "conntrackd"
-@@ -101,6 +102,7 @@ packages: &packages
+@@ -101,6 +103,7 @@ packages: &packages
       - "linux-image-generic-lts-trusty"
       - "live-boot"
       - "livecd-rootfs"
@@ -42,7 +52,7 @@ index cd86ec9..2ec4f1d 100644
       - "mc"
       - "memcached"
       - "monit"
-@@ -116,6 +118,7 @@ packages: &packages
+@@ -116,6 +119,7 @@ packages: &packages
       - "puppet"
       - "python-lesscpy"
       - "python-pip"
@@ -50,7 +60,7 @@ index cd86ec9..2ec4f1d 100644
       - "rsyslog-gnutls"
       - "rsyslog-relp"
       - "screen"
-@@ -127,6 +130,7 @@ packages: &packages
+@@ -127,6 +131,7 @@ packages: &packages
       - "tmux"
       - "traceroute"
       - "ubuntu-standard"
