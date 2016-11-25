@@ -1,0 +1,938 @@
+From: cristinapauna <cristina.pauna@enea.com>
+Date: Fri, 25 Nov 2016 16:38:46 +0200
+Subject: [PATCH] Fuel rework for multiple libvirt
+
+The current fuel arhitecture assumes that all the VMs 
+(Jenkins slave, Fuel master and Target nodes) are all on 
+the same server. There is code that allows the Fuel master 
+to be on a different machine, but nothing for the Target nodes.
+In Enea-Arm lab we have a different server for each.
+
+This commit also adds specific templates for a virtual pod in 
+the Enea-Arm lab.
+
+Therefore, the following changes are done:
+- The default libvirt URI is the machine on which the Target nodes are
+- The parameter libvirtUri was added in the dha.yaml file for fuel master
+- All virsh calls have "-c" option to explicitly specify the uri; this parameter
+  is set only when libvirtUri is explicitly set in the yaml file
+- The scenarios dha override now point to the arm template files
+- The network templates are not needed for ARM, as the network infra is provided
+  by the server on which the Target node VMs reside; the folder is added here
+  just for consistency
+- The target nodes are created with virsh rather than quemu when the nodes are
+  not on the same machine as Jenkins slave (similar logic to what is done for
+  remote Fuel master)
+
+Signed-off-by: cristinapauna <cristina.pauna@enea.com>
+---
+ deploy/dha_adapters/hardware_adapter.py            |   5 ++
+ deploy/dha_adapters/libvirt_adapter.py             |  36 ++++----
+ deploy/environments/execution_environment.py       |  19 ++--
+ deploy/environments/libvirt_environment.py         |  59 +++++++++++-
+ deploy/environments/virtual_fuel.py                |   8 +-
+ deploy/install_fuel_master.py                      |   2 +-
+ deploy/scenario/ha_heat_ceilometer_scenario.yaml   |  13 +--
+ .../ha_nfv-kvm_heat_ceilometer_scenario.yaml       |  13 +--
+ .../ha_nfv-ovs_heat_ceilometer_scenario.yaml       |  13 +--
+ deploy/scenario/ha_odl-bgpvpn_scenario.yaml        |  13 +--
+ .../ha_odl-l2_heat_ceilometer_scenario.yaml        |  13 +--
+ .../ha_odl-l2_sfc_heat_ceilometer_scenario.yaml    |  13 +--
+ .../ha_odl-l3_heat_ceilometer_scenario.yaml        |  13 +--
+ ...ha_onos_nofeature_heat_ceilometer_scenario.yaml |  13 +--
+ .../ha_onos_sfc_heat_ceilometer_scenario.yaml      |  13 +--
+ .../scenario/ha_vlan_heat_ceilometer_scenario.yaml |  13 +--
+ .../arm/virtual_environment/vms/compute.xml        |  57 ++++++++++++
+ .../arm/virtual_environment/vms/controller.xml     |  57 ++++++++++++
+ .../templates/arm/virtual_environment/vms/fuel.xml | 100 +++++++++++++++++++++
+ 19 files changed, 380 insertions(+), 93 deletions(-)
+ create mode 100644 deploy/templates/arm/virtual_environment/vms/compute.xml
+ create mode 100644 deploy/templates/arm/virtual_environment/vms/controller.xml
+ create mode 100644 deploy/templates/arm/virtual_environment/vms/fuel.xml
+
+diff --git a/deploy/dha_adapters/hardware_adapter.py b/deploy/dha_adapters/hardware_adapter.py
+index aa59581..cf3d77a 100644
+--- a/deploy/dha_adapters/hardware_adapter.py
++++ b/deploy/dha_adapters/hardware_adapter.py
+@@ -63,3 +63,8 @@ class HardwareAdapter(object):
+         vm_definition = self.dha_struct.get('define_vms')
+         if vm_definition:
+             return vm_definition.get(role)
++    def get_node_uri(self, node_id):
++        vm_libvirt_uri = self.get_node_property(node_id, 'libvirtUri')
++        if vm_libvirt_uri:
++            return '-c %s' % vm_libvirt_uri
++        return ''
+diff --git a/deploy/dha_adapters/libvirt_adapter.py b/deploy/dha_adapters/libvirt_adapter.py
+index a00f091..0a7c2fc 100644
+--- a/deploy/dha_adapters/libvirt_adapter.py
++++ b/deploy/dha_adapters/libvirt_adapter.py
+@@ -43,21 +43,21 @@ class LibvirtAdapter(HardwareAdapter):
+     def node_power_off(self, node_id):
+         vm_name = self.get_node_property(node_id, 'libvirtName')
+         log('Power OFF Node %s' % vm_name)
+-        state = exec_cmd('virsh domstate %s' % vm_name)
++        state = exec_cmd('virsh %s domstate %s' % (self.get_node_uri(node_id), vm_name))
+         if state == 'running':
+-            exec_cmd('virsh destroy %s' % vm_name, False)
++            exec_cmd('virsh %s destroy %s' % (self.get_node_uri(node_id), vm_name), False)
+
+     def node_power_on(self, node_id):
+         vm_name = self.get_node_property(node_id, 'libvirtName')
+         log('Power ON Node %s' % vm_name)
+-        state = exec_cmd('virsh domstate %s' % vm_name)
++        state = exec_cmd('virsh %s domstate %s' % (self.get_node_uri(node_id), vm_name))
+         if state == 'shut off':
+-            exec_cmd('virsh start %s' % vm_name)
++            exec_cmd('virsh %s start %s' % (self.get_node_uri(node_id), vm_name))
+
+     def node_reset(self, node_id):
+         vm_name = self.get_node_property(node_id, 'libvirtName')
+         log('Reset Node %s' % vm_name)
+-        exec_cmd('virsh reset %s' % vm_name)
++        exec_cmd('virsh %s reset %s' % (self.get_node_uri(node_id), vm_name))
+
+     def translate(self, boot_order_list):
+         translated = []
+@@ -73,7 +73,7 @@ class LibvirtAdapter(HardwareAdapter):
+         vm_name = self.get_node_property(node_id, 'libvirtName')
+         temp_dir = tempfile.mkdtemp()
+         log('Set boot order %s on Node %s' % (boot_order_list, vm_name))
+-        resp = exec_cmd('virsh dumpxml %s' % vm_name)
++        resp = exec_cmd('virsh %s dumpxml %s' % (self.get_node_uri(node_id), vm_name))
+         xml_dump = etree.fromstring(resp, self.parser)
+         os = xml_dump.xpath('/domain/os')
+         for o in os:
+@@ -92,12 +92,12 @@ class LibvirtAdapter(HardwareAdapter):
+         xml_file = temp_dir + '/%s.xml' % vm_name
+         with open(xml_file, 'w') as f:
+             tree.write(f, pretty_print=True, xml_declaration=True)
+-        exec_cmd('virsh define %s' % xml_file)
++        exec_cmd('virsh %s define %s' % (self.get_node_uri(node_id), xml_file))
+         delete(temp_dir)
+
+     def node_zero_mbr(self, node_id):
+         vm_name = self.get_node_property(node_id, 'libvirtName')
+-        resp = exec_cmd('virsh dumpxml %s' % vm_name)
++        resp = exec_cmd('virsh %s dumpxml %s' % (self.get_node_uri(node_id), vm_name))
+         xml_dump = etree.fromstring(resp)
+         disks = xml_dump.xpath('/domain/devices/disk')
+         for disk in disks:
+@@ -115,19 +115,19 @@ class LibvirtAdapter(HardwareAdapter):
+     def node_eject_iso(self, node_id):
+         vm_name = self.get_node_property(node_id, 'libvirtName')
+         device = self.get_name_of_device(vm_name, 'cdrom')
+-        exec_cmd('virsh change-media %s --eject %s --config --live'
+-                 % (vm_name, device), False)
++        exec_cmd('virsh %s change-media %s --eject %s --config --live'
++                 % (self.get_node_uri(node_id), vm_name, device), False)
+
+     def node_insert_iso(self, node_id, iso_file):
+         vm_name = self.get_node_property(node_id, 'libvirtName')
+         device = self.get_name_of_device(vm_name, 'cdrom')
+-        exec_cmd('virsh change-media %s --insert %s %s'
+-                 % (vm_name, device, iso_file))
++        exec_cmd('virsh %s change-media %s --insert %s %s'
++                 % (self.get_node_uri(node_id), vm_name, device, iso_file))
+
+     def get_node_pxe_mac(self, node_id):
+         mac_list = []
+         vm_name = self.get_node_property(node_id, 'libvirtName')
+-        resp = exec_cmd('virsh dumpxml %s' % vm_name)
++        resp = exec_cmd('virsh %s dumpxml %s' % (self.get_node_uri(node_id), vm_name))
+         xml_dump = etree.fromstring(resp)
+         interfaces = xml_dump.xpath('/domain/devices/interface')
+         for interface in interfaces:
+@@ -137,7 +137,7 @@ class LibvirtAdapter(HardwareAdapter):
+         return mac_list
+
+     def get_name_of_device(self, vm_name, device_type):
+-        resp = exec_cmd('virsh dumpxml %s' % vm_name)
++        resp = exec_cmd('virsh %s dumpxml %s' % (self.get_node_uri(node_id), vm_name))
+         xml_dump = etree.fromstring(resp)
+         disks = xml_dump.xpath('/domain/devices/disk')
+         for disk in disks:
+@@ -151,7 +151,7 @@ class LibvirtAdapter(HardwareAdapter):
+     def get_virt_net_conf_dir(self):
+         return self.dha_struct['virtNetConfDir']
+
+-    def upload_iso(self, iso_file):
++    def upload_iso(self, node_id, iso_file):
+         size = os.path.getsize(iso_file)
+         vol_name = os.path.basename(iso_file)
+         vol_xml = VOL_XML_TEMPLATE.format(name=vol_name, unit='bytes',
+@@ -162,10 +162,10 @@ class LibvirtAdapter(HardwareAdapter):
+
+         log(vol_xml)
+         pool = DEFAULT_POOL # FIXME
+-        exec_cmd('virsh vol-create --pool %s %s' % (pool, fname))
+-        vol_path = exec_cmd('virsh vol-path --pool %s %s' % (pool, vol_name))
++        exec_cmd('virsh %s vol-create --pool %s %s' % (self.get_node_uri(node_id), pool, fname))
++        vol_path = exec_cmd('virsh %s vol-path --pool %s %s' % (self.get_node_uri(node_id), pool, vol_name))
+
+-        exec_cmd('virsh vol-upload %s %s' % (vol_path, iso_file),
++        exec_cmd('virsh %s vol-upload %s %s' % (self.get_node_uri(node_id), vol_path, iso_file),
+                  attempts=5, delay=10, verbose=True)
+
+         delete(fname)
+diff --git a/deploy/environments/execution_environment.py b/deploy/environments/execution_environment.py
+index 7a0b474..bf5dc69 100644
+--- a/deploy/environments/execution_environment.py
++++ b/deploy/environments/execution_environment.py
+@@ -29,12 +29,12 @@ class ExecutionEnvironment(object):
+
+     def delete_vm(self, node_id):
+         vm_name = self.dha.get_node_property(node_id, 'libvirtName')
+-        r, c = exec_cmd('virsh dumpxml %s' % vm_name, False)
++        r, c = exec_cmd('virsh %s dumpxml %s' % (self.dha.get_node_uri(node_id), vm_name), False)
+         if c:
+             return
+-        self.undefine_vm_delete_disk(r, vm_name)
++        self.undefine_vm_delete_disk(r, vm_name, node_id)
+
+-    def undefine_vm_delete_disk(self, printout, vm_name):
++    def undefine_vm_delete_disk(self, printout, vm_name, node_id):
+         disk_files = []
+         xml_dump = etree.fromstring(printout, self.parser)
+         disks = xml_dump.xpath('/domain/devices/disk')
+@@ -45,8 +45,13 @@ class ExecutionEnvironment(object):
+                 if source_file:
+                     disk_files.append(source_file)
+         log('Deleting VM %s with disks %s' % (vm_name, disk_files))
+-        exec_cmd('virsh destroy %s' % vm_name, False)
+-        exec_cmd('virsh undefine --managed-save --remove-all-storage %s' % vm_name, False)
++        exec_cmd('virsh %s destroy %s' % (self.dha.get_node_uri(node_id), vm_name), False)
++        r, c = exec_cmd('virsh %s undefine --managed-save --remove-all-storage %s' % (
++                 self.dha.get_node_uri(node_id), vm_name), False)
++        if c:
++            exec_cmd('virsh %s undefine --managed-save --remove-all-storage --nvram %s' %
++                     % (self.dha.get_node_uri(node_id), vm_name), False)
++
+         for file in disk_files:
+             delete(file)
+
+@@ -75,7 +80,7 @@ class ExecutionEnvironment(object):
+                 self.overwrite_xml(xml_element, value)
+
+     def define_vm(self, vm_name, temp_vm_file, disk_path,
+-                  vm_definition_overwrite):
++                  vm_definition_overwrite, node_id):
+         log('Creating VM %s with disks %s' % (vm_name, disk_path))
+         with open(temp_vm_file) as f:
+             vm_xml = etree.parse(f)
+@@ -99,4 +104,4 @@ class ExecutionEnvironment(object):
+                 disk.append(source)
+         with open(temp_vm_file, 'w') as f:
+             vm_xml.write(f, pretty_print=True, xml_declaration=True)
+-        exec_cmd('virsh define %s' % temp_vm_file)
++        exec_cmd('virsh %s define %s' % (self.dha.get_node_uri(node_id), temp_vm_file))
+diff --git a/deploy/environments/libvirt_environment.py b/deploy/environments/libvirt_environment.py
+index 07a47fd..08d669b 100644
+--- a/deploy/environments/libvirt_environment.py
++++ b/deploy/environments/libvirt_environment.py
+@@ -12,6 +12,9 @@ from lxml import etree
+ import glob
+ from execution_environment import ExecutionEnvironment
+ import tempfile
++import os
++import re
++import time
+
+ from common import (
+     exec_cmd,
+@@ -21,6 +24,25 @@ from common import (
+     delete,
+ )
+
++VOL_XML_TEMPLATE = '''<volume type='file'>
++  <name>{name}</name>
++  <capacity unit='{unit}'>{size!s}</capacity>
++  <target>
++    <format type='{format_type}'/>
++  </target>
++</volume>'''
++
++DEFAULT_POOL = 'jenkins'
++
++def get_size_and_unit(s):
++    p = re.compile('^(\d+)\s*(\D+)')
++    m = p.match(s)
++    if m == None:
++        return None, None
++    size = m.groups()[0]
++    unit = m.groups()[1]
++    return size, unit
++
+
+ class LibvirtEnvironment(ExecutionEnvironment):
+
+@@ -33,10 +55,39 @@ class LibvirtEnvironment(ExecutionEnvironment):
+         self.node_ids = self.dha.get_all_node_ids()
+         self.net_names = self.collect_net_names()
+
+-    def create_storage(self, node_id, disk_path, disk_sizes):
++    def create_volume(self, pool, name, su, node_id, temp_dir, img_type='raw'):
++        log('Creating image using Libvirt volumes in pool %s, name: %s, uri: %s' %
++            (pool, name, self.dha.get_node_uri(node_id)))
++        size, unit = get_size_and_unit(su)
++        if size == None:
++            err('Could not determine size and unit of %s' % s)
++
++        vol_xml = VOL_XML_TEMPLATE.format(name=name, unit=unit, size=size,
++                                          format_type=img_type)
++        fname = os.path.join(temp_dir, '%s_vol.xml' % name)
++        with file(fname, 'w') as f:
++            f.write(vol_xml)
++
++        exec_cmd('virsh %s vol-create --pool %s %s' %
++                 (self.dha.get_node_uri(node_id), pool, fname))
++        vol_path = exec_cmd('virsh %s vol-path --pool %s %s' %
++                            (self.dha.get_node_uri(node_id), pool, name))
++
++        delete(fname)
++        return vol_path
++
++
++    def create_storage(self, node_id, disk_path, disk_sizes, temp_dir):
+         role = self.dea.get_node_main_role(node_id, self.fuel_node_id)
+         disk_size = disk_sizes[role]
+-        exec_cmd('qemu-img create -f raw %s %s' % (disk_path, disk_size))
++        if os.environ.get('LIBVIRT_DEFAULT_URI') == None:
++            exec_cmd('qemu-img create -f raw %s %s' % (disk_path, disk_size))
++        else:
++            pool = DEFAULT_POOL # FIXME
++            name = os.path.basename(disk_path)
++            disk_path = self.create_volume(pool, name, disk_size, node_id, temp_dir)
++        return disk_path
++
+
+     def create_vms(self):
+         temp_dir = tempfile.mkdtemp()
+@@ -48,13 +99,13 @@ class LibvirtEnvironment(ExecutionEnvironment):
+                                          node_id, 'libvirtTemplate'))
+             check_file_exists(vm_template)
+             disk_path = '%s/%s.raw' % (self.storage_dir, vm_name)
+-            self.create_storage(node_id, disk_path, disk_sizes)
++            disk_path = self.create_storage(node_id, disk_path, disk_sizes, temp_dir)
+             temp_vm_file = '%s/%s' % (temp_dir, vm_name)
+             exec_cmd('cp %s %s' % (vm_template, temp_vm_file))
+             vm_definition_overwrite = self.dha.get_vm_definition(
+                  self.dea.get_node_main_role(node_id, self.fuel_node_id))
+             self.define_vm(vm_name, temp_vm_file, disk_path,
+-                           vm_definition_overwrite)
++                           vm_definition_overwrite, node_id)
+         delete(temp_dir)
+
+     def start_vms(self):
+diff --git a/deploy/environments/virtual_fuel.py b/deploy/environments/virtual_fuel.py
+index fcfa532..0d52994 100644
+--- a/deploy/environments/virtual_fuel.py
++++ b/deploy/environments/virtual_fuel.py
+@@ -99,8 +99,10 @@ class VirtualFuel(ExecutionEnvironment):
+         with file(fname, 'w') as f:
+             f.write(vol_xml)
+
+-        exec_cmd('virsh vol-create --pool %s %s' % (pool, fname))
+-        vol_path = exec_cmd('virsh vol-path --pool %s %s' % (pool, name))
++        exec_cmd('virsh %s vol-create --pool %s %s' %
++                 (self.dha.get_node_uri(self.fuel_node_id), pool, fname))
++        vol_path = exec_cmd('virsh %s vol-path --pool %s %s' %
++                            (self.dha.get_node_uri(self.fuel_node_id), pool, name))
+
+         delete(fname)
+
+@@ -131,7 +133,7 @@ class VirtualFuel(ExecutionEnvironment):
+         vm_definition_overwrite = self.dha.get_vm_definition('fuel')
+
+         self.define_vm(self.vm_name, self.temp_vm_file, disk_path,
+-                       vm_definition_overwrite)
++                       vm_definition_overwrite, self.fuel_node_id)
+
+     def setup_environment(self):
+         self.cleanup_environment()
+diff --git a/deploy/install_fuel_master.py b/deploy/install_fuel_master.py
+index efe38c8..ccc18d3 100644
+--- a/deploy/install_fuel_master.py
++++ b/deploy/install_fuel_master.py
+@@ -56,7 +56,7 @@ class InstallFuelMaster(object):
+
+         if os.environ.get('LIBVIRT_DEFAULT_URI'):
+             log('Upload ISO to pool')
+-            self.iso_file = self.dha.upload_iso(self.iso_file)
++            self.iso_file = self.dha.upload_iso(self.fuel_node_id, self.iso_file)
+         else:
+             log('Zero the MBR')
+             self.dha.node_zero_mbr(self.fuel_node_id)
+diff --git a/deploy/scenario/ha_heat_ceilometer_scenario.yaml b/deploy/scenario/ha_heat_ceilometer_scenario.yaml
+index 4051c47..78fa80d 100644
+--- a/deploy/scenario/ha_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/ha_heat_ceilometer_scenario.yaml
+@@ -58,22 +58,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/scenario/ha_nfv-kvm_heat_ceilometer_scenario.yaml b/deploy/scenario/ha_nfv-kvm_heat_ceilometer_scenario.yaml
+index 1217f72..bcdda61 100644
+--- a/deploy/scenario/ha_nfv-kvm_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/ha_nfv-kvm_heat_ceilometer_scenario.yaml
+@@ -145,22 +145,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/scenario/ha_nfv-ovs_heat_ceilometer_scenario.yaml b/deploy/scenario/ha_nfv-ovs_heat_ceilometer_scenario.yaml
+index 51deb4e..bee2d1a 100644
+--- a/deploy/scenario/ha_nfv-ovs_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/ha_nfv-ovs_heat_ceilometer_scenario.yaml
+@@ -107,22 +107,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/scenario/ha_odl-bgpvpn_scenario.yaml b/deploy/scenario/ha_odl-bgpvpn_scenario.yaml
+index 7d52e77..46efc4b 100644
+--- a/deploy/scenario/ha_odl-bgpvpn_scenario.yaml
++++ b/deploy/scenario/ha_odl-bgpvpn_scenario.yaml
+@@ -77,22 +77,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/scenario/ha_odl-l2_heat_ceilometer_scenario.yaml b/deploy/scenario/ha_odl-l2_heat_ceilometer_scenario.yaml
+index 90c89ae..50dde30 100644
+--- a/deploy/scenario/ha_odl-l2_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/ha_odl-l2_heat_ceilometer_scenario.yaml
+@@ -77,22 +77,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/scenario/ha_odl-l2_sfc_heat_ceilometer_scenario.yaml b/deploy/scenario/ha_odl-l2_sfc_heat_ceilometer_scenario.yaml
+index c478948..e20ec1a 100644
+--- a/deploy/scenario/ha_odl-l2_sfc_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/ha_odl-l2_sfc_heat_ceilometer_scenario.yaml
+@@ -95,22 +95,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/scenario/ha_odl-l3_heat_ceilometer_scenario.yaml b/deploy/scenario/ha_odl-l3_heat_ceilometer_scenario.yaml
+index 967e7d2..322dd27 100644
+--- a/deploy/scenario/ha_odl-l3_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/ha_odl-l3_heat_ceilometer_scenario.yaml
+@@ -93,22 +93,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/scenario/ha_onos_nofeature_heat_ceilometer_scenario.yaml b/deploy/scenario/ha_onos_nofeature_heat_ceilometer_scenario.yaml
+index f813458..88b8f6b 100644
+--- a/deploy/scenario/ha_onos_nofeature_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/ha_onos_nofeature_heat_ceilometer_scenario.yaml
+@@ -88,22 +88,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/scenario/ha_onos_sfc_heat_ceilometer_scenario.yaml b/deploy/scenario/ha_onos_sfc_heat_ceilometer_scenario.yaml
+index 32fbfcf..c390172 100644
+--- a/deploy/scenario/ha_onos_sfc_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/ha_onos_sfc_heat_ceilometer_scenario.yaml
+@@ -68,22 +68,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/scenario/ha_vlan_heat_ceilometer_scenario.yaml b/deploy/scenario/ha_vlan_heat_ceilometer_scenario.yaml
+index d1d5191..65b8b20 100644
+--- a/deploy/scenario/ha_vlan_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/ha_vlan_heat_ceilometer_scenario.yaml
+@@ -102,22 +102,23 @@ dha-override-config:
+   nodes:
+   - id: 1
+     libvirtName: controller1
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 2
+     libvirtName: controller2
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 3
+     libvirtName: controller3
+-    libvirtTemplate: templates/virtual_environment/vms/controller.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
+   - id: 4
+     libvirtName: compute1
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 5
+     libvirtName: compute2
+-    libvirtTemplate: templates/virtual_environment/vms/compute.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
+   - id: 6
+     libvirtName: fuel-master
+-    libvirtTemplate: templates/virtual_environment/vms/fuel.xml
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
+     isFuel: yes
+     username: root
+     password: r00tme
+diff --git a/deploy/templates/arm/virtual_environment/vms/compute.xml b/deploy/templates/arm/virtual_environment/vms/compute.xml
+new file mode 100644
+index 0000000..db3ba29
+--- /dev/null
++++ b/deploy/templates/arm/virtual_environment/vms/compute.xml
+@@ -0,0 +1,57 @@
++<domain type='kvm'>
++  <name>compute</name>
++  <memory unit='KiB'>8392704</memory>
++  <currentMemory unit='KiB'>8392704</currentMemory>
++  <vcpu placement='static'>6</vcpu>
++  <os>
++    <type arch='aarch64' machine='virt-2.6'>hvm</type>
++    <loader readonly='yes' type='pflash'>/usr/share/AAVMF/AAVMF_CODE.fd</loader>
++  </os>
++  <features>
++    <gic version='3'/>
++  </features>
++  <cpu mode='host-model'>
++    <model fallback='allow'/>
++  </cpu>
++  <clock offset='utc'/>
++  <on_poweroff>destroy</on_poweroff>
++  <on_reboot>restart</on_reboot>
++  <on_crash>restart</on_crash>
++  <devices>
++    <emulator>/usr/bin/kvm</emulator>
++    <disk type='file' device='disk'>
++      <driver name='qemu' type='raw' cache='none' io='native'/>
++      <source file='disk.raw'/>
++      <target dev='vda' bus='virtio'/>
++      <boot order='2'/>
++      <address type='virtio-mmio'/>
++    </disk>
++    <controller type='scsi' index='0' model='virtio-scsi'>
++      <address type='virtio-mmio'/>
++    </controller>
++    <controller type='pci' index='0' model='pcie-root'/>
++    <interface type='bridge'>
++      <source bridge='admin8_br'/>
++      <model type='virtio'/>
++      <boot order='1'/>
++      <address type='virtio-mmio'/>
++    </interface>
++    <interface type='bridge'>
++      <source bridge='public8_br'/>
++      <model type='virtio'/>
++      <address type='virtio-mmio'/>
++    </interface>
++    <interface type='bridge'>
++      <source bridge='trunk8_br'/>
++      <model type='virtio'/>
++      <address type='virtio-mmio'/>
++    </interface>
++    <serial type='pty'>
++      <target port='0'/>
++    </serial>
++    <console type='pty'>
++      <target type='serial' port='0'/>
++    </console>
++  </devices>
++</domain>
++
+diff --git a/deploy/templates/arm/virtual_environment/vms/controller.xml b/deploy/templates/arm/virtual_environment/vms/controller.xml
+new file mode 100644
+index 0000000..6bd0385
+--- /dev/null
++++ b/deploy/templates/arm/virtual_environment/vms/controller.xml
+@@ -0,0 +1,57 @@
++<domain type='kvm'>
++  <name>controller</name>
++  <memory unit='KiB'>8392704</memory>
++  <currentMemory unit='KiB'>8392704</currentMemory>
++  <vcpu placement='static'>6</vcpu>
++  <os>
++    <type arch='aarch64' machine='virt-2.6'>hvm</type>
++    <loader readonly='yes' type='pflash'>/usr/share/AAVMF/AAVMF_CODE.fd</loader>
++  </os>
++  <features>
++    <gic version='3'/>
++  </features>
++  <cpu mode='host-model'>
++    <model fallback='allow'/>
++  </cpu>
++  <clock offset='utc'/>
++  <on_poweroff>destroy</on_poweroff>
++  <on_reboot>restart</on_reboot>
++  <on_crash>restart</on_crash>
++  <devices>
++    <emulator>/usr/bin/kvm</emulator>
++    <disk type='file' device='disk'>
++      <driver name='qemu' type='raw' cache='none' io='native'/>
++      <source file='disk.raw'/>
++      <target dev='vda' bus='virtio'/>
++      <boot order='2'/>
++      <address type='virtio-mmio'/>
++    </disk>
++    <controller type='scsi' index='0' model='virtio-scsi'>
++      <address type='virtio-mmio'/>
++    </controller>
++    <controller type='pci' index='0' model='pcie-root'/>
++    <interface type='bridge'>
++      <source bridge='admin8_br'/>
++      <model type='virtio'/>
++      <boot order='1'/>
++      <address type='virtio-mmio'/>
++    </interface>
++    <interface type='bridge'>
++      <source bridge='public8_br'/>
++      <model type='virtio'/>
++      <address type='virtio-mmio'/>
++    </interface>
++    <interface type='bridge'>
++      <source bridge='trunk8_br'/>
++      <model type='virtio'/>
++      <address type='virtio-mmio'/>
++    </interface>
++    <serial type='pty'>
++      <target port='0'/>
++    </serial>
++    <console type='pty'>
++      <target type='serial' port='0'/>
++    </console>
++  </devices>
++</domain>
++
+diff --git a/deploy/templates/arm/virtual_environment/vms/fuel.xml b/deploy/templates/arm/virtual_environment/vms/fuel.xml
+new file mode 100644
+index 0000000..34d251b
+--- /dev/null
++++ b/deploy/templates/arm/virtual_environment/vms/fuel.xml
+@@ -0,0 +1,100 @@
++<domain type='kvm'>
++  <name>fuel</name>
++  <memory unit='KiB'>8290304</memory>
++  <currentMemory unit='KiB'>8290304</currentMemory>
++  <vcpu placement='static'>4</vcpu>
++  <resource>
++    <partition>/machine</partition>
++  </resource>
++  <os>
++    <type arch='x86_64' machine='pc-i440fx-rhel7.0.0'>hvm</type>
++    <boot dev='hd'/>
++    <boot dev='cdrom'/>
++    <bootmenu enable='no'/>
++  </os>
++  <features>
++    <acpi/>
++    <apic/>
++    <pae/>
++  </features>
++  <cpu mode='host-model'>
++    <model fallback='allow'/>
++  </cpu>
++  <clock offset='utc'>
++    <timer name='rtc' tickpolicy='catchup'/>
++    <timer name='pit' tickpolicy='delay'/>
++    <timer name='hpet' present='no'/>
++  </clock>
++  <on_poweroff>destroy</on_poweroff>
++  <on_reboot>restart</on_reboot>
++  <on_crash>restart</on_crash>
++  <pm>
++    <suspend-to-mem enabled='no'/>
++    <suspend-to-disk enabled='no'/>
++  </pm>
++  <devices>
++    <emulator>/usr/libexec/qemu-kvm</emulator>
++    <disk type='block' device='cdrom'>
++      <driver name='qemu' type='raw'/>
++      <target dev='hdc' bus='ide'/>
++      <readonly/>
++    </disk>
++    <disk type='file' device='disk'>
++      <driver name='qemu' type='raw' cache='none' io='native'/>
++      <source file='disk.raw'/>
++      <target dev='vda' bus='virtio'/>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
++    </disk>
++    <controller type='usb' index='0' model='ich9-ehci1'>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x7'/>
++    </controller>
++    <controller type='usb' index='0' model='ich9-uhci1'>
++      <master startport='0'/>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0' multifunction='on'/>
++    </controller>
++    <controller type='usb' index='0' model='ich9-uhci2'>
++      <master startport='2'/>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x1'/>
++    </controller>
++    <controller type='usb' index='0' model='ich9-uhci3'>
++      <master startport='4'/>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x2'/>
++    </controller>
++    <controller type='pci' index='0' model='pci-root'/>
++    <controller type='ide' index='0'>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
++    </controller>
++    <controller type='virtio-serial' index='0'>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
++    </controller>
++    <interface type='bridge'>
++      <source bridge='admin8_br0'/>
++      <model type='virtio'/>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
++    </interface>
++    <interface type='bridge'>
++      <source bridge='public8_br0'/>
++      <model type='virtio'/>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
++    </interface>
++    <serial type='pty'>
++      <target port='0'/>
++    </serial>
++    <console type='pty'>
++      <target type='serial' port='0'/>
++    </console>
++    <input type='mouse' bus='ps2'/>
++    <input type='keyboard' bus='ps2'/>
++    <graphics type='vnc' port='-1' autoport='yes' listen='127.0.0.1'>
++      <listen type='address' address='127.0.0.1'/>
++    </graphics>
++    <video>
++      <model type='vga' vram='16384' heads='1'/>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
++    </video>
++    <memballoon model='virtio'>
++      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
++    </memballoon>
++  </devices>
++</domain>
++
++
