@@ -1,0 +1,43 @@
+From 8786808b329c4bfc7010b967cc0b186079e603f6 Mon Sep 17 00:00:00 2001
+From: cristinapauna <cristina.pauna@enea.com>
+Date: Sat, 26 Nov 2016 17:56:03 +0200
+Subject: [PATCH] Correct previous patch on fuel rework
+
+Some leftover chars were keeping the deploy to work
+Also, the empty folder networks was added. This folder should
+contain templates for virtual network config for the targets.
+For arm we don't need those so we leave it empty for consistency
+with other projects and for avoiding changing the deploy logic
+
+Signed-off-by: cristinapauna <cristina.pauna@enea.com>
+---
+ deploy/environments/execution_environment.py               | 6 +++---
+ deploy/templates/arm/virtual_environment/networks/.gitkeep | 0
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+ create mode 100644 deploy/templates/arm/virtual_environment/networks/.gitkeep
+
+diff --git a/deploy/environments/execution_environment.py b/deploy/environments/execution_environment.py
+index bf5dc69..db25229 100644
+--- a/deploy/environments/execution_environment.py
++++ b/deploy/environments/execution_environment.py
+@@ -46,11 +46,11 @@ class ExecutionEnvironment(object):
+                     disk_files.append(source_file)
+         log('Deleting VM %s with disks %s' % (vm_name, disk_files))
+         exec_cmd('virsh %s destroy %s' % (self.dha.get_node_uri(node_id), vm_name), False)
+-        r, c = exec_cmd('virsh %s undefine --managed-save --remove-all-storage %s' % (
+-                 self.dha.get_node_uri(node_id), vm_name), False)
++        r, c = exec_cmd('virsh %s undefine --managed-save --remove-all-storage %s' %
++                        (self.dha.get_node_uri(node_id), vm_name), False)
+         if c:
+             exec_cmd('virsh %s undefine --managed-save --remove-all-storage --nvram %s' %
+-                     % (self.dha.get_node_uri(node_id), vm_name), False)
++                     (self.dha.get_node_uri(node_id), vm_name), False)
+ 
+         for file in disk_files:
+             delete(file)
+diff --git a/deploy/templates/arm/virtual_environment/networks/.gitkeep b/deploy/templates/arm/virtual_environment/networks/.gitkeep
+new file mode 100644
+index 0000000..e69de29
+-- 
+2.7.4
+
