@@ -2,13 +2,13 @@ From: cristinapauna <cristina.pauna@enea.com>
 Date: Fri, 25 Nov 2016 16:38:46 +0200
 Subject: [PATCH] Fuel rework for multiple libvirt
 
-The current fuel arhitecture assumes that all the VMs 
-(Jenkins slave, Fuel master and Target nodes) are all on 
-the same server. There is code that allows the Fuel master 
+The current fuel arhitecture assumes that all the VMs
+(Jenkins slave, Fuel master and Target nodes) are all on
+the same server. There is code that allows the Fuel master
 to be on a different machine, but nothing for the Target nodes.
 In Enea-Arm lab we have a different server for each.
 
-This commit also adds specific templates for a virtual pod in 
+This commit also adds specific templates for a virtual pod in
 the Enea-Arm lab.
 
 Therefore, the following changes are done:
@@ -27,7 +27,7 @@ Therefore, the following changes are done:
 Signed-off-by: cristinapauna <cristina.pauna@enea.com>
 ---
  deploy/dha_adapters/hardware_adapter.py            |   5 ++
- deploy/dha_adapters/libvirt_adapter.py             |  36 ++++----
+ deploy/dha_adapters/libvirt_adapter.py             |  42 ++++-----
  deploy/environments/execution_environment.py       |  19 ++--
  deploy/environments/libvirt_environment.py         |  59 +++++++++++-
  deploy/environments/virtual_fuel.py                |   8 +-
@@ -42,10 +42,12 @@ Signed-off-by: cristinapauna <cristina.pauna@enea.com>
  ...ha_onos_nofeature_heat_ceilometer_scenario.yaml |  13 +--
  .../ha_onos_sfc_heat_ceilometer_scenario.yaml      |  13 +--
  .../scenario/ha_vlan_heat_ceilometer_scenario.yaml |  13 +--
+ .../arm/virtual_environment/networks/.gitkeep      |   0
  .../arm/virtual_environment/vms/compute.xml        |  57 ++++++++++++
  .../arm/virtual_environment/vms/controller.xml     |  57 ++++++++++++
  .../templates/arm/virtual_environment/vms/fuel.xml | 100 +++++++++++++++++++++
- 19 files changed, 380 insertions(+), 93 deletions(-)
+ 20 files changed, 383 insertions(+), 96 deletions(-)
+ create mode 100644 deploy/templates/arm/virtual_environment/networks/.gitkeep
  create mode 100644 deploy/templates/arm/virtual_environment/vms/compute.xml
  create mode 100644 deploy/templates/arm/virtual_environment/vms/controller.xml
  create mode 100644 deploy/templates/arm/virtual_environment/vms/fuel.xml
@@ -64,7 +66,7 @@ index aa59581..cf3d77a 100644
 +            return '-c %s' % vm_libvirt_uri
 +        return ''
 diff --git a/deploy/dha_adapters/libvirt_adapter.py b/deploy/dha_adapters/libvirt_adapter.py
-index a00f091..0a7c2fc 100644
+index a00f091..34535d1 100644
 --- a/deploy/dha_adapters/libvirt_adapter.py
 +++ b/deploy/dha_adapters/libvirt_adapter.py
 @@ -43,21 +43,21 @@ class LibvirtAdapter(HardwareAdapter):
@@ -118,20 +120,23 @@ index a00f091..0a7c2fc 100644
          xml_dump = etree.fromstring(resp)
          disks = xml_dump.xpath('/domain/devices/disk')
          for disk in disks:
-@@ -115,19 +115,19 @@ class LibvirtAdapter(HardwareAdapter):
+@@ -114,20 +114,20 @@ class LibvirtAdapter(HardwareAdapter):
+
      def node_eject_iso(self, node_id):
          vm_name = self.get_node_property(node_id, 'libvirtName')
-         device = self.get_name_of_device(vm_name, 'cdrom')
+-        device = self.get_name_of_device(vm_name, 'cdrom')
 -        exec_cmd('virsh change-media %s --eject %s --config --live'
 -                 % (vm_name, device), False)
++        device = self.get_name_of_device(vm_name, 'cdrom', node_id)
 +        exec_cmd('virsh %s change-media %s --eject %s --config --live'
 +                 % (self.get_node_uri(node_id), vm_name, device), False)
 
      def node_insert_iso(self, node_id, iso_file):
          vm_name = self.get_node_property(node_id, 'libvirtName')
-         device = self.get_name_of_device(vm_name, 'cdrom')
+-        device = self.get_name_of_device(vm_name, 'cdrom')
 -        exec_cmd('virsh change-media %s --insert %s %s'
 -                 % (vm_name, device, iso_file))
++        device = self.get_name_of_device(vm_name, 'cdrom', node_id)
 +        exec_cmd('virsh %s change-media %s --insert %s %s'
 +                 % (self.get_node_uri(node_id), vm_name, device, iso_file))
 
@@ -143,11 +148,13 @@ index a00f091..0a7c2fc 100644
          xml_dump = etree.fromstring(resp)
          interfaces = xml_dump.xpath('/domain/devices/interface')
          for interface in interfaces:
-@@ -137,7 +137,7 @@ class LibvirtAdapter(HardwareAdapter):
+@@ -136,8 +136,8 @@ class LibvirtAdapter(HardwareAdapter):
+                 mac_list.append(mac.get('address').lower())
          return mac_list
 
-     def get_name_of_device(self, vm_name, device_type):
+-    def get_name_of_device(self, vm_name, device_type):
 -        resp = exec_cmd('virsh dumpxml %s' % vm_name)
++    def get_name_of_device(self, vm_name, device_type, node_id):
 +        resp = exec_cmd('virsh %s dumpxml %s' % (self.get_node_uri(node_id), vm_name))
          xml_dump = etree.fromstring(resp)
          disks = xml_dump.xpath('/domain/devices/disk')
@@ -176,7 +183,7 @@ index a00f091..0a7c2fc 100644
 
          delete(fname)
 diff --git a/deploy/environments/execution_environment.py b/deploy/environments/execution_environment.py
-index 7a0b474..bf5dc69 100644
+index 7a0b474..db25229 100644
 --- a/deploy/environments/execution_environment.py
 +++ b/deploy/environments/execution_environment.py
 @@ -29,12 +29,12 @@ class ExecutionEnvironment(object):
@@ -202,11 +209,11 @@ index 7a0b474..bf5dc69 100644
 -        exec_cmd('virsh destroy %s' % vm_name, False)
 -        exec_cmd('virsh undefine --managed-save --remove-all-storage %s' % vm_name, False)
 +        exec_cmd('virsh %s destroy %s' % (self.dha.get_node_uri(node_id), vm_name), False)
-+        r, c = exec_cmd('virsh %s undefine --managed-save --remove-all-storage %s' % (
-+                 self.dha.get_node_uri(node_id), vm_name), False)
++        r, c = exec_cmd('virsh %s undefine --managed-save --remove-all-storage %s' %
++                        (self.dha.get_node_uri(node_id), vm_name), False)
 +        if c:
 +            exec_cmd('virsh %s undefine --managed-save --remove-all-storage --nvram %s' %
-+                     % (self.dha.get_node_uri(node_id), vm_name), False)
++                     (self.dha.get_node_uri(node_id), vm_name), False)
 +
          for file in disk_files:
              delete(file)
@@ -325,7 +332,7 @@ index 07a47fd..08d669b 100644
 
      def start_vms(self):
 diff --git a/deploy/environments/virtual_fuel.py b/deploy/environments/virtual_fuel.py
-index fcfa532..0d52994 100644
+index fcfa532..5f50f40 100644
 --- a/deploy/environments/virtual_fuel.py
 +++ b/deploy/environments/virtual_fuel.py
 @@ -99,8 +99,10 @@ class VirtualFuel(ExecutionEnvironment):
@@ -703,6 +710,9 @@ index d1d5191..65b8b20 100644
      isFuel: yes
      username: root
      password: r00tme
+diff --git a/deploy/templates/arm/virtual_environment/networks/.gitkeep b/deploy/templates/arm/virtual_environment/networks/.gitkeep
+new file mode 100644
+index 0000000..e69de29
 diff --git a/deploy/templates/arm/virtual_environment/vms/compute.xml b/deploy/templates/arm/virtual_environment/vms/compute.xml
 new file mode 100644
 index 0000000..db3ba29
@@ -834,7 +844,7 @@ new file mode 100644
 index 0000000..34d251b
 --- /dev/null
 +++ b/deploy/templates/arm/virtual_environment/vms/fuel.xml
-@@ -0,0 +1,100 @@
+@@ -0,0 +1,99 @@
 +<domain type='kvm'>
 +  <name>fuel</name>
 +  <memory unit='KiB'>8290304</memory>
@@ -934,5 +944,3 @@ index 0000000..34d251b
 +    </memballoon>
 +  </devices>
 +</domain>
-+
-+
