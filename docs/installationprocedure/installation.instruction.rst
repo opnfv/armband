@@ -742,8 +742,8 @@ Fuel
 Fuel in OPNFV
 =============
 
-13) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/installationprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/docs/installationprocedure/index.html
+13) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/installationprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/installationprocedure/index.html
 
-14) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/buildprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/docs/buildprocedure/index.html
+14) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/buildprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/buildprocedure/index.html
 
-15) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/releasenotes/index.html>`_: http://artifacts.opnfv.org/armband/colorado/docs/releasenotes/index.html
+15) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/releasenotes/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/releasenotes/index.html
