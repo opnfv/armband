@@ -139,7 +139,7 @@ Check out the Colorado release:
 .. code-block:: bash
 
     $ cd armband
-    $ git checkout colorado.1.0
+    $ git checkout colorado.3.0
 
 Clone the armband@OPNFV code Git repository without a SSH key
 -------------------------------------------------------------
@@ -337,8 +337,8 @@ The artifacts produced are:
 References
 ==========
 
-1) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/installationprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/docs/installationprocedure/index.html
+1) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/installationprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/installationprocedure/index.html
 
-2) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/buildprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/docs/buildprocedure/index.html
+2) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/buildprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/buildprocedure/index.html
 
-3) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/releasenotes/index.html>`_: http://artifacts.opnfv.org/armband/colorado/docs/releasenotes/index.html
+3) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/releasenotes/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/releasenotes/index.html

@@ -63,7 +63,7 @@ baseline required to replicate the Colorado release:
 
 .. code-block:: bash
 
-    $ git checkout colorado.1.0
+    $ git checkout colorado.3.0
 
 Go to the armband directory and build the .iso:
 
@@ -550,14 +550,8 @@ Allocate nodes to environment and assign functional roles
 
     .. figure:: img/interfaceconf.png
 
-OPTIONAL - UNTESTED - Set Local Mirror Repos
+OPTIONAL - Set Local Mirror Repos
 ===========================================
-
-**NOTE**: AArch64 Colorado 1.0 does not fully support local Ubuntu mirrors,
-or at least does not ship with arm64 packages in local repos by default.
-In order to use local (partial) Ubuntu mirrors, one should add arm64 packages
-by hand to the existing amd64 mirrors and re-generate repo metadata.
-Local MOS/Auxiliary repos contain packages for both amd64 and arm64.
 
 **NOTE**: Below instruction assume you already added (by hand) arm64
 Ubuntu necessary packages to the local repository!
@@ -571,10 +565,6 @@ that can be used for installation / deployment of openstack.
    - Replace the URI values for the "Name" values outlined below:
 
    - "ubuntu" URI="deb http://<ip-of-fuel-server>:8080/mirrors/ubuntu/ trusty main"
-
-   - "ubuntu-security" URI="deb http://<ip-of-fuel-server>:8080/mirrors/ubuntu/ trusty-security main"
-
-   - "ubuntu-updates" URI="deb http://<ip-of-fuel-server>:8080/mirrors/ubuntu/ trusty-updates main"
 
    - "mos" URI="deb http://<ip-of-fuel-server>::8080/mitaka-9.0/ubuntu/x86_64 mos9.0 main restricted"
 
@@ -742,8 +732,8 @@ Fuel
 Fuel in OPNFV
 =============
 
-13) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/installationprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/docs/installationprocedure/index.html
+13) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/installationprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/installationprocedure/index.html
 
-14) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/buildprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/docs/buildprocedure/index.html
+14) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/buildprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/buildprocedure/index.html
 
-15) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/docs/releasenotes/index.html>`_: http://artifacts.opnfv.org/armband/colorado/docs/releasenotes/index.html
+15) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/releasenotes/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/releasenotes/index.html
