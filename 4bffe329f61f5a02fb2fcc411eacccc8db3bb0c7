@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac10518_90a53106",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-11-29T16:50:30Z",
+      "side": 1,
+      "message": "3.0",
+      "range": {
+        "startLine": 142,
+        "startChar": 28,
+        "endLine": 142,
+        "endChar": 31
+      },
+      "revId": "4bffe329f61f5a02fb2fcc411eacccc8db3bb0c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_b0aaadd2",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-11-29T16:50:30Z",
+      "side": 1,
+      "message": "3.0",
+      "range": {
+        "startLine": 66,
+        "startChar": 28,
+        "endLine": 66,
+        "endChar": 31
+      },
+      "revId": "4bffe329f61f5a02fb2fcc411eacccc8db3bb0c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_70ac45ee",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-11-29T16:50:30Z",
+      "side": 1,
+      "message": "No longer true. Starting with C3, we have FULL offline mirrors. We have to re-sync our whole doc with Fuel@OPNFV and remove any notes about local mirrors not being available for Armband.",
+      "range": {
+        "startLine": 556,
+        "startChar": 0,
+        "endLine": 560,
+        "endChar": 68
+      },
+      "revId": "4bffe329f61f5a02fb2fcc411eacccc8db3bb0c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_10b9412e",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-11-29T16:50:30Z",
+      "side": 1,
+      "message": "These are no longer accurate for Armband.\nOur (Armband) local Ubuntu mirrors have \"trusty main\", no \"trusty-updates main\", \"trusty-security main\", \"trusty universe\" etc. while Fuel@OPNFV still has them layed out like this (hopefully it will sync with Armband in D regarding this aspect).",
+      "range": {
+        "startLine": 574,
+        "startChar": 0,
+        "endLine": 577,
+        "endChar": 99
+      },
+      "revId": "4bffe329f61f5a02fb2fcc411eacccc8db3bb0c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_f0a035f6",
+        "filename": "docs/releasenotes/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2016-11-29T16:50:30Z",
+      "side": 1,
+      "message": "space :)",
+      "range": {
+        "startLine": 111,
+        "startChar": 33,
+        "endLine": 111,
+        "endChar": 34
+      },
+      "revId": "4bffe329f61f5a02fb2fcc411eacccc8db3bb0c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
