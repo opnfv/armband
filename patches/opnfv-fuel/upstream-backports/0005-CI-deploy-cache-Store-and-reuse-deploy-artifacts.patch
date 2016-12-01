@@ -584,7 +584,7 @@ index 0000000..d7ec1c7
 +                else:
 +                    log('New cache SHA1: %s (%s)' % (str(sha), artifact))
 +                    cache_sha_dir = os.path.join(self.cache_dir, sha)
-+                    exec_cmd('mkdir -p %s', cache_sha_dir)
++                    exec_cmd('mkdir -p %s' % cache_sha_dir)
 +                    func(ssh, cache_sha_dir)
 +        except Exception as ex:
 +            log('Failed to extract artifacts from Fuel: %s' % str(ex))
