@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5ac10518_a2749afd",
+        "filename": "docs/buildprocedure/build.instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2016-12-02T12:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ac10518_90a53106",
+      "range": {
+        "startLine": 142,
+        "startChar": 28,
+        "endLine": 142,
+        "endChar": 31
+      },
+      "revId": "4bffe329f61f5a02fb2fcc411eacccc8db3bb0c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ac10518_b0aaadd2",
         "filename": "docs/installationprocedure/installation.instruction.rst",
         "patchSetId": 1
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "5ac10518_e2514263",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2016-12-02T12:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ac10518_70ac45ee",
+      "range": {
+        "startLine": 556,
+        "startChar": 0,
+        "endLine": 560,
+        "endChar": 68
+      },
+      "revId": "4bffe329f61f5a02fb2fcc411eacccc8db3bb0c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ac10518_10b9412e",
         "filename": "docs/installationprocedure/installation.instruction.rst",
         "patchSetId": 1
@@ -82,6 +130,30 @@
       "writtenOn": "2016-11-29T16:50:30Z",
       "side": 1,
       "message": "These are no longer accurate for Armband.\nOur (Armband) local Ubuntu mirrors have \"trusty main\", no \"trusty-updates main\", \"trusty-security main\", \"trusty universe\" etc. while Fuel@OPNFV still has them layed out like this (hopefully it will sync with Armband in D regarding this aspect).",
+      "range": {
+        "startLine": 574,
+        "startChar": 0,
+        "endLine": 577,
+        "endChar": 99
+      },
+      "revId": "4bffe329f61f5a02fb2fcc411eacccc8db3bb0c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_42613638",
+        "filename": "docs/installationprocedure/installation.instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2016-12-02T12:23:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ac10518_10b9412e",
       "range": {
         "startLine": 574,
         "startChar": 0,
