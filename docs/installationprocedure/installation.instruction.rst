@@ -36,7 +36,7 @@ networking and Unix/Linux administration.
 Preface
 =======
 
-Before starting the installation of the AArch64 Colorado 1.0 release
+Before starting the installation of the AArch64 Colorado release
 of OPNFV, using Fuel as a deployment tool, some planning must be
 done.
 
@@ -52,7 +52,7 @@ Building the ISO image
 
 Alternatively, you may build the Armband Fuel .iso from source by cloning
 the opnfv/armband git repository. To retrieve the repository for the AArch64
-Colorado 1.0 release use the following command:
+Colorado release use the following command:
 
 .. code-block:: bash
 
@@ -63,7 +63,7 @@ baseline required to replicate the Colorado release:
 
 .. code-block:: bash
 
-    $ git checkout colorado.3.0
+    $ git checkout colorado.3.0.1
 
 Go to the armband directory and build the .iso:
 
@@ -113,7 +113,7 @@ Hardware requirements
 =====================
 
 The following minimum hardware requirements must be met for the
-installation of AArch64 Colorado 1.0 using Fuel:
+installation of AArch64 Colorado using Fuel:
 
 +--------------------+------------------------------------------------------+
 | **HW Aspect**      | **Requirement**                                      |
@@ -230,12 +230,8 @@ Install Fuel master
 
 #. In the "Network Setup" section - Configure DHCP/Static IP information for your FUEL node - For example, ETH0 is 10.20.0.2/24 for FUEL booting and ETH1 is DHCP in your corporate/lab network (see figure below).
 
-- **NOTE**: ArmbandFuel@OPNFV requires internet connectivity during bootstrap
-     image building, due to missing arm64 (AArch64) packages in the partial
-     local Ubuntu mirror (consequence of ports.ubuntu.com mirror architecture).
-
-   - Configuration of ETH1 interface for connectivity into your corporate/lab
-     network is mandatory, as internet connection is required during deployment.
+- **NOTE**: Configuration of ETH1 interface for connectivity into your corporate/lab
+     network is optional
 
    .. figure:: img/fuelmenu2.png
 
@@ -344,8 +340,8 @@ Install additional Plugins/Features on the FUEL node
 
    .. figure:: img/plugin_install.png
 
-   **NOTE**: AArch64 Colorado 1.0 ships only with ODL, OVS and BGPVPN plugins,
-   see *Reference 15*.
+   **NOTE**: AArch64 Colorado 1.0 ships only with ODL, OVS, BGPVPN and Tacker
+   plugins, see *Reference 15*.
 
 Create an OpenStack Environment
 ===============================
@@ -551,10 +547,7 @@ Allocate nodes to environment and assign functional roles
     .. figure:: img/interfaceconf.png
 
 OPTIONAL - Set Local Mirror Repos
-===========================================
-
-**NOTE**: Below instruction assume you already added (by hand) arm64
-Ubuntu necessary packages to the local repository!
+=================================
 
 The following steps must be executed if you are in an environment with
 no connection to the Internet. The Fuel server delivers a local repo
@@ -581,7 +574,7 @@ Target specific configuration
    currently only affects AArch64 targets (see *Reference 15*).
 
    When using some AArch64 platforms as controller nodes, WSREP SST
-   synchronisation using default backend provider (xtrabackup-v2) might fail,
+   synchronisation using default backend provider (xtrabackup-v2) used to fail,
    so a mechanism that allows selecting a different WSREP SST provider
    has been introduced.
 
