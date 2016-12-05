@@ -70,14 +70,12 @@ On the host, the following packages must be installed:
 
 - curl
 
-- fuseiso
-
 Apart from docker, all other package requirements listed above are
 simply available through:
 
 .. code-block:: bash
 
-    $ sudo apt-get install git make curl fuseiso
+    $ sudo apt-get install git make curl
 
 
 ============
@@ -139,7 +137,7 @@ Check out the Colorado release:
 .. code-block:: bash
 
     $ cd armband
-    $ git checkout colorado.3.0
+    $ git checkout colorado.3.0.1
 
 Clone the armband@OPNFV code Git repository without a SSH key
 -------------------------------------------------------------
@@ -261,7 +259,7 @@ that this is not a full build.
 This method of plugin selection is not meant to be used from within
 Gerrit!
 
-Note! So far, only ODL, OVS and BGPVPN plugins were ported to AArch64.
+Note! So far, only ODL, OVS, BGPVPN and Tacker plugins were ported to AArch64.
 
 ========
 Building

@@ -44,6 +44,8 @@ supplemented with OPNFV unique components such as:
 
 - `BGPVPN <http://docs.openstack.org/developer/networking-bgpvpn>`_ 'http://docs.openstack.org/developer/networking-bgpvpn/'
 
+-  Tacker <https://wiki.openstack.org/wiki/Tacker>`_ 'https://wiki.openstack.org/wiki/Tacker'
+
 The following OPNFV plugins are not yet ported for AArch64:
 
 - `ONOS <http://onosproject.org/>`_ version "Drake" - 'http://onosproject.org/'
@@ -108,7 +110,7 @@ Version change
 
 Module version changes
 ----------------------
-This is the Colorado 3.0 release.
+This is the Colorado 3.0 follow-up release.
 It is based on following upstream versions:
 
 - Fuel 9.0 Base release
