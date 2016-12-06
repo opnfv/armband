@@ -555,10 +555,10 @@ index 0000000..d7ec1c7
 +            for k in RSA_KEYPAIR_FILES:
 +                ssh.scp_get(os.path.join(RSA_KEYPAIR_PATH, k),
 +                    local=os.path.join(cache_sha_dir, k))
-+            ssh.exec_cmd('tar cf %s %s/*', remote_tar,
-+                os.path.join(NAILGUN_PATH, NAILGUN_ACT_BOOTSTRAP_SUBDIR))
++            ssh.exec_cmd('tar cf %s %s/*' % (remote_tar,
++                os.path.join(NAILGUN_PATH, NAILGUN_ACT_BOOTSTRAP_SUBDIR)))
 +            ssh.scp_get(remote_tar, local=local_tar)
-+            ssh.exec_cmd('rm -f %s', remote_tar)
++            ssh.exec_cmd('rm -f %s' % remote_tar)
 +
 +    def __extract_targetimages(self, ssh, cache_sha_dir):
 +        """Collect target image artifacts from Fuel over SSH/SCP"""
