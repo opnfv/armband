@@ -63,7 +63,7 @@ baseline required to replicate the Colorado release:
 
 .. code-block:: bash
 
-    $ git checkout colorado.3.0.1
+    $ git checkout colorado.3.0.2
 
 Go to the armband directory and build the .iso:
 

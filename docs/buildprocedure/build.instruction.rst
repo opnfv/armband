@@ -137,7 +137,7 @@ Check out the Colorado release:
 .. code-block:: bash
 
     $ cd armband
-    $ git checkout colorado.3.0.1
+    $ git checkout colorado.3.0.2
 
 Clone the armband@OPNFV code Git repository without a SSH key
 -------------------------------------------------------------
