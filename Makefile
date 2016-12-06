@@ -52,7 +52,7 @@ submodules-init:
 	@if [ ! -d ${FUEL_BASE}/build ]; then \
 		git submodule -q init; \
 		git submodule -q sync; \
-		git submodule update --remote; \
+		git submodule update; \
 	fi
 
 # Clean any changes made to submodules, checkout Armband root commit
