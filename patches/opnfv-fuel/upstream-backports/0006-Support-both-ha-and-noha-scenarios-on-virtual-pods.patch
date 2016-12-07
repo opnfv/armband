@@ -1,0 +1,586 @@
+From b95f8c06108a59c17995f762add61eea681da09f Mon Sep 17 00:00:00 2001
+From: cristinapauna <cristina.pauna@enea.com>
+Date: Wed, 7 Dec 2016 21:31:09 +0200
+Subject: [PATCH] Support both ha and noha scenarios on virtual pods
+
+Currently only ha scenarios were successfully deployed on virtual pods
+The default configuration is for ha scenarios and those have 5 target nodes
+while on the noha scenarios there are 4. The noha scenarios failed because
+it was trying to parse one extra node.
+
+This patch modifies the dea and dha files for each noha scenario so that the
+nodes are properly configured.
+
+Signed-off-by: cristinapauna <cristina.pauna@enea.com>
+---
+ .../scenario/no-ha_heat_ceilometer_scenario.yaml   | 25 +++++++++++++++++++++
+ .../no-ha_nfv-kvm_heat_ceilometer_scenario.yaml    | 25 +++++++++++++++++++++
+ ...a_nfv-kvm_nfv-ovs_heat_ceilometer_scenario.yaml | 25 +++++++++++++++++++++
+ .../no-ha_nfv-ovs_heat_ceilometer_scenario.yaml    | 26 +++++++++++++++++++++-
+ deploy/scenario/no-ha_odl-bgpvpn_scenario.yaml     | 25 +++++++++++++++++++++
+ .../no-ha_odl-l2_heat_ceilometer_scenario.yaml     | 25 +++++++++++++++++++++
+ .../no-ha_odl-l2_sfc_heat_ceilometer_scenario.yaml | 25 +++++++++++++++++++++
+ .../no-ha_odl-l3_heat_ceilometer_scenario.yaml     | 25 +++++++++++++++++++++
+ ...ha_onos_nofeature_heat_ceilometer_scenario.yaml | 26 ++++++++++++++++++++++
+ .../no-ha_onos_sfc_heat_ceilometer_scenario.yaml   | 25 +++++++++++++++++++++
+ .../no-ha_vlan_heat_ceilometer_scenario.yaml       | 25 +++++++++++++++++++++
+ 11 files changed, 276 insertions(+), 1 deletion(-)
+
+diff --git a/deploy/scenario/no-ha_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_heat_ceilometer_scenario.yaml
+index 3dd5f84..d738154 100644
+--- a/deploy/scenario/no-ha_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_heat_ceilometer_scenario.yaml
+@@ -41,17 +41,42 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+ 
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_nfv-kvm_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_nfv-kvm_heat_ceilometer_scenario.yaml
+index 4661a26..7ade095 100644
+--- a/deploy/scenario/no-ha_nfv-kvm_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_nfv-kvm_heat_ceilometer_scenario.yaml
+@@ -48,15 +48,19 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: compute
++    transformations: transformations_2
+ 
+   settings:
+     editable:
+@@ -141,6 +145,27 @@ dea-override-config:
+           weight: 10
+ 
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_nfv-kvm_nfv-ovs_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_nfv-kvm_nfv-ovs_heat_ceilometer_scenario.yaml
+index 87364e8..a3f0864 100644
+--- a/deploy/scenario/no-ha_nfv-kvm_nfv-ovs_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_nfv-kvm_nfv-ovs_heat_ceilometer_scenario.yaml
+@@ -55,15 +55,19 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   settings:
+     editable:
+       additional_components:
+@@ -104,6 +108,27 @@ dea-override-config:
+           weight: 30
+ 
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_nfv-ovs_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_nfv-ovs_heat_ceilometer_scenario.yaml
+index 7ab76cb..f4e0adc 100644
+--- a/deploy/scenario/no-ha_nfv-ovs_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_nfv-ovs_heat_ceilometer_scenario.yaml
+@@ -56,19 +56,22 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_vlan
+     role: mongo,controller
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_dpdk
+     role: ceph-osd,compute
+     attributes: attributes_1
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_dpdk
+     role: ceph-osd,compute
+     attributes: attributes_1
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_dpdk
+     role: ceph-osd,compute
+     attributes: attributes_1
+-
++    transformations: transformations_2
+   attributes_1:
+     hugepages:
+       dpdk:
+@@ -102,6 +105,27 @@ dea-override-config:
+       vlan_start: null
+ 
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_odl-bgpvpn_scenario.yaml b/deploy/scenario/no-ha_odl-bgpvpn_scenario.yaml
+index 6f21ea2..e92a741 100644
+--- a/deploy/scenario/no-ha_odl-bgpvpn_scenario.yaml
++++ b/deploy/scenario/no-ha_odl-bgpvpn_scenario.yaml
+@@ -60,17 +60,42 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd,opendaylight
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+ 
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_odl-l2_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_odl-l2_heat_ceilometer_scenario.yaml
+index f8787d7..1efa89a 100644
+--- a/deploy/scenario/no-ha_odl-l2_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_odl-l2_heat_ceilometer_scenario.yaml
+@@ -61,17 +61,42 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd,opendaylight
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+ 
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_odl-l2_sfc_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_odl-l2_sfc_heat_ceilometer_scenario.yaml
+index 90a45d5..b1fe773 100644
+--- a/deploy/scenario/no-ha_odl-l2_sfc_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_odl-l2_sfc_heat_ceilometer_scenario.yaml
+@@ -80,17 +80,42 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller,tacker
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd,opendaylight
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+ 
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_odl-l3_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_odl-l3_heat_ceilometer_scenario.yaml
+index 0c8415f..b59a049 100644
+--- a/deploy/scenario/no-ha_odl-l3_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_odl-l3_heat_ceilometer_scenario.yaml
+@@ -71,15 +71,19 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd,opendaylight
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   settings:
+     editable:
+       public_network_assignment:
+@@ -87,6 +91,27 @@ dea-override-config:
+           value: true
+ 
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_onos_nofeature_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_onos_nofeature_heat_ceilometer_scenario.yaml
+index f5c00f0..e51dd56 100644
+--- a/deploy/scenario/no-ha_onos_nofeature_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_onos_nofeature_heat_ceilometer_scenario.yaml
+@@ -68,21 +68,47 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller,onos
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   settings:
+     editable:
+       public_network_assignment:
+         assign_to_all_nodes:
+           value: true
++
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_onos_sfc_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_onos_sfc_heat_ceilometer_scenario.yaml
+index 587346e..21a2be2 100644
+--- a/deploy/scenario/no-ha_onos_sfc_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_onos_sfc_heat_ceilometer_scenario.yaml
+@@ -48,21 +48,46 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller,onos
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   settings:
+     editable:
+       public_network_assignment:
+         assign_to_all_nodes:
+           value: true
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ #  disks:
+ #    contrail: 500G
+ 
+diff --git a/deploy/scenario/no-ha_vlan_heat_ceilometer_scenario.yaml b/deploy/scenario/no-ha_vlan_heat_ceilometer_scenario.yaml
+index 567ea98..ada5b7e 100644
+--- a/deploy/scenario/no-ha_vlan_heat_ceilometer_scenario.yaml
++++ b/deploy/scenario/no-ha_vlan_heat_ceilometer_scenario.yaml
+@@ -45,15 +45,19 @@ dea-override-config:
+   - id: 1
+     interfaces: interfaces_1
+     role: mongo,controller
++    transformations: transformations_1
+   - id: 2
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 3
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   - id: 4
+     interfaces: interfaces_1
+     role: ceph-osd,compute
++    transformations: transformations_2
+   settings:
+     editable:
+       additional_components:
+@@ -94,6 +98,27 @@ dea-override-config:
+           weight: 30
+ 
+ dha-override-config:
++ nodes:
++  - id: 1
++    libvirtName: controller1
++    libvirtTemplate: templates/arm/virtual_environment/vms/controller.xml
++  - id: 2
++    libvirtName: compute1
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 3
++    libvirtName: compute2
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 4
++    libvirtName: compute3
++    libvirtTemplate: templates/arm/virtual_environment/vms/compute.xml
++  - id: 5
++    libvirtName: fuel-master
++    libvirtTemplate: templates/arm/virtual_environment/vms/fuel.xml
++    libvirtUri: qemu+ssh://jenkins@10.0.2.5/system
++    isFuel: yes
++    username: root
++    password: r00tme
++
+ # These overrides only take effect for virtual deployment scenarios
+ 
+ ##############################################################################
+-- 
+2.7.4
+
