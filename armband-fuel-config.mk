@@ -22,7 +22,7 @@ F_SUB_DIR   := ${F_REPOS_DIR}/sub
 ARMBAND_TRACK_REMOTES ?=
 
 # Armband plugins, supported archs & specific info
-export PLUGINS           := f_odlpluginbuild f_bgpvpn-pluginbuild f_ovs-nsh-dpdk-pluginbuild f_tacker-pluginbuild
+export PLUGINS           := f_odlpluginbuild f_bgpvpn-pluginbuild f_ovs-nsh-dpdk-pluginbuild f_tacker-pluginbuild f_yardstick-pluginbuild
 export UBUNTU_ARCH       := amd64 arm64
 export PRODNO            := OPNFV_A_FUEL
 export MIRROR_MOS_UBUNTU := linux.enea.com
