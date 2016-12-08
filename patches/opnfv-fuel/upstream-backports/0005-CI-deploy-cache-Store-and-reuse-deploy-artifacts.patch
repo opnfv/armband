@@ -15,6 +15,8 @@ TODO: Use dea interface adapter in target images fingerprinting.
 TODO: remote fingerprinting
 TODO: differentiate between bootstraps and targetimages, so we don't
 end up trying to use one cache artifact type as the other.
+TODO: implement sanity checks for bootstrap and target images;
+TODO: switch `exec_cmd('mkdir ...')` to `create_dir_if_not_exists`;
 
 JIRA: ARMBAND-172
 
@@ -22,18 +24,18 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  ...p_admin_node.sh-deploy_cache-install-hook.patch |  69 +++++
  ci/deploy.sh                                       |  14 +-
- deploy/cloud/deploy.py                             |  11 +
+ deploy/cloud/deployment.py                         |  13 +
  deploy/deploy.py                                   |  25 +-
- deploy/deploy_cache.py                             | 319 +++++++++++++++++++++
+ deploy/deploy_cache.py                             | 320 +++++++++++++++++++++
  deploy/deploy_env.py                               |  13 +-
  deploy/install_fuel_master.py                      |   9 +-
- 7 files changed, 451 insertions(+), 9 deletions(-)
+ 7 files changed, 454 insertions(+), 9 deletions(-)
  create mode 100644 build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
  create mode 100644 deploy/deploy_cache.py
 
 diff --git a/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
 new file mode 100644
-index 0000000..d5b7646
+index 0000000..80cd0f4
 --- /dev/null
 +++ b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
 @@ -0,0 +1,69 @@
@@ -173,44 +175,54 @@ index 081806c..4b1ae0e 100755
  fi
  popd > /dev/null
 
-diff --git a/deploy/cloud/deploy.py b/deploy/cloud/deploy.py
-index e00934b..b39e5fc 100644
---- a/deploy/cloud/deploy.py
-+++ b/deploy/cloud/deploy.py
-@@ -14,6 +14,7 @@ import io
- from dea import DeploymentEnvironmentAdapter
- from configure_environment import ConfigureEnvironment
- from deployment import Deployment
-+from deploy_cache import DeployCache
+diff --git a/deploy/cloud/deployment.py b/deploy/cloud/deployment.py
+index 5dd0263..4faab41 100644
+--- a/deploy/cloud/deployment.py
++++ b/deploy/cloud/deployment.py
+@@ -24,6 +24,8 @@ from common import (
+     delete,
+ )
 
- from common import (
-     R,
-@@ -61,6 +62,12 @@ class Deploy(object):
-         config_env.configure_environment()
-         self.env_id = config_env.env_id
++from deploy_cache import DeployCache
++
+ SEARCH_TEXT = '(err)'
+ LOG_FILE = '/var/log/puppet.log'
+ GREP_LINES_OF_LEADING_CONTEXT = 100
+@@ -52,6 +54,14 @@ class Deployment(object):
+         self.pattern = re.compile(
+             '\d\d\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d')
 
 +    def deploy_cache_install_targetimages(self):
++        log('Using target images from deploy cache')
 +        DeployCache.install_targetimages_for_env(self.env_id)
 +
 +    def deploy_cache_extract_targetimages(self):
++        log('Collecting Fuel target image files for deploy cache')
 +        DeployCache.extract_targetimages_from_env(self.env_id)
 +
-     def deploy_cloud(self):
-         dep = Deployment(self.dea, YAML_CONF_DIR, self.env_id,
-                          self.node_roles_dict, self.no_health_check,
-@@ -76,8 +83,12 @@ class Deploy(object):
+     def collect_error_logs(self):
+         for node_id, roles_blade in self.node_id_roles_dict.iteritems():
+             log_list = []
+@@ -113,6 +123,7 @@ class Deployment(object):
+         start = time.time()
 
-         self.configure_environment()
-
+         log('Starting deployment of environment %s' % self.env_id)
 +        self.deploy_cache_install_targetimages()
-+
-         self.deploy_cloud()
-
-+        self.deploy_cache_extract_targetimages()
-+
-
- def parse_arguments():
-     parser = ArgParser(prog='python %s' % __file__)
+         deploy_id = None
+         ready = False
+         timeout = False
+@@ -146,9 +157,11 @@ class Deployment(object):
+                 'snapshot will not be performed'
+                 % self.env_id)
+         if ready:
++            self.deploy_cache_extract_targetimages()
+             log('Environment %s successfully deployed'
+                 % self.env_id)
+         else:
++            self.deploy_cache_extract_targetimages()
+             self.collect_error_logs()
+             err('Deployment failed, environment %s is not operational'
+                 % self.env_id, self.collect_logs)
 diff --git a/deploy/deploy.py b/deploy/deploy.py
 index 08702d2..1a55361 100755
 --- a/deploy/deploy.py
@@ -319,10 +331,10 @@ index 08702d2..1a55361 100755
                'deploy_log': args.deploy_log}
 diff --git a/deploy/deploy_cache.py b/deploy/deploy_cache.py
 new file mode 100644
-index 0000000..d7ec1c7
+index 0000000..3b404b0
 --- /dev/null
 +++ b/deploy/deploy_cache.py
-@@ -0,0 +1,319 @@
+@@ -0,0 +1,320 @@
 +###############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -423,7 +435,7 @@ index 0000000..d7ec1c7
 +ISO_BOOTSTRAP_CLI_YAML = '/opnfv/fuel_bootstrap_cli.yaml'
 +
 +# OPNFV Deploy Cache path on Fuel Master, where artifacts will be injected
-+REMOTE_CACHE_PATH = '/var/lib/opnfv/cache'
++REMOTE_CACHE_PATH = '/var/cache/opnfv'
 +
 +# OPNFV Bootstrap Cache tar archive name, to be used by bootstrap_admin_node.sh
 +BOOTSTRAP_ARCHIVE = 'opnfv-bootstraps-cache.tar'
@@ -555,7 +567,8 @@ index 0000000..d7ec1c7
 +            for k in RSA_KEYPAIR_FILES:
 +                ssh.scp_get(os.path.join(RSA_KEYPAIR_PATH, k),
 +                    local=os.path.join(cache_sha_dir, k))
-+            ssh.exec_cmd('tar cf %s %s/*' % (remote_tar,
++            ssh.exec_cmd('mkdir -p %s && tar cf %s %s/*' %
++                (REMOTE_CACHE_PATH, remote_tar,
 +                os.path.join(NAILGUN_PATH, NAILGUN_ACT_BOOTSTRAP_SUBDIR)))
 +            ssh.scp_get(remote_tar, local=local_tar)
 +            ssh.exec_cmd('rm -f %s' % remote_tar)
