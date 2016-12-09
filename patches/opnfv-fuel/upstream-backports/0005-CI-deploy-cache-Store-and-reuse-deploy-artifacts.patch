@@ -24,9 +24,9 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  ...p_admin_node.sh-deploy_cache-install-hook.patch |  69 +++++
  ci/deploy.sh                                       |  14 +-
- deploy/cloud/deployment.py                         |  13 +
+ deploy/cloud/deployment.py                         |  12 +
  deploy/deploy.py                                   |  25 +-
- deploy/deploy_cache.py                             | 320 +++++++++++++++++++++
+ deploy/deploy_cache.py                             | 321 +++++++++++++++++++++
  deploy/deploy_env.py                               |  13 +-
  deploy/install_fuel_master.py                      |   9 +-
  7 files changed, 454 insertions(+), 9 deletions(-)
@@ -176,7 +176,7 @@ index 081806c..4b1ae0e 100755
  popd > /dev/null
 
 diff --git a/deploy/cloud/deployment.py b/deploy/cloud/deployment.py
-index 5dd0263..4faab41 100644
+index 5dd0263..3db4c0d 100644
 --- a/deploy/cloud/deployment.py
 +++ b/deploy/cloud/deployment.py
 @@ -24,6 +24,8 @@ from common import (
@@ -211,18 +211,14 @@ index 5dd0263..4faab41 100644
          deploy_id = None
          ready = False
          timeout = False
-@@ -146,9 +157,11 @@ class Deployment(object):
+@@ -145,6 +156,7 @@ class Deployment(object):
+             err('Deployment timed out, environment %s is not operational, '
                  'snapshot will not be performed'
                  % self.env_id)
++        self.deploy_cache_extract_targetimages()
          if ready:
-+            self.deploy_cache_extract_targetimages()
              log('Environment %s successfully deployed'
                  % self.env_id)
-         else:
-+            self.deploy_cache_extract_targetimages()
-             self.collect_error_logs()
-             err('Deployment failed, environment %s is not operational'
-                 % self.env_id, self.collect_logs)
 diff --git a/deploy/deploy.py b/deploy/deploy.py
 index 08702d2..1a55361 100755
 --- a/deploy/deploy.py
@@ -331,10 +327,10 @@ index 08702d2..1a55361 100755
                'deploy_log': args.deploy_log}
 diff --git a/deploy/deploy_cache.py b/deploy/deploy_cache.py
 new file mode 100644
-index 0000000..3b404b0
+index 0000000..76fb1b9
 --- /dev/null
 +++ b/deploy/deploy_cache.py
-@@ -0,0 +1,320 @@
+@@ -0,0 +1,321 @@
 +###############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -567,9 +563,10 @@ index 0000000..3b404b0
 +            for k in RSA_KEYPAIR_FILES:
 +                ssh.scp_get(os.path.join(RSA_KEYPAIR_PATH, k),
 +                    local=os.path.join(cache_sha_dir, k))
-+            ssh.exec_cmd('mkdir -p %s && tar cf %s %s/*' %
-+                (REMOTE_CACHE_PATH, remote_tar,
-+                os.path.join(NAILGUN_PATH, NAILGUN_ACT_BOOTSTRAP_SUBDIR)))
++            ssh.exec_cmd('mkdir -p %s && cd %s && tar cf %s *' %
++                (REMOTE_CACHE_PATH,
++                os.path.join(NAILGUN_PATH, NAILGUN_ACT_BOOTSTRAP_SUBDIR),
++                remote_tar))
 +            ssh.scp_get(remote_tar, local=local_tar)
 +            ssh.exec_cmd('rm -f %s' % remote_tar)
 +
