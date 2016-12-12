@@ -66,7 +66,7 @@ index 0000000..80cd0f4
 +
 + ASTUTE_YAML='/etc/fuel/astute.yaml'
 + BOOTSTRAP_NODE_CONFIG="/etc/fuel/bootstrap_admin_node.conf"
-++OPNFV_CACHE_PATH="/var/lib/opnfv/cache/bootstraps"
+++OPNFV_CACHE_PATH="/var/cache/opnfv/bootstraps"
 ++OPNFV_CACHE_TAR="opnfv-bootstraps-cache.tar"
 + bs_build_log='/var/log/fuel-bootstrap-image-build.log'
 + bs_status=0
