@@ -23,11 +23,11 @@ index 267c18c..9782c4c 100644
 @@ -25,10 +25,10 @@ class cobbler::packages {
        $pexpect_package     = 'pexpect'
        case $::operatingsystemrelease {
-         /6.+/: {
+         /^6.+/: {
 -          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents', 'bind-utils']
 +          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents', 'bind-utils', 'cobbler-grub-aarch64']
          }
-         /7.+/: {
+         /^7.+/: {
 -          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils']
 +          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils', 'cobbler-grub-aarch64']
          }
