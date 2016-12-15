@@ -1,0 +1,30 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 15 Dec 2016 18:11:53 +0100
+Subject: [PATCH] patch-repos: Align Fuel patch context with Armband
+
+Since some Fuel@OPNFV patches apply on top of Armband patched
+fuel-library, we need to align patch-context for Fuel@OPNFV to
+apply cleanly.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../0005-puppet-cobbler-Fix-CentOS-version-detection.patch            | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/build/patch-repos/build/repos/fuel-library/0005-puppet-cobbler-Fix-CentOS-version-detection.patch b/build/patch-repos/build/repos/fuel-library/0005-puppet-cobbler-Fix-CentOS-version-detection.patch
+index 1ada615..0d9bf66 100644
+--- a/build/patch-repos/build/repos/fuel-library/0005-puppet-cobbler-Fix-CentOS-version-detection.patch
++++ b/build/patch-repos/build/repos/fuel-library/0005-puppet-cobbler-Fix-CentOS-version-detection.patch
+@@ -30,10 +30,10 @@ index 267c18c..3c14ea1 100644
+        case $::operatingsystemrelease {
+ -        /6.+/: {
+ +        /^6.+/: {
+-           $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents', 'bind-utils']
++           $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents', 'bind-utils', 'cobbler-grub-aarch64']
+          }
+ -        /7.+/: {
+ +        /^7.+/: {
+-           $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils']
++           $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils', 'cobbler-grub-aarch64']
+          }
+        }
