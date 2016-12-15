@@ -1,0 +1,26 @@
+From: Michael Polenchuk <mpolenchuk@mirantis.com>
+Date: Tue, 13 Dec 2016 17:42:23 +0400
+Subject: [PATCH] Restart sshd service instead of reload
+
+In the middle of fuel master node bootstrap the reload of sshd service
+accidentally is losing main process pid, so restart it.
+
+JIRA: FUEL-237
+Change-Id: I89023177e71cb6da4b9d6beff5083d345cf66db8
+Signed-off-by: Michael Polenchuk <mpolenchuk@mirantis.com>
+---
+ build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch b/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
+index 820e387..d01ce8b 100644
+--- a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
++++ b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
+@@ -41,6 +41,6 @@ index dbcac5f..1826390 100755
+ -systemctl enable sshd
+ -systemctl start sshd
+-+systemctl reload sshd
+++systemctl restart sshd
+ 
+  # Enable iptables
+  systemctl enable iptables.service
