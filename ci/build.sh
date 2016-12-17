@@ -8,7 +8,7 @@
 set -e
 
 SCRIPT_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
-BUILD_BASE=$(readlink -e ${SCRIPT_DIR}/../upstream/fuel/build)
+BUILD_BASE=$(readlink -f ${SCRIPT_DIR}/../upstream/fuel/build)
 
 export ARMBAND_BASE=$(readlink -e ${SCRIPT_DIR}/..)
 export OPNFV_GIT_SHA=$(git rev-parse HEAD)
