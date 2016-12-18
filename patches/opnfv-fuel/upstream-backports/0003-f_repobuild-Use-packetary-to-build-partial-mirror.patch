@@ -84,6 +84,12 @@ v6 -> v7:
 - merge old fuel-mirror pkglist to OPNFV pkglist;
 - update packetary commit to include upstream bugfixes [2, 3];
 
+v7 -> v11:
+- re-enable f_repobuild after Newton rebase;
+- fixed leftover "trusty" ref to "xenial";
+- force f_repobuild rebuild to bypass cache (by editing Makefile);
+- extend f_repobuild .cacheid to include scripts and OPNFV config;
+
 NOTE: Without filtering out old package verisons using
 `dpkg-scanpackages`, bootstrap build cannot solve all deps.
 
@@ -116,15 +122,16 @@ Change-Id: If2ee86f348b7683c83bfaf686baba4f1b8f555f0
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  build/config.mk                                    |   4 +
+ build/f_isoroot/Makefile                           |   8 +-
  build/f_isoroot/f_repobuild/.gitignore             |   4 +
- build/f_isoroot/f_repobuild/Makefile               |  37 ++-
+ build/f_isoroot/f_repobuild/Makefile               |  43 ++--
  build/f_isoroot/f_repobuild/config.mk              |  23 ++
  .../f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml  |  22 +-
  build/f_isoroot/f_repobuild/opnfv_config.yaml      | 160 ++++++++++++
  build/f_isoroot/f_repobuild/opnfv_mirror_conf.py   |  57 -----
  build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py | 277 +++++++++++++++++++++
  deploy/config/dea_base.yaml                        |  16 +-
- 9 files changed, 492 insertions(+), 108 deletions(-)
+ 10 files changed, 498 insertions(+), 116 deletions(-)
  create mode 100644 build/f_isoroot/f_repobuild/.gitignore
  create mode 100644 build/f_isoroot/f_repobuild/config.mk
  create mode 100644 build/f_isoroot/f_repobuild/opnfv_config.yaml
@@ -135,9 +142,10 @@ diff --git a/build/config.mk b/build/config.mk
 index 56317cb..5448c5e 100644
 --- a/build/config.mk
 +++ b/build/config.mk
-@@ -17,4 +17,9 @@ FUEL_MAIN_TAG = master
- FUEL_TRACK_REMOTES =
-+
+@@ -17,6 +17,10 @@ FUEL_MAIN_TAG = master
+ MOS_VERSION   = 10.0
+ OPENSTACK_VERSION = newton-10.0
+
 +# List of space-separated Ubuntu architectures supported with current build
 +# Format: same as `dpkg-architecture -qDEB_HOST_ARCH`
 +# NOTE: Currently only amd64 is supported by Fuel@OPNFV. Armband adds arm64.
@@ -145,6 +153,29 @@ index 56317cb..5448c5e 100644
 
  ##############################################################################
  # Fuel components pinning / remote tracking; use submodules from f_repos
+diff --git a/build/f_isoroot/Makefile b/build/f_isoroot/Makefile
+index e189e16..b4ef1d0 100644
+--- a/build/f_isoroot/Makefile
++++ b/build/f_isoroot/Makefile
+@@ -17,16 +17,12 @@ NON_10-0_REBASED_PLUGINS = f_odlpluginbuild f_onosfwpluginbuild f_ovsnfv-dpdk-pl
+
+ # If the BUILD_FUEL_PLUGINS environment variable is set, only build the plugins
+ # indicated therein.
+-# Temporarilu disabling f_repobuild that currently have some issues on
+-# Fuel Newton.
+ ifdef BUILD_FUEL_PLUGINS
+ export BUILD_FUEL_PLUGINS
+-#SUBDIRS = f_kscfg f_bootstrap f_isolinux f_repobuild $(BUILD_FUEL_PLUGINS)
+-SUBDIRS = f_kscfg f_bootstrap f_isolinux $(BUILD_FUEL_PLUGINS)
++SUBDIRS = f_kscfg f_bootstrap f_isolinux f_repobuild $(BUILD_FUEL_PLUGINS)
+ $(warning Overriding plugin build selection to $(BUILD_FUEL_PLUGINS))
+ else
+-#SUBDIRS = f_kscfg f_bootstrap f_isolinux f_repobuild $(PLUGINS)
+-SUBDIRS = f_kscfg f_bootstrap f_isolinux $(PLUGINS)
++SUBDIRS = f_kscfg f_bootstrap f_isolinux f_repobuild $(PLUGINS)
+ endif
+ SUBCLEAN = $(addsuffix .clean,$(SUBDIRS))
+
 diff --git a/build/f_isoroot/f_repobuild/.gitignore b/build/f_isoroot/f_repobuild/.gitignore
 new file mode 100644
 index 0000000..09baca8
@@ -156,7 +187,7 @@ index 0000000..09baca8
 +nailgun
 +opnfv_config
 diff --git a/build/f_isoroot/f_repobuild/Makefile b/build/f_isoroot/f_repobuild/Makefile
-index 8beb882..9784edf 100644
+index 8beb882..cf49abd 100644
 --- a/build/f_isoroot/f_repobuild/Makefile
 +++ b/build/f_isoroot/f_repobuild/Makefile
 @@ -1,7 +1,8 @@
@@ -226,6 +257,21 @@ index 8beb882..9784edf 100644
 
  .PHONY: release
  release:nailgun
+@@ -59,10 +56,12 @@ release:nailgun
+
+ # Create a unique hash to be used for getting and putting cache, based on:
+ #   - Year and week (causing the cache to be rebuilt weekly)
+-#   - The contents of this Makefile
++#   - The contents of this Makefile + all sh,mk,py,yaml files in CWD
++#   - repo packages fingerprint
++#   - repo arch list
+ .cacheid:
+ 	date +"Repocache %G%V" > .cachedata
+-	sha1sum Makefile >> .cachedata
++	sha1sum Makefile *.{sh,mk,py,yaml} >> .cachedata
+ 	$(CACHETOOL) packages >> .cachedata
+ 	echo -n $(UBUNTU_ARCH) | sha1sum | awk {'print $$1'} >> .cachedata
+ 	cat .cachedata | $(CACHETOOL) getid > .cacheid
 diff --git a/build/f_isoroot/f_repobuild/config.mk b/build/f_isoroot/f_repobuild/config.mk
 new file mode 100644
 index 0000000..9852093
@@ -259,6 +305,21 @@ diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoro
 index fcf4257..7cbea29 100644
 --- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
 +++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+@@ -9,11 +9,11 @@
+ ---
+   root_ssh_authorized_file: /root/.ssh/id_rsa.pub
+   extend_kopts: "biosdevname=0 net.ifnames=1 debug ignore_loglevel log_buf_len=10M print_fatal_signals=1 LOGLEVEL=8"
+-  ubuntu_release: trusty
++  ubuntu_release: xenial
+   extra_dirs:
+-    - /usr/share/fuel_bootstrap_cli/files/trusty
++    - /usr/share/fuel_bootstrap_cli/files/xenial
+   output_dir: /tmp/
+-  kernel_flavor: linux-image-generic-lts-trusty
++  kernel_flavor: linux-image-generic-lts-xenial
+   packages:
+     - fuel-agent
+     - hwloc
 @@ -47,22 +47,10 @@
    https_proxy: ""
    repos:
@@ -267,7 +328,7 @@ index fcf4257..7cbea29 100644
 +      section: "main"
        uri: "http://127.0.0.1:8080/mirrors/ubuntu"
        priority:
-       suite: trusty
+-      suite: trusty
 -      type: deb
 -    - name: ubuntu-updates
 -      section: "main universe multiverse"
@@ -280,12 +341,13 @@ index fcf4257..7cbea29 100644
 -      uri: "http://127.0.0.1:8080/mirrors/ubuntu"
 -      priority:
 -      suite: trusty-security
++      suite: xenial
        type: deb
      - name: mos
        section: "main restricted"
 diff --git a/build/f_isoroot/f_repobuild/opnfv_config.yaml b/build/f_isoroot/f_repobuild/opnfv_config.yaml
 new file mode 100644
-index 0000000..bb78747
+index 0000000..9757d8a
 --- /dev/null
 +++ b/build/f_isoroot/f_repobuild/opnfv_config.yaml
 @@ -0,0 +1,160 @@
@@ -312,7 +374,7 @@ index 0000000..bb78747
 +  ubuntu:
 +    - name: "ubuntu"
 +      main: true
-+      suite: "trusty"
++      suite: "xenial"
 +      section:
 +        - "main"
 +        - "multiverse"
@@ -322,7 +384,7 @@ index 0000000..bb78747
 +      priority: null
 +
 +    - name: "ubuntu-updates"
-+      suite: "trusty-updates"
++      suite: "xenial-updates"
 +      section:
 +        - "main"
 +        - "multiverse"
@@ -332,7 +394,7 @@ index 0000000..bb78747
 +      priority: null
 +
 +    - name: "ubuntu-security"
-+      suite: "trusty-security"
++      suite: "xenial-security"
 +      section:
 +        - "main"
 +        - "multiverse"
@@ -799,27 +861,28 @@ diff --git a/deploy/config/dea_base.yaml b/deploy/config/dea_base.yaml
 index ce81994..2520cf5 100644
 --- a/deploy/config/dea_base.yaml
 +++ b/deploy/config/dea_base.yaml
-@@ -622,22 +622,10 @@ settings:
+@@ -722,22 +722,10 @@ settings:
          value:
          - name: ubuntu
            priority: null
 -          section: main universe multiverse
 +          section: main
-           suite: trusty
+           suite: xenial
            type: deb
--          uri: http://10.20.0.2:8080/mirrors/ubuntu/
+-          uri: http://archive.ubuntu.com/ubuntu/
 -        - name: ubuntu-updates
 -          priority: null
 -          section: main universe multiverse
--          suite: trusty-updates
+-          suite: xenial-updates
 -          type: deb
--          uri: http://10.20.0.2:8080/mirrors/ubuntu/
+-          uri: http://archive.ubuntu.com/ubuntu/
 -        - name: ubuntu-security
 -          priority: null
 -          section: main universe multiverse
--          suite: trusty-security
+-          suite: xenial-security
 -          type: deb
-           uri: http://10.20.0.2:8080/mirrors/ubuntu/
+-          uri: http://archive.ubuntu.com/ubuntu/
++          uri: http://10.20.0.2:8080/mirrors/ubuntu/
          - name: mos
            priority: 1050
            section: main restricted

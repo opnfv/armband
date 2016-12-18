@@ -48,22 +48,18 @@ index 69cc23a..791ceba 100644
 +  }
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
-index 1962609..ca98532 100644
 --- a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
-@@ -17,6 +17,12 @@ class opendaylight::install (
-     ensure  => installed,
-   }
-
-+  if ($::osfamily == 'Debian' and $::opendaylight::arch == 'arm64') {
-+    class { 'opendaylight::leveldbjni':
-+      require => Package[$odl_package],
-+    }
+@@ -15,3 +15,9 @@ class opendaylight::install (
+   package { 'opendaylight':
+     ensure  => $odl_package,
 +  }
 +
-   # quagga
-   class { 'opendaylight::quagga':
-     before => Service['opendaylight']
++  if ($::osfamily == 'Debian' and $::opendaylight::arch == 'arm64') {
++    class { 'opendaylight::leveldbjni':
++      require => Package['opendaylight'],
++    }
+   }
 @@ -35,7 +41,8 @@ class opendaylight::install (
 
    debug("Set odl rest api port to ${rest_port}")
@@ -74,13 +70,12 @@ index 1962609..ca98532 100644
      ensure  => file,
      owner   => 'odl',
      content => template('opendaylight/jetty.xml.erb')
-@@ -71,6 +78,7 @@ class opendaylight::install (
-   Package[$odl_package] ->
+@@ -71,5 +78,6 @@ class opendaylight::install (
    Ini_setting <||> ->
    Firewall <||> ->
--  File <||> ->
-+  File['jetty.xml'] ->
-+  Class['opendaylight::leveldbjni'] ->
+-  File <||> ~>
++  File['jetty.xml'] ~>
++  Class['opendaylight::leveldbjni'] ~>
    Service['opendaylight']
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp

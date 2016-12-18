@@ -63,9 +63,9 @@ index 0000000..80cd0f4
 +--- a/iso/bootstrap_admin_node.sh
 ++++ b/iso/bootstrap_admin_node.sh
 +@@ -61,6 +61,8 @@ wget \
-+
 + ASTUTE_YAML='/etc/fuel/astute.yaml'
 + BOOTSTRAP_NODE_CONFIG="/etc/fuel/bootstrap_admin_node.conf"
++ CUSTOM_REPOS="/root/default_deb_repos.yaml"
 ++OPNFV_CACHE_PATH="/var/cache/opnfv/bootstraps"
 ++OPNFV_CACHE_TAR="opnfv-bootstraps-cache.tar"
 + bs_build_log='/var/log/fuel-bootstrap-image-build.log'
