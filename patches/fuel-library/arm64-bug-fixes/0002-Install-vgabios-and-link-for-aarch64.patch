@@ -17,9 +17,9 @@ index 4240126..b18fa7b 100644
 --- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
 +++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
 @@ -409,6 +409,14 @@ class openstack_tasks::roles::compute {
-     vncserver_listen                           => '0.0.0.0',
-     remove_unused_original_minimum_age_seconds => pick($nova_hash_real['remove_unused_original_minimum_age_seconds'], '86400'),
-     libvirt_service_name                       => $::nova::params::libvirt_service_name,
+     libvirt_service_name                       => 'libvirt-bin',
+     virtlock_service_name                      => 'virtlockd',
+     virtlog_service_name                       => 'virtlogd',
 +  } ->
 +  package { 'vgabios':
 +    ensure => present;
