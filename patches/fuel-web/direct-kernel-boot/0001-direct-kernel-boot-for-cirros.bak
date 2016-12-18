@@ -11,7 +11,7 @@ diff --git a/nailgun/nailgun/orchestrator/base_serializers.py b/nailgun/nailgun/
 index 2fb0da5..ac787ed 100644
 --- a/nailgun/nailgun/orchestrator/base_serializers.py
 +++ b/nailgun/nailgun/orchestrator/base_serializers.py
-@@ -145,12 +145,16 @@ class MuranoMetadataSerializerMixin(object):
+@@ -145,14 +145,18 @@ class MuranoMetadataSerializerMixin(object):
 
      def inject_murano_settings(self, image_data):
          """Adds murano metadata to the test image"""
@@ -20,6 +20,8 @@ index 2fb0da5..ac787ed 100644
 -        murano_data = ' '.join(["""--property murano_image_info='{"title":"""
 -                               """ "Murano Demo", "type": "cirros.demo"}'"""])
 -        test_vm_image['glance_properties'] = existing_properties + murano_data
+-        test_vm_image['properties']['murano_image_info'] = \
+-            """'{"title": "Murano Demo", "type": "cirros.demo"}'"""
 -        return {'test_vm_image': test_vm_image}
 +        test_vm_images = []
 +        for test_vm_image in image_data['test_vm_image']:
@@ -29,6 +31,8 @@ index 2fb0da5..ac787ed 100644
 +                    """ "Murano Demo", "type": "cirros.demo"}'"""])
 +            test_vm_image['glance_properties'] = existing_properties + \
 +                murano_data
++            test_vm_image['properties']['murano_image_info'] = \
++                """'{"title": "Murano Demo", "type": "cirros.demo"}'"""
 +            test_vm_images += [test_vm_image]
 +        return {'test_vm_image': test_vm_images}
 

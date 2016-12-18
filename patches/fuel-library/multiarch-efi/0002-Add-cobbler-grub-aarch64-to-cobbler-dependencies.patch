@@ -9,27 +9,22 @@ on the Fuel master node.
 
 [Alexandru.Avadanii@enea.com]
 Reworked based on Florin's work for the docker container.
+Rebased for Fuel Newton.
 
 Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- deployment/puppet/cobbler/manifests/packages.pp | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ deployment/puppet/cobbler/manifests/packages.pp | 2 +-
+ 1 file changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/deployment/puppet/cobbler/manifests/packages.pp b/deployment/puppet/cobbler/manifests/packages.pp
 index 267c18c..9782c4c 100644
 --- a/deployment/puppet/cobbler/manifests/packages.pp
 +++ b/deployment/puppet/cobbler/manifests/packages.pp
-@@ -25,10 +25,10 @@ class cobbler::packages {
-       $pexpect_package     = 'pexpect'
-       case $::operatingsystemrelease {
-         /^6.+/: {
--          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents', 'bind-utils']
-+          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents', 'bind-utils', 'cobbler-grub-aarch64']
-         }
-         /^7.+/: {
--          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils']
-+          $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils', 'cobbler-grub-aarch64']
-         }
-       }
+@@ -23,5 +23,5 @@ class cobbler::packages {
+       $django_package              = 'python-django'
+       $openssh_package             = 'openssh-clients'
+       $pexpect_package             = 'pexpect'
+-      $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils']
++      $cobbler_additional_packages = ['xinetd', 'tftp-server', 'syslinux', 'wget', 'python-ipaddr','fence-agents-all', 'bind-utils', 'cobbler-grub-aarch64']
      }
