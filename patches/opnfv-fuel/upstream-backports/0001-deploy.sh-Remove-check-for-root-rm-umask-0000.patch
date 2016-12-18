@@ -52,18 +52,6 @@ index 8411714..081806c 100755
  clean
 
  pushd ${DEPLOY_DIR} > /dev/null
-diff --git a/deploy/deploy-config.py b/deploy/deploy-config.py
-index 2a09aa3..02debe2 100644
---- a/deploy/deploy-config.py
-+++ b/deploy/deploy-config.py
-@@ -41,7 +41,6 @@ from common import (
-     check_file_exists,
-     create_dir_if_not_exists,
-     delete,
--    check_if_root,
-     ArgParser,
- )
-
 diff --git a/deploy/deploy.py b/deploy/deploy.py
 index fe213e5..08702d2 100755
 --- a/deploy/deploy.py
