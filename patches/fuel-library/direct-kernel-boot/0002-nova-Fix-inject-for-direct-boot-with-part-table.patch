@@ -71,9 +71,7 @@ diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/depl
 index dc61033..3fcfb51 100644
 --- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
 +++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
-@@ -319,6 +319,18 @@ class openstack_tasks::roles::compute {
-     cinder_catalog_info                => pick($nova_hash_real['cinder_catalog_info'], 'volumev2:cinderv2:internalURL'),
-     rabbit_heartbeat_timeout_threshold => $::os_service_default,
+@@ -319,4 +319,16 @@ class openstack_tasks::roles::compute {
    } ->
 +  # FIXME(armband): Fix inject for part image direct boot (bug LP #1469308)
 +  file { "${nova_path}/libvirt-inject.patch":

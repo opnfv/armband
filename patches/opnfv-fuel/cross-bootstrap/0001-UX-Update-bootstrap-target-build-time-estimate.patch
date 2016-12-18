@@ -8,15 +8,14 @@ introduced by using qemu-user-static.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch | 15 +++++++++++++++
+ .../0001-Patches-for-OPNFV.patch | 15 +++++++++++++++
  1 file changed, 15 insertions(+)
 
-diff --git a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
+diff --git a/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch b/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
 index 446d0b6..c2e664c 100644
---- a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
-+++ b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
-@@ -10,6 +10,21 @@ diff --git a/iso/bootstrap_admin_node.sh b/iso/bootstrap_admin_node.sh
- index 3197c91..db3123d 100755
+--- a/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
++++ b/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
+@@ -10,5 +10,20 @@ diff --git a/iso/bootstrap_admin_node.sh b/iso/bootstrap_admin_node.sh
  --- a/iso/bootstrap_admin_node.sh
  +++ b/iso/bootstrap_admin_node.sh
 +@@ -86,9 +86,11 @@
@@ -34,6 +33,6 @@ index 446d0b6..c2e664c 100644
 + bs_done_message="Default bootstrap image building done. Now you can boot new \
 + nodes over PXE, they will be discovered and become available for installing \
 + OpenStack on them"
- @@ -339,8 +339,22 @@ fuelmenu --save-only --iface=$ADMIN_INTERFACE || fail
+ @@ -347,8 +347,23 @@ fuelmenu --save-only --iface=$ADMIN_INTERFACE || fail
   set +x
   echo "Done!"

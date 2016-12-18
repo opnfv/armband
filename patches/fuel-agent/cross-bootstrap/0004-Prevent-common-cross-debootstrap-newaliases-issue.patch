@@ -35,8 +35,7 @@ index 637c99a..86f76b9 100644
              if hasattr(bs_scheme, 'certs') and bs_scheme.certs:
                  bu.copy_update_certs(bs_scheme.certs, chroot)
              bu.run_apt_get(chroot, packages=packages,
-@@ -1084,6 +1089,7 @@ class Manager(object):
-                             add_multipath_conf=False)
+@@ -1084,5 +1089,6 @@ class Manager(object):
              # restore disabled hosts/resolv files
              bu.restore_resolv_conf(chroot)
 +            bu.restore_newaliases(chroot)
