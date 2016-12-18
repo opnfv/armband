@@ -87,7 +87,7 @@ index 0000000..80cd0f4
 ++        if [ -f "${OPNFV_CACHE_PATH}/${OPNFV_CACHE_TAR}" -a \
 ++             -f "${OPNFV_CACHE_PATH}/id_rsa.pub" -a \
 ++             -f "${OPNFV_CACHE_PATH}/id_rsa" ]; then
-++          if cp "${OPNFV_CACHE_PATH}/id_rsa{,.pub}" "~/.ssh/" && \
+++          if cp "${OPNFV_CACHE_PATH}/id_rsa*" "~/.ssh/" && \
 ++                fuel-bootstrap -v --debug import --activate \
 ++                "${OPNFV_CACHE_PATH}/${OPNFV_CACHE_TAR}" >>"$bs_build_log" 2>&1; then
 ++            fuel notify --topic "done" --send "${bs_cache_message}"
