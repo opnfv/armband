@@ -1,39 +1,38 @@
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
-Date: Sat, 14 May 2016 00:53:36 +0200
-Subject: [PATCH] nailgun: Add AArch64 Openstack Mitaka release(s).
+Date: Sun, 18 Dec 2016 21:08:42 +0100
+Subject: [PATCH] nailgun: Add AArch64 Openstack Newton release(s).
 
 Add the following Openstack releases:
-
-- Mitaka on Ubuntu 14.04 (aarch64)
-- Mitaka on Ubuntu+UCA 14.04 (aarch64)
+- Newton on Ubuntu 16.04 (aarch64)
+- Newton on Ubuntu+UCA 16.04 (aarch64)
 
 Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- nailgun/nailgun/fixtures/openstack.yaml | 287 ++++++++++++++++++++++++++++++++
- 1 file changed, 287 insertions(+)
+ nailgun/nailgun/fixtures/openstack.yaml | 343 ++++++++++++++++++++++++++++++++
+ 1 file changed, 343 insertions(+)
 
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index d08a4fc..65646d4 100644
+index eb33db2..ba967d7 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -2314,3 +2314,302 @@
+@@ -2511,3 +2511,346 @@
              weight: 61
              type: "checkbox"
              value: true
-+- &ubuntu_aarch64_release
++- &ubuntu_aarch64_xenial
 +  pk: 4
 +  extend: *base_release
 +  fields:
-+    name: "Mitaka on Ubuntu 14.04 (aarch64)"
-+    version: "mitaka-9.0"
++    name: "Newton on Ubuntu 16.04 (aarch64)"
++    version: "newton-10.0"
 +    operating_system: "Ubuntu"
-+    description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
++    description: "This option will install the OpenStack Newton packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
 +    attributes_metadata:
 +      editable:
 +        kernel_params:
 +          kernel:
-+            value: "console=ttyAMA0,115200 console=ttyS0,115200 net.ifnames=1 biosdevname=0 rootdelay=90 nomodeset"
++            value: "console=ttyAMA0,115200 console=ttyS0,115200 console=tty0 net.ifnames=1 biosdevname=0 rootdelay=90 nomodeset"
 +        repo_setup:
 +          metadata:
 +            label: "Repositories"
@@ -47,54 +46,53 @@ index d08a4fc..65646d4 100644
 +              Please note: the first repository will be considered the operating system mirror that will be used during node provisioning.
 +              To create a local repository mirror on the Fuel master node, please follow the instructions provided by running "fuel-createmirror --help" on the Fuel master node.
 +              Please make sure your Fuel master node has Internet access to the repository before attempting to create a mirror.
-+              For more details, please refer to the documentation (https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html#external-ubuntu-ops).
 +            value:
 +              - type: "deb"
 +                name: "ubuntu-local"
 +                uri: "http://{settings.MASTER_IP}:8080/mirrors/ubuntu"
-+                suite: "trusty"
++                suite: "xenial"
 +                section: "main"
 +                priority: null
 +              - type: "deb"
 +                name: "ubuntu"
 +                uri: "http://ports.ubuntu.com/"
-+                suite: "trusty"
++                suite: "xenial"
 +                section: "main universe multiverse"
 +                priority: null
 +              - type: "deb"
 +                name: "ubuntu-updates"
 +                uri: "http://ports.ubuntu.com/"
-+                suite: "trusty-updates"
++                suite: "xenial-updates"
 +                section: "main universe multiverse"
 +                priority: null
 +              - type: "deb"
 +                name: "ubuntu-security"
 +                uri: "http://ports.ubuntu.com/"
-+                suite: "trusty-security"
++                suite: "xenial-security"
 +                section: "main universe multiverse"
 +                priority: null
 +              - type: "deb"
 +                name: "mos"
 +                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/x86_64"
-+                suite: "mos9.0"
++                suite: "mos10.0"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-updates"
 +                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
-+                suite: "mos9.0-updates"
++                suite: "mos10.0-updates"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-security"
 +                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
-+                suite: "mos9.0-security"
++                suite: "mos10.0-security"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-holdback"
 +                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
-+                suite: "mos9.0-holdback"
++                suite: "mos10.0-holdback"
 +                section: "main restricted"
 +                priority: 1100
 +              - type: "deb"
@@ -128,13 +126,10 @@ index d08a4fc..65646d4 100644
 +              debconf-utils
 +              gdisk
 +              grub-efi-arm64
-+              hpsa-dkms
 +              hwloc
-+              i40e-dkms
 +              linux-firmware
-+              linux-firmware-nonfree
-+              linux-headers-generic-lts-trusty
-+              linux-image-generic-lts-trusty
++              linux-headers-generic-lts-xenial
++              linux-image-generic-lts-xenial
 +              lvm2
 +              mcollective
 +              mdadm
@@ -144,6 +139,7 @@ index d08a4fc..65646d4 100644
 +              nailgun-mcagents
 +              network-checker
 +              ntp
++              ntpdate
 +              openssh-client
 +              openssh-server
 +              puppet
@@ -163,25 +159,18 @@ index d08a4fc..65646d4 100644
 +              virt-what
 +              vlan
 +      generated:
-+        repo_setup:
-+          installer_kernel:
-+            remote_relative: "dists/trusty/main/installer-arm64/current/images/generic/netboot/vmlinuz"
-+            local: "/var/www/nailgun/ubuntu/arm64/images/linux"
-+          installer_initrd:
-+            remote_relative: "dists/trusty/main/installer-arm64/current/images/generic/netboot/initrd.gz"
-+            local: "/var/www/nailgun/ubuntu/arm64/images/initrd.gz"
 +        cobbler:
 +          profile:
-+            generator_arg: "ubuntu_1404_arm64"
++            generator_arg: "ubuntu_bootstrap"
 +        provision:
-+          codename: "trusty"
++          codename: "xenial"
 +          image_data:
 +            /:
-+              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64.img.gz"
++              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1604_arm64.img.gz"
 +              format: "ext4"
 +              container: "gzip"
 +            /boot:
-+              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1404_arm64-boot.img.gz"
++              uri: "http://{settings.MASTER_IP}:8080/targetimages/env_{cluster.id}_ubuntu_1604_arm64-boot.img.gz"
 +              format: "ext2"
 +              container: "gzip"
 +    node_attributes:
@@ -200,6 +189,16 @@ index d08a4fc..65646d4 100644
 +          type: "number"
 +          value: 0
 +          min: 0
++        dpdk:
++          weight: 20
++          description: "Number of CPUs for DPDK usage"
++          label: "DPDK CPU pinning"
++          type: "number"
++          value: 0
++          min: 0
++          restrictions:
++            - condition: "not ('experimental' in version:feature_groups)"
++              action: "hide"
 +      hugepages:
 +        metadata:
 +          group: "nfv"
@@ -214,12 +213,57 @@ index d08a4fc..65646d4 100644
 +          label: "Nova Huge Pages"
 +          type: "custom_hugepages"
 +          value: {}
++        dpdk:
++          weight: 20
++          description: "DPDK Huge Pages per NUMA node in MB"
++          label: "DPDK Huge Pages"
++          type: "number"
++          value: 0
++          min: 0
++          restrictions:
++            - condition: "not ('experimental' in version:feature_groups)"
++              action: "hide"
++    networks_metadata:
++      dpdk_drivers:
++        # Sources:
++        # http://dpdk.org/browse/dpdk/tree/doc/guides/rel_notes/known_issues.rst?h=releases&id=7173acefc7cfdfbbb9b91fcba1c9a67adb4c07c9#n168
++        # http://dpdk.org/browse/dpdk/tree/lib/librte_eal/common/include/rte_pci_dev_ids.h?h=releases&id=7173acefc7cfdfbbb9b91fcba1c9a67adb4c07c9
++        igb_uio: [
++          "8086:100e", "8086:100f", "8086:1011", "8086:1010", "8086:1012",
++          "8086:101d", "8086:105e", "8086:105f", "8086:1060", "8086:10d9",
++          "8086:10da", "8086:10a4", "8086:10d5", "8086:10a5", "8086:10bc",
++          "8086:107d", "8086:107e", "8086:107f", "8086:10b9", "8086:109a",
++          "8086:10d3", "8086:10f6", "8086:150c", "8086:10c9", "8086:10e6",
++          "8086:10e7", "8086:10e8", "8086:1526", "8086:150a", "8086:1518",
++          "8086:150d", "8086:10a7", "8086:10a9", "8086:10d6", "8086:150e",
++          "8086:150f", "8086:1510", "8086:1511", "8086:1516", "8086:1527",
++          "8086:1521", "8086:1522", "8086:1523", "8086:1524", "8086:1546",
++          "8086:1533", "8086:1534", "8086:1535", "8086:1536", "8086:1537",
++          "8086:1538", "8086:1539", "8086:1f40", "8086:1f41", "8086:1f45",
++          "8086:0438", "8086:043a", "8086:043c", "8086:0440", "8086:10b6",
++          "8086:1508", "8086:10c6", "8086:10c8", "8086:150b", "8086:10db",
++          "8086:10dd", "8086:10ec", "8086:10f1", "8086:10f4", "8086:10f7",
++          "8086:1514", "8086:1517", "8086:10f9", "8086:10fb", "8086:11a9",
++          "8086:1f72", "8086:17d0", "8086:0470", "8086:152a", "8086:1529",
++          "8086:1507", "8086:154d", "8086:154a", "8086:1558", "8086:1557",
++          "8086:10fc", "8086:151c", "8086:154f", "8086:1528", "8086:1560",
++          "8086:15ae", "8086:1563", "8086:15aa", "8086:15ab", "8086:155d",
++          "8086:1572", "8086:1574", "8086:157f", "8086:1580", "8086:1581",
++          "8086:1583", "8086:1584", "8086:1585", "8086:1586", "8086:15a4",
++          "8086:10ca", "8086:152d", "8086:1520", "8086:152f", "8086:10ed",
++          "8086:152e", "8086:1515", "8086:1530", "8086:1564", "8086:1565",
++          "8086:15a8", "8086:15a9", "8086:154c", "8086:1571", "1af4:1000",
++          "15ad:07b0", "8086:15a5", "1137:0043", "1137:0071", "14e4:168a",
++          "14e4:16a9", "14e4:164f", "14e4:168e", "14e4:16af", "14e4:163d",
++          "14e4:163f", "14e4:168d", "14e4:16a1", "14e4:16a2", "14e4:16ad",
++          "14e4:16ae", "14e4:163e", "14e4:16a4"
++        ]
 +- pk: 5
-+  extend: *ubuntu_aarch64_release
++  extend: *ubuntu_aarch64_xenial
 +  fields:
-+    name: "Mitaka on Ubuntu+UCA 14.04 (aarch64)"
-+    version: "mitaka-9.0"
-+    description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system, including Ubuntu Cloud Archive OpenStack packages. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
++    name: "Newton on Ubuntu+UCA 16.04 (aarch64)"
++    version: "newton-10.0"
++    description: "This option will install the OpenStack Newton packages using Ubuntu as a base operating system, including Ubuntu Cloud Archive OpenStack packages. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
 +    attributes_metadata:
 +      editable:
 +        repo_setup:
@@ -230,66 +274,65 @@ index d08a4fc..65646d4 100644
 +              Please note: the first repository will be considered the operating system mirror that will be used during node provisioning.
 +              To create a local repository mirror on the Fuel master node, please follow the instructions provided by running "fuel-createmirror --help" on the Fuel master node.
 +              Please make sure your Fuel master node has Internet access to the repository before attempting to create a mirror.
-+              For more details, please refer to the documentation (https://docs.mirantis.com/openstack/fuel/fuel-9.0/operations.html#external-ubuntu-ops).
 +            value:
 +              - type: "deb"
 +                name: "ubuntu-local"
 +                uri: "http://{settings.MASTER_IP}:8080/mirrors/ubuntu"
-+                suite: "trusty"
++                suite: "xenial"
 +                section: "main"
 +                priority: null
 +              - type: "deb"
 +                name: "ubuntu"
 +                uri: "http://ports.ubuntu.com/"
-+                suite: "trusty"
++                suite: "xenial"
 +                section: "main universe multiverse"
 +                priority: null
 +              - type: "deb"
 +                name: "ubuntu-updates"
 +                uri: "http://ports.ubuntu.com/"
-+                suite: "trusty-updates"
++                suite: "xenial-updates"
 +                section: "main universe multiverse"
 +                priority: null
 +              - type: "deb"
 +                name: "ubuntu-security"
 +                uri: "http://ports.ubuntu.com/"
-+                suite: "trusty-security"
++                suite: "xenial-security"
 +                section: "main universe multiverse"
 +                priority: null
 +              - type: "deb"
 +                name: "uca"
 +                uri: "http://ubuntu-cloud.archive.canonical.com/ubuntu"
-+                suite: "trusty-updates/mitaka"
++                suite: "xenial-updates/newton"
 +                section: "main"
 +                priority: 1080
 +              - type: "deb"
 +                name: "uca-proposed"
 +                uri: "http://ubuntu-cloud.archive.canonical.com/ubuntu"
-+                suite: "trusty-proposed/mitaka"
++                suite: "xenial-proposed/newton"
 +                section: "main"
 +                priority: 1080
 +              - type: "deb"
 +                name: "mos"
 +                uri: "http://{settings.MASTER_IP}:8080/{cluster.release.version}/ubuntu/x86_64"
-+                suite: "mos9.0"
++                suite: "mos10.0"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-updates"
 +                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
-+                suite: "mos9.0-updates"
++                suite: "mos10.0-updates"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-security"
 +                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
-+                suite: "mos9.0-security"
++                suite: "mos10.0-security"
 +                section: "main restricted"
 +                priority: 1050
 +              - type: "deb"
 +                name: "mos-holdback"
 +                uri: "http://linux.enea.com/mos-repos/ubuntu/{cluster.release.environment_version}"
-+                suite: "mos9.0-holdback"
++                suite: "mos10.0-holdback"
 +                section: "main restricted"
 +                priority: 1100
 +              - type: "deb"
