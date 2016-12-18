@@ -62,7 +62,7 @@ v1 -> v2:
 - factored out some hardcodes into variables/functions;
 - add .gitignore file;
 - move generated config files to "opnfv_config" subdir;
-- added arm64 Ubuntu repo URL (ports.ubuntu.com is separated from the
+- add arm64 Ubuntu repo URL (ports.ubuntu.com is separated from the
   main Ubuntu mirror, archive.ubuntu.com, which only holds x86 pkgs);
 
 v3 -> v4:
@@ -83,6 +83,16 @@ v6 -> v7:
 - remove all fuel-mirror references;
 - merge old fuel-mirror pkglist to OPNFV pkglist;
 - update packetary commit to include upstream bugfixes [2, 3];
+
+v7 -> v11:
+- re-enable f_repobuild after Newton rebase;
+- fix leftover "trusty" ref to "xenial";
+- force f_repobuild rebuild to bypass cache (by editing Makefile);
+- extend f_repobuild .cacheid to include scripts and OPNFV config;
+
+v11 -> v12:
+- fix install/install.sh old refs to "trusty";
+- fix out of date select_ubuntu_repo.s refs to "trusty";
 
 NOTE: Without filtering out old package verisons using
 `dpkg-scanpackages`, bootstrap build cannot solve all deps.
@@ -116,15 +126,20 @@ Change-Id: If2ee86f348b7683c83bfaf686baba4f1b8f555f0
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  build/config.mk                                    |   4 +
+ build/f_isoroot/Makefile                           |   8 +-
  build/f_isoroot/f_repobuild/.gitignore             |   4 +
- build/f_isoroot/f_repobuild/Makefile               |  37 ++-
+ build/f_isoroot/f_repobuild/Makefile               |  43 ++--
  build/f_isoroot/f_repobuild/config.mk              |  23 ++
  .../f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml  |  22 +-
  build/f_isoroot/f_repobuild/opnfv_config.yaml      | 160 ++++++++++++
  build/f_isoroot/f_repobuild/opnfv_mirror_conf.py   |  57 -----
  build/f_isoroot/f_repobuild/opnfv_mirror_ubuntu.py | 277 +++++++++++++++++++++
+ build/f_isoroot/f_repobuild/select_ubuntu_repo.sh  |  41 +--
+ build/install/apt-ftparchive-udeb.conf             |   4 +-
+ build/install/install.sh                           |  14 +-
+ build/install/uninstall.sh                         |  16 +-
  deploy/config/dea_base.yaml                        |  16 +-
- 9 files changed, 492 insertions(+), 108 deletions(-)
+ 14 files changed, 536 insertions(+), 153 deletions(-)
  create mode 100644 build/f_isoroot/f_repobuild/.gitignore
  create mode 100644 build/f_isoroot/f_repobuild/config.mk
  create mode 100644 build/f_isoroot/f_repobuild/opnfv_config.yaml
@@ -135,9 +150,10 @@ diff --git a/build/config.mk b/build/config.mk
 index 56317cb..5448c5e 100644
 --- a/build/config.mk
 +++ b/build/config.mk
-@@ -17,4 +17,9 @@ FUEL_MAIN_TAG = master
- FUEL_TRACK_REMOTES =
-+
+@@ -17,6 +17,10 @@ FUEL_MAIN_TAG = master
+ MOS_VERSION   = 10.0
+ OPENSTACK_VERSION = newton-10.0
+
 +# List of space-separated Ubuntu architectures supported with current build
 +# Format: same as `dpkg-architecture -qDEB_HOST_ARCH`
 +# NOTE: Currently only amd64 is supported by Fuel@OPNFV. Armband adds arm64.
@@ -145,6 +161,29 @@ index 56317cb..5448c5e 100644
 
  ##############################################################################
  # Fuel components pinning / remote tracking; use submodules from f_repos
+diff --git a/build/f_isoroot/Makefile b/build/f_isoroot/Makefile
+index e189e16..b4ef1d0 100644
+--- a/build/f_isoroot/Makefile
++++ b/build/f_isoroot/Makefile
+@@ -17,16 +17,12 @@ NON_10-0_REBASED_PLUGINS = f_odlpluginbuild f_onosfwpluginbuild f_ovsnfv-dpdk-pl
+
+ # If the BUILD_FUEL_PLUGINS environment variable is set, only build the plugins
+ # indicated therein.
+-# Temporarilu disabling f_repobuild that currently have some issues on
+-# Fuel Newton.
+ ifdef BUILD_FUEL_PLUGINS
+ export BUILD_FUEL_PLUGINS
+-#SUBDIRS = f_kscfg f_bootstrap f_isolinux f_repobuild $(BUILD_FUEL_PLUGINS)
+-SUBDIRS = f_kscfg f_bootstrap f_isolinux $(BUILD_FUEL_PLUGINS)
++SUBDIRS = f_kscfg f_bootstrap f_isolinux f_repobuild $(BUILD_FUEL_PLUGINS)
+ $(warning Overriding plugin build selection to $(BUILD_FUEL_PLUGINS))
+ else
+-#SUBDIRS = f_kscfg f_bootstrap f_isolinux f_repobuild $(PLUGINS)
+-SUBDIRS = f_kscfg f_bootstrap f_isolinux $(PLUGINS)
++SUBDIRS = f_kscfg f_bootstrap f_isolinux f_repobuild $(PLUGINS)
+ endif
+ SUBCLEAN = $(addsuffix .clean,$(SUBDIRS))
+
 diff --git a/build/f_isoroot/f_repobuild/.gitignore b/build/f_isoroot/f_repobuild/.gitignore
 new file mode 100644
 index 0000000..09baca8
@@ -156,7 +195,7 @@ index 0000000..09baca8
 +nailgun
 +opnfv_config
 diff --git a/build/f_isoroot/f_repobuild/Makefile b/build/f_isoroot/f_repobuild/Makefile
-index 8beb882..9784edf 100644
+index 8beb882..cf49abd 100644
 --- a/build/f_isoroot/f_repobuild/Makefile
 +++ b/build/f_isoroot/f_repobuild/Makefile
 @@ -1,7 +1,8 @@
@@ -226,6 +265,21 @@ index 8beb882..9784edf 100644
 
  .PHONY: release
  release:nailgun
+@@ -59,10 +56,12 @@ release:nailgun
+
+ # Create a unique hash to be used for getting and putting cache, based on:
+ #   - Year and week (causing the cache to be rebuilt weekly)
+-#   - The contents of this Makefile
++#   - The contents of this Makefile + all sh,mk,py,yaml files in CWD
++#   - repo packages fingerprint
++#   - repo arch list
+ .cacheid:
+ 	date +"Repocache %G%V" > .cachedata
+-	sha1sum Makefile >> .cachedata
++	sha1sum Makefile *.{sh,mk,py,yaml} >> .cachedata
+ 	$(CACHETOOL) packages >> .cachedata
+ 	echo -n $(UBUNTU_ARCH) | sha1sum | awk {'print $$1'} >> .cachedata
+ 	cat .cachedata | $(CACHETOOL) getid > .cacheid
 diff --git a/build/f_isoroot/f_repobuild/config.mk b/build/f_isoroot/f_repobuild/config.mk
 new file mode 100644
 index 0000000..9852093
@@ -259,6 +313,21 @@ diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoro
 index fcf4257..7cbea29 100644
 --- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
 +++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+@@ -9,11 +9,11 @@
+ ---
+   root_ssh_authorized_file: /root/.ssh/id_rsa.pub
+   extend_kopts: "biosdevname=0 net.ifnames=1 debug ignore_loglevel log_buf_len=10M print_fatal_signals=1 LOGLEVEL=8"
+-  ubuntu_release: trusty
++  ubuntu_release: xenial
+   extra_dirs:
+-    - /usr/share/fuel_bootstrap_cli/files/trusty
++    - /usr/share/fuel_bootstrap_cli/files/xenial
+   output_dir: /tmp/
+-  kernel_flavor: linux-image-generic-lts-trusty
++  kernel_flavor: linux-image-generic-lts-xenial
+   packages:
+     - fuel-agent
+     - hwloc
 @@ -47,22 +47,10 @@
    https_proxy: ""
    repos:
@@ -267,7 +336,7 @@ index fcf4257..7cbea29 100644
 +      section: "main"
        uri: "http://127.0.0.1:8080/mirrors/ubuntu"
        priority:
-       suite: trusty
+-      suite: trusty
 -      type: deb
 -    - name: ubuntu-updates
 -      section: "main universe multiverse"
@@ -280,12 +349,13 @@ index fcf4257..7cbea29 100644
 -      uri: "http://127.0.0.1:8080/mirrors/ubuntu"
 -      priority:
 -      suite: trusty-security
++      suite: xenial
        type: deb
      - name: mos
        section: "main restricted"
 diff --git a/build/f_isoroot/f_repobuild/opnfv_config.yaml b/build/f_isoroot/f_repobuild/opnfv_config.yaml
 new file mode 100644
-index 0000000..bb78747
+index 0000000..9757d8a
 --- /dev/null
 +++ b/build/f_isoroot/f_repobuild/opnfv_config.yaml
 @@ -0,0 +1,160 @@
@@ -312,7 +382,7 @@ index 0000000..bb78747
 +  ubuntu:
 +    - name: "ubuntu"
 +      main: true
-+      suite: "trusty"
++      suite: "xenial"
 +      section:
 +        - "main"
 +        - "multiverse"
@@ -322,7 +392,7 @@ index 0000000..bb78747
 +      priority: null
 +
 +    - name: "ubuntu-updates"
-+      suite: "trusty-updates"
++      suite: "xenial-updates"
 +      section:
 +        - "main"
 +        - "multiverse"
@@ -332,7 +402,7 @@ index 0000000..bb78747
 +      priority: null
 +
 +    - name: "ubuntu-security"
-+      suite: "trusty-security"
++      suite: "xenial-security"
 +      section:
 +        - "main"
 +        - "multiverse"
@@ -795,31 +865,193 @@ index 0000000..5b59182
 +        .format(arch, mirror_ubuntu_tmp_path, cfg_pp_ubuntu))
 +    do_local_repo(arch, cfg_mm_ubuntu, cfg_pp_ubuntu)
 +  shutil.rmtree(mirror_ubuntu_tmp_path)
+diff --git a/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh b/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh
+index 24bd422..984baaf 100755
+--- a/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh
++++ b/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh
+@@ -1,6 +1,7 @@
+ #!/bin/bash
+
+ BLACKLIST="http://mirrors.se.eu.kernel.org/ubuntu/"
++UBUNTU_DISTRO="xenial"
+ #BLACKLIST+=" http://foo.bar"
+
+ cleanup() {
+@@ -28,26 +29,26 @@ blacklisted () {
+ check_mirror () {
+     mirror=$1
+     status=0
+-    for packdir in dists/trusty-updates/main/binary-amd64 \
+-        dists/trusty-updates/restricted/binary-amd64 \
+-        dists/trusty-updates/universe/binary-amd64 \
+-        dists/trusty-updates/multiverse/binary-amd64 \
+-        dists/trusty-security/main/binary-amd64 \
+-        dists/trusty-security/restricted/binary-amd64 \
+-        dists/trusty-security/universe/binary-amd64 \
+-        dists/trusty-security/multiverse/binary-amd64 \
+-        dists/trusty-proposed/main/binary-amd64 \
+-        dists/trusty-proposed/restricted/binary-amd64 \
+-        dists/trusty-proposed/universe/binary-amd64 \
+-        dists/trusty-proposed/multiverse/binary-amd64 \
+-        dists/trusty/main/binary-amd64 \
+-        dists/trusty/restricted/binary-amd64 \
+-        dists/trusty/universe/binary-amd64 \
+-        dists/trusty/multiverse/binary-amd64 \
+-        dists/trusty-backports/main/binary-amd64 \
+-        dists/trusty-backports/restricted/binary-amd64 \
+-        dists/trusty-backports/universe/binary-amd64 \
+-        dists/trusty-backports/multiverse/binary-amd64
++    for packdir in dists/${UBUNTU_DISTRO}-updates/main/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-updates/restricted/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-updates/universe/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-updates/multiverse/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-security/main/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-security/restricted/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-security/universe/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-security/multiverse/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-proposed/main/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-proposed/restricted/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-proposed/universe/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-proposed/multiverse/binary-amd64 \
++        dists/${UBUNTU_DISTRO}/main/binary-amd64 \
++        dists/${UBUNTU_DISTRO}/restricted/binary-amd64 \
++        dists/${UBUNTU_DISTRO}/universe/binary-amd64 \
++        dists/${UBUNTU_DISTRO}/multiverse/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-backports/main/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-backports/restricted/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-backports/universe/binary-amd64 \
++        dists/${UBUNTU_DISTRO}-backports/multiverse/binary-amd64
+     do
+         for packfile in Release Packages.gz
+         do
+diff --git a/build/install/apt-ftparchive-udeb.conf b/build/install/apt-ftparchive-udeb.conf
+index 3b5b239..0cabe94 100644
+--- a/build/install/apt-ftparchive-udeb.conf
++++ b/build/install/apt-ftparchive-udeb.conf
+@@ -17,8 +17,8 @@ TreeDefault {
+ };
+
+ BinDirectory "pool/debian-installer" {
+-  Packages "dists/trusty/main/debian-installer/binary-amd64/Packages";
+-  BinOverride "./indices/override.trusty.main.debian-installer";
++  Packages "dists/xenial/main/debian-installer/binary-amd64/Packages";
++  BinOverride "./indices/override.xenial.main.debian-installer";
+ };
+
+ Default {
+diff --git a/build/install/install.sh b/build/install/install.sh
+index 198f26c..b2f6ccc 100755
+--- a/build/install/install.sh
++++ b/build/install/install.sh
+@@ -122,17 +122,17 @@ prep_make_live() {
+     ssh-copy-id root@$FUELHOST
+     sshfs root@1${FUELHOST}:/ $TMP_HOSTMOUNT
+
+-    if [ -f  $REPO/dists/trusty/main/binary-amd64/Packages.backup ]; then
++    if [ -f  $REPO/dists/xenial/main/binary-amd64/Packages.backup ]; then
+         echo "Error - found backup file for Packages!"
+         exit 1
+     fi
+
+-    if [ -f  $REPO/dists/trusty/main/binary-amd64/Packages.gz.backup ]; then
++    if [ -f  $REPO/dists/xenial/main/binary-amd64/Packages.gz.backup ]; then
+         echo "Error - found backup file for Packages.gz!"
+         exit 1
+     fi
+
+-    if [ -f  $REPO/dists/trusty/Release.backup ]; then
++    if [ -f  $REPO/dists/xenial/Release.backup ]; then
+         echo "Error - found backup file for Release!"
+         exit 1
+     fi
+@@ -142,9 +142,9 @@ prep_make_live() {
+         exit 1
+     fi
+
+-    cp $REPO/dists/trusty/main/binary-amd64/Packages $REPO/dists/trusty/main/binary-amd64/Packages.backup
+-    cp $REPO/dists/trusty/main/binary-amd64/Packages.gz $REPO/dists/trusty/main/binary-amd64/Packages.gz.backup
+-    cp $REPO/dists/trusty/Release $REPO/dists/trusty/Release.backup
++    cp $REPO/dists/xenial/main/binary-amd64/Packages $REPO/dists/xenial/main/binary-amd64/Packages.backup
++    cp $REPO/dists/xenial/main/binary-amd64/Packages.gz $REPO/dists/xenial/main/binary-amd64/Packages.gz.backup
++    cp $REPO/dists/xenial/Release $REPO/dists/xenial/Release.backup
+     cp -Rvp $DEST/etc/puppet $DEST/etc/puppet.backup
+ }
+
+@@ -443,7 +443,7 @@ copy_packages() {
+     echo Not running apt-ftparchive generate "${APT_UDEB_CONF}"
+
+     # Fuel also needs this index file
+-    # cat dists/trusty/main/binary-amd64/Packages | \
++    # cat dists/xenial/main/binary-amd64/Packages | \
+     #    awk '/^Package:/{pkg=$2}
+     # /^Version:/{print pkg ": \"" $2 "\""}' > ubuntu-versions.yaml
+     # cp ubuntu-versions.yaml $DEST
+diff --git a/build/install/uninstall.sh b/build/install/uninstall.sh
+index a9e74bc..5252c30 100755
+--- a/build/install/uninstall.sh
++++ b/build/install/uninstall.sh
+@@ -31,17 +31,17 @@ DEST=$MOUNT
+ REPO=$DEST/var/www/nailgun/ubuntu/fuelweb/x86_64
+
+ cd $REPO
+-if [ ! -f  $REPO/dists/trusty/main/binary-amd64/Packages.backup ]; then
++if [ ! -f  $REPO/dists/xenial/main/binary-amd64/Packages.backup ]; then
+     echo "Error - didn't find backup file for Packages!"
+     exit 1
+ fi
+
+-if [ ! -f  $REPO/dists/trusty/main/binary-amd64/Packages.gz.backup ]; then
++if [ ! -f  $REPO/dists/xenial/main/binary-amd64/Packages.gz.backup ]; then
+     echo "Error - didn't find backup file for Packages.gz!"
+     exit 1
+ fi
+
+-if [ ! -f  $REPO/dists/trusty/Release.backup ]; then
++if [ ! -f  $REPO/dists/xenial/Release.backup ]; then
+     echo "Error - didn't find backup file for Release!"
+     exit 1
+ fi
+@@ -71,9 +71,9 @@ cd $REPO
+
+ echo "Restoring backups of datafiles"
+
+-rm -f $REPO/dists/trusty/main/binary-amd64/Packages $REPO/dists/trusty/main/binary-amd64/Packages.gz
+-rm -f $REPO/dists/trusty/Release $DEST/etc/puppet/manifests/site.pp
+-mv $REPO/dists/trusty/main/binary-amd64/Packages.backup $REPO/dists/trusty/main/binary-amd64/Packages
+-mv $REPO/dists/trusty/main/binary-amd64/Packages.gz.backup $REPO/dists/trusty/main/binary-amd64/Packages.gz
+-mv $REPO/dists/trusty/Release.backup $REPO/dists/trusty/Release
++rm -f $REPO/dists/xenial/main/binary-amd64/Packages $REPO/dists/xenial/main/binary-amd64/Packages.gz
++rm -f $REPO/dists/xenial/Release $DEST/etc/puppet/manifests/site.pp
++mv $REPO/dists/xenial/main/binary-amd64/Packages.backup $REPO/dists/xenial/main/binary-amd64/Packages
++mv $REPO/dists/xenial/main/binary-amd64/Packages.gz.backup $REPO/dists/xenial/main/binary-amd64/Packages.gz
++mv $REPO/dists/xenial/Release.backup $REPO/dists/xenial/Release
+ mv $DEST/etc/puppet/manifests/site.pp.backup $DEST/etc/puppet/manifests/site.pp
 diff --git a/deploy/config/dea_base.yaml b/deploy/config/dea_base.yaml
 index ce81994..2520cf5 100644
 --- a/deploy/config/dea_base.yaml
 +++ b/deploy/config/dea_base.yaml
-@@ -622,22 +622,10 @@ settings:
+@@ -722,22 +722,10 @@ settings:
          value:
          - name: ubuntu
            priority: null
 -          section: main universe multiverse
 +          section: main
-           suite: trusty
+           suite: xenial
            type: deb
--          uri: http://10.20.0.2:8080/mirrors/ubuntu/
+-          uri: http://archive.ubuntu.com/ubuntu/
 -        - name: ubuntu-updates
 -          priority: null
 -          section: main universe multiverse
--          suite: trusty-updates
+-          suite: xenial-updates
 -          type: deb
--          uri: http://10.20.0.2:8080/mirrors/ubuntu/
+-          uri: http://archive.ubuntu.com/ubuntu/
 -        - name: ubuntu-security
 -          priority: null
 -          section: main universe multiverse
--          suite: trusty-security
+-          suite: xenial-security
 -          type: deb
-           uri: http://10.20.0.2:8080/mirrors/ubuntu/
+-          uri: http://archive.ubuntu.com/ubuntu/
++          uri: http://10.20.0.2:8080/mirrors/ubuntu/
          - name: mos
            priority: 1050
            section: main restricted
