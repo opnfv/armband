@@ -30,14 +30,14 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  deploy/deploy_env.py                               |  13 +-
  deploy/install_fuel_master.py                      |   9 +-
  7 files changed, 454 insertions(+), 9 deletions(-)
- create mode 100644 build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
+ create mode 100644 build/patch-repos/0016-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
  create mode 100644 deploy/deploy_cache.py
 
-diff --git a/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
+diff --git a/build/patch-repos/0016-bootstrap_admin_node.sh-deploy_cache-install-hook.patch b/build/patch-repos/0016-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
 new file mode 100644
 index 0000000..80cd0f4
 --- /dev/null
-+++ b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
++++ b/build/patch-repos/0016-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
 @@ -0,0 +1,69 @@
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Mon, 28 Nov 2016 14:27:48 +0100
