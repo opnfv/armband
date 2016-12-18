@@ -68,15 +68,15 @@ index 0000000..01eb2e2
 +fi
 +
 +echo "Done preparing cross-building"
-diff --git a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
+diff --git a/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch b/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
 index 12d0dfb..81d196b 100644
---- a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
-+++ b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
-@@ -25,6 +25,19 @@ index 3197c91..db3123d 100755
+--- a/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
++++ b/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
+@@ -25,6 +25,18 @@ index 3197c91..db3123d 100755
   bs_done_message="Default bootstrap image building done. Now you can boot new \
   nodes over PXE, they will be discovered and become available for installing \
   OpenStack on them"
-+@@ -239,6 +239,12 @@
++@@ -239,5 +239,11 @@
 + # /etc/fuel_openstack_version is provided by 'fuel-openstack-metadata' package
 + OPENSTACK_VERSION=$(cat /etc/fuel_openstack_version)
 +
@@ -86,9 +86,8 @@ index 12d0dfb..81d196b 100644
 ++    ${wwwdir}/${OPENSTACK_VERSION}/ubuntu/x86_64/dists/mos${FUEL_RELEASE}/Release > \
 ++    /etc/fuel_openstack_arch
 ++
-+ # We do not ship debian-installer kernel and initrd on ISO.
-+ # But we still need to be able to create ubuntu cobbler distro
-+ # which requires kernel and initrd to be available. So, we
- @@ -339,8 +339,22 @@ fuelmenu --save-only --iface=$ADMIN_INTERFACE || fail
++
++ touch /var/lib/hiera/common.yaml /etc/puppet/hiera.yaml
+ @@ -347,8 +347,23 @@ fuelmenu --save-only --iface=$ADMIN_INTERFACE || fail
   set +x
   echo "Done!"

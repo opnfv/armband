@@ -1,0 +1,30 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 15 Jan 2017 08:14:12 +0100
+Subject: [PATCH] AArch64: Read hugepage size from /proc/meminfo
+
+This method should be arch-indepedent, provided /proc/meminfo
+reports the correct information.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ agent | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/agent b/agent
+index eeb4d26..d514de6 100755
+--- a/agent
++++ b/agent
+@@ -1399,6 +1399,13 @@ class NodeAgent
+   def supported_hugepages
+     return [2048, 1048576] if _get_detailed_cpuinfo['0'][:flags].include?('pdpe1gb')
+     return [2048] if _get_detailed_cpuinfo['0'][:flags].include?('pse')
++    # AArch64 does not expose CPU flags, but we can rely on /proc/meminfo
++    File.open('/proc/meminfo').each do |l|
++      case l.strip
++        when /Hugepagesize:\s+(\d+)\s+kB/
++          return [$1.to_i()]
++        end
++    end
+     []
+   end
+

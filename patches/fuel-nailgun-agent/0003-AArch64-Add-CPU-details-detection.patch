@@ -1,0 +1,130 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 15 Jan 2017 08:09:10 +0100
+Subject: [PATCH] AArch64: Add CPU details detection
+
+[ Alexandru Avadanii ]
+Based on Stan's previous patch for ohai, extend fuel-nailgun-agent
+to properly support AArch64 CPUs.
+
+[ Stanislaw Kardach ]
+There is currently little human readable detail in /proc/cpuinfo on
+arm64 so this patch tries to enchance this information by parsing the
+DMI data (using `dmidecode`) and fail gracefully to empty strings
+if no information could not be read from there. By no means this
+parsing is to be taken as a standardised way of discovering an
+arm64 CPU, it is just a suggestion.
+
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ agent | 90 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+
+diff --git a/agent b/agent
+index 0c56264..eeb4d26 100755
+--- a/agent
++++ b/agent
+@@ -340,6 +340,15 @@ class NodeAgent
+   end
+
+   def _get_detailed_cpuinfo
++    case `uname -m`
++      when /aarch64.*/
++        _get_detailed_cpuinfo_for_arm64
++      else # default to x86
++        _get_detailed_cpuinfo_for_x86
++    end
++  end
++
++  def _get_detailed_cpuinfo_for_x86
+     real = {}
+     info = {}
+     info[:total] = 0
+@@ -371,6 +380,87 @@ class NodeAgent
+     info
+   end
+
++  def _get_detailed_cpuinfo_for_arm64
++    cpu_implementers = {
++      "0x41" => "ARM",
++      "0x53" => "Samsung",
++      "0x51" => "Qualcom",
++      "0x43" => "Cavium",
++      "0x50" => "APM"
++    }
++    core_models = {
++      "0xd04" => "cortex-a35",
++      "0xd03" => "cortex-a53",
++      "0xd07" => "cortex-a57",
++      "0xd08" => "cortex-a72",
++      "0x001" => "exynos-m1",
++      "0x800" => "qdf24xx",
++      "0x0a1" => "thunderx",
++      "0x000" => "xgene1",
++      "0xd07.0xd03" => "cortex-a57.cortex-a53",
++      "0xd08.0xd03" => "cortex-a72.cortex-a53"
++    }
++    cpuinfo = {}
++    real_cpus = {}
++    cpu_number = -1
++    current_cpu = nil
++    `dmidecode -t 4 -q`.each_line do |line|
++      case line
++        when /Processor Information/
++          cpu_number +=1
++          real_cpus[cpu_number] = {}
++        when /\s*Manufacturer:\s(.+)/
++          real_cpus[cpu_number][:vendor_id] = $1
++        when /\s*Family:\s(.+)/
++          real_cpus[cpu_number][:family] = $1
++        when /\s*Max Speed:\s(.+)\s*MHz/
++          real_cpus[cpu_number][:mhz] = $1.strip
++        when /\s*Core Enabled:\s(.+)/
++          real_cpus[cpu_number][:cores] = $1
++      end
++    end
++
++    cpu_number = 0
++    File.open("/proc/cpuinfo").each do |line|
++      case line
++      when /processor\s+:\s(.+)/
++        cpuinfo[$1] = {}
++        current_cpu = $1
++        cpu_number += 1
++        phys_id = File.read(
++          "/sys/devices/system/cpu/cpu%d/topology/physical_package_id" %
++            $1).strip
++        i = phys_id.to_i
++        cpuinfo[$1][:core_id] =
++          File.read("/sys/devices/system/cpu/cpu%d/topology/core_id" %
++            $1).strip rescue ""
++        cpuinfo[$1][:physical_id] = phys_id if not phys_id.empty?
++        if real_cpus[i].nil?
++          i = 0
++        end
++        if not real_cpus[i].nil?
++          cpuinfo[$1][:family] = real_cpus[i][:family] rescue ""
++          cpuinfo[$1][:cores] = real_cpus[i][:cores] rescue ""
++          cpuinfo[$1][:mhz] = real_cpus[i][:mhz] rescue ""
++        end
++      when /CPU implementer\s+:\s(.+)/
++        cpuinfo[current_cpu][:vendor_id] = cpu_implementers[$1]
++        cpuinfo[current_cpu][:vendor_id] ||= real_cpus[cpuinfo[current_cpu][:physical_id].to_i][:vendor_id] rescue nil
++        cpuinfo[current_cpu][:vendor_id] ||= real_cpus[0][:vendor_id] rescue nil
++        cpuinfo[current_cpu][:vendor_id] ||= $1
++      when /CPU part\s+:\s(.+)/
++        cpuinfo[current_cpu][:model] = $1
++        cpuinfo[current_cpu][:model_name] = core_models[$1]
++        cpuinfo[current_cpu][:model_name] ||= ""
++      when /Features\s+:\s(.+)/
++        cpuinfo[current_cpu][:flags] = $1.split(' ')
++      end
++    end
++    cpuinfo[:total] = cpu_number
++    cpuinfo[:real] = real_cpus.keys.length
++    cpuinfo
++  end
++
+   def _get_blkdev_info
+     info = {}
+     if File.directory?('/sys/block/')
