@@ -48,9 +48,9 @@ index 70fef32..dfefcbe 100644
 --- a/deployment/puppet/osnailyfacter/manifests/generate_vms/vm_config.pp
 +++ b/deployment/puppet/osnailyfacter/manifests/generate_vms/vm_config.pp
 @@ -4,6 +4,17 @@ define osnailyfacter::generate_vms::vm_config(
-   $details = $name
-   $id = $details['id']
-
+   $details,
+   $template_dir = '/var/lib/nova',
+ ) {
 +  case $::architecture {
 +    'arm64', 'aarch64': {
 +      $machine_arch = 'aarch64'
@@ -58,11 +58,11 @@ index 70fef32..dfefcbe 100644
 +    }
 +    default: {
 +      $machine_arch = 'x86_64'
-+      $machine_type = 'pc-i440fx-trusty'
++      $machine_type = 'pc'
 +    }
 +  }
 +
-   file { "${template_dir}/template_${id}_vm.xml":
+   file { "${template_dir}/template_${name}_vm.xml":
      owner   => 'root',
      group   => 'root',
 diff --git a/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb b/deployment/puppet/osnailyfacter/templates/vm_libvirt.erb
@@ -73,7 +73,7 @@ index ae2ba5b..64e716d 100644
    <memory unit='GiB'><%= @details['mem'] %></memory>
    <vcpu placement='static'><%= @details['cpu'] %></vcpu>
    <os>
--    <type arch='x86_64' machine='pc-i440fx-trusty'>hvm</type>
+-    <type arch='x86_64' machine='pc'>hvm</type>
 +    <type arch='<%= @machine_arch %>' machine='<%= @machine_type %>'>hvm</type>
 +  <% if  == 'aarch64' %>
 +    <kernel>/var/lib/nova/<%= @details['id'] %>_vm.kernel</kernel>

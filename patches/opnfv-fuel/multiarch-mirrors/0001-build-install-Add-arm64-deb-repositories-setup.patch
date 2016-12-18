@@ -11,7 +11,7 @@ approach.
 
 FIXME: Use UBUNTU_ARCH env var instead of hardcoding the arch list.
 While fixing that, also take care of missed s/trusty/mos9.0/g
-in {un,}install.sh.
+and/or s/xenial/mos10.0/g in {un,}install.sh.
 
 Closes-bug: ARMBAND-163
 
@@ -58,13 +58,13 @@ index edcb1f2..81ead2b 100644
  };
 
 -TreeDefault {
-+Tree "dists/mos9.0" {
++Tree "dists/mos10.0" {
 +  Architectures "amd64 arm64";
    Directory "pool";
 -};
 -
 -BinDirectory "pool/main" {
--  Packages "dists/mos9.0/main/binary-amd64/Packages";
+-  Packages "dists/mos10.0/main/binary-amd64/Packages";
 +  Sections "main";
  };
 
@@ -73,14 +73,14 @@ diff --git a/build/install/apt-ftparchive-release.conf b/build/install/apt-ftpar
 index e40ff68..ceaf71a 100644
 --- a/build/install/apt-ftparchive-release.conf
 +++ b/build/install/apt-ftparchive-release.conf
-@@ -13,6 +13,7 @@ APT::FTPArchive::Release::Label "mos9.0";
- APT::FTPArchive::Release::Suite "mos9.0";
- APT::FTPArchive::Release::Version "14.04";
- APT::FTPArchive::Release::Codename "mos9.0";
+@@ -13,6 +13,7 @@ APT::FTPArchive::Release::Label "mos10.0";
+ APT::FTPArchive::Release::Suite "mos10.0";
+ APT::FTPArchive::Release::Version "16.04";
+ APT::FTPArchive::Release::Codename "mos10.0";
 -APT::FTPArchive::Release::Architectures "amd64";
 +APT::FTPArchive::Release::Architectures "amd64 arm64";
  APT::FTPArchive::Release::Components "main";
- APT::FTPArchive::Release::Description "Ubuntu Trusty Tahr 14.04 LTS";
+ APT::FTPArchive::Release::Description "Ubuntu 16.04.1 LTS";
 +APT::FTPArchive::Contents "no";
 diff --git a/build/install/apt-ftparchive-udeb.conf b/build/install/apt-ftparchive-udeb.conf
 index 3b5b239..8852db7 100644
@@ -94,14 +94,14 @@ index 3b5b239..8852db7 100644
  };
 
 -TreeDefault {
-+Tree "dists/mos9.0" {
++Tree "dists/mos10.0" {
 +  Architectures "amd64 arm64";
    Directory "pool";
 -};
 -
 -BinDirectory "pool/debian-installer" {
--  Packages "dists/trusty/main/debian-installer/binary-amd64/Packages";
--  BinOverride "./indices/override.trusty.main.debian-installer";
+-  Packages "dists/xenial/main/debian-installer/binary-amd64/Packages";
+-  BinOverride "./indices/override.xenial.main.debian-installer";
 +  Sections "main";
  };
 
@@ -114,26 +114,26 @@ index d1a49f3..0561207 100755
      ssh-copy-id root@$FUELHOST
      sshfs root@1${FUELHOST}:/ $TMP_HOSTMOUNT
 
--    if [ -f  $REPO/dists/trusty/main/binary-amd64/Packages.backup ]; then
+-    if [ -f  $REPO/dists/xenial/main/binary-amd64/Packages.backup ]; then
 +    for arch in arm64 amd64; do
-+    if [ -f  $REPO/dists/trusty/main/binary-${arch}/Packages.backup ]; then
++    if [ -f  $REPO/dists/xenial/main/binary-${arch}/Packages.backup ]; then
 +        echo "Error - found backup file for Packages for ${arch}!"
 +        exit 1
 +    fi
 +
-+    if [ -f  $REPO/dists/trusty/main/binary-${arch}/Packages.gz.backup ]; then
++    if [ -f  $REPO/dists/xenial/main/binary-${arch}/Packages.gz.backup ]; then
 +        echo "Error - found backup file for Packages.gz for ${arch}!"
 +        exit 1
 +    fi
 +    done
 +
-+    if [ -f  $REPO/dists/trusty/main/binary-arm64/Packages.backup ]; then
++    if [ -f  $REPO/dists/xenial/main/binary-arm64/Packages.backup ]; then
          echo "Error - found backup file for Packages!"
          exit 1
      fi
 
--    if [ -f  $REPO/dists/trusty/main/binary-amd64/Packages.gz.backup ]; then
-+    if [ -f  $REPO/dists/trusty/main/binary-arm64/Packages.gz.backup ]; then
+-    if [ -f  $REPO/dists/xenial/main/binary-amd64/Packages.gz.backup ]; then
++    if [ -f  $REPO/dists/xenial/main/binary-arm64/Packages.gz.backup ]; then
          echo "Error - found backup file for Packages.gz!"
          exit 1
      fi
@@ -141,13 +141,13 @@ index d1a49f3..0561207 100755
          exit 1
      fi
 
--    cp $REPO/dists/trusty/main/binary-amd64/Packages $REPO/dists/trusty/main/binary-amd64/Packages.backup
--    cp $REPO/dists/trusty/main/binary-amd64/Packages.gz $REPO/dists/trusty/main/binary-amd64/Packages.gz.backup
+-    cp $REPO/dists/xenial/main/binary-amd64/Packages $REPO/dists/xenial/main/binary-amd64/Packages.backup
+-    cp $REPO/dists/xenial/main/binary-amd64/Packages.gz $REPO/dists/xenial/main/binary-amd64/Packages.gz.backup
 +    for arch in arm64 amd64; do
-+        cp $REPO/dists/trusty/main/binary-${arch}/Packages $REPO/dists/trusty/main/binary-${arch}/Packages.backup
-+        cp $REPO/dists/trusty/main/binary-${arch}/Packages.gz $REPO/dists/trusty/main/binary-${arch}/Packages.gz.backup
++        cp $REPO/dists/xenial/main/binary-${arch}/Packages $REPO/dists/xenial/main/binary-${arch}/Packages.backup
++        cp $REPO/dists/xenial/main/binary-${arch}/Packages.gz $REPO/dists/xenial/main/binary-${arch}/Packages.gz.backup
 +    done
-     cp $REPO/dists/trusty/Release $REPO/dists/trusty/Release.backup
+     cp $REPO/dists/xenial/Release $REPO/dists/xenial/Release.backup
      cp -Rvp $DEST/etc/puppet $DEST/etc/puppet.backup
  }
 diff --git a/build/install/uninstall.sh b/build/install/uninstall.sh
@@ -158,25 +158,25 @@ index a9e74bc..e90c632 100755
  REPO=$DEST/var/www/nailgun/ubuntu/fuelweb/x86_64
 
  cd $REPO
--if [ ! -f  $REPO/dists/trusty/main/binary-amd64/Packages.backup ]; then
+-if [ ! -f  $REPO/dists/xenial/main/binary-amd64/Packages.backup ]; then
 -    echo "Error - didn't find backup file for Packages!"
 -    exit 1
 -fi
 +for arch in arm64 amd64; do
-+    if [ ! -f  $REPO/dists/trusty/main/binary-${arch}/Packages.backup ]; then
++    if [ ! -f  $REPO/dists/xenial/main/binary-${arch}/Packages.backup ]; then
 +        echo "Error - didn't find backup file for Packages for ${arch}!"
 +        exit 1
 +    fi
 
--if [ ! -f  $REPO/dists/trusty/main/binary-amd64/Packages.gz.backup ]; then
+-if [ ! -f  $REPO/dists/xenial/main/binary-amd64/Packages.gz.backup ]; then
 -    echo "Error - didn't find backup file for Packages.gz!"
 -    exit 1
 -fi
-+    if [ ! -f  $REPO/dists/trusty/main/binary-${arch}/Packages.gz.backup ]; then
++    if [ ! -f  $REPO/dists/xenial/main/binary-${arch}/Packages.gz.backup ]; then
 +        echo "Error - didn't find backup file for Packages.gz for ${arch}!"
 +        exit 1
 +    fi
 +done
 
- if [ ! -f  $REPO/dists/trusty/Release.backup ]; then
+ if [ ! -f  $REPO/dists/xenial/Release.backup ]; then
      echo "Error - didn't find backup file for Release!"
