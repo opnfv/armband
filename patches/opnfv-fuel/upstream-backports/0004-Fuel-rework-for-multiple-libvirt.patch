@@ -736,7 +736,7 @@ index 3dd5f84..d738154 100644
 @@ -41,17 +41,42 @@ dea-override-config:
    - id: 1
      interfaces: interfaces_1
-     role: mongo,controller
+     role: mongo,controller,congress
 +    transformations: transformations_1
    - id: 2
      interfaces: interfaces_1
