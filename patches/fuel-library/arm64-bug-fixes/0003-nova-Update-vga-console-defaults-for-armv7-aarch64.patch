@@ -75,18 +75,17 @@ index b18fa7b..2f0f2a8 100644
    case $::osfamily {
      'RedHat': {
        # From legacy libvirt.pp
-@@ -290,6 +296,7 @@ class openstack_tasks::roles::compute {
+@@ -290,5 +296,6 @@ class openstack_tasks::roles::compute {
    }
 
    $notify_on_state_change = 'vm_and_task_state'
 +  $nova_path = '/usr/lib/python2.7/dist-packages/nova'
 
    class { '::nova':
-     rpc_backend                        => $rpc_backend_real,
-@@ -311,6 +318,18 @@ class openstack_tasks::roles::compute {
-     memcached_servers                  => $memcached_addresses,
-     cinder_catalog_info                => pick($nova_hash_real['cinder_catalog_info'], 'volumev2:cinderv2:internalURL'),
-     rabbit_heartbeat_timeout_threshold => $::os_service_default,
+@@ -311,5 +318,17 @@ class openstack_tasks::roles::compute {
+     rabbit_heartbeat_timeout_threshold     => $rabbit_heartbeat_timeout_threshold,
+     rabbit_heartbeat_rate                  => $rabbit_heartbeat_rate,
+     os_region_name                         => $region_name,
 +  } ->
 +  # FIXME(armband): Workaround for missing arm defaults in nova libvirt driver
 +  file { "${nova_path}/libvirt-vga-console.patch":
@@ -101,4 +100,3 @@ index b18fa7b..2f0f2a8 100644
 +    require => [Package['patch']],
    }
 
-   class { '::nova::availability_zone':

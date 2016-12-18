@@ -72,7 +72,7 @@ diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/depl
 index 2f0f2a8..dc61033 100644
 --- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
 +++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
-@@ -330,6 +330,18 @@ class openstack_tasks::roles::compute {
+@@ -330,5 +330,17 @@ class openstack_tasks::roles::compute {
      unless  => "patch -p1 -R -N --dry-run < ${nova_path}/libvirt-vga-console.patch",
      cwd     => $nova_path,
      require => [Package['patch']],
@@ -90,4 +90,3 @@ index 2f0f2a8..dc61033 100644
 +    require => [Package['patch']],
    }
 
-   class { '::nova::availability_zone':
