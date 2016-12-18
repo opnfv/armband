@@ -23,8 +23,8 @@ index 041ba2f..cebef97 100755
  import sys
 +import time
  import yaml
- import errno
  import signal
+ import netaddr
 @@ -100,8 +101,9 @@ class AutoDeploy(object):
 
      def install_fuel_master(self):
