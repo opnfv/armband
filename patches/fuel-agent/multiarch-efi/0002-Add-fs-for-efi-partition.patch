@@ -12,14 +12,13 @@ diff --git a/debian/control b/debian/control
 index e843980..c763ab9 100644
 --- a/debian/control
 +++ b/debian/control
-@@ -40,6 +40,7 @@ Depends: bzip2,
+@@ -40,5 +40,6 @@ Depends: bzip2,
  	 qemu-user-static,
  	 binfmt-support,
  	 dmidecode,
 +	 dosfstools,
  	 ethtool,
  	 gdisk,
- 	 genisoimage,
 diff --git a/fuel_agent/drivers/nailgun.py b/fuel_agent/drivers/nailgun.py
 index 94280e8..1463f22 100644
 --- a/fuel_agent/drivers/nailgun.py

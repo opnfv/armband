@@ -70,12 +70,11 @@ index df54f65..ba1ab78 100644
  import tempfile
 
  from oslo_config import cfg
+ from oslo_log import log as logging
 +from oslo_config import types
  import six
  import yaml
-
-@@ -34,6 +35,8 @@ from fuel_agent.utils import md as mu
- from fuel_agent.utils import partition as pu
+@@ -34,5 +35,7 @@ from fuel_agent.utils import md as mu
  from fuel_agent.utils import utils
 
 +ArchType = types.String(choices=['amd64', 'arm64'])

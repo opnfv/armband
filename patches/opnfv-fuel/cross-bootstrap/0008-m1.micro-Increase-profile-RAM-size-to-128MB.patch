@@ -26,10 +26,10 @@ index c106bc3..0b48ca2 100755
 +    # m1.micro: Increase profile RAM size to 128MB.
 +    OPENSTACK_VERSION=$(cat /etc/fuel_openstack_version)
 +    CONTROLLER_PP="/etc/puppet/${OPENSTACK_VERSION}/modules/openstack_tasks"
-+    CONTROLLER_PP+="/manifests/openstack_controller/openstack_controller.pp"
++    CONTROLLER_PP+="/manifests/roles/controller.pp"
 +    if [ -f ${CONTROLLER_PP} ]; then
 +      sed -i.bak -r \
-+        's/^(.*flavor-create.*m1\.micro auto)\s+[[:digit:]]+(.*)$/\1 128\2/' \
++        's/^(.*ram.*=>)\s+[[:digit:]]+(.*)$/\1 128\2/' \
 +        ${CONTROLLER_PP}
 +      echo "INFO: [64] => [128] updated m1.micro profile RAM size (MB)."
 +    fi
