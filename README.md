@@ -1,7 +1,7 @@
 Armband Fuel@OPNFV
 ==================
 
-This repository holds build scripts for Fuel 9.0 OPNFV installer
+This repository holds build scripts for Fuel 10.0 OPNFV installer
 for AArch64 machines.
 
 Workflow

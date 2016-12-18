@@ -19,14 +19,16 @@ F_SUB_DIR   := ${F_REPOS_DIR}/sub
 
 # To enable remote tracking, set the following var to any non-empty string.
 # Leaving this var empty will bind each git submodule to its saved commit.
-ARMBAND_TRACK_REMOTES ?=
+ARMBAND_TRACK_REMOTES ?= yes
 
 # Armband plugins, supported archs & specific info
-export PLUGINS           := f_odlpluginbuild f_bgpvpn-pluginbuild f_ovs-nsh-dpdk-pluginbuild f_tacker-pluginbuild f_yardstick-pluginbuild
+# FIXME(alav): re-enable for D release after rebasing to Newton
+#export PLUGINS           := f_odlpluginbuild f_bgpvpn-pluginbuild f_ovs-nsh-dpdk-pluginbuild f_tacker-pluginbuild f_yardstick-pluginbuild
+export PLUGINS           :=
 export UBUNTU_ARCH       := amd64 arm64
 export PRODNO            := OPNFV_A_FUEL
 export MIRROR_MOS_UBUNTU := linux.enea.com
-export EXTRA_RPM_REPOS   := armband,http://linux.enea.com/mos-repos/centos/mos9.0-centos7/armband/x86_64,10
+export EXTRA_RPM_REPOS   := armband,http://linux.enea.com/mos-repos/centos/mos10.0-centos7/armband/x86_64,10
 
 # Temporary fuel-plugin-builder repo info for runtime patching
 export FPB_REPO      := https://github.com/openstack/fuel-plugins
@@ -37,6 +39,7 @@ export FPB_CHANGE    := refs/changes/31/311031/2
 export FUEL_PLUGIN_ODL_REPO        := ${ARMBAND_BASE}/upstream/fuel-plugin-opendaylight
 export FUEL_PLUGIN_ODL_BRANCH      := opnfv-armband
 export FUEL_PLUGIN_ODL_CHANGE      := ${A_OPNFV_TAG}
+# FIXME(alav): rebase to Newton and update ref
 export OPNFV_QUAGGE_PACKAGING_REPO := https://github.com/alexandruavadanii/opnfv-quagga-packaging
 
 export OVS_NSH_DPDK_REPO   := ${ARMBAND_BASE}/upstream/fuel-plugin-ovs
