@@ -1,10 +1,16 @@
 From: Stanislaw Kardach <stanislaw.kardach@cavium.com>
-Date: Wed, 24 Feb 2016 20:11:54 +0100
+Date: Sun, 18 Dec 2016 21:28:21 +0100
 Subject: [PATCH] Add arch to nailgun release and target image
 
 This is required so that the TestVM image is created using a cirros
 image that is compatible with the architecture of the deployment setup.
 As a bonus, it is also used when building the target image.
+
+[ Alexandru Avadanii ]
+Rebased onto Newton.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
 ---
  nailgun/nailgun/consts.py                          |  5 ++
  .../alembic_migrations/versions/armband.py         | 53 ++++++++++++++++++++++
@@ -20,7 +26,7 @@ As a bonus, it is also used when building the target image.
  create mode 100644 nailgun/nailgun/db/migration/alembic_migrations/versions/armband.py
 
 diff --git a/nailgun/nailgun/consts.py b/nailgun/nailgun/consts.py
-index 4900ec0..59b0c91 100644
+index ccbe860..a3875ce 100644
 --- a/nailgun/nailgun/consts.py
 +++ b/nailgun/nailgun/consts.py
 @@ -38,6 +38,11 @@ RELEASE_OS = Enum(
@@ -58,14 +64,14 @@ index 0000000..6e42b3f
 +"""Armband patches
 +
 +Revision ID: f9b7fd91ac19
-+Revises: 675105097a69
++Revises: c6edea552f1e
 +Create Date: 2016-03-01 23:18:58.712617
 +
 +"""
 +
 +# revision identifiers, used by Alembic.
 +revision = 'f9b7fd91ac19'
-+down_revision = '675105097a69'
++down_revision = 'c6edea552f1e'
 +
 +from alembic import op
 +from nailgun.utils.migration import drop_enum
@@ -95,10 +101,10 @@ index 0000000..6e42b3f
 +def remove_release_arch():
 +    op.drop_column('releases', 'arch')
 diff --git a/nailgun/nailgun/db/sqlalchemy/models/release.py b/nailgun/nailgun/db/sqlalchemy/models/release.py
-index 1b47de4..e209e72 100644
+index a069b61..882d32c 100644
 --- a/nailgun/nailgun/db/sqlalchemy/models/release.py
 +++ b/nailgun/nailgun/db/sqlalchemy/models/release.py
-@@ -39,6 +39,14 @@ class Release(Base):
+@@ -40,6 +40,14 @@ class Release(Base):
      id = Column(Integer, primary_key=True)
      name = Column(Unicode(100), nullable=False)
      version = Column(String(30), nullable=False)
@@ -114,54 +120,54 @@ index 1b47de4..e209e72 100644
      operating_system = Column(String(50), nullable=False)
      state = Column(
 diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
-index 65646d4..874d4f0 100644
+index ba967d7..c1d2a71 100644
 --- a/nailgun/nailgun/fixtures/openstack.yaml
 +++ b/nailgun/nailgun/fixtures/openstack.yaml
-@@ -1907,6 +1907,7 @@
-     name: "Mitaka on CentOS 6.5"
+@@ -2113,6 +2113,7 @@
+     name: "Newton on CentOS 6.5"
      state: "unavailable"
-     version: "mitaka-9.0"
+     version: "newton-10.0"
 +    arch: "amd64"
      operating_system: "CentOS"
      description: "This option will install the OpenStack Mitaka packages using a CentOS based operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
      attributes_metadata:
-@@ -1980,6 +1981,7 @@
+@@ -2186,6 +2187,7 @@
    fields:
-     name: "Mitaka on Ubuntu 14.04"
-     version: "mitaka-9.0"
+     name: "Newton on Ubuntu 16.04"
+     version: "newton-10.0"
 +    arch: "amd64"
      operating_system: "Ubuntu"
-     description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+     description: "This option will install the OpenStack Newton packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
      attributes_metadata:
-@@ -2220,6 +2222,7 @@
+@@ -2417,6 +2419,7 @@
    fields:
-     name: "Mitaka on Ubuntu+UCA 14.04"
-     version: "mitaka-9.0"
+     name: "Newton on Ubuntu+UCA 16.04"
+     version: "newton-10.0"
 +    arch: "amd64"
-     description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system, including Ubuntu Cloud Archive OpenStack packages. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+     description: "This option will install the OpenStack Newton packages using Ubuntu as a base operating system, including Ubuntu Cloud Archive OpenStack packages. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
      attributes_metadata:
        editable:
-@@ -2320,6 +2323,7 @@
+@@ -2517,6 +2520,7 @@
    fields:
-     name: "Mitaka on Ubuntu 14.04 (aarch64)"
-     version: "mitaka-9.0"
+     name: "Newton on Ubuntu 16.04 (aarch64)"
+     version: "newton-10.0"
 +    arch: "arm64"
      operating_system: "Ubuntu"
-     description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+     description: "This option will install the OpenStack Newton packages using Ubuntu as a base operating system. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
      attributes_metadata:
-@@ -2506,6 +2510,7 @@
+@@ -2754,6 +2758,7 @@
    fields:
-     name: "Mitaka on Ubuntu+UCA 14.04 (aarch64)"
-     version: "mitaka-9.0"
+     name: "Newton on Ubuntu+UCA 16.04 (aarch64)"
+     version: "newton-10.0"
 +    arch: "arm64"
-     description: "This option will install the OpenStack Mitaka packages using Ubuntu as a base operating system, including Ubuntu Cloud Archive OpenStack packages. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
+     description: "This option will install the OpenStack Newton packages using Ubuntu as a base operating system, including Ubuntu Cloud Archive OpenStack packages. With high availability features built in, you are getting a robust, enterprise-grade OpenStack deployment."
      attributes_metadata:
        editable:
 diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/nailgun/orchestrator/deployment_serializers.py
-index 08eb9c3..e561324 100644
+index f983ae3..2f9cec2 100644
 --- a/nailgun/nailgun/orchestrator/deployment_serializers.py
 +++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
-@@ -300,7 +300,13 @@ class DeploymentMultinodeSerializer(object):
+@@ -261,7 +261,13 @@ class DeploymentMultinodeSerializer(object):
              img_dir = '/usr/share/cirros-testvm/'
          else:
              img_dir = '/opt/vm/'
@@ -174,13 +180,13 @@ index 08eb9c3..e561324 100644
 +        image_data['img_path'] = '{0}cirros-{1}-disk.img'.format(img_dir,
 +            arch)
 
-         glance_properties = []
+         properties_data = {}
 
 diff --git a/nailgun/nailgun/orchestrator/provisioning_serializers.py b/nailgun/nailgun/orchestrator/provisioning_serializers.py
-index 48a4753..aaac22a 100644
+index 7b2c6ac..f2c05e1 100644
 --- a/nailgun/nailgun/orchestrator/provisioning_serializers.py
 +++ b/nailgun/nailgun/orchestrator/provisioning_serializers.py
-@@ -307,7 +307,8 @@ class ProvisioningSerializer61(ProvisioningSerializer):
+@@ -329,7 +329,8 @@ class ProvisioningSerializer61(ProvisioningSerializer):
                      attrs['repo_setup']['repos'],
                      attrs['provision'],
                      cluster.id,
@@ -188,13 +194,13 @@ index 48a4753..aaac22a 100644
 +                    packages,
 +                    cluster.release.arch))
 
-         # NOTE(kozhukalov): This pre-provision task is going to be
-         # removed by 7.0 because we need this only for classic way of
+         PriorityStrategy().one_by_one(tasks)
+         return tasks
 diff --git a/nailgun/nailgun/orchestrator/tasks_templates.py b/nailgun/nailgun/orchestrator/tasks_templates.py
-index 51dfdf7..bc2bff9 100644
+index 8252891..84bebe6 100644
 --- a/nailgun/nailgun/orchestrator/tasks_templates.py
 +++ b/nailgun/nailgun/orchestrator/tasks_templates.py
-@@ -210,7 +210,7 @@ def make_reboot_task(uids, task):
+@@ -208,7 +208,7 @@ def make_reboot_task(uids, task):
 
 
  def make_provisioning_images_task(
@@ -203,7 +209,7 @@ index 51dfdf7..bc2bff9 100644
      conf = {
          'repos': repos,
          'image_data': provision_data['image_data'],
-@@ -232,7 +232,8 @@ def make_provisioning_images_task(
+@@ -230,7 +230,8 @@ def make_provisioning_images_task(
                      "--image_build_dir /var/lib/fuel/ibp "
                      "--log-file /var/log/fuel-agent-env-{0}.log "
                      "--data_driver nailgun_build_image "
@@ -214,10 +220,10 @@ index 51dfdf7..bc2bff9 100644
              'retries': 1}})
 
 diff --git a/nailgun/nailgun/test/integration/test_cluster_changes_handler.py b/nailgun/nailgun/test/integration/test_cluster_changes_handler.py
-index fb82be0..450155d 100644
+index d7e964e..bce8289 100644
 --- a/nailgun/nailgun/test/integration/test_cluster_changes_handler.py
 +++ b/nailgun/nailgun/test/integration/test_cluster_changes_handler.py
-@@ -154,7 +154,7 @@ class TestHandlers(BaseIntegrationTest):
+@@ -148,7 +148,7 @@ class TestHandlers(BaseIntegrationTest):
          common_attrs['last_controller'] = controller_nodes[-1]['name']
          common_attrs['storage']['pg_num'] = 128
 
@@ -226,16 +232,16 @@ index fb82be0..450155d 100644
              'container_format': 'bare',
              'public': 'true',
              'disk_format': 'qcow2',
-@@ -166,7 +166,7 @@ class TestHandlers(BaseIntegrationTest):
-                 """--property murano_image_info="""
-                 """'{"title": "Murano Demo", "type": "cirros.demo"}'"""
-             ),
+@@ -164,7 +164,7 @@ class TestHandlers(BaseIntegrationTest):
+                 'murano_image_info': """'{"title": "Murano Demo", "type":"""
+                 """ "cirros.demo"}'""",
+             },
 -        }
 +        }]
 
          critical_mapping = {
              'primary-controller': True,
-@@ -566,7 +566,7 @@ class TestHandlers(BaseIntegrationTest):
+@@ -565,7 +565,7 @@ class TestHandlers(BaseIntegrationTest):
          common_attrs['last_controller'] = controller_nodes[-1]['name']
          common_attrs['storage']['pg_num'] = 128
 
@@ -244,16 +250,16 @@ index fb82be0..450155d 100644
              'container_format': 'bare',
              'public': 'true',
              'disk_format': 'qcow2',
-@@ -578,7 +578,7 @@ class TestHandlers(BaseIntegrationTest):
-                 """--property murano_image_info="""
-                 """'{"title": "Murano Demo", "type": "cirros.demo"}'"""
-             ),
+@@ -581,7 +581,7 @@ class TestHandlers(BaseIntegrationTest):
+                 'murano_image_info': """'{"title": "Murano Demo", "type":"""
+                 """ "cirros.demo"}'""",
+             },
 -        }
 +        }]
 
          critical_mapping = {
              'primary-controller': True,
-@@ -1050,7 +1050,7 @@ class TestHandlers(BaseIntegrationTest):
+@@ -1053,7 +1053,7 @@ class TestHandlers(BaseIntegrationTest):
          common_attrs['last_controller'] = controller_nodes[-1]['name']
          common_attrs['storage']['pg_num'] = 128
 
@@ -262,20 +268,20 @@ index fb82be0..450155d 100644
              'container_format': 'bare',
              'public': 'true',
              'disk_format': 'qcow2',
-@@ -1062,7 +1062,7 @@ class TestHandlers(BaseIntegrationTest):
-                 """--property murano_image_info="""
-                 """'{"title": "Murano Demo", "type": "cirros.demo"}'"""
-             ),
+@@ -1069,7 +1069,7 @@ class TestHandlers(BaseIntegrationTest):
+                 'murano_image_info': """'{"title": "Murano Demo", "type":"""
+                 """ "cirros.demo"}'""",
+             },
 -        }
 +        }]
 
          critical_mapping = {
              'primary-controller': True,
 diff --git a/nailgun/nailgun/test/integration/test_orchestrator_serializer.py b/nailgun/nailgun/test/integration/test_orchestrator_serializer.py
-index 5db8f4e..ef208cb 100644
+index f399602..6034f30 100644
 --- a/nailgun/nailgun/test/integration/test_orchestrator_serializer.py
 +++ b/nailgun/nailgun/test/integration/test_orchestrator_serializer.py
-@@ -2584,12 +2584,12 @@ class BaseDeploymentSerializer(BaseSerializerTest):
+@@ -2565,12 +2565,12 @@ class BaseDeploymentSerializer(BaseSerializerTest):
 
      def check_no_murano_data(self):
          glance_properties = self.serializer.generate_test_vm_image_data(
@@ -289,9 +295,9 @@ index 5db8f4e..ef208cb 100644
 +            self.env.nodes[0])['test_vm_image'][0]['glance_properties']
          self.assertIn('murano_image_info', glance_properties)
 
-
+     @staticmethod
 diff --git a/nailgun/nailgun/test/unit/test_tasks_templates.py b/nailgun/nailgun/test/unit/test_tasks_templates.py
-index 4e81a19..695e53d 100644
+index 4db183f..4f5d2cb 100644
 --- a/nailgun/nailgun/test/unit/test_tasks_templates.py
 +++ b/nailgun/nailgun/test/unit/test_tasks_templates.py
 @@ -140,7 +140,8 @@ class TestMakeTask(base.BaseTestCase):
