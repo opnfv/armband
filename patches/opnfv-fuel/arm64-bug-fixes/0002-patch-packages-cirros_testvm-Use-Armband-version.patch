@@ -1,0 +1,28 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 13 Jan 2017 21:16:30 +0100
+Subject: [PATCH] patch-packages: cirros_testvm: Use Armband version
+
+Armband repackages cirros_testvm to add AArch64 binaries, and hence
+rebuilds x86 binaries too, to align package versions.
+
+Account for Armband's cirros_testvm version by using its specific
+version string instead of the old MOS one.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/patch-packages/cirros_testvm/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/patch-packages/cirros_testvm/Makefile b/build/patch-packages/cirros_testvm/Makefile
+index b6a56d4..62c27f6 100644
+--- a/build/patch-packages/cirros_testvm/Makefile
++++ b/build/patch-packages/cirros_testvm/Makefile
+@@ -23,7 +23,7 @@ clean:
+
+ .PHONY: release
+ release:
+-	../tools/deb_unpack c/cirros-testvm/cirros-testvm_0.3.4-2~u16.04+mos5_amd64.deb $(ORIGISO)
++	../tools/deb_unpack c/cirros-testvm/cirros-testvm_0.3.4-2+amos1~u16.04+mos5_amd64.deb $(ORIGISO)
+ 	@rm -rf package/usr/share/cirros-testvm/*
+ 	wget -O package/usr/share/cirros-testvm/cirros-x86_64-disk.img http://download.cirros-cloud.net/daily/20160722/cirros-d160722-x86_64-disk.img
+ 	../tools/deb_pack $(REVSTATE)

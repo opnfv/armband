@@ -6,15 +6,13 @@ For now the arch is hardcoded for simplicity. We should detect this
 but how? If we're multi-arch then one bootstrap image should be built
 per supported arch. This requires Fuel refactoring.
 ---
- .../0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch        | 9 +++++++++
+ .../0001-Patches-for-OPNFV.patch        | 9 +++++++++
  1 file changed, 9 insertions(+)
 
-diff --git a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
-index c2e664c..12d0dfb 100644
---- a/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
-+++ b/build/f_repos/patch/fuel-main/0001-OPNFV-Additions-to-bootstrap_admin_node.sh.patch
-@@ -73,6 +73,15 @@ index 3197c91..db3123d 100755
-
+diff --git a/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch b/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
+--- a/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
++++ b/build/f_repos/patch/fuel-main/0001-Patches-for-OPNFV.patch
+@@ -45,3 +45,12 @@
   # Enable iptables
   systemctl enable iptables.service
 +@@ -484,7 +490,7 @@
@@ -26,6 +24,4 @@ index c2e664c..12d0dfb 100644
 +           ret=0
 +           fuel notify --topic "done" --send "${bs_done_message}"
 +         else
- @@ -532,6 +545,16 @@ systemctl start ntpd
-
-  bash /etc/rc.local
+ @@ -546,6 +560,16 @@ systemctl start ntpd

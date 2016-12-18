@@ -1,6 +1,6 @@
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Sat, 11 Jun 2016 23:34:48 +0200
-Subject: [PATCH] m1.micro: Increase profile RAM size to 128MB.
+Subject: [PATCH] m1.micro: Increase profile RAM size to 256MB.
 
 TestVM (cirros) on aarch64 requires more than 64MB RAM.
 Keep profiles uniform across all archs.
@@ -23,15 +23,15 @@ index c106bc3..0b48ca2 100755
 +    #
 +    # TestVM (cirros) on aarch64 requires more than 64MB RAM.
 +    # Keep profiles uniform across all archs by bumping micro flavor specs.
-+    # m1.micro: Increase profile RAM size to 128MB.
++    # m1.micro: Increase profile RAM size to 256MB.
 +    OPENSTACK_VERSION=$(cat /etc/fuel_openstack_version)
 +    CONTROLLER_PP="/etc/puppet/${OPENSTACK_VERSION}/modules/openstack_tasks"
-+    CONTROLLER_PP+="/manifests/openstack_controller/openstack_controller.pp"
++    CONTROLLER_PP+="/manifests/roles/controller.pp"
 +    if [ -f ${CONTROLLER_PP} ]; then
 +      sed -i.bak -r \
-+        's/^(.*flavor-create.*m1\.micro auto)\s+[[:digit:]]+(.*)$/\1 128\2/' \
++        's/^(.*ram.*=>)\s+[[:digit:]]+(.*)$/\1 256\2/' \
 +        ${CONTROLLER_PP}
-+      echo "INFO: [64] => [128] updated m1.micro profile RAM size (MB)."
++      echo "INFO: [64] => [256] updated m1.micro profile RAM size (MB)."
 +    fi
    fi
  fi
