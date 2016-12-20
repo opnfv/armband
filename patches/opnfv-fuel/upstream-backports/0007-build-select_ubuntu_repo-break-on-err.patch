@@ -1,0 +1,70 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 20 Dec 2016 00:49:47 +0100
+Subject: [PATCH] build: select_ubuntu_repo: break on err
+
+Stop ISO build process if no sane Ubuntu mirrors are available,
+instead of continuing with an empty URL, which is bound to fail
+later.
+
+While at it, skip re-assesing the output of select_ubuntu_repo.sh if
+the URL var already is set.
+
+Also, stderr and stdout were both captured in UBUNTU_MIRROR_URL,
+so disable debug by default, and only print debug info in case no
+valid mirror is found.
+
+v2 -> v3:
+- allow "One hour behind" mirror state to be considered, since
+  we already accept "Six hours behind" mirrors;
+
+JIRA: FUEL-240
+
+Change-Id: I791942da234304528ff5cae1891415602e1a62b2
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/Makefile                                    | 10 +++++++---
+ build/f_isoroot/f_repobuild/select_ubuntu_repo.sh |  4 ++--
+ 2 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/build/Makefile b/build/Makefile
+index c8fc793..d4b981a 100644
+--- a/build/Makefile
++++ b/build/Makefile
+@@ -51,9 +51,13 @@ export REPOINFO  := $(BUILD_BASE)/repo_info.sh
+
+ # Use snapshots
+ # Use nearby repositories
+-export MIRROR_UBUNTU_URL := $(shell ./f_isoroot/f_repobuild/select_ubuntu_repo.sh --url)
+-export MIRROR_UBUNTU := $(shell echo "$(MIRROR_UBUNTU_URL)" | cut -d'/' -f3 )
+-export MIRROR_UBUNTU_ROOT := $(shell echo -n '/' ; echo "$(MIRROR_UBUNTU_URL)" | cut -d'/' -f4-)
++export MIRROR_UBUNTU_URL ?= $(shell ./f_isoroot/f_repobuild/select_ubuntu_repo.sh)
++export MIRROR_UBUNTU ?= $(shell echo "$(MIRROR_UBUNTU_URL)" | cut -d'/' -f3 )
++export MIRROR_UBUNTU_ROOT ?= $(shell echo -n '/' ; echo "$(MIRROR_UBUNTU_URL)" | cut -d'/' -f4-)
++ifeq (,$(MIRROR_UBUNTU_URL))
++$(warning $(shell ./f_isoroot/f_repobuild/select_ubuntu_repo.sh -d))
++$(error No sane Ubuntu mirror available)
++endif
+
+ export LATEST_MIRROR_ID_URL := http://$(shell ./select_closest_fuel_mirror.py)
+
+diff --git a/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh b/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh
+index 24bd422..5618eb7 100755
+--- a/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh
++++ b/build/f_isoroot/f_repobuild/select_ubuntu_repo.sh
+@@ -69,14 +69,14 @@ if [ "$1" == "-d" ]; then
+ fi
+
+ # Hardcode for testing purposes
+-DEBUG=1
++# DEBUG=1
+
+ TMPFILE=$(mktemp /tmp/mirrorsXXXXX)A
+ trap cleanup exit
+
+ # Generate a list of mirrors considered as "up"
+ curl -s  https://launchpad.net/ubuntu/+archivemirrors | \
+-    grep -P -B8 "statusUP|statusSIX" | \
++    grep -P -B8 "statusUP|statusONE|statusSIX" | \
+     grep -o -P "(f|ht)tp.*\""  | \
+     sed 's/"$//' | sort | uniq > $TMPFILE
+
