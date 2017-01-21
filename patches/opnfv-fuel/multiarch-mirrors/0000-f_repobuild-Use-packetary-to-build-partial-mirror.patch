@@ -94,11 +94,11 @@ v11 -> v12:
 - fix install/install.sh old refs to "trusty";
 - fix out of date select_ubuntu_repo.s refs to "trusty";
 
-v12 -> v13:
+v12 -> v16:
 - fix leftover mos9.0 / fuel-mirror references;
 - fix most issues reported by `pylint opnfv_mirror_ubuntu.py`;
 
-v13 -> v14:
+v16 -> v18:
 - Sync fuel_bootstrap_cli.yaml with settings.yaml.sample from 10.0:
   [4] Stub pass for "Get root password for build image from settings"
   [5] Sync pkg list with "Switch to Ubuntu Xenial"
@@ -112,10 +112,16 @@ v13 -> v14:
   The proposed fix is quite sensitive, also cutting the final
   mirror size in half (!), and allowing us to remove a previous
   hacky workaround (re-running packetary only for main).
+- "vim" fix above pushed upstream [10], waiting for merge;
 - Remove "main"-only packetary run (hacky), since the new fix for "vim"
   also takes care of packetary solving dependencies from "universe".
 - Add OPNFV blacklisting to workaround "upstart" package being installed,
   together with "systemd" (having them both installed confuses puppet);
+- Currently in testing in Armband as part of [9]:
+  * bootstrap and target image building works from offline mirror;
+  * systemd is used instead of upstart;
+  * full deploy is not yet confirmed, due to some AArch64 specifics we
+    are in the process of fixing;
 
 NOTE: Without filtering out old package verisons using
 `dpkg-scanpackages`, bootstrap build cannot solve all deps.
@@ -144,6 +150,8 @@ as the source partial mirror.
 [6] https://review.openstack.org/#/c/344909/
 [7] https://review.openstack.org/#/c/400165/
 [8] https://review.openstack.org/#/c/415912/
+[9] https://gerrit.opnfv.org/gerrit/#/c/26157/
+[10] https://review.openstack.org/#/c/420815
 
 JIRA: FUEL-218
 JIRA: FUEL-223
@@ -156,7 +164,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  build/config.mk                                    |   4 +
  build/f_isoroot/Makefile                           |   8 +-
  build/f_isoroot/f_repobuild/.gitignore             |   4 +
- ...s_tree-exact-match-trumps-other-providers.patch |  75 ++++++
+ ...s_tree-exact-match-trumps-other-providers.patch |  69 +++++
  build/f_isoroot/f_repobuild/Makefile               |  45 ++--
  build/f_isoroot/f_repobuild/config.mk              |  23 ++
  .../f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml  |  41 ++-
@@ -168,7 +176,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  build/install/install.sh                           |  14 +-
  build/install/uninstall.sh                         |  16 +-
  deploy/config/dea_base.yaml                        |  16 +-
- 15 files changed, 636 insertions(+), 157 deletions(-)
+ 15 files changed, 630 insertions(+), 157 deletions(-)
  create mode 100644 build/f_isoroot/f_repobuild/.gitignore
  create mode 100644 build/f_isoroot/f_repobuild/0001-packages_tree-exact-match-trumps-other-providers.patch
  create mode 100644 build/f_isoroot/f_repobuild/config.mk
@@ -192,7 +200,7 @@ index 56317cb..5448c5e 100644
  ##############################################################################
  # Fuel components pinning / remote tracking; use submodules from f_repos
 diff --git a/build/f_isoroot/Makefile b/build/f_isoroot/Makefile
-index e189e16..b4ef1d0 100644
+index c21546a..220bc9d 100644
 --- a/build/f_isoroot/Makefile
 +++ b/build/f_isoroot/Makefile
 @@ -17,16 +17,12 @@ NON_10-0_REBASED_PLUGINS = f_odlpluginbuild f_onosfwpluginbuild f_ovsnfv-dpdk-pl
@@ -226,10 +234,10 @@ index 0000000..09baca8
 +opnfv_config
 diff --git a/build/f_isoroot/f_repobuild/0001-packages_tree-exact-match-trumps-other-providers.patch b/build/f_isoroot/f_repobuild/0001-packages_tree-exact-match-trumps-other-providers.patch
 new file mode 100644
-index 0000000..1df292c
+index 0000000..d59b840
 --- /dev/null
 +++ b/build/f_isoroot/f_repobuild/0001-packages_tree-exact-match-trumps-other-providers.patch
-@@ -0,0 +1,75 @@
+@@ -0,0 +1,69 @@
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Sun, 15 Jan 2017 00:40:15 +0100
 +Subject: [PATCH] packages_tree: exact match trumps other providers
@@ -237,74 +245,68 @@ index 0000000..1df292c
 +Ubuntu frequently has multiple providers for the same package name,
 +e.g. "vim" is provided by "vim", "vim-gnome" etc.
 +
-+Below is a sample dump of packetary's list of matches for a generic
-+"vim" package requirement, without a version enforced, based on
-+current Xenial repos:
++We need to adjust the resolving algorithm to:
++1. lookup in obsoletes.
++2. lookup in virtual packages
++3. lookup in packages
++Use the package which was found last (version-sorted).
 +
-+vim-gtk3-py2 (2:7.4.1689-3ubuntu1)
-+vim-gnome (2:7.4.1689-3ubuntu1)
-+vim-gtk (2:7.4.1689-3ubuntu1)
-+vim-nox (2:7.4.1689-3ubuntu1)
-+vim-gtk-py2 (2:7.4.1689-3ubuntu1)
-+vim-gnome-py2 (2:7.4.1689-3ubuntu1)
-+vim-nox-py2 (2:7.4.1689-3ubuntu1)
-+vim (2:7.4.1689-3ubuntu1)
-+vim-gtk3 (2:7.4.1689-3ubuntu1)
-+vim-athena (2:7.4.1689-3ubuntu1)
-+vim-athena-py2 (2:7.4.1689-3ubuntu1)
-+vim-gtk (2:7.4.1689-3ubuntu1.2)
-+vim-gnome-py2 (2:7.4.1689-3ubuntu1.2)
-+vim-gtk-py2 (2:7.4.1689-3ubuntu1.2)
-+vim-nox (2:7.4.1689-3ubuntu1.2)
-+vim-nox-py2 (2:7.4.1689-3ubuntu1.2)
-+vim-gtk3 (2:7.4.1689-3ubuntu1.2)
-+vim (2:7.4.1689-3ubuntu1.2)
-+vim-athena (2:7.4.1689-3ubuntu1.2)
-+vim-athena-py2 (2:7.4.1689-3ubuntu1.2)
-+vim-gnome (2:7.4.1689-3ubuntu1.2)
-+vim-gtk3-py2 (2:7.4.1689-3ubuntu1.2)
-+
-+Currently, packetary solves the "vim" relation by using the last item
-+in the sorted list, in this case "vim-gtk3-py2"; instead of using the
-+exact package name match "vim".
-+
-+This leads to our final mirror clone missing the "vim" package, and
-+inherintely failing to build bootstrap/target images using only the
-+partial Ubuntu mirror in OPNFV ISO.
-+
-+The proposed fix is to first check the list for an exact name match,
-+which would trump any secondary providers, even if they have a
-+higher package version.
++Closes-bug: 1656888
 +
 +Change-Id: I7279aa6526ff9133829be2e316932c9b052c7814
 +Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +---
-+ packetary/objects/packages_tree.py | 5 +++++
-+ 1 file changed, 5 insertions(+)
++ packetary/objects/packages_tree.py | 30 ++++++++++++++++++------------
++ 1 file changed, 18 insertions(+), 12 deletions(-)
 +
 +diff --git a/packetary/objects/packages_tree.py b/packetary/objects/packages_tree.py
-+index f02df59..6081fa9 100644
++index f02df59..225d65a 100644
 +--- a/packetary/objects/packages_tree.py
 ++++ b/packetary/objects/packages_tree.py
-+@@ -18,6 +18,7 @@
-+
-+ from collections import defaultdict
-+
-++import re
-+ import six
-+
-+ from packetary.objects.index import Index
-+@@ -57,6 +58,10 @@ class PackagesTree(object):
++@@ -68,25 +68,31 @@ class PackagesTree(object):
++         :param version_range: the range of versions.
++         :return: the list of suitable packages
 +         """
-+         candidates = self.find_all(name, version_range)
-+         if len(candidates) > 0:
-++            # exact pkg name match trumps other providers' versions
-++            for candidate in reversed(candidates):
-++                if re.match('{0}\s.*'.format(re.escape(name)), str(candidate)):
-++                    return candidate
-+             # we return candidates in sorted order, so let's take the highest
-+             return candidates[-1]
-+         return None
++-        candidates = set()
++-        # find package by name
++-        if name in self.packages:
++-            candidates.update(self.packages.find_all(name, version_range))
+++        candidates = []
+++
+++        if name in self.obsoletes:
+++            candidates.extend(sorted(
+++                self._resolve_relation(self.obsoletes[name], version_range),
+++                key=lambda x: x.version
+++            ))
++
++         # find package by provides
++         # in case of rpm:
++         #    set(candidates) >= set(provides)
++         if name in self.provides:
++-            candidates.update(self._resolve_relation(
++-                self.provides[name], version_range)
++-            )
+++            candidates.extend(sorted(
+++                self._resolve_relation(self.provides[name], version_range),
+++                key=lambda x: x.version
+++            ))
++
++-        if name in self.obsoletes:
++-            candidates.update(self._resolve_relation(
++-                self.obsoletes[name], version_range)
++-            )
+++        # find package by name
+++        if name in self.packages:
+++            candidates.extend(sorted(
+++                self.packages.find_all(name, version_range),
+++                key=lambda x: x.version
+++            ))
++
++-        return sorted(candidates, key=lambda x: x.version)
+++        return candidates
++
++     def get_unresolved_dependencies(self):
++         """Gets the set of unresolved dependencies.
 diff --git a/build/f_isoroot/f_repobuild/Makefile b/build/f_isoroot/f_repobuild/Makefile
 index 8beb882..76aadf9 100644
 --- a/build/f_isoroot/f_repobuild/Makefile
