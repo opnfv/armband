@@ -1,0 +1,30 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 21 Jan 2017 00:01:16 +0100
+Subject: [PATCH] AArch64: Cirros TestVM: Use AAVMF (guest UEFI)
+
+Based on the direct kernel boot patch by Stan.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
+---
+ nailgun/nailgun/orchestrator/deployment_serializers.py | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/nailgun/orchestrator/deployment_serializers.py
+index 77fcba1..fd33b3f 100644
+--- a/nailgun/nailgun/orchestrator/deployment_serializers.py
++++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
+@@ -284,6 +284,13 @@ class DeploymentMultinodeSerializer(object):
+                 'hypervisor_type': 'vmware'
+             }
+
++        # AArch64: Use AAVMF (guest UEFI)
++        if arch == 'aarch64':
++            properties_data = {
++                'hw_firmware_type': 'uefi',
++                'short_id': 'ubuntu16.04'
++            }
++
+         # NOTE(aschultz): properties was added as part of N and should be
+         # used infavor of glance_properties
+         image_data['glance_properties'] = self.generate_properties_arguments(

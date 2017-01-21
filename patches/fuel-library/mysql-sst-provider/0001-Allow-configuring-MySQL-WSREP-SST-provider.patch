@@ -24,17 +24,16 @@ diff --git a/deployment/puppet/osnailyfacter/manifests/database/database.pp b/de
 index e741ff8..be19eb5 100644
 --- a/deployment/puppet/osnailyfacter/manifests/database/database.pp
 +++ b/deployment/puppet/osnailyfacter/manifests/database/database.pp
-@@ -8,6 +8,7 @@ class osnailyfacter::database::database {
-   $use_syslog               = hiera('use_syslog', true)
-   $primary_controller       = hiera('primary_controller')
-   $mysql_hash               = hiera_hash('mysql', {})
-+  $wsrep_hash               = hiera_hash('mysql_wsrep', {})
-   $debug                    = pick($mysql_hash['debug'], hiera('debug', false))
+@@ -8,5 +8,6 @@ class osnailyfacter::database::database {
+   $use_syslog        = hiera('use_syslog', true)
+   $mysql_hash        = hiera_hash('mysql', {})
++  $wsrep_hash        = hiera_hash('mysql_wsrep', {})
+   $debug             = pick($mysql_hash['debug'], hiera('debug', false))
 
-   $mgmt_iface = get_network_role_property('mgmt/database', 'interface')
+   $mgmt_iface      = get_network_role_property('mgmt/database', 'interface')
 @@ -17,6 +18,7 @@ class osnailyfacter::database::database {
-
    $mysql_root_password       = $mysql_hash['root_password']
+   $deb_sysmaint_password     = $mysql_hash['wsrep_password']
    $enabled                   = pick($mysql_hash['enabled'], true)
 +  $wsrep_sst_method          = pick($wsrep_hash['wsrep_method'], 'xtrabackup-v2')
 

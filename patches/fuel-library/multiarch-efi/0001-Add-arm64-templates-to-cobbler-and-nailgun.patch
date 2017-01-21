@@ -6,13 +6,22 @@ Add grub template import to cobbler server manifest
 
 Add arm64 templates to cobbler and nailgun
 
-[Matei Valeanu] Add grub template to cobbler for MAC-files
+[ Matei Valeanu ]
+Add grub template to cobbler for MAC-files
 Limitation: grub2 needs to be installed directly on the
 root (/) of a device or partition, as the MAC-files will
 search for /grub/grub.cfg on the available partitions
 
+[ Alexandru Avadanii ]
+Rebased for Fuel Newton after upstream change:
+"Remove deprecated cobbler parts for classic provisioning" [1].
+
+[1] https://github.com/openstack/fuel-library/commit/
+    e207593d7b3234cfbde6689dbccdcafe6ba67e58
+
 Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
 Signed-off-by: Matei Valeanu <Matei.Valeanu@enea.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  deployment/puppet/cobbler/manifests/server.pp      | 36 ++++++++++++++++++++++
  .../puppet/cobbler/templates/dnsmasq.template.erb  |  2 ++
@@ -20,16 +29,13 @@ Signed-off-by: Matei Valeanu <Matei.Valeanu@enea.com>
  .../cobbler/templates/grublocal.template.erb       |  2 ++
  .../cobbler/templates/grubprofile.template.erb     | 12 ++++++++
  .../cobbler/templates/grubsystem.template.erb      | 16 ++++++++++
- .../templates/preseed/ubuntu-1404.preseed.erb      |  2 ++
  deployment/puppet/fuel/manifests/auxiliaryrepos.pp | 12 +++++---
  deployment/puppet/fuel/manifests/cobbler.pp        | 36 +++++++++++++++++-----
- .../puppet/fuel/manifests/cobbler/preseed.pp       | 13 ++++++++
  10 files changed, 125 insertions(+), 11 deletions(-)
  create mode 100644 deployment/puppet/cobbler/templates/efidefault.template.erb
  create mode 100644 deployment/puppet/cobbler/templates/grublocal.template.erb
  create mode 100644 deployment/puppet/cobbler/templates/grubprofile.template.erb
  create mode 100644 deployment/puppet/cobbler/templates/grubsystem.template.erb
- create mode 100644 deployment/puppet/fuel/manifests/cobbler/preseed.pp
 
 diff --git a/deployment/puppet/cobbler/manifests/server.pp b/deployment/puppet/cobbler/manifests/server.pp
 index 891dff7..52936d5 100644
@@ -149,22 +155,6 @@ index 0000000..9a191bc
 +    initrd (tftp)$initrd_path
 +    echo 'Booting bootstrap image ...'
 +}
-diff --git a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb b/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
-index 6762153..25f8067 100644
---- a/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
-+++ b/deployment/puppet/cobbler/templates/preseed/ubuntu-1404.preseed.erb
-@@ -66,9 +66,11 @@ d-i apt-setup/mirror/error select Retry
- # Use network mirror
- d-i apt-setup/use_mirror boolean true
-
-+<% if @arch == 'amd64' %>
- # Select architecture to amd64. That's very important to dpkg, since
- # by default we have both amd64 and i386.
- d-i apt-setup/multiarch string amd64
-+<% end %>
-
- # You can choose to install restricted and universe software, or to install
- # software from the backports repository.
 diff --git a/deployment/puppet/fuel/manifests/auxiliaryrepos.pp b/deployment/puppet/fuel/manifests/auxiliaryrepos.pp
 index 493ffc6..909fc92 100644
 --- a/deployment/puppet/fuel/manifests/auxiliaryrepos.pp
@@ -199,61 +189,6 @@ diff --git a/deployment/puppet/fuel/manifests/cobbler.pp b/deployment/puppet/fue
 index b403733..c89027d 100644
 --- a/deployment/puppet/fuel/manifests/cobbler.pp
 +++ b/deployment/puppet/fuel/manifests/cobbler.pp
-@@ -114,12 +114,9 @@ class fuel::cobbler(
-     require   => Class['::cobbler::server'],
-   }
-
--  file { '/var/lib/cobbler/kickstarts/ubuntu-amd64.preseed':
--    content => template('cobbler/preseed/ubuntu-1404.preseed.erb'),
--    owner   => 'root',
--    group   => 'root',
--    mode    => '0644',
--    require => Class['::cobbler::server'],
-+  fuel::cobbler::preseed { 'ubuntu_1404_x86_64.preseed':
-+    path =>'/var/lib/cobbler/kickstarts/ubuntu-amd64.preseed',
-+    arch => "amd64",
-   } ->
-
-   cobbler_distro { 'ubuntu_1404_x86_64':
-@@ -132,6 +129,21 @@ class fuel::cobbler(
-     require   => Class['::cobbler::server'],
-   }
-
-+  fuel::cobbler::preseed { 'ubuntu_1404_arm64.preseed':
-+    path => '/var/lib/cobbler/kickstarts/ubuntu-arm64.preseed',
-+    arch => "arm64",
-+  } ->
-+
-+  cobbler_distro { 'ubuntu_1404_arm64':
-+    kernel    => "${repo_root}/ubuntu/x86_64/images/linux",
-+    initrd    => "${repo_root}/ubuntu/x86_64/images/initrd.gz",
-+    arch      => 'x86_64', # Makes Cobbler choose PXE
-+    breed     => 'ubuntu',
-+    osversion => 'trusty',
-+    ksmeta    => '',
-+    require   => Class['::cobbler::server'],
-+  }
-+
-   cobbler_profile { 'centos-x86_64':
-     kickstart => '/var/lib/cobbler/kickstarts/centos-x86_64.ks',
-     kopts     => 'biosdevname=0 sshd=1 dhcptimeout=120',
-@@ -152,6 +164,16 @@ class fuel::cobbler(
-     require   => Cobbler_distro['ubuntu_1404_x86_64'],
-   }
-
-+  cobbler_profile { 'ubuntu_1404_arm64':
-+    kickstart => '/var/lib/cobbler/kickstarts/ubuntu-arm64.preseed',
-+    kopts     => 'console=ttyAMA0,115200 console=ttyS0,115200 net.ifnames=0 biosdevname=0 netcfg/choose_interface=eth0 netcfg/dhcp_timeout=120 netcfg/link_detection_timeout=20',
-+    distro    => 'ubuntu_1404_arm64',
-+    ksmeta    => '',
-+    menu      => false,
-+    server    => $real_server,
-+    require   => Cobbler_distro['ubuntu_1404_arm64'],
-+  }
-+
-   cobbler_distro { 'ubuntu_bootstrap':
-     kernel    => "${bootstrap_path}/vmlinuz",
-     initrd    => "${bootstrap_path}/initrd.img",
 @@ -166,7 +188,7 @@ class fuel::cobbler(
      distro    => 'ubuntu_bootstrap',
      menu      => true,
@@ -263,22 +198,3 @@ index b403733..c89027d 100644
      ksmeta    => '',
      server    => $real_server,
      require   => Cobbler_distro['ubuntu_bootstrap'],
-diff --git a/deployment/puppet/fuel/manifests/cobbler/preseed.pp b/deployment/puppet/fuel/manifests/cobbler/preseed.pp
-new file mode 100644
-index 0000000..7e1bee9
---- /dev/null
-+++ b/deployment/puppet/fuel/manifests/cobbler/preseed.pp
-@@ -0,0 +1,13 @@
-+define fuel::cobbler::preseed(
-+  $path,
-+  $arch = "amd64",
-+) {
-+
-+  file { $path:
-+    content => template('cobbler/preseed/ubuntu-1404.preseed.erb'),
-+    owner   => 'root',
-+    group   => 'root',
-+    mode    => '0644',
-+    require => Class['::cobbler::server'],
-+  }
-+}
