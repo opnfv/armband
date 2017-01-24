@@ -1,0 +1,133 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 12 Sep 2016 18:02:42 +0200
+Subject: [PATCH] AArch64: Add support for downloading prebuilt DEBs
+
+Change-Id: I6042f9f7bdde5a15e3cb5a94ab67a990faae0418
+Signed-off-by: Anders Roxell <anders.roxell@enea.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ovs_build/prebuilt-ovs-fetch.sh | 86 +++++++++++++++++++++++++++++++++++++++++
+ pre_build_hook                  | 10 +++++
+ 2 files changed, 96 insertions(+)
+ create mode 100755 ovs_build/prebuilt-ovs-fetch.sh
+
+diff --git a/ovs_build/prebuilt-ovs-fetch.sh b/ovs_build/prebuilt-ovs-fetch.sh
+new file mode 100755
+index 0000000..f8b88a3
+--- /dev/null
++++ b/ovs_build/prebuilt-ovs-fetch.sh
+@@ -0,0 +1,86 @@
++#!/bin/bash
++
++set -eux
++
++BUILD_DEST=${BUILD_DEST:-/deb}
++BUILD_HOME=${BUILD_HOME:-/tmp/ovs-dpdk}
++BUILD_ARCH=${BUILD_ARCH:-$(dpkg --print-architecture)}
++UBUNTU_ARCH=${UBUNTU_ARCH:-${BUILD_ARCH}}
++
++# armband_fetch will download all binaries for one debian source package
++#
++# Usage:
++#   armband_fetch <src_deb_name> <src_deb_version> \
++#                 [<repo_base_url> \
++#                 [<repo_Sources_relative_url> \
++#                 [<repo_Packages_relative_url>]]] \
++#
++# e.g.:
++#   armband_fetch dpdk 16.07-0ubuntu5~u1604+mos1 \
++#     https://linux.enea.com/mos-repos/ubuntu/10.0 \
++#     dists/mos10.0-fuel-plugin-ovs/main/source/Sources \
++#     dists/mos10.0-fuel-plugin-ovs/main/binary-arm64/Packages
++function armband_fetch() {
++  local name=$1
++  local ver=${2//\+/\\\+}
++  local repo_base_url=${3:-http://linux.enea.com/mos-repos/ubuntu/10.0}
++  local repo_Sources_url=${4:-dists/mos10.0-fuel-plugin-ovs/main/source/Sources}
++  local repo_Packages_url=${5:-dists/mos10.0-fuel-plugin-ovs/main/binary-arm64/Packages}
++  local found=false
++
++  # Fetch Sources & Packages files if not already present
++  if [ ! -f Sources -o ! -f Packages ]; then
++    sudo apt-get -y --force-yes install wget
++    wget -c "${repo_base_url}/${repo_Sources_url}"
++    wget -c "${repo_base_url}/${repo_Packages_url}"
++  fi
++
++  L=$(grep -Pzo "(?<=Package: ${name}\nBinary: )(\N*?)(?=\nVersion: ${ver}\n)" \
++    Sources | tr -d ',')
++  for deb_binary in ${L}; do
++    D=$(grep -Po "(?<=Filename: )(.*?\/${deb_binary}_${ver}_.*?\.deb)" Packages) || true
++    if [ -n "${D}" ]; then
++      wget -c "${repo_base_url}/${D}" && found=true
++    fi
++  done
++  if [ ${found} = false ]; then
++    echo "ERROR: Could not find DEBs for pkg/ver: ${name}/${ver}"
++    exit 1
++  fi
++}
++
++for arch in ${UBUNTU_ARCH}; do
++  if [ "${arch}" = "${BUILD_ARCH}" ]; then
++   # Skip fetching native binaries
++    continue
++  fi
++
++  cd ${BUILD_DEST}; rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}
++  cd ${BUILD_HOME}
++
++  ARMBAND_BASE="http://linux.enea.com/mos-repos/ubuntu/10.0"
++  ARMBAND_SRCS="dists/mos10.0-fuel-plugin-ovs/main/source/Sources"
++  ARMBAND_BINS="dists/mos10.0-fuel-plugin-ovs/main/binary-${arch}/Packages"
++
++  # DPDK (common)
++  armband_fetch 'dpdk' '.*' \
++    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
++  mv *.deb ${BUILD_DEST}; rm -rf *
++
++  # OVS, OVS-DPDK (without NSH)
++  armband_fetch 'openvswitch' '(?:(?!nsh).)*' \
++    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
++  armband_fetch 'openvswitch-dpdk' '(?:(?!nsh).)*' \
++    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
++  mkdir -p ${BUILD_HOME}/deb; mv *.deb ${BUILD_HOME}/deb; cd ${BUILD_HOME}/deb
++  tar czvf ${BUILD_DEST}/ovs-dpdk_${arch}.tar.gz .;
++  cd ${BUILD_HOME}; rm -rf *
++
++  # OVS, OVS-DPDK (with NSH)
++  armband_fetch 'openvswitch' '.*nsh' \
++    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
++  armband_fetch 'openvswitch-dpdk' '.*nsh' \
++    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
++  mkdir -p ${BUILD_HOME}/deb; mv *.deb ${BUILD_HOME}/deb; cd ${BUILD_HOME}/deb
++  tar czvf ${BUILD_DEST}/ovs-nsh-dpdk_${arch}.tar.gz .;
++done
+diff --git a/pre_build_hook b/pre_build_hook
+index 194a7b9..0c27358 100755
+--- a/pre_build_hook
++++ b/pre_build_hook
+@@ -6,6 +6,11 @@ BUILD_FOR=${BUILD_FOR:-ubuntu}
+ BUILD_ARCH="$(dpkg --print-architecture)"
+ DIR="$(dirname `readlink -f $0`)"
+
++# Pass target arch(s) (UBUNTU_ARCH) to build scripts.
++# All archs should be represented in `dpkg --print-architecture` format
++# UBUNTU_ARCH holds a space-separated list of target arch(s)
++export UBUNTU_ARCH=${UBUNTU_ARCH:-$(dpkg --print-architecture)}
++
+ function build_pkg {
+   case ${BUILD_ARCH} in
+     arm64)
+@@ -27,6 +32,11 @@ function build_pkg {
+       rm -rf ${DEB_DIR};  mkdir -p ${DEB_DIR}; chmod 777 ${DEB_DIR};
+       sudo docker run -v ${DEB_DIR}:/deb -t  ovs_build /ovs_build/build-ovs-nsh-dpdk.sh
+       cp -r ${DEB_DIR}/*  ${DIR}/repositories/ubuntu/
++
++      rm -rf ${DEB_DIR};  mkdir -p ${DEB_DIR}; chmod 777 ${DEB_DIR};
++      sudo docker run -e "UBUNTU_ARCH=${UBUNTU_ARCH}" -e "BUILD_ARCH=${BUILD_ARCH}" \
++        -v ${DEB_DIR}:/deb -t ovs_build /ovs_build/prebuilt-ovs-fetch.sh
++      cp -r ${DEB_DIR}/*  ${DIR}/repositories/ubuntu/
+       rm -rf ${DEB_DIR}
+
+       ;;

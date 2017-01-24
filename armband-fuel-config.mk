@@ -23,8 +23,8 @@ ARMBAND_TRACK_REMOTES ?= yes
 
 # Armband plugins, supported archs & specific info
 # FIXME(alav): re-enable for D release after rebasing to Newton
-#export PLUGINS           := f_ovs-nsh-dpdk-pluginbuild f_tacker-pluginbuild
-export PLUGINS           := f_yardstick-pluginbuild f_congress-pluginbuild f_odlpluginbuild f_bgpvpn-pluginbuild
+#export PLUGINS           := f_tacker-pluginbuild
+export PLUGINS           := f_yardstick-pluginbuild f_congress-pluginbuild f_odlpluginbuild f_bgpvpn-pluginbuild f_ovs-nsh-dpdk-pluginbuild
 export UBUNTU_ARCH       := amd64 arm64
 export PRODNO            := OPNFV_A_FUEL
 export MIRROR_MOS_UBUNTU := linux.enea.com
