@@ -26,10 +26,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  ci/deploy.sh                                       |  14 +-
  deploy/cloud/deployment.py                         |  12 +
  deploy/deploy.py                                   |  25 +-
- deploy/deploy_cache.py                             | 321 +++++++++++++++++++++
+ deploy/deploy_cache.py                             | 312 +++++++++++++++++++++
  deploy/deploy_env.py                               |  13 +-
  deploy/install_fuel_master.py                      |   9 +-
- 7 files changed, 458 insertions(+), 9 deletions(-)
+ 7 files changed, 449 insertions(+), 9 deletions(-)
  create mode 100644 build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
  create mode 100644 deploy/deploy_cache.py
 
@@ -331,10 +331,10 @@ index 7648baf..ee3cb7a 100755
                'deploy_log': args.deploy_log}
 diff --git a/deploy/deploy_cache.py b/deploy/deploy_cache.py
 new file mode 100644
-index 0000000..76fb1b9
+index 0000000..7df43c6
 --- /dev/null
 +++ b/deploy/deploy_cache.py
-@@ -0,0 +1,321 @@
+@@ -0,0 +1,312 @@
 +###############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -468,24 +468,15 @@ index 0000000..76fb1b9
 +
 +    def __fingerprint_mirrors(self, chroot_path):
 +        """Collect repo mirror fingerprints"""
-+        md5sums = list()
-+        # Scan all ISO for deb repo metadata and collect MD5 from Release files
-+        for root, _, files in os.walk(chroot_path):
-+            for relf in files:
-+                if relf == 'Release' and 'binary' not in root:
-+                    collect_sums = False
-+                    filepath = os.path.join(root, relf)
-+                    with open(filepath, "r") as release_file:
-+                        for line in release_file:
-+                            if collect_sums:
-+                                if line.startswith(' '):
-+                                    md5sums += [line[1:33]]
-+                                else:
-+                                    break
-+                            elif line.startswith('MD5Sum:'):
-+                                collect_sums = True
-+        sorted_md5sums = json.dumps(md5sums, sort_keys=True)
-+        self.fingerprints[MIRRORS] = hashlib.sha1(sorted_md5sums).hexdigest()
++        deb_packages = list()
++        # Scan ISO for deb files (MOS mirror + Ubuntu mirror, no plugins)
++        for repo_dir in ['ubuntu', 'opnfv/nailgun/mirrors/ubuntu']:
++            for _, _, files in os.walk(os.path.join(chroot_path, repo_dir)):
++                for fdeb in files:
++                    if fdeb.endswith(".deb"):
++                        deb_packages.append(fdeb)
++        sorted_debs = json.dumps(deb_packages, sort_keys=True)
++        self.fingerprints[MIRRORS] = hashlib.sha1(sorted_debs).hexdigest()
 +
 +    def __fingerprint_bootstrap(self, chroot_path):
 +        """Collect bootstrap image metadata fingerprints"""
