@@ -22,23 +22,23 @@ JIRA: ARMBAND-172
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ...p_admin_node.sh-deploy_cache-install-hook.patch |  71 +++++
+ ...p_admin_node.sh-deploy_cache-install-hook.patch |  73 +++++
  ci/deploy.sh                                       |  14 +-
  deploy/cloud/deployment.py                         |  12 +
  deploy/deploy.py                                   |  25 +-
  deploy/deploy_cache.py                             | 321 +++++++++++++++++++++
  deploy/deploy_env.py                               |  13 +-
  deploy/install_fuel_master.py                      |   9 +-
- 7 files changed, 456 insertions(+), 9 deletions(-)
+ 7 files changed, 458 insertions(+), 9 deletions(-)
  create mode 100644 build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
  create mode 100644 deploy/deploy_cache.py
 
 diff --git a/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
 new file mode 100644
-index 0000000..6c1f602
+index 0000000..71eae61
 --- /dev/null
 +++ b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
-@@ -0,0 +1,71 @@
+@@ -0,0 +1,73 @@
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Mon, 28 Nov 2016 14:27:48 +0100
 +Subject: [PATCH] bootstrap_admin_node.sh: deploy_cache install hook
@@ -79,7 +79,7 @@ index 0000000..6c1f602
 + # Update issues messages
 + update_warn_message="There is an issue connecting to update repository of \
 + your distributions of OpenStack. \
-+@@ -500,12 +503,29 @@ set_ui_bootstrap_error () {
++@@ -500,12 +503,31 @@ set_ui_bootstrap_error () {
 + 	EOF
 + }
 +
@@ -90,6 +90,8 @@ index 0000000..6c1f602
 ++          if cp "${OPNFV_CACHE_PATH}/id_rsa"* "/root/.ssh/" && \
 ++             cp "/root/.ssh/id_rsa.pub" "/root/.ssh/authorized_keys" && \
 ++             cp "/root/.ssh/id_rsa.pub" "/etc/cobbler/authorized_keys" && \
+++                sed "s|\"ssh-rsa .*\"|\"$(cat /root/.ssh/id_rsa.pub)\"|g" \
+++                /etc/nailgun/settings.yaml && \
 ++                fuel-bootstrap -v --debug import --activate \
 ++                "${OPNFV_CACHE_PATH}/${OPNFV_CACHE_TAR}" >>"$bs_build_log" 2>&1; then
 ++                    fuel notify --topic "done" --send "${bs_cache_message}"
