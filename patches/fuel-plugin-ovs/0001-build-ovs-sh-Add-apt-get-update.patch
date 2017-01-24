@@ -1,0 +1,40 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 28 Jan 2017 22:03:02 +0100
+Subject: [PATCH] build-ovs*.sh: Add apt-get update
+
+In case the ubuntu:16.04 docker image already exists, update
+apt cache before installing packages, to prevent stale entries
+(packages that meanwhile were bumped to a newer version) from
+breaking the build.
+
+Change-Id: Ide95c1ecc76ee542b22f16df0b8d5fc603b4503d
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ovs_build/build-ovs-dpdk.sh     | 1 +
+ ovs_build/build-ovs-nsh-dpdk.sh | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/ovs_build/build-ovs-dpdk.sh b/ovs_build/build-ovs-dpdk.sh
+index 419f9d0..311c6c6 100755
+--- a/ovs_build/build-ovs-dpdk.sh
++++ b/ovs_build/build-ovs-dpdk.sh
+@@ -10,6 +10,7 @@ BUILD_HOME=${BUILD_HOME:-/tmp/ovs-dpdk}
+
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+
++sudo apt-get update
+ sudo apt-get -y --force-yes install devscripts dpkg-dev git wget dkms
+
+ rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}/deb
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index 23cea86..3c4ca45 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -10,6 +10,7 @@ BUILD_HOME=${BUILD_HOME:-/tmp/ovs-dpdk}
+
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+
++sudo apt-get update
+ sudo apt-get -y --force-yes install devscripts dpkg-dev git wget dkms
+
+ rm -rf ${BUILD_HOME}; mkdir -p ${BUILD_HOME}/deb
