@@ -1,0 +1,70 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 25 Jan 2017 19:29:35 +0100
+Subject: [PATCH] Multiarch: Arch-qualify DEB binary archives
+
+Append "_amd64" (or "_arm64" for binaries built on AArch64) to
+the names of plugin archives containing DEB binaries.
+E.g. <ovs-dpdk.tar.gz> for <amd64> becomes <ovs-dpdk_amd64.tar.gz>
+
+Change-Id: Ib54e56ad9cc764cf4260b72236e306aaa8857c0e
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ deployment_scripts/install.sh   | 5 +++--
+ ovs_build/build-ovs-dpdk.sh     | 3 ++-
+ ovs_build/build-ovs-nsh-dpdk.sh | 3 ++-
+ 3 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/deployment_scripts/install.sh b/deployment_scripts/install.sh
+index 821668d..990fb7c 100644
+--- a/deployment_scripts/install.sh
++++ b/deployment_scripts/install.sh
+@@ -10,10 +10,11 @@ nsh=$2
+ dpdk=$3
+ dpdk_socket_mem=${4:-''}
+ pmd_cpu_mask=${5:-'2'}
++deb_arch=$(dpkg --print-architecture)
+
+-ovs="ovs-dpdk.tar.gz"
++ovs="ovs-dpdk_${deb_arch}.tar.gz"
+ if [ $nsh = 'true' ]; then
+-    ovs="ovs-nsh-dpdk.tar.gz"
++    ovs="ovs-nsh-dpdk_${deb_arch}.tar.gz"
+ fi
+
+ apt-get install -y --allow-unauthenticated dkms
+diff --git a/ovs_build/build-ovs-dpdk.sh b/ovs_build/build-ovs-dpdk.sh
+index 678c739..7ce2a62 100755
+--- a/ovs_build/build-ovs-dpdk.sh
++++ b/ovs_build/build-ovs-dpdk.sh
+@@ -7,6 +7,7 @@ OVS_VER=${OVS_VER:-2.6.90}
+ BUILD_DEST=${BUILD_DEST:-/deb}
+ BUILD_SRC="$(dirname `readlink -f $0`)"
+ BUILD_HOME=${BUILD_HOME:-/tmp/ovs-dpdk}
++DEB_ARCH="$(dpkg --print-architecture)"
+
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+
+@@ -92,4 +93,4 @@ debian/rules build; fakeroot debian/rules binary
+
+ cp -r ${BUILD_HOME}/*.deb ${BUILD_HOME}/deb
+ cd ${BUILD_HOME}/deb
+-tar czvf ${BUILD_DEST}/ovs-dpdk.tar.gz .;
++tar czvf ${BUILD_DEST}/ovs-dpdk_${DEB_ARCH}.tar.gz .;
+diff --git a/ovs_build/build-ovs-nsh-dpdk.sh b/ovs_build/build-ovs-nsh-dpdk.sh
+index 37a9d33..e6f8faf 100755
+--- a/ovs_build/build-ovs-nsh-dpdk.sh
++++ b/ovs_build/build-ovs-nsh-dpdk.sh
+@@ -7,6 +7,7 @@ OVS_VER=${OVS_VER:-2.6.1}
+ BUILD_DEST=${BUILD_DEST:-/deb}
+ BUILD_SRC="$(dirname `readlink -f $0`)"
+ BUILD_HOME=${BUILD_HOME:-/tmp/ovs-dpdk}
++DEB_ARCH="$(dpkg --print-architecture)"
+
+ export DEB_BUILD_OPTIONS='parallel=8 nocheck'
+
+@@ -104,4 +105,4 @@ debian/rules build; fakeroot debian/rules binary
+
+ cp -r ${BUILD_HOME}/*.deb ${BUILD_HOME}/deb
+ cd ${BUILD_HOME}/deb
+-tar czvf ${BUILD_DEST}/ovs-nsh-dpdk.tar.gz .;
++tar czvf ${BUILD_DEST}/ovs-nsh-dpdk_${DEB_ARCH}.tar.gz .;
