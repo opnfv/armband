@@ -23,8 +23,8 @@ ARMBAND_TRACK_REMOTES ?= yes
 
 # Armband plugins, supported archs & specific info
 # FIXME(alav): re-enable for D release after rebasing to Newton
-#export PLUGINS           := f_odlpluginbuild f_bgpvpn-pluginbuild f_ovs-nsh-dpdk-pluginbuild f_tacker-pluginbuild f_yardstick-pluginbuild
-export PLUGINS           := f_yardstick-pluginbuild f_congress-pluginbuild
+#export PLUGINS           := f_bgpvpn-pluginbuild f_ovs-nsh-dpdk-pluginbuild f_tacker-pluginbuild
+export PLUGINS           := f_yardstick-pluginbuild f_congress-pluginbuild f_odlpluginbuild
 export UBUNTU_ARCH       := amd64 arm64
 export PRODNO            := OPNFV_A_FUEL
 export MIRROR_MOS_UBUNTU := linux.enea.com
@@ -39,8 +39,6 @@ export FPB_CHANGE    := refs/changes/31/311031/2
 export FUEL_PLUGIN_ODL_REPO        := ${ARMBAND_BASE}/upstream/fuel-plugin-opendaylight
 export FUEL_PLUGIN_ODL_BRANCH      := opnfv-armband
 export FUEL_PLUGIN_ODL_CHANGE      := ${A_OPNFV_TAG}
-# FIXME(alav): rebase to Newton and update ref
-export OPNFV_QUAGGE_PACKAGING_REPO := https://github.com/alexandruavadanii/opnfv-quagga-packaging
 
 export OVS_NSH_DPDK_REPO   := ${ARMBAND_BASE}/upstream/fuel-plugin-ovs
 export OVS_NSH_DPDK_BRANCH := opnfv-armband
