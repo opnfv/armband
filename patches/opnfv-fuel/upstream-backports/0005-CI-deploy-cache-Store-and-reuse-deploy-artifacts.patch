@@ -90,7 +90,7 @@ index 0000000..71eae61
 ++          if cp "${OPNFV_CACHE_PATH}/id_rsa"* "/root/.ssh/" && \
 ++             cp "/root/.ssh/id_rsa.pub" "/root/.ssh/authorized_keys" && \
 ++             cp "/root/.ssh/id_rsa.pub" "/etc/cobbler/authorized_keys" && \
-++                sed "s|\"ssh-rsa .*\"|\"$(cat /root/.ssh/id_rsa.pub)\"|g" \
+++                sed -i "s|\"ssh-rsa .*\"|\"$(cat /root/.ssh/id_rsa.pub)\"|g" \
 ++                /etc/nailgun/settings.yaml && \
 ++                fuel-bootstrap -v --debug import --activate \
 ++                "${OPNFV_CACHE_PATH}/${OPNFV_CACHE_TAR}" >>"$bs_build_log" 2>&1; then
