@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1acb0d3e_2e5f6774",
+        "filename": "patches/fuel-plugin-opendaylight/0001-ODL-leveldb-leveldbjni-Enable-arm64-support.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 6
+      },
+      "writtenOn": "2017-01-30T20:33:31Z",
+      "side": 1,
+      "message": "\u0026\u0026 might be good here, so that we catch the exit 1 if ODL fails to stop.",
+      "range": {
+        "startLine": 110,
+        "startChar": 46,
+        "endLine": 110,
+        "endChar": 47
+      },
+      "revId": "2174fa67e96ed2c919f83aa9ce811c5303b47613",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
