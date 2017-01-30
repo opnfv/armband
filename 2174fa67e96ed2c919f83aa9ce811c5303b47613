@@ -22,6 +22,30 @@
       "revId": "2174fa67e96ed2c919f83aa9ce811c5303b47613",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1acb0d3e_8e4d3bc7",
+        "filename": "patches/fuel-plugin-opendaylight/0001-ODL-leveldb-leveldbjni-Enable-arm64-support.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-01-30T20:43:15Z",
+      "side": 1,
+      "message": "Good point, but I already merged it :( In this case, cache clean works even if the service did not stop, though ...",
+      "parentUuid": "1acb0d3e_2e5f6774",
+      "range": {
+        "startLine": 110,
+        "startChar": 46,
+        "endLine": 110,
+        "endChar": 47
+      },
+      "revId": "2174fa67e96ed2c919f83aa9ce811c5303b47613",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
