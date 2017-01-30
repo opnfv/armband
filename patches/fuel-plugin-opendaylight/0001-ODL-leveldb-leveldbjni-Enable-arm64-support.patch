@@ -18,18 +18,24 @@ Remove JAVA8 changes after upstream rework.
 Convert puppet patching to prebuilt DEB package, as part of [2].
 Rebase for Fuel Newton.
 
+[ Dan.Andresan@enea.com ]
+Modify Puppet recipe to restart Opendaylight service after leveldbjni
+This avoids a cache corruption described in [3]
+
 [1] https://bugs.opendaylight.org/show_bug.cgi?id=3973
 [2] https://jira.opnfv.org/browse/ARMBAND-114
+[3] https://jira.opnfv.org/browse/ARMBAND-211
 
 Change-Id: Ia7abf375ffd122ff0ac7b12422f64526ff2c78fd
 Signed-off-by: Florin Dumitrascu <florin.dumitrascu@enea.com>
 Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Signed-off-by: Dan Andresan <dan.andresan@enea.com>
 ---
- .../puppet/modules/opendaylight/manifests/init.pp  |  8 +++++++
- .../modules/opendaylight/manifests/install.pp      |  7 ++++++
- .../modules/opendaylight/manifests/leveldbjni.pp   | 25 ++++++++++++++++++++++
- 3 files changed, 40 insertions(+)
+ .../puppet/modules/opendaylight/manifests/init.pp  |  8 ++++++
+ .../modules/opendaylight/manifests/install.pp      |  7 +++++
+ .../modules/opendaylight/manifests/leveldbjni.pp   | 32 ++++++++++++++++++++++
+ 3 files changed, 47 insertions(+)
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
@@ -76,10 +82,10 @@ index 2c3d776..673ccb3 100644
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 new file mode 100644
-index 0000000..0a20fa3
+index 0000000..f2820a5
 --- /dev/null
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,32 @@
 +# == Class opendaylight::leveldbjni
 +#
 +# Manages patching of JNI for leveldb on arm64.
@@ -100,8 +106,15 @@ index 0000000..0a20fa3
 +  }
 +
 +  if ! defined(Package['armband-odl-leveldb-fix']) {
++    exec {'hotfix-odl':
++      command => 'systemctl stop opendaylight; rm -rf /opt/opendaylight/data/cache',
++      onlyif  => 'test 0 -eq $(dpkg -l | grep -c armband-odl-leveldb-fix)',
++      path    => ['/bin', '/usr/bin']
++    }
++
 +    package { 'armband-odl-leveldb-fix':
-+      ensure => 'present',
++      ensure  => 'present',
++      require => Exec['hotfix-odl']
 +    }
 +  }
 +}
