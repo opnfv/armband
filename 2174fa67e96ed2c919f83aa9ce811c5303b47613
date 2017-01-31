@@ -46,6 +46,30 @@
       "revId": "2174fa67e96ed2c919f83aa9ce811c5303b47613",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1acb0d3e_71879062",
+        "filename": "patches/fuel-plugin-opendaylight/0001-ODL-leveldb-leveldbjni-Enable-arm64-support.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 6617
+      },
+      "writtenOn": "2017-01-31T12:34:54Z",
+      "side": 1,
+      "message": "Thanks, I\u0027ll keep in mind for the future. The future might be pretty soon, if this cache corruption is also hapening for x86, as Alex mentioned in https://jira.opnfv.org/browse/FUEL-249?focusedCommentId\u003d20230",
+      "parentUuid": "1acb0d3e_8e4d3bc7",
+      "range": {
+        "startLine": 110,
+        "startChar": 46,
+        "endLine": 110,
+        "endChar": 47
+      },
+      "revId": "2174fa67e96ed2c919f83aa9ce811c5303b47613",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
