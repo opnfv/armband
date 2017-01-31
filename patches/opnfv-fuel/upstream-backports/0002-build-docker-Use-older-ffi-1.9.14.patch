@@ -28,5 +28,5 @@ index 04c4d2b..54aca35 100644
 +# FIXME(armband): Newer ffi is broken - https://jira.opnfv.org/browse/ARMBAND-191
 +RUN gem install ffi -v 1.9.14
  RUN gem install fpm
-
- # Temporary: fpb needs to be built from sources
+ RUN pip install git+https://github.com/openstack/fuel-plugins
+ # fuel-infra key
