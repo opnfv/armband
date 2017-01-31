@@ -30,11 +30,6 @@ export PRODNO            := OPNFV_A_FUEL
 export MIRROR_MOS_UBUNTU := linux.enea.com
 export EXTRA_RPM_REPOS   := armband,http://linux.enea.com/mos-repos/centos/mos10.0-centos7/armband/x86_64,10
 
-# Temporary fuel-plugin-builder repo info for runtime patching
-export FPB_REPO      := https://github.com/openstack/fuel-plugins
-export FPB_BRANCH    := master
-export FPB_CHANGE    := refs/changes/31/311031/2
-
 # Armband git submodules for Fuel/OPNFV components
 export FUEL_PLUGIN_ODL_REPO        := ${ARMBAND_BASE}/upstream/fuel-plugin-opendaylight
 export FUEL_PLUGIN_ODL_BRANCH      := opnfv-armband
