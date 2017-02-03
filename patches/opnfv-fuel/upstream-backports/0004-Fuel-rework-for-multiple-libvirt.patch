@@ -940,7 +940,7 @@ diff --git a/deploy/scenario/no-ha_odl-bgpvpn_scenario.yaml b/deploy/scenario/no
 index 6f21ea2..e92a741 100644
 --- a/deploy/scenario/no-ha_odl-bgpvpn_scenario.yaml
 +++ b/deploy/scenario/no-ha_odl-bgpvpn_scenario.yaml
-@@ -60,17 +60,42 @@ dea-override-config:
+@@ -60,22 +60,47 @@ dea-override-config:
    - id: 1
      interfaces: interfaces_1
      role: mongo,controller
@@ -957,6 +957,11 @@ index 6f21ea2..e92a741 100644
      interfaces: interfaces_1
      role: ceph-osd,compute
 +    transformations: transformations_2
+   settings:
+     editable:
+       public_network_assignment:
+         assign_to_all_nodes:
+           value: true
  
  dha-override-config:
 + nodes:
