@@ -2,7 +2,10 @@
 	path = upstream/fuel
 	url = https://gerrit.opnfv.org/gerrit/fuel
 	branch = master
-	ignore = all
+[submodule "vswitchperf"]
+	path = upstream/vswitchperf
+	url = https://gerrit.opnfv.org/gerrit/vswitchperf.git
+	branch = master
 [submodule "fuel-plugin-opendaylight"]
 	path = upstream/fuel-plugin-opendaylight
 	url = https://github.com/openstack/fuel-plugin-opendaylight.git
@@ -11,10 +14,5 @@
 [submodule "fuel-plugin-ovs"]
 	path = upstream/fuel-plugin-ovs
 	url = https://github.com/openstack/fuel-plugin-ovs
-	branch = master
-	ignore = all
-[submodule "vswitchperf"]
-	path = upstream/vswitchperf
-	url = https://gerrit.opnfv.org/gerrit/vswitchperf.git
 	branch = master
 	ignore = all
