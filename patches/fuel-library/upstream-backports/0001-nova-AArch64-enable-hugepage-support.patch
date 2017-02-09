@@ -1,0 +1,90 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 16 Sep 2016 21:31:56 +0200
+Subject: [PATCH] nova: AArch64: enable hugepage support
+
+This patch adds AArch64 to the hardcoded lists of valid
+architectures for hugepage support.
+
+Backported upstream patch from [1].
+
+[1] https://review.openstack.org/#/c/372304/
+
+Closes-bug: ARMBAND-90
+
+Signed-off-by: Veena Lingadahalli <vlingadahalli@mvista.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ...gepage-and-NUMA-support-check-for-aarch64.patch | 41 ++++++++++++++++++++++
+ .../openstack_tasks/manifests/roles/compute.pp     | 12 +++++++
+ 2 files changed, 53 insertions(+)
+ create mode 100644 deployment/puppet/openstack/files/nova-Adding-hugepage-and-NUMA-support-check-for-aarch64.patch
+
+diff --git a/deployment/puppet/openstack/files/nova-Adding-hugepage-and-NUMA-support-check-for-aarch64.patch b/deployment/puppet/openstack/files/nova-Adding-hugepage-and-NUMA-support-check-for-aarch64.patch
+new file mode 100644
+index 0000000..ba91357
+--- /dev/null
++++ b/deployment/puppet/openstack/files/nova-Adding-hugepage-and-NUMA-support-check-for-aarch64.patch
+@@ -0,0 +1,41 @@
++From: VeenaSL <mveenasl@gmail.com>
++Date: Mon, 19 Sep 2016 13:36:53 +0530
++Subject: [PATCH] Adding hugepage and NUMA support check for aarch64
++
++Nova ignores aarch64 while verifying for hugepage and NUMA support.
++AARCH64 also supports hugepage and NUMA on the same libvirt versions as of x86.
++Hence adding this chek for aarch64 also.
++
++Change-Id: I7b5ae1dbdca4fdd0aee2eefd4099c4c4953b609a
++Closes-bug: #1623871
++
++Signed-off-by: Veena Lingadahalli <vlingadahalli@mvista.com>
++Acked-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++
++---
++ virt/libvirt/driver.py                                         | 6 ++++--
++
++diff --git a/virt/libvirt/driver.py b/virt/libvirt/driver.py
++index 5668f57..b0857f3 100644
++--- a/virt/libvirt/driver.py
+++++ b/virt/libvirt/driver.py
++@@ -5108,7 +5108,8 @@ class LibvirtDriver(driver.ComputeDriver):
++                     self._bad_libvirt_numa_version_warn = True
++                 return False
++
++-        support_matrix = {(arch.I686, arch.X86_64): MIN_LIBVIRT_NUMA_VERSION,
+++        support_matrix = {(arch.I686, arch.X86_64,
+++                           arch.AARCH64): MIN_LIBVIRT_NUMA_VERSION,
++                           (arch.PPC64,
++                            arch.PPC64LE): MIN_LIBVIRT_NUMA_VERSION_PPC}
++         caps = self._host.get_capabilities()
++@@ -5124,7 +5125,8 @@ class LibvirtDriver(driver.ComputeDriver):
++     def _has_hugepage_support(self):
++         # This means that the host can support multiple values for the size
++         # field in LibvirtConfigGuestMemoryBackingPage
++-        supported_archs = [arch.I686, arch.X86_64, arch.PPC64LE, arch.PPC64]
+++        supported_archs = [arch.I686, arch.X86_64, arch.PPC64LE, arch.PPC64,
+++                           arch.AARCH64]
++         caps = self._host.get_capabilities()
++         return ((caps.host.cpu.arch in supported_archs) and
++                 self._host.has_min_version(MIN_LIBVIRT_HUGEPAGE_VERSION,
+diff --git a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
+index 8207261..b5cefdf 100644
+--- a/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
++++ b/deployment/puppet/openstack_tasks/manifests/roles/compute.pp
+@@ -313,5 +313,17 @@ class openstack_tasks::roles::compute {
+     cwd     => $nova_path,
+     require => [Package['patch']],
++  } ->
++  # FIXME(armband): Add AArch64 to arch list for nova hugepage support
++  file { "${nova_path}/nova-Adding-hugepage-and-NUMA-support-check-for-aarch64.patch":
++    ensure => "file",
++    source => "puppet:///modules/openstack/nova-Adding-hugepage-and-NUMA-support-check-for-aarch64.patch",
++  } ->
++  exec { 'nova AArch64 enable hugepage support':
++    path    => ['/usr/bin'],
++    command => "patch -p1 < ${nova_path}/nova-Adding-hugepage-and-NUMA-support-check-for-aarch64.patch",
++    unless  => "patch -p1 -R -N --dry-run < ${nova_path}/nova-Adding-hugepage-and-NUMA-support-check-for-aarch64.patch",
++    cwd     => $nova_path,
++    require => [Package['patch']],
+   }
+
+   class { '::nova::cache':
