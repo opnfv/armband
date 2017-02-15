@@ -6,17 +6,17 @@ Change-Id: I6042f9f7bdde5a15e3cb5a94ab67a990faae0418
 Signed-off-by: Anders Roxell <anders.roxell@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ovs_build/prebuilt-ovs-fetch.sh | 86 +++++++++++++++++++++++++++++++++++++++++
- pre_build_hook                  | 10 +++++
- 2 files changed, 96 insertions(+)
+ ovs_build/prebuilt-ovs-fetch.sh | 70 +++++++++++++++++++++++++++++++++++++++++
+ pre_build_hook                  | 10 ++++++
+ 2 files changed, 80 insertions(+)
  create mode 100755 ovs_build/prebuilt-ovs-fetch.sh
 
 diff --git a/ovs_build/prebuilt-ovs-fetch.sh b/ovs_build/prebuilt-ovs-fetch.sh
 new file mode 100755
-index 0000000..f8b88a3
+index 0000000..b4f30c5
 --- /dev/null
 +++ b/ovs_build/prebuilt-ovs-fetch.sh
-@@ -0,0 +1,86 @@
+@@ -0,0 +1,70 @@
 +#!/bin/bash
 +
 +set -eux
@@ -81,30 +81,14 @@ index 0000000..f8b88a3
 +  ARMBAND_SRCS="dists/mos10.0-fuel-plugin-ovs/main/source/Sources"
 +  ARMBAND_BINS="dists/mos10.0-fuel-plugin-ovs/main/binary-${arch}/Packages"
 +
-+  # DPDK (common)
-+  armband_fetch 'dpdk' '.*' \
-+    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
-+  mv *.deb ${BUILD_DEST}; rm -rf *
-+
-+  # OVS, OVS-DPDK (without NSH)
-+  armband_fetch 'openvswitch' '(?:(?!nsh).)*' \
-+    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
-+  armband_fetch 'openvswitch-dpdk' '(?:(?!nsh).)*' \
-+    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
-+  mkdir -p ${BUILD_HOME}/deb; mv *.deb ${BUILD_HOME}/deb; cd ${BUILD_HOME}/deb
-+  tar czvf ${BUILD_DEST}/ovs-dpdk_${arch}.tar.gz .;
-+  cd ${BUILD_HOME}; rm -rf *
-+
-+  # OVS, OVS-DPDK (with NSH)
++  # OVS with NSH
 +  armband_fetch 'openvswitch' '.*nsh' \
 +    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
-+  armband_fetch 'openvswitch-dpdk' '.*nsh' \
-+    "${ARMBAND_BASE}" "${ARMBAND_SRCS}" "${ARMBAND_BINS}"
 +  mkdir -p ${BUILD_HOME}/deb; mv *.deb ${BUILD_HOME}/deb; cd ${BUILD_HOME}/deb
-+  tar czvf ${BUILD_DEST}/ovs-nsh-dpdk_${arch}.tar.gz .;
++  tar czvf ${BUILD_DEST}/ovs-nsh_${arch}.tar.gz .;
 +done
 diff --git a/pre_build_hook b/pre_build_hook
-index 194a7b9..0c27358 100755
+index a955678..f9a6010 100755
 --- a/pre_build_hook
 +++ b/pre_build_hook
 @@ -6,6 +6,11 @@ BUILD_FOR=${BUILD_FOR:-ubuntu}
@@ -119,9 +103,9 @@ index 194a7b9..0c27358 100755
  function build_pkg {
    case ${BUILD_ARCH} in
      arm64)
-@@ -27,6 +32,11 @@ function build_pkg {
+@@ -24,6 +29,11 @@ function build_pkg {
        rm -rf ${DEB_DIR};  mkdir -p ${DEB_DIR}; chmod 777 ${DEB_DIR};
-       sudo docker run -v ${DEB_DIR}:/deb -t  ovs_build /ovs_build/build-ovs-nsh-dpdk.sh
+       sudo docker run -v ${DEB_DIR}:/deb -t  ovs_build /ovs_build/build-ovs-nsh.sh
        cp -r ${DEB_DIR}/*  ${DIR}/repositories/ubuntu/
 +
 +      rm -rf ${DEB_DIR};  mkdir -p ${DEB_DIR}; chmod 777 ${DEB_DIR};

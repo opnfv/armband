@@ -7,26 +7,20 @@ in the builder container to be able to use local mirror caches.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- pre_build_hook | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ pre_build_hook | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/pre_build_hook b/pre_build_hook
-index 0c27358..30ca109 100755
+index f9a6010..76da923 100755
 --- a/pre_build_hook
 +++ b/pre_build_hook
-@@ -26,16 +26,19 @@ function build_pkg {
-
+@@ -27,12 +27,14 @@ function build_pkg {
        DEB_DIR=${DIR}/deb-ovs-dpdk
-       rm -rf ${DEB_DIR};  mkdir -p ${DEB_DIR}; chmod 777 ${DEB_DIR};
--      sudo docker run -v ${DEB_DIR}:/deb -t  ovs_build /ovs_build/build-ovs-dpdk.sh
-+      sudo docker run -v ${DEB_DIR}:/deb -v /etc/hosts:/etc/hosts \
-+        -t ovs_build /ovs_build/build-ovs-dpdk.sh
-       cp -r ${DEB_DIR}/*  ${DIR}/repositories/ubuntu/
 
        rm -rf ${DEB_DIR};  mkdir -p ${DEB_DIR}; chmod 777 ${DEB_DIR};
--      sudo docker run -v ${DEB_DIR}:/deb -t  ovs_build /ovs_build/build-ovs-nsh-dpdk.sh
+-      sudo docker run -v ${DEB_DIR}:/deb -t  ovs_build /ovs_build/build-ovs-nsh.sh
 +      sudo docker run -v ${DEB_DIR}:/deb -v /etc/hosts:/etc/hosts \
-+        -t ovs_build /ovs_build/build-ovs-nsh-dpdk.sh
++        -t ovs_build /ovs_build/build-ovs-nsh.sh
        cp -r ${DEB_DIR}/*  ${DIR}/repositories/ubuntu/
 
        rm -rf ${DEB_DIR};  mkdir -p ${DEB_DIR}; chmod 777 ${DEB_DIR};
