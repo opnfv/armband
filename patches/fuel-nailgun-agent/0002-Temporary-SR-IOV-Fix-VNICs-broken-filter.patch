@@ -8,7 +8,7 @@ SR-IOV VFs.
 Bug report: "VNICs ignored due to SR-IOV filtering" [1]
 
 HACK: Instead of checking for "physfn", we now rely on testing
-for "sriov_totalvfs" file to determine whether current eth is
+for "physfn/net" subdir to determine whether current eth is
 a SR-IOV VF or something else (thus keeping VNICs).
 
 FIXME: Revert this patch once upstream closes bug [1].
@@ -29,7 +29,7 @@ index 89ab60f..eb2bfb4 100755
                  File.exist?("/sys/class/net/#{int}/wireless")
          # Skip virtual functions
 -        next if File.exists?("/sys/class/net/#{int}/device/physfn")
-+        next if File.exists?("/sys/class/net/#{int}/device/sriov_totalvfs")
++        next if File.exists?("/sys/class/net/#{int}/device/physfn/net")
          int_meta = {:name => int}
          int_meta[:interface_properties] = {}
          int_meta[:state] = intinfo[:state]
