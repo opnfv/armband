@@ -14,9 +14,7 @@ diff --git a/nailgun/nailgun/orchestrator/deployment_serializers.py b/nailgun/na
 index 77fcba1..fd33b3f 100644
 --- a/nailgun/nailgun/orchestrator/deployment_serializers.py
 +++ b/nailgun/nailgun/orchestrator/deployment_serializers.py
-@@ -284,6 +284,13 @@ class DeploymentMultinodeSerializer(object):
-                 'hypervisor_type': 'vmware'
-             }
+@@ -284,4 +284,11 @@ class DeploymentMultinodeSerializer(object):
 
 +        # AArch64: Use AAVMF (guest UEFI)
 +        if arch == 'aarch64':
