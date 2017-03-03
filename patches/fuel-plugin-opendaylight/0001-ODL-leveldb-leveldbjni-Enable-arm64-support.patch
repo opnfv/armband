@@ -21,6 +21,7 @@ Rebase for Fuel Newton.
 [ Dan.Andresan@enea.com ]
 Modify Puppet recipe to restart Opendaylight service after leveldbjni
 This avoids a cache corruption described in [3]
+Fix leveldbjni on x86_64, since it should be silently skipped.
 
 [1] https://bugs.opendaylight.org/show_bug.cgi?id=3973
 [2] https://jira.opnfv.org/browse/ARMBAND-114
@@ -33,9 +34,9 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Signed-off-by: Dan Andresan <dan.andresan@enea.com>
 ---
  .../puppet/modules/opendaylight/manifests/init.pp  |  8 ++++++
- .../modules/opendaylight/manifests/install.pp      |  7 +++++
+ .../modules/opendaylight/manifests/install.pp      |  3 ++
  .../modules/opendaylight/manifests/leveldbjni.pp   | 32 ++++++++++++++++++++++
- 3 files changed, 47 insertions(+)
+ 3 files changed, 43 insertions(+)
  create mode 100644 deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/init.pp
@@ -56,23 +57,15 @@ index 69cc23a..791ceba 100644
 +  }
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
-index 2c3d776..673ccb3 100644
+index 2c3d776..22ab204 100644
 --- a/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/install.pp
-@@ -20,6 +20,12 @@ class opendaylight::install (
-     ensure  => $odl_package,
+@@ -85,9 +85,12 @@ class opendaylight::install (
+     value             => $enabled_features,
    }
-
-+  if ($::osfamily == 'Debian' and $::opendaylight::arch == 'arm64') {
-+    class { 'opendaylight::leveldbjni':
-+      require => Package['opendaylight'],
-+    }
-+  }
+ 
++  include opendaylight::leveldbjni
 +
-   #Temporary solution until number of allowed open files
-   #will be fixed in main systemd service file
-   file {'/etc/systemd/system/opendaylight.service.d':
-@@ -88,6 +94,7 @@ class opendaylight::install (
    Package['opendaylight'] ->
    Ini_setting <||> ->
    Firewall <||> ->
@@ -82,7 +75,7 @@ index 2c3d776..673ccb3 100644
  }
 diff --git a/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 new file mode 100644
-index 0000000..f2820a5
+index 0000000..71c3635
 --- /dev/null
 +++ b/deployment_scripts/puppet/modules/opendaylight/manifests/leveldbjni.pp
 @@ -0,0 +1,32 @@
@@ -105,7 +98,7 @@ index 0000000..f2820a5
 +    }
 +  }
 +
-+  if ! defined(Package['armband-odl-leveldb-fix']) {
++  if $::osfamily == 'Debian' and $::opendaylight::arch == 'arm64' and ! defined(Package['armband-odl-leveldb-fix']) {
 +    exec {'hotfix-odl':
 +      command => 'systemctl stop opendaylight; rm -rf /opt/opendaylight/data/cache',
 +      onlyif  => 'test 0 -eq $(dpkg -l | grep -c armband-odl-leveldb-fix)',
