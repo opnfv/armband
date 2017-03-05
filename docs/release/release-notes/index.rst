@@ -4,6 +4,8 @@
 .. You should have received a copy of the license along with this work.
 .. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
+.. _Armband-ReleaseNotes:
+
 ****************************************
 Release notes for Fuel\@OPNFV on AArch64
 ****************************************
