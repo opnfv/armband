@@ -1,3 +1,5 @@
+.. _armband-installation:
+
 .. This document is protected/licensed under the following conditions
 .. (c) Jonas Bjurel (Ericsson AB)
 .. Licensed under a Creative Commons Attribution 4.0 International License.
