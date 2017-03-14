@@ -1,0 +1,7 @@
+Code-Review+2: Ciprian Barbu <ciprian.barbu@enea.com>
+Verified+1: jenkins-ci <jenkins-opnfv-ci@opnfv.org>
+Submitted-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Submitted-at: Tue, 14 Mar 2017 19:52:51 +0000
+Reviewed-on: https://gerrit.opnfv.org/gerrit/30463
+Project: armband
+Branch: refs/heads/stable/danube
