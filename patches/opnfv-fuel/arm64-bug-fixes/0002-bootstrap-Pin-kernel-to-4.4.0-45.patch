@@ -1,0 +1,31 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 14 Mar 2017 19:56:50 +0100
+Subject: [PATCH] bootstrap: Pin kernel to 4.4.0-45
+
+JIRA: https://jira.opnfv.org/browse/ARMBAND-239
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+index ff5baa8..794cca8 100644
+--- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
++++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+@@ -13,13 +13,13 @@
+   extra_dirs:
+     - /usr/share/fuel_bootstrap_cli/files/xenial
+   output_dir: /tmp/
+-  kernel_flavor: linux-image-generic-lts-xenial
++  kernel_flavor: linux-image-4.4.0-45-generic
+   packages:
+     - daemonize
+     - fuel-agent
+     - hwloc
+     - i40e-dkms
+     - linux-firmware
++    - linux-headers-4.4.0-45-generic
+-    - linux-headers-generic
+     - live-boot
+     - live-boot-initramfs-tools
