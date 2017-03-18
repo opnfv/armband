@@ -24,18 +24,19 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  ...p_admin_node.sh-deploy_cache-install-hook.patch |  73 +++++
  ci/deploy.sh                                       |  14 +-
+ deploy/cloud/configure_settings.py                 |   4 +
  deploy/cloud/deployment.py                         |  12 +
  deploy/deploy.py                                   |  25 +-
  deploy/deploy_cache.py                             | 312 +++++++++++++++++++++
  deploy/deploy_env.py                               |  13 +-
  deploy/install_fuel_master.py                      |   9 +-
- 7 files changed, 449 insertions(+), 9 deletions(-)
+ 8 files changed, 453 insertions(+), 9 deletions(-)
  create mode 100644 build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
  create mode 100644 deploy/deploy_cache.py
 
 diff --git a/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
 new file mode 100644
-index 0000000..71eae61
+index 0000000..69a4c22
 --- /dev/null
 +++ b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
 @@ -0,0 +1,73 @@
@@ -179,6 +180,20 @@ index 081806c..4b1ae0e 100755
  fi
  popd > /dev/null
 
+diff --git a/deploy/cloud/configure_settings.py b/deploy/cloud/configure_settings.py
+index b60a60f..4e007e1 100644
+--- a/deploy/cloud/configure_settings.py
++++ b/deploy/cloud/configure_settings.py
+@@ -71,5 +71,9 @@ class ConfigureSettings(object):
+                         settings['editable'][plugin]['metadata']['chosen_id'] = orig_dea['editable'][plugin]['metadata']['chosen_id']
+                         settings['editable'][plugin]['metadata']['versions'][0]['metadata']['plugin_id'] = orig_dea['editable'][plugin]['metadata']['versions'][0]['metadata']['plugin_id']
+
++        # deploy-cache req: pass master id_rsa.pub as authorized key
++        with io.open('/root/.ssh/id_rsa.pub', 'r') as pkey:
++            settings['editable']['operator_user']['authkeys']['value'] = pkey.read()
++
+         with io.open(settings_yaml, 'w') as stream:
+             yaml.dump(settings, stream, default_flow_style=False)
 diff --git a/deploy/cloud/deployment.py b/deploy/cloud/deployment.py
 index 28bcfdf..b0bfdcc 100644
 --- a/deploy/cloud/deployment.py
@@ -648,7 +663,7 @@ index 0000000..7df43c6
 +                log('Failed to install targetimages for env %s: %s' %
 +                    (str(env_id), str(ex)))
 diff --git a/deploy/deploy_env.py b/deploy/deploy_env.py
-index aa8c4cb..e9c50bb 100644
+index 8afaeb1..318345d 100644
 --- a/deploy/deploy_env.py
 +++ b/deploy/deploy_env.py
 @@ -15,6 +15,7 @@ import glob
@@ -693,7 +708,7 @@ index aa8c4cb..e9c50bb 100644
      def power_off_nodes(self):
          for node_id in self.node_ids:
              self.dha.node_power_off(node_id)
-@@ -283,4 +292,6 @@ class CloudDeploy(object):
+@@ -281,4 +290,6 @@ class CloudDeploy(object):
 
          self.get_put_deploy_log()
 
