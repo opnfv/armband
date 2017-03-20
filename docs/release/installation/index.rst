@@ -1,14 +1,14 @@
-.. _armband-installation:
+.. _fuel-installation:
 
-.. This document is protected/licensed under the following conditions
-.. (c) Jonas Bjurel (Ericsson AB)
-.. Licensed under a Creative Commons Attribution 4.0 International License.
-.. You should have received a copy of the license along with this work.
-.. If not, see <http://creativecommons.org/licenses/by/4.0/>.
+.. This work is licensed under a Creative Commons Attribution 4.0 International License.
+.. http://creativecommons.org/licenses/by/4.0
+.. (c) Open Platform for NFV Project, Inc. and its contributors
 
-***************************************************
-Installation instruction for Fuel\@OPNFV on AArch64
-***************************************************
+.. _armband-release-installation-label:
+
+****************************************
+Installation instruction for Fuel\@OPNFV
+****************************************
 
 .. toctree::
    :numbered:

@@ -1,32 +1,28 @@
-.. This document is protected/licensed under the following conditions
-.. (c) Jonas Bjurel (Ericsson AB)
-.. Licensed under a Creative Commons Attribution 4.0 International License.
-.. You should have received a copy of the license along with this work.
-.. If not, see <http://creativecommons.org/licenses/by/4.0/>.
+.. This work is licensed under a Creative Commons Attribution 4.0 International License.
+.. http://creativecommons.org/licenses/by/4.0
+.. (c) Open Platform for NFV Project, Inc. and its contributors
 
 ========
 Abstract
 ========
 
-This document describes how to install the Colorado release of
-OPNFV when using Fuel as a deployment tool, with an AArch64 (only)
-target node pool. It covers its usage, limitations, dependencies
-and required system resources.
+This document describes how to install the Danube release of
+OPNFV when using Fuel as a deployment tool, covering its usage,
+limitations, dependencies and required system resources.
 
 ============
 Introduction
 ============
 
 This document provides guidelines on how to install and
-configure the Colorado release of OPNFV when using Fuel as a
-deployment tool, with an AArch64 (only) target node pool,
-including required software and hardware configurations.
+configure the Danube release of OPNFV when using Fuel as a
+deployment tool, including required software and hardware configurations.
 
 Although the available installation options give a high degree of
 freedom in how the system is set-up, including architecture, services
 and features, etc., said permutations may not provide an OPNFV
 compliant reference architecture. This instruction provides a
-step-by-step guide that results in an OPNFV Colorado compliant
+step-by-step guide that results in an OPNFV Danube compliant
 deployment.
 
 The audience of this document is assumed to have good knowledge in
@@ -36,55 +32,54 @@ networking and Unix/Linux administration.
 Preface
 =======
 
-Before starting the installation of the AArch64 Colorado release
-of OPNFV, using Fuel as a deployment tool, some planning must be
+Before starting the installation of the Danube release of
+OPNFV, using Fuel as a deployment tool, some planning must be
 done.
 
 Retrieving the ISO image
 ========================
 
 First of all, the Fuel deployment ISO image needs to be retrieved, the
-ArmbandFuel .iso image of the AArch64 Colorado release can be found
-at *Reference: 2*
+Fuel .iso image of the Danube release can be found at `OPNFV Downloads <https://www.opnfv.org/software/download>`_.
 
 Building the ISO image
 ======================
 
-Alternatively, you may build the Armband Fuel .iso from source by cloning
-the opnfv/armband git repository. To retrieve the repository for the AArch64
-Colorado release use the following command:
+Alternatively, you may build the Fuel .iso from source by cloning the
+opnfv/fuel git repository. To retrieve the repository for the Danube
+release use the following command:
 
 .. code-block:: bash
 
-    $ git clone https://gerrit.opnfv.org/gerrit/armband
+    $ git clone https://gerrit.opnfv.org/gerrit/fuel
 
-Check-out the Colorado release tag to set the HEAD to the
-baseline required to replicate the Colorado release:
-
-.. code-block:: bash
-
-    $ git checkout colorado.3.0.1
-
-Go to the armband directory and build the .iso:
+Check-out the Danube release tag to set the HEAD to the
+baseline required to replicate the Danube release:
 
 .. code-block:: bash
 
-    $ cd armband; make all
+    $ git checkout danube.1.0
 
-For more information on how to build, please see *Reference: 14*
+Go to the fuel directory and build the .iso:
+
+.. code-block:: bash
+
+    $ cd fuel/build; make all
+
+For more information on how to build, please see :ref:`Build instruction for Fuel\@OPNFV <armband-development-overview-build-label>`
 
 Other preparations
 ==================
 
 Next, familiarize yourself with Fuel by reading the following documents:
 
-- Fuel Installation Guide, please see *Reference: 8*
+- `Fuel Installation Guide <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-install-guide.html>`_
 
-- Fuel QuickStart, please see *Reference: 9*
+- `Fuel User Guide <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide.html>`_
 
-- Fuel Developer Guide, please see *Reference: 10*
+- `Fuel Developer Guide <http://docs.openstack.org/developer/fuel-docs/devdocs/develop.html>`_
 
-- Fuel Plugin Developers Guide, please see *Reference: 11*
+- `Fuel Plugin Developers Guide <http://docs.openstack.org/developer/fuel-docs/plugindocs/fuel-plugin-sdk-guide.html>`_
 
 Prior to installation, a number of deployment specific parameters must be collected, those are:
 
@@ -113,13 +108,13 @@ Hardware requirements
 =====================
 
 The following minimum hardware requirements must be met for the
-installation of AArch64 Colorado using Fuel:
+installation of Danube using Fuel:
 
 +--------------------+------------------------------------------------------+
 | **HW Aspect**      | **Requirement**                                      |
 |                    |                                                      |
 +====================+======================================================+
-| **AArch64 nodes**  | Minimum 5 (3 for non redundant deployment):          |
+| **# of nodes**     | Minimum 5 (3 for non redundant deployment):          |
 |                    |                                                      |
 |                    | - 1 Fuel deployment master (may be virtualized)      |
 |                    |                                                      |
@@ -129,7 +124,7 @@ installation of AArch64 Colorado using Fuel:
 |                    | - 1 Compute (1 co-located Ceph-OSD role)             |
 |                    |                                                      |
 +--------------------+------------------------------------------------------+
-| **CPU**            | Minimum 1 socket AArch64 (ARMv8) with Virtualization |
+| **CPU**            | Minimum 1 socket x86_AMD64 with Virtualization       |
 |                    | support                                              |
 +--------------------+------------------------------------------------------+
 | **RAM**            | Minimum 16GB/server (Depending on VNF work load)     |
@@ -137,8 +132,6 @@ installation of AArch64 Colorado using Fuel:
 +--------------------+------------------------------------------------------+
 | **Disk**           | Minimum 256GB 10kRPM spinning disks                  |
 |                    |                                                      |
-+--------------------+------------------------------------------------------+
-| **Firmware**       | UEFI compatible (e.g. EDK2) with PXE support         |
 +--------------------+------------------------------------------------------+
 | **Networks**       | 4 Tagged VLANs (PUBLIC, MGMT, STORAGE, PRIVATE)      |
 |                    |                                                      |
@@ -148,14 +141,14 @@ installation of AArch64 Colorado using Fuel:
 |                    | or spread out over multiple NICs as your hardware    |
 |                    | supports.                                            |
 +--------------------+------------------------------------------------------+
-| **1 x86_64 node**  | - 1 Fuel deployment master, x86 (may be virtualized) |
-+--------------------+------------------------------------------------------+
 
 ===============================
 Help with Hardware Requirements
 ===============================
 
 Calculate hardware requirements:
+
+For information on compatible hardware types available for use, please see `Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/software/hardware-compatibility/>`_.
 
 When choosing the hardware on which you will deploy your OpenStack
 environment, you should think about:
@@ -189,9 +182,9 @@ the Fuel OPNFV reference platform. All the networks involved in the OPNFV
 infrastructure as well as the provider networks and the private tenant
 VLANs needs to be manually configured.
 
-Manual configuration of the Colorado hardware platform should
-be carried out according to the OPNFV Pharos specification:
-<https://wiki.opnfv.org/display/pharos/Pharos+Specification>
+Manual configuration of the Danube hardware platform should
+be carried out according to the `OPNFV Pharos Specification
+<https://wiki.opnfv.org/display/pharos/Pharos+Specification>`_.
 
 ==========================================
 OPNFV Software installation and deployment
@@ -204,7 +197,7 @@ reference platform stack across a server cluster.
 Install Fuel master
 ===================
 
-#. Mount the Colorado Armband Fuel ISO file/media as a boot device to the jump host server.
+#. Mount the Danube Fuel ISO file/media as a boot device to the jump host server.
 
 #. Reboot the jump host to establish the Fuel server.
 
@@ -230,16 +223,13 @@ Install Fuel master
 
 #. In the "Network Setup" section - Configure DHCP/Static IP information for your FUEL node - For example, ETH0 is 10.20.0.2/24 for FUEL booting and ETH1 is DHCP in your corporate/lab network (see figure below).
 
-- **NOTE**: Configuration of ETH1 interface for connectivity into your corporate/lab
-     network is optional
+   - Configure eth1 or other network interfaces here as well (if you have them present on your FUEL server).
 
    .. figure:: img/fuelmenu2.png
 
-   .. figure:: img/fuelmenu2a.png
-
 #. In the "PXE Setup" section (see figure below) - Change the following fields to appropriate values (example below):
 
-   - DHCP Pool Start 10.20.0.3
+   - DHCP Pool Start 10.20.0.4
 
    - DHCP Pool End 10.20.0.254
 
@@ -264,14 +254,11 @@ Install Fuel master
    .. figure:: img/fuelmenu4.png
 
 
-#. **DO NOT CHANGE** anything in "Bootstrap Image" section (see figure below).
+#. OPTION TO ENABLE PROXY SUPPORT - In the "Bootstrap Image" section (see figure below), edit the following fields to define a proxy. (**NOTE:** cannot be used in tandem with local repository support)
 
-   In ArmbandFuel@OPNFV, this data is **NOT** actually used for bootstrap
-   image building. Any change here will replace the configuration from
-   the OPNFV bootstrap build scripts and will lead to a failed bootstrap
-   image build.
+   - Navigate to "HTTP proxy" and enter your http proxy address
 
-   **NOTE:** Cannot be used in tandem with local repository support.
+   - Select <Check> and press [Enter]
 
    .. figure:: img/fuelmenu5.png
 
@@ -287,7 +274,7 @@ Install Fuel master
 
 #. Start the installation.
 
-   - Press <F8>
+   - Select Quit Setup and press Save and Quit.
 
    - The installation will now start, wait until the login screen is shown.
 
@@ -299,15 +286,9 @@ the login prompt, you should boot the Node Servers (Your
 Compute/Control/Storage blades, nested or real) with a PXE booting
 scheme so that the FUEL Master can pick them up for control.
 
-**NOTE**: AArch64 target nodes are expected to support PXE booting an
-EFI binary, i.e. an EFI-stubbed GRUB2 bootloader.
-
-**NOTE**: UEFI (EDK2) firmware is **highly** recommended, becoming
-the **de facto** standard for ARMv8 nodes.
-
 #. Enable PXE booting
 
-   - For every controller and compute server: enable PXE Booting as the first boot device in the UEFI (EDK2) boot order menu, and hard disk as the second boot device in the same menu.
+   - For every controller and compute server: enable PXE Booting as the first boot device in the BIOS boot order menu, and hard disk as the second boot device in the same menu.
 
 #. Reboot all the control and compute blades.
 
@@ -340,9 +321,6 @@ Install additional Plugins/Features on the FUEL node
 
    .. figure:: img/plugin_install.png
 
-   **NOTE**: AArch64 Colorado 1.0 ships only with ODL, OVS, BGPVPN and Tacker
-   plugins, see *Reference 15*.
-
 Create an OpenStack Environment
 ===============================
 
@@ -352,7 +330,7 @@ Create an OpenStack Environment
 
    .. figure:: img/newenv.png
 
-#. Select "<Mitaka on Ubuntu 14.04 (aarch64)>" and press <Next>
+#. Select "<Mitaka on Ubuntu 14.04>" and press <Next>
 
 #. Select "compute virtulization method".
 
@@ -362,7 +340,7 @@ Create an OpenStack Environment
 
    - Select "Neutron with ML2 plugin"
 
-   - Select "Neutron with tunneling segmentation" (Required when using the ODL plugin)
+   - Select "Neutron with tunneling segmentation" (Required when using the ODL or ONOS plugins)
 
    - Press <Next>
 
@@ -497,7 +475,7 @@ Enable Plugins
 
    - Enable and configure the plugins of your choice
 
-   .. figure:: img/plugins_aarch64.png
+   .. figure:: img/plugins.png
 
 Allocate nodes to environment and assign functional roles
 =========================================================
@@ -510,7 +488,7 @@ Allocate nodes to environment and assign functional roles
 
     - Click on the <+Add Nodes> button
 
-    - Check <Controller>, <Telemetry - MongoDB>  and optionally an SDN Controller role (OpenDaylight controller) in the "Assign Roles" Section.
+    - Check <Controller>, <Telemetry - MongoDB>  and optionally an SDN Controller role (OpenDaylight controller/ONOS) in the "Assign Roles" Section.
 
     - Check one node which you want to act as a Controller from the bottom half of the screen
 
@@ -546,50 +524,9 @@ Allocate nodes to environment and assign functional roles
 
     .. figure:: img/interfaceconf.png
 
-OPTIONAL - Set Local Mirror Repos
-=================================
-
-The following steps must be executed if you are in an environment with
-no connection to the Internet. The Fuel server delivers a local repo
-that can be used for installation / deployment of openstack.
-
-#. In the Fuel UI of your Environment, click the Settings Tab and select General from the left pane.
-
-   - Replace the URI values for the "Name" values outlined below:
-
-   - "ubuntu" URI="deb http://<ip-of-fuel-server>:8080/mirrors/ubuntu/ trusty main"
-
-   - "mos" URI="deb http://<ip-of-fuel-server>::8080/mitaka-9.0/ubuntu/x86_64 mos9.0 main restricted"
-
-   - "Auxiliary" URI="deb http://<ip-of-fuel-server>:8080/mitaka-9.0/ubuntu/auxiliary auxiliary main restricted"
-
-   - Click <Save Settings> at the bottom to Save your changes
 
 Target specific configuration
 =============================
-
-#. [AArch64 specific] Configure MySQL WSREP SST provider
-
-   **NOTE**: This option is only available for ArmbandFuel@OPNFV, since it
-   currently only affects AArch64 targets (see *Reference 15*).
-
-   When using some AArch64 platforms as controller nodes, WSREP SST
-   synchronisation using default backend provider (xtrabackup-v2) used to fail,
-   so a mechanism that allows selecting a different WSREP SST provider
-   has been introduced.
-
-   In the FUEL UI of your Environment, click the <Settings> tab, click
-   <OpenStack Services> on the left side pane (see figure below), then
-   select one of the following options:
-
-   - xtrabackup-v2 (default provider, AArch64 stability issues);
-
-   - rsync (AArch64 validated, better or comparable speed to xtrabackup,
-     takes the donor node offline during state transfer);
-
-   - mysqldump (untested);
-
-   .. figure:: img/fuelwsrepsst.png
 
 #. Set up targets for provisioning with non-default "Offloading Modes"
 
@@ -678,55 +615,35 @@ Installation health-check
 
     - Allow tests to run and investigate results where appropriate
 
-    - Check *Reference 15* for known issues / limitations on AArch64
-
     .. figure:: img/health.png
+
+
+=============
+Release Notes
+=============
+
+Please refer to the :ref:`Release Notes <armband-release-notes-label>` article.
 
 ==========
 References
 ==========
 
-OPNFV
-=====
-
-1) `OPNFV Home Page <http://www.opnfv.org>`_: http://www.opnfv.org
-
-2) `OPNFV documentation- and software downloads <https://www.opnfv.org/software/download>`_: https://www.opnfv.org/software/download
-
 OpenStack
-=========
 
-3) `OpenStack Mitaka Release artifacts <http://www.openstack.org/software/mitaka>`_: http://www.openstack.org/software/mitaka
-
-4) `OpenStack documentation <http://docs.openstack.org>`_: http://docs.openstack.org
+3) `OpenStack Newton Release Artifacts <http://www.openstack.org/software/newton>`_
+4) `OpenStack Documentation <http://docs.openstack.org>`_
 
 OpenDaylight
-============
 
-5) `OpenDaylight artifacts <http://www.opendaylight.org/software/downloads>`_: http://www.opendaylight.org/software/downloads
+5) `OpenDaylight Artifacts <http://www.opendaylight.org/software/downloads>`_
 
 Fuel
-====
 
-6) `The Fuel OpenStack project <https://wiki.openstack.org/wiki/Fuel>`_: https://wiki.openstack.org/wiki/Fuel
+6) `The Fuel OpenStack Project <https://wiki.openstack.org/wiki/Fuel>`_
+7) `Fuel Documentation Overview <http://docs.openstack.org/developer/fuel-docs>`_
+8) `Fuel Installation Guide <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-install-guide.html>`_
+9) `Fuel User Guide <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide.html>`_
+10) `Fuel Developer Guide <http://docs.openstack.org/developer/fuel-docs/devdocs/develop.html>`_
+11) `Fuel Plugin Developers Guide <http://docs.openstack.org/developer/fuel-docs/plugindocs/fuel-plugin-sdk-guide.html>`_
+12) `Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/software/hardware-compatibility/>`_
 
-7) `Fuel documentation overview <http://docs.openstack.org/developer/fuel-docs>`_: http://docs.openstack.org/developer/fuel-docs
-
-8) `Fuel Installation Guide <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-install-guide.html>`_: http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-install-guide.html
-
-9) `Fuel QuickStart Guide <https://docs.mirantis.com/openstack/fuel/fuel-9.0/quickstart-guide.html>`_: https://docs.mirantis.com/openstack/fuel/fuel-9.0/quickstart-guide.html
-
-10) `Fuel Developer Guide <http://docs.openstack.org/developer/fuel-docs/devdocs/develop.html>`_: http://docs.openstack.org/developer/fuel-docs/devdocs/develop.html
-
-11) `Fuel Plugin Developers Guide <http://docs.openstack.org/developer/fuel-docs/plugindocs/fuel-plugin-sdk-guide.html>`_: http://docs.openstack.org/developer/fuel-docs/plugindocs/fuel-plugin-sdk-guide.html
-
-12) `(N/A on AArch64) Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/products/openstack-drivers-and-plugins/hardware-compatibility-list>`_: https://www.mirantis.com/products/openstack-drivers-and-plugins/hardware-compatibility-list
-
-Fuel in OPNFV
-=============
-
-13) `OPNFV Installation instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/installationprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/installationprocedure/index.html
-
-14) `OPNFV Build instruction for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/buildprocedure/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/buildprocedure/index.html
-
-15) `OPNFV Release Note for the AArch64 Colorado release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/colorado/3.0/docs/releasenotes/index.html>`_: http://artifacts.opnfv.org/armband/colorado/3.0/docs/releasenotes/index.html
