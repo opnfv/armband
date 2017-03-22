@@ -7,8 +7,9 @@ Abstract
 ========
 
 This document describes how to install the Danube release of
-OPNFV when using Fuel as a deployment tool, covering its usage,
-limitations, dependencies and required system resources.
+OPNFV when using Fuel as a deployment tool, with an AArch64 (only)
+target node pool. It covers its usage, limitations, dependencies
+and required system resources.
 
 ============
 Introduction
@@ -16,7 +17,8 @@ Introduction
 
 This document provides guidelines on how to install and
 configure the Danube release of OPNFV when using Fuel as a
-deployment tool, including required software and hardware configurations.
+deployment tool, with an AArch64 (only) target node pool,
+including required software and hardware configurations.
 
 Although the available installation options give a high degree of
 freedom in how the system is set-up, including architecture, services
@@ -32,26 +34,26 @@ networking and Unix/Linux administration.
 Preface
 =======
 
-Before starting the installation of the Danube release of
-OPNFV, using Fuel as a deployment tool, some planning must be
+Before starting the installation of the AArch64 Danube release
+of OPNFV, using Fuel as a deployment tool, some planning must be
 done.
 
 Retrieving the ISO image
 ========================
 
 First of all, the Fuel deployment ISO image needs to be retrieved, the
-Fuel .iso image of the Danube release can be found at `OPNFV Downloads <https://www.opnfv.org/software/download>`_.
+ArmbandFuel .iso image of the AArch64 Danube release can be found at `OPNFV Downloads <https://www.opnfv.org/software/download>`_.
 
 Building the ISO image
 ======================
 
-Alternatively, you may build the Fuel .iso from source by cloning the
-opnfv/fuel git repository. To retrieve the repository for the Danube
-release use the following command:
+Alternatively, you may build the Armband Fuel .iso from source by cloning
+the opnfv/armband git repository. To retrieve the repository for the AArch64
+Danube release use the following command:
 
 .. code-block:: bash
 
-    $ git clone https://gerrit.opnfv.org/gerrit/fuel
+    $ git clone https://gerrit.opnfv.org/gerrit/armband
 
 Check-out the Danube release tag to set the HEAD to the
 baseline required to replicate the Danube release:
@@ -60,11 +62,11 @@ baseline required to replicate the Danube release:
 
     $ git checkout danube.1.0
 
-Go to the fuel directory and build the .iso:
+Go to the armband directory and build the .iso:
 
 .. code-block:: bash
 
-    $ cd fuel/build; make all
+    $ cd armband; make all
 
 For more information on how to build, please see :ref:`Build instruction for Fuel\@OPNFV <armband-development-overview-build-label>`
 
@@ -108,39 +110,43 @@ Hardware requirements
 =====================
 
 The following minimum hardware requirements must be met for the
-installation of Danube using Fuel:
+installation of AArch64 Danube using Fuel:
 
-+--------------------+------------------------------------------------------+
-| **HW Aspect**      | **Requirement**                                      |
-|                    |                                                      |
-+====================+======================================================+
-| **# of nodes**     | Minimum 5 (3 for non redundant deployment):          |
-|                    |                                                      |
-|                    | - 1 Fuel deployment master (may be virtualized)      |
-|                    |                                                      |
-|                    | - 3(1) Controllers (1 colocated mongo/ceilometer     |
-|                    |   role, 2 Ceph-OSD roles)                            |
-|                    |                                                      |
-|                    | - 1 Compute (1 co-located Ceph-OSD role)             |
-|                    |                                                      |
-+--------------------+------------------------------------------------------+
-| **CPU**            | Minimum 1 socket x86_AMD64 with Virtualization       |
-|                    | support                                              |
-+--------------------+------------------------------------------------------+
-| **RAM**            | Minimum 16GB/server (Depending on VNF work load)     |
-|                    |                                                      |
-+--------------------+------------------------------------------------------+
-| **Disk**           | Minimum 256GB 10kRPM spinning disks                  |
-|                    |                                                      |
-+--------------------+------------------------------------------------------+
-| **Networks**       | 4 Tagged VLANs (PUBLIC, MGMT, STORAGE, PRIVATE)      |
-|                    |                                                      |
-|                    | 1 Un-Tagged VLAN for PXE Boot - ADMIN Network        |
-|                    |                                                      |
-|                    | Note: These can be allocated to a single NIC -       |
-|                    | or spread out over multiple NICs as your hardware    |
-|                    | supports.                                            |
-+--------------------+------------------------------------------------------+
++----------------------------+------------------------------------------------------+
+| **HW Aspect**              | **Requirement**                                      |
+|                            |                                                      |
++============================+======================================================+
+| **# of AArch64 nodes**     | Minimum 5 (3 for non redundant deployment):          |
+|                            |                                                      |
+|                            | - 1 Fuel deployment master (may be virtualized)      |
+|                            |                                                      |
+|                            | - 3(1) Controllers (1 colocated mongo/ceilometer     |
+|                            |   role, 2 Ceph-OSD roles)                            |
+|                            |                                                      |
+|                            | - 1 Compute (1 co-located Ceph-OSD role)             |
+|                            |                                                      |
++----------------------------+------------------------------------------------------+
+| **CPU**                    | Minimum 1 socket AArch64 (ARMv8) with Virtualization |
+|                            | support                                              |
++----------------------------+------------------------------------------------------+
+| **RAM**                    | Minimum 16GB/server (Depending on VNF work load)     |
+|                            |                                                      |
++----------------------------+------------------------------------------------------+
+| **Firmware**               | UEFI compatible (e.g. EDK2) with PXE support         |
++----------------------------+------------------------------------------------------+
+| **Disk**                   | Minimum 256GB 10kRPM spinning disks                  |
+|                            |                                                      |
++----------------------------+------------------------------------------------------+
+| **Networks**               | 4 Tagged VLANs (PUBLIC, MGMT, STORAGE, PRIVATE)      |
+|                            |                                                      |
+|                            | 1 Un-Tagged VLAN for PXE Boot - ADMIN Network        |
+|                            |                                                      |
+|                            | Note: These can be allocated to a single NIC -       |
+|                            | or spread out over multiple NICs as your hardware    |
+|                            | supports.                                            |
++----------------------------+------------------------------------------------------+
+| **1 x86_64 node**          | - 1 Fuel deployment master, x86 (may be virtualized) |
++----------------------------+------------------------------------------------------+
 
 ===============================
 Help with Hardware Requirements
@@ -197,7 +203,7 @@ reference platform stack across a server cluster.
 Install Fuel master
 ===================
 
-#. Mount the Danube Fuel ISO file/media as a boot device to the jump host server.
+#. Mount the Danube Armband Fuel ISO file/media as a boot device to the jump host server.
 
 #. Reboot the jump host to establish the Fuel server.
 
@@ -227,6 +233,8 @@ Install Fuel master
 
    .. figure:: img/fuelmenu2.png
 
+   .. figure:: img/fuelmenu2a.png
+
 #. In the "PXE Setup" section (see figure below) - Change the following fields to appropriate values (example below):
 
    - DHCP Pool Start 10.20.0.4
@@ -254,11 +262,14 @@ Install Fuel master
    .. figure:: img/fuelmenu4.png
 
 
-#. OPTION TO ENABLE PROXY SUPPORT - In the "Bootstrap Image" section (see figure below), edit the following fields to define a proxy. (**NOTE:** cannot be used in tandem with local repository support)
+#. **DO NOT CHANGE** anything in "Bootstrap Image" section (see figure below).
 
-   - Navigate to "HTTP proxy" and enter your http proxy address
+   In ArmbandFuel@OPNFV, this data is **NOT** actually used for bootstrap
+   image building. Any change here will replace the configuration from
+   the OPNFV bootstrap build scripts and will lead to a failed bootstrap
+   image build.
 
-   - Select <Check> and press [Enter]
+   **NOTE:** Cannot be used in tandem with local repository support.
 
    .. figure:: img/fuelmenu5.png
 
@@ -274,7 +285,7 @@ Install Fuel master
 
 #. Start the installation.
 
-   - Select Quit Setup and press Save and Quit.
+   - Press <F8>
 
    - The installation will now start, wait until the login screen is shown.
 
@@ -286,9 +297,15 @@ the login prompt, you should boot the Node Servers (Your
 Compute/Control/Storage blades, nested or real) with a PXE booting
 scheme so that the FUEL Master can pick them up for control.
 
+**NOTE**: AArch64 target nodes are expected to support PXE booting an
+EFI binary, i.e. an EFI-stubbed GRUB2 bootloader.
+
+**NOTE**: UEFI (EDK2) firmware is **highly** recommended, becoming
+the **de facto** standard for ARMv8 nodes.
+
 #. Enable PXE booting
 
-   - For every controller and compute server: enable PXE Booting as the first boot device in the BIOS boot order menu, and hard disk as the second boot device in the same menu.
+   - For every controller and compute server: enable PXE Booting as the first boot device in the UEFI (EDK2) boot order menu, and hard disk as the second boot device in the same menu.
 
 #. Reboot all the control and compute blades.
 
@@ -321,6 +338,9 @@ Install additional Plugins/Features on the FUEL node
 
    .. figure:: img/plugin_install.png
 
+   **NOTE**: AArch64 Colorado 1.0 ships only with ODL, OVS, BGPVPN and Tacker
+   plugins, see *Reference 15*.
+
 Create an OpenStack Environment
 ===============================
 
@@ -330,7 +350,7 @@ Create an OpenStack Environment
 
    .. figure:: img/newenv.png
 
-#. Select "<Mitaka on Ubuntu 14.04>" and press <Next>
+#. Select "<Mitaka on Ubuntu 14.04 (aarch64)>" and press <Next>
 
 #. Select "compute virtulization method".
 
@@ -340,7 +360,7 @@ Create an OpenStack Environment
 
    - Select "Neutron with ML2 plugin"
 
-   - Select "Neutron with tunneling segmentation" (Required when using the ODL or ONOS plugins)
+   - Select "Neutron with tunneling segmentation" (Required when using the ODL plugin)
 
    - Press <Next>
 
@@ -475,7 +495,7 @@ Enable Plugins
 
    - Enable and configure the plugins of your choice
 
-   .. figure:: img/plugins.png
+   .. figure:: img/plugins_aarch64.png
 
 Allocate nodes to environment and assign functional roles
 =========================================================
@@ -488,7 +508,7 @@ Allocate nodes to environment and assign functional roles
 
     - Click on the <+Add Nodes> button
 
-    - Check <Controller>, <Telemetry - MongoDB>  and optionally an SDN Controller role (OpenDaylight controller/ONOS) in the "Assign Roles" Section.
+    - Check <Controller>, <Telemetry - MongoDB>  and optionally an SDN Controller role (OpenDaylight controller) in the "Assign Roles" Section.
 
     - Check one node which you want to act as a Controller from the bottom half of the screen
 
@@ -524,9 +544,50 @@ Allocate nodes to environment and assign functional roles
 
     .. figure:: img/interfaceconf.png
 
+OPTIONAL - Set Local Mirror Repos
+=================================
+
+The following steps must be executed if you are in an environment with
+no connection to the Internet. The Fuel server delivers a local repo
+that can be used for installation / deployment of openstack.
+
+#. In the Fuel UI of your Environment, click the Settings Tab and select General from the left pane.
+
+   - Replace the URI values for the "Name" values outlined below:
+
+   - "ubuntu" URI="deb http://<ip-of-fuel-server>:8080/mirrors/ubuntu/ trusty main"
+
+   - "mos" URI="deb http://<ip-of-fuel-server>::8080/mitaka-9.0/ubuntu/x86_64 mos9.0 main restricted"
+
+   - "Auxiliary" URI="deb http://<ip-of-fuel-server>:8080/mitaka-9.0/ubuntu/auxiliary auxiliary main restricted"
+
+   - Click <Save Settings> at the bottom to Save your changes
 
 Target specific configuration
 =============================
+
+#. [AArch64 specific] Configure MySQL WSREP SST provider
+
+   **NOTE**: This option is only available for ArmbandFuel@OPNFV, since it
+   currently only affects AArch64 targets (see *Reference 15*).
+
+   When using some AArch64 platforms as controller nodes, WSREP SST
+   synchronisation using default backend provider (xtrabackup-v2) used to fail,
+   so a mechanism that allows selecting a different WSREP SST provider
+   has been introduced.
+
+   In the FUEL UI of your Environment, click the <Settings> tab, click
+   <OpenStack Services> on the left side pane (see figure below), then
+   select one of the following options:
+
+   - xtrabackup-v2 (default provider, AArch64 stability issues);
+
+   - rsync (AArch64 validated, better or comparable speed to xtrabackup,
+     takes the donor node offline during state transfer);
+
+   - mysqldump (untested);
+
+   .. figure:: img/fuelwsrepsst.png
 
 #. Set up targets for provisioning with non-default "Offloading Modes"
 
@@ -615,6 +676,8 @@ Installation health-check
 
     - Allow tests to run and investigate results where appropriate
 
+    - Check *Reference 15* for known issues / limitations on AArch64
+
     .. figure:: img/health.png
 
 
@@ -622,11 +685,16 @@ Installation health-check
 Release Notes
 =============
 
-Please refer to the :ref:`Release Notes <armband-release-notes-label>` article.
+Please refer to the :ref:`Release Notes <armband-releasenotes>` article.
 
 ==========
 References
 ==========
+
+OPNFV
+
+1) `OPNFV Home Page <http://www.opnfv.org>`_
+2) `OPNFV documentation- and software downloads <https://www.opnfv.org/software/download>`_
 
 OpenStack
 
@@ -645,5 +713,13 @@ Fuel
 9) `Fuel User Guide <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide.html>`_
 10) `Fuel Developer Guide <http://docs.openstack.org/developer/fuel-docs/devdocs/develop.html>`_
 11) `Fuel Plugin Developers Guide <http://docs.openstack.org/developer/fuel-docs/plugindocs/fuel-plugin-sdk-guide.html>`_
-12) `Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/software/hardware-compatibility/>`_
+12) `(N/A on AArch64) Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/software/hardware-compatibility/>`_
+
+Fuel in OPNFV
+
+13) `OPNFV Installation instruction for the AArch64 Danube release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/release_installation/index.html>`_
+
+14) `OPNFV Build instruction for the AArch64 Danube release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/development_overview_build/index.html>`_
+
+15) `OPNFV Release Note for the AArch64 Danube release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/release_release-notes/index.html>`_
 
