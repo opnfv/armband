@@ -1,0 +1,68 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 23 Mar 2017 01:40:45 +0100
+Subject: [PATCH] nailgun: Openstack release: Pin kernel to 4.8.0-43
+
+Since newer kernels have issues with AAVMF + vhost_net,
+we need to also temporarily blacklist vhost_net.
+
+NOTE: This change also adds linux-image-extra packages to both x86_64
+      and AArch64 target image(s).
+
+TODO: Remove vhost_net blacklist (later).
+
+JIRA: https://jira.opnfv.org/browse/ARMBAND-161
+JIRA: https://jira.opnfv.org/browse/ARMBAND-171
+JIRA: https://jira.opnfv.org/browse/ARMBAND-227
+JIRA: https://jira.opnfv.org/browse/ARMBAND-230
+JIRA: https://jira.opnfv.org/browse/ARMBAND-239
+JIRA: https://jira.opnfv.org/browse/ARMBAND-244
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ nailgun/nailgun/fixtures/openstack.yaml | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
+index 5712006..d404168 100644
+--- a/nailgun/nailgun/fixtures/openstack.yaml
++++ b/nailgun/nailgun/fixtures/openstack.yaml
+@@ -2164,8 +2164,9 @@
+               grub-pc
+               hwloc
+               linux-firmware
+-              linux-headers-generic-lts-xenial
+-              linux-image-generic-lts-xenial
++              linux-headers-4.8.0-43-generic
++              linux-image-4.8.0-43-generic
++              linux-image-extra-4.8.0-43-generic
+               lvm2
+               mcollective
+               mdadm
+@@ -2492,6 +2493,7 @@
+             value: |
+               acl
+               anacron
++              armband-vhost-net-blacklist
+               bash-completion
+               bridge-utils
+               bsdmainutils
+@@ -2504,8 +2506,9 @@
+               grub-efi-arm64
+               hwloc
+               linux-firmware
+-              linux-headers-generic-lts-xenial
+-              linux-image-generic-lts-xenial
++              linux-headers-4.8.0-43-generic
++              linux-image-4.8.0-43-generic
++              linux-image-extra-4.8.0-43-generic
+               lvm2
+               mcollective
+               mdadm
