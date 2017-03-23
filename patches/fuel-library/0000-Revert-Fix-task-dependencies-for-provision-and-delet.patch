@@ -1,0 +1,60 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 23 Mar 2017 15:54:11 +0100
+Subject: [PATCH] Revert "Fix task dependencies for provision and deletion
+ graphs"
+
+This reverts commit 399611521195d75225a4cbf5613739bec5798fd0.
+---
+ graphs/deletion/tasks.yaml  | 4 +---
+ graphs/provision/tasks.yaml | 6 ++----
+ 2 files changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/graphs/deletion/tasks.yaml b/graphs/deletion/tasks.yaml
+index a725dda..2fd0188 100644
+--- a/graphs/deletion/tasks.yaml
++++ b/graphs/deletion/tasks.yaml
+@@ -35,10 +35,8 @@
+   type: reboot
+   version: 2.1.0
+   role: ['/.*/']
++  requires: [reconfigure_dhcpd]
+   required_for: [node_erase]
+-  cross-depends:
+-    - name: reconfigure_dhcpd
+-      role: master
+   parameters:
+     timeout: 300
+
+diff --git a/graphs/provision/tasks.yaml b/graphs/provision/tasks.yaml
+index 8a5c45e..1494176 100644
+--- a/graphs/provision/tasks.yaml
++++ b/graphs/provision/tasks.yaml
+@@ -60,10 +60,8 @@
+   type: upload_file
+   version: 2.1.0
+   role: ['/.*/']
++  requires: [provision_master]
+   required_for: [system_provision]
+-  cross-depends:
+-    - name: provision_master
+-      role: master
+   parameters:
+     path: /tmp/provision.json
+     timeout: 180
+@@ -74,7 +72,7 @@
+   type: shell
+   version: 2.1.0
+   role: ['/.*/']
+-  requires: [upload_provision_info]
++  requires: [provision_master, upload_provision_info]
+   required_for: [node_reboot]
+   cross-depends:
+     - name: build_deploy_image
