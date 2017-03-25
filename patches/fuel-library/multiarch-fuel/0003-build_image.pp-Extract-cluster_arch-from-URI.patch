@@ -35,7 +35,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/deployment/puppet/osnailyfacter/manifests/provision/build_image.pp b/deployment/puppet/osnailyfacter/manifests/provision/build_image.pp
-index 3f90aec..c1b8fbe 100644
+index dbfc785..8525e33 100644
 --- a/deployment/puppet/osnailyfacter/manifests/provision/build_image.pp
 +++ b/deployment/puppet/osnailyfacter/manifests/provision/build_image.pp
 @@ -8,6 +8,9 @@ class osnailyfacter::provision::build_image(
@@ -46,17 +46,16 @@ index 3f90aec..c1b8fbe 100644
 +  $root_img_suffix_split = split($root_img_uri_split[-1], '[.]')
 +  $cluster_arch = $root_img_suffix_split[0]
 
-   if $data['ironic']['enabled'] == 'true' {
-     $ironic_packages = [
-@@ -50,9 +53,9 @@ class osnailyfacter::provision::build_image(
-     $extra_params = '--data_driver nailgun_build_image'
+   if $data['ironic']['enabled'] == true {
+     # TODO(vsaienko): Use the same system packages for fuel image and ironic bootstrap, but exclude
+@@ -52,8 +55,8 @@ class osnailyfacter::provision::build_image(
+   $extra_params = '--data_driver nailgun_build_image'
 
-     exec { 'generate_image_with_fuel':
--      command => "fa_build_image ${build_dir} ${log_params} ${extra_params} --input_data_file ${data_file}",
-+      command => "fa_build_image ${build_dir} ${log_params} ${extra_params} --target_arch=${cluster_arch} --input_data_file ${data_file}",
-       path    => ['/bin', '/usr/bin'],
--      timeout => 1800,
-+      timeout => 3600,
-       unless  => "test -e /var/www/nailgun/bootstrap/ironic/${cluster_id}/vmlinuz",
-     }
+   exec { 'generate_image_with_fuel':
+-    command => "fa_build_image ${build_dir} ${log_params} ${extra_params} --input_data_file ${data_file}",
++    command => "fa_build_image ${build_dir} ${log_params} ${extra_params} --target_arch=${cluster_arch} --input_data_file ${data_file}",
+     path    => ['/bin', '/usr/bin'],
+-    timeout => 1800,
++    timeout => 3600,
    }
+ }
