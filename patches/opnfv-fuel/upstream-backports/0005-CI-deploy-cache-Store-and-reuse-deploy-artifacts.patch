@@ -27,10 +27,11 @@ TODO: implement sanity checks for bootstrap and target images;
 TODO: switch `exec_cmd('mkdir ...')` to `create_dir_if_not_exists`;
 
 JIRA: ARMBAND-172
+JIRA: ARMBAND-242
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ...p_admin_node.sh-deploy_cache-install-hook.patch |  73 +++++
+ ...p_admin_node.sh-deploy_cache-install-hook.patch |  90 ++++++
  ci/deploy.sh                                       |  14 +-
  deploy/cloud/configure_settings.py                 |   4 +
  deploy/cloud/deployment.py                         |  12 +
@@ -38,16 +39,16 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  deploy/deploy_cache.py                             | 312 +++++++++++++++++++++
  deploy/deploy_env.py                               |  13 +-
  deploy/install_fuel_master.py                      |   9 +-
- 8 files changed, 453 insertions(+), 9 deletions(-)
+ 8 files changed, 470 insertions(+), 9 deletions(-)
  create mode 100644 build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
  create mode 100644 deploy/deploy_cache.py
 
 diff --git a/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
 new file mode 100644
-index 0000000..69a4c22
+index 0000000..7acb746
 --- /dev/null
 +++ b/build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
-@@ -0,0 +1,73 @@
+@@ -0,0 +1,90 @@
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Mon, 28 Nov 2016 14:27:48 +0100
 +Subject: [PATCH] bootstrap_admin_node.sh: deploy_cache install hook
@@ -60,18 +61,24 @@ index 0000000..69a4c22
 +`build` when a bootstrap tar is available in the agreed location,
 +/var/lib/opnfv/cache/bootstraps/.
 +
++Temporary until Fuel@Openstack fixes Master key propagation to nodes'
++authorized_keys, use Mcollective remote shell execute to add it
++during deployment.
++This might duplicate the entry in authorized_keys during re-deploys.
++
 +JIRA: ARMBAND-172
++JIRA: ARMBAND-242
 +
 +Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +---
-+ iso/bootstrap_admin_node.sh | 20 +++++++++++++++++++-
-+ 1 file changed, 19 insertions(+), 1 deletion(-)
++ iso/bootstrap_admin_node.sh | 35 ++++++++++++++++++++++++++++++++++-
++ 1 file changed, 34 insertions(+), 1 deletion(-)
 +
 +diff --git a/iso/bootstrap_admin_node.sh b/iso/bootstrap_admin_node.sh
-+index abc5ffb..15e6261 100755
++index 4f5ce4e..4c79552 100755
 +--- a/iso/bootstrap_admin_node.sh
 ++++ b/iso/bootstrap_admin_node.sh
-+@@ -61,6 +61,8 @@ wget \
++@@ -64,6 +64,8 @@ wget \
 + ASTUTE_YAML='/etc/fuel/astute.yaml'
 + BOOTSTRAP_NODE_CONFIG="/etc/fuel/bootstrap_admin_node.conf"
 + CUSTOM_REPOS="/root/default_deb_repos.yaml"
@@ -80,7 +87,7 @@ index 0000000..69a4c22
 + bs_build_log='/var/log/fuel-bootstrap-image-build.log'
 + bs_status=0
 + # Backup network configs to this folder. Folder will be created only if
-+@@ -94,6 +96,7 @@ image becomes available, reboot nodes that failed to be discovered."
++@@ -97,6 +99,7 @@ image becomes available, reboot nodes that failed to be discovered."
 + bs_done_message="Default bootstrap image building done. Now you can boot new \
 + nodes over PXE, they will be discovered and become available for installing \
 + OpenStack on them"
@@ -88,10 +95,20 @@ index 0000000..69a4c22
 + # Update issues messages
 + update_warn_message="There is an issue connecting to update repository of \
 + your distributions of OpenStack. \
-+@@ -500,12 +503,31 @@ set_ui_bootstrap_error () {
++@@ -509,12 +512,42 @@ set_ui_bootstrap_error () {
 + 	EOF
 + }
 +
+++function inject_cached_ssh_key () {
+++	# FIXME(armband): Propagate master ssh key to nodes'
+++	# authorized_keys, until upstream fixes this for image build.
+++	local moddir="/etc/puppet/${OPENSTACK_VERSION}/modules/osnailyfacter/modular"
+++	cat >> "${moddir}/astute/generate_keys.sh" <<-EOF
+++	mco rpc execute_shell_command execute \\
+++	cmd="echo $(cat /root/.ssh/id_rsa.pub) >> /root/.ssh/authorized_keys"
+++	EOF
+++}
+++
 ++function inject_cached_ubuntu_bootstrap () {
 ++        if [ -f "${OPNFV_CACHE_PATH}/${OPNFV_CACHE_TAR}" -a \
 ++             -f "${OPNFV_CACHE_PATH}/id_rsa.pub" -a \
@@ -103,6 +120,7 @@ index 0000000..69a4c22
 ++                /etc/nailgun/settings.yaml && \
 ++                fuel-bootstrap -v --debug import --activate \
 ++                "${OPNFV_CACHE_PATH}/${OPNFV_CACHE_TAR}" >>"$bs_build_log" 2>&1; then
+++                    inject_cached_ssh_key
 ++                    fuel notify --topic "done" --send "${bs_cache_message}"
 ++                    return 0
 ++          fi
@@ -203,7 +221,7 @@ index b60a60f..4e007e1 100644
          with io.open(settings_yaml, 'w') as stream:
              yaml.dump(settings, stream, default_flow_style=False)
 diff --git a/deploy/cloud/deployment.py b/deploy/cloud/deployment.py
-index 28bcfdf..b0bfdcc 100644
+index 4329a4c..a84d46c 100644
 --- a/deploy/cloud/deployment.py
 +++ b/deploy/cloud/deployment.py
 @@ -19,6 +19,8 @@ from common import (
@@ -215,7 +233,7 @@ index 28bcfdf..b0bfdcc 100644
  SEARCH_TEXT = '(err)'
  LOG_FILE = '/var/log/puppet.log'
  GREP_LINES_OF_LEADING_CONTEXT = 100
-@@ -47,6 +49,14 @@ class Deployment(object):
+@@ -51,6 +53,14 @@ class Deployment(object):
          self.pattern = re.compile(
              '\d\d\d\d-\d\d-\d\d\s\d\d:\d\d:\d\d')
 
@@ -230,7 +248,7 @@ index 28bcfdf..b0bfdcc 100644
      def collect_error_logs(self):
          for node_id, roles_blade in self.node_id_roles_dict.iteritems():
              log_list = []
-@@ -108,6 +118,7 @@ class Deployment(object):
+@@ -112,6 +122,7 @@ class Deployment(object):
          start = time.time()
 
          log('Starting deployment of environment %s' % self.env_id)
@@ -238,7 +256,7 @@ index 28bcfdf..b0bfdcc 100644
          deploy_id = None
          ready = False
          timeout = False
-@@ -140,6 +151,7 @@ class Deployment(object):
+@@ -144,6 +155,7 @@ class Deployment(object):
              err('Deployment timed out, environment %s is not operational, '
                  'snapshot will not be performed'
                  % self.env_id)
@@ -671,7 +689,7 @@ index 0000000..7df43c6
 +                log('Failed to install targetimages for env %s: %s' %
 +                    (str(env_id), str(ex)))
 diff --git a/deploy/deploy_env.py b/deploy/deploy_env.py
-index 8afaeb1..318345d 100644
+index d374cce..445070a 100644
 --- a/deploy/deploy_env.py
 +++ b/deploy/deploy_env.py
 @@ -15,6 +15,7 @@ import glob
