@@ -1,0 +1,79 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 14 Mar 2017 19:56:50 +0100
+Subject: [PATCH] bootstrap, dea_base: Pin kernel to 4.8.0-9944
+
+Since newer kernels have issues with AAVMF + vhost_net,
+we need to also temporarily blacklist vhost_net.
+
+TODO: Remove vhost_net blacklist (later).
+
+JIRA: https://jira.opnfv.org/browse/ARMBAND-161
+JIRA: https://jira.opnfv.org/browse/ARMBAND-171
+JIRA: https://jira.opnfv.org/browse/ARMBAND-227
+JIRA: https://jira.opnfv.org/browse/ARMBAND-230
+JIRA: https://jira.opnfv.org/browse/ARMBAND-239
+JIRA: https://jira.opnfv.org/browse/ARMBAND-244
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml | 5 +++--
+ deploy/config/dea_base.yaml                         | 8 ++++++--
+ 2 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+index ff5baa8..42765b6 100644
+--- a/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
++++ b/build/f_isoroot/f_repobuild/fuel_bootstrap_cli.yaml
+@@ -13,14 +13,15 @@
+   extra_dirs:
+     - /usr/share/fuel_bootstrap_cli/files/xenial
+   output_dir: /tmp/
+-  kernel_flavor: linux-image-generic-lts-xenial
++  kernel_flavor: linux-image-4.8.0-9944-generic
+   packages:
+     - daemonize
+     - fuel-agent
+     - hwloc
+     - i40e-dkms
+     - linux-firmware
+-    - linux-headers-generic
++    - linux-image-extra-4.8.0-9944-generic
++    - linux-headers-4.8.0-9944-generic
+     - live-boot
+     - live-boot-initramfs-tools
+     - lshw
+diff --git a/deploy/config/dea_base.yaml b/deploy/config/dea_base.yaml
+index 386686f..2a5928e 100644
+--- a/deploy/config/dea_base.yaml
++++ b/deploy/config/dea_base.yaml
+@@ -534,6 +534,8 @@ settings:
+
+           anacron
+
++          armband-vhost-net-blacklist
++
+           bash-completion
+
+           bridge-utils
+@@ -560,9 +562,11 @@ settings:
+
+           linux-firmware
+
+-          linux-headers-generic-lts-xenial
++          linux-image-4.8.0-9944-generic
++
++          linux-image-extra-4.8.0-9944-generic
+
+-          linux-image-generic-lts-xenial
++          linux-headers-4.8.0-9944-generic
+
+           lvm2
+
