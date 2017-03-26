@@ -8,7 +8,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Tue, 14 Mar 2017 19:56:50 +0100
-Subject: [PATCH] bootstrap, dea_base: Pin kernel to 4.8.0-43
+Subject: [PATCH] bootstrap, dea_base: Pin kernel to 4.8.0-9944
 
 Since newer kernels have issues with AAVMF + vhost_net,
 we need to also temporarily blacklist vhost_net.
@@ -37,7 +37,7 @@ index ff5baa8..42765b6 100644
      - /usr/share/fuel_bootstrap_cli/files/xenial
    output_dir: /tmp/
 -  kernel_flavor: linux-image-generic-lts-xenial
-+  kernel_flavor: linux-image-4.8.0-43-generic
++  kernel_flavor: linux-image-4.8.0-9944-generic
    packages:
      - daemonize
      - fuel-agent
@@ -45,8 +45,8 @@ index ff5baa8..42765b6 100644
      - i40e-dkms
      - linux-firmware
 -    - linux-headers-generic
-+    - linux-image-extra-4.8.0-43-generic
-+    - linux-headers-4.8.0-43-generic
++    - linux-image-extra-4.8.0-9944-generic
++    - linux-headers-4.8.0-9944-generic
      - live-boot
      - live-boot-initramfs-tools
      - lshw
@@ -68,12 +68,12 @@ index 386686f..2a5928e 100644
            linux-firmware
 
 -          linux-headers-generic-lts-xenial
-+          linux-image-4.8.0-43-generic
++          linux-image-4.8.0-9944-generic
 +
-+          linux-image-extra-4.8.0-43-generic
++          linux-image-extra-4.8.0-9944-generic
 
 -          linux-image-generic-lts-xenial
-+          linux-headers-4.8.0-43-generic
++          linux-headers-4.8.0-9944-generic
 
            lvm2
 
