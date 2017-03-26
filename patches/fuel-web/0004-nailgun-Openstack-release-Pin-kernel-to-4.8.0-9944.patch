@@ -8,7 +8,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Thu, 23 Mar 2017 01:40:45 +0100
-Subject: [PATCH] nailgun: Openstack release: Pin kernel to 4.8.0-43
+Subject: [PATCH] nailgun: Openstack release: Pin kernel to 4.8.0-9944
 
 Since newer kernels have issues with AAVMF + vhost_net,
 we need to also temporarily blacklist vhost_net.
@@ -40,9 +40,9 @@ index 5712006..d404168 100644
                linux-firmware
 -              linux-headers-generic-lts-xenial
 -              linux-image-generic-lts-xenial
-+              linux-headers-4.8.0-43-generic
-+              linux-image-4.8.0-43-generic
-+              linux-image-extra-4.8.0-43-generic
++              linux-headers-4.8.0-9944-generic
++              linux-image-4.8.0-9944-generic
++              linux-image-extra-4.8.0-9944-generic
                lvm2
                mcollective
                mdadm
@@ -60,9 +60,9 @@ index 5712006..d404168 100644
                linux-firmware
 -              linux-headers-generic-lts-xenial
 -              linux-image-generic-lts-xenial
-+              linux-headers-4.8.0-43-generic
-+              linux-image-4.8.0-43-generic
-+              linux-image-extra-4.8.0-43-generic
++              linux-headers-4.8.0-9944-generic
++              linux-image-4.8.0-9944-generic
++              linux-image-extra-4.8.0-9944-generic
                lvm2
                mcollective
                mdadm
