@@ -1,4 +1,4 @@
-.. _fuel-installation:
+.. _armband-installation:
 
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. http://creativecommons.org/licenses/by/4.0
@@ -6,9 +6,9 @@
 
 .. _armband-release-installation-label:
 
-****************************************
-Installation instruction for Fuel\@OPNFV
-****************************************
+***************************************************
+Installation instruction for Fuel\@OPNFV on AArch64
+***************************************************
 
 .. toctree::
    :numbered:

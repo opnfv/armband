@@ -1,4 +1,4 @@
-.. _fuel-releasenotes:
+.. _armband-releasenotes:
 
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. http://creativecommons.org/licenses/by/4.0
@@ -6,9 +6,9 @@
 
 .. _armband-release-notes-label:
 
-*****************************
-Release notes for Fuel\@OPNFV
-*****************************
+****************************************
+Release notes for Fuel\@OPNFV on AArch64
+****************************************
 
 .. toctree::
    :numbered:
