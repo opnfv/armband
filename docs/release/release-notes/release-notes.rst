@@ -7,18 +7,25 @@ Abstract
 ========
 
 This document compiles the release notes for the Danube release of
-OPNFV when using Fuel as a deployment tool.
+OPNFV when using Fuel as a deployment tool with an AArch64 (only) target
+node pool.
 
 ===============
 Important Notes
 ===============
 
 These notes provides release information for the use of Fuel as deployment
-tool for the Danube release of OPNFV.
+tool for the AArch64 Danube release of OPNFV.
 
-The goal of the Danube release and this Fuel-based deployment process is
-to establish a lab ready platform accelerating further development
-of the OPNFV infrastructure.
+The goal of the AArch64 Danube release and this Fuel-based deployment process
+is to establish a lab ready platform accelerating further development
+of the OPNFV on AArch64 infrastructure.
+
+Due to early docker and nodejs support on AArch64, we will still use an
+x86_64 Fuel Master to build and deploy an AArch64 target pool.
+
+Although not currently supported, mixing x86_64 and AArch64 architectures
+inside the target pool will be possible later.
 
 Carefully follow the installation-instructions provided in *Reference 13*.
 
@@ -26,14 +33,19 @@ Carefully follow the installation-instructions provided in *Reference 13*.
 Summary
 =======
 
-For Danube, the typical use of Fuel as an OpenStack installer is
+For AArch64 Danube, the typical use of Fuel as an OpenStack installer is
 supplemented with OPNFV unique components such as:
 
 - `OpenDaylight <http://www.opendaylight.org/software>`_
+- `Open vSwitch for NFV <https://wiki.opnfv.org/ovsnfv>`_
+- `BGPVPN <http://docs.openstack.org/developer/networking-bgpvpn>`_
+- `Tacker <https://wiki.openstack.org/wiki/Tacker>`_
+
+The following OPNFV plugins are not yet ported for AArch64:
+
 - `Service Function Chaining <https://wiki.opnfv.org/service_function_chaining>`_
 - `SDN distributed routing and VPN <https://wiki.opnfv.org/sdnvpn>`_
 - `NFV Hypervisors-KVM <https://wiki.opnfv.org/nfv-kvm>`_
-- `Open vSwitch for NFV <https://wiki.opnfv.org/ovsnfv>`_
 - `VSPERF <https://wiki.opnfv.org/characterize_vswitch_performance_for_telco_nfv_use_cases>`_
 - `Promise <https://wiki.opnfv.org/display/promise>`_
 - `Parser <https://wiki.opnfv.org/display/parser>`_
@@ -54,7 +66,7 @@ OPNFV CI pipeline including:
 
   - build-instructions
 
-- The Danube Fuel installer image (.iso) built by Jenkins
+- The Danube Fuel installer image AArch64 (.iso) built by Jenkins
 
 - Automated deployment of Danube with running on bare metal or a nested hypervisor environment (KVM)
 
@@ -65,7 +77,7 @@ Release Data
 ============
 
 +--------------------------------------+--------------------------------------+
-| **Project**                          | fuel                                 |
+| **Project**                          | armband                              |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 | **Repo/tag**                         | danube.1.0                           |
@@ -81,14 +93,8 @@ Release Data
 |                                      | Fuel 10.0 baseline + features and    |
 |                                      | bug-fixes for the following          |
 |                                      | feaures:                             |
-|                                      | - NFV Hypervisors-KVM                |
 |                                      | - Open vSwitch for NFV               |
 |                                      | - OpenDaylight                       |
-|                                      | - SDN distributed routing and VPN    |
-|                                      | - Service function chaining          |
-|                                      | - Promise                            |
-|                                      | - Parser                             |
-|                                      | - Doctor                             |
 |                                      | - Tacker                             |
 +--------------------------------------+--------------------------------------+
 
@@ -131,7 +137,7 @@ Bug Corrections
 
 **JIRA TICKETS:**
 
-`Danube 1.0 bug fixes  <https://jira.opnfv.org/issues/?filter=11406>`_
+`Danube 1.0 bug fixes  <https://jira.opnfv.org/issues/?filter=11615>`_
 
 (Also See respective Integrated feature project's bug tracking)
 
@@ -141,7 +147,7 @@ Deliverables
 Software Deliverables
 ---------------------
 
-Fuel-based installer iso file found in `OPNFV Downloads <https://www.opnfv.org/software/download>`.
+AArch64 Fuel-based installer iso file found in `OPNFV Downloads <https://www.opnfv.org/software/download>`.
 
 Documentation Deliverables
 --------------------------
@@ -167,13 +173,16 @@ System Limitations
 
 - **Max number of networks:** 65k
 
+- **Fuel master arch:** x86_64
+
+- **Target node arch:** aarch64
 
 Known Issues
 ============
 
 **JIRA TICKETS:**
 
-`Known issues <https://jira.opnfv.org/issues/?filter=11407>`_
+`Known issues <https://jira.opnfv.org/issues/?filter=11614>`_
 
 (Also See respective Integrated feature project's bug tracking)
 
@@ -182,7 +191,7 @@ Workarounds
 
 **JIRA TICKETS:**
 
-`Workarounds <https://jira.opnfv.org/issues/?filter=11408>`_
+-
 
 (Also See respective Integrated feature project's bug tracking)
 
@@ -221,3 +230,13 @@ Fuel
 6) `The Fuel OpenStack Project <https://wiki.openstack.org/wiki/Fuel>`_
 7) `Fuel Documentation <http://docs.openstack.org/developer/fuel-docs>`_
 
+Fuel in OPNFV
+=============
+
+13) `OPNFV Installation instruction for the AArch64 Danube release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/release_installation/index.html>`_
+
+14) `OPNFV Build instruction for the AArch64 Danube release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/development_overview_build/index.html>`_
+
+15) `OPNFV Release Note for the AArch64 Danube release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/release_release-notes/index.html>`_
+
+.. [1] OpenDaylight Boron RC2 is used when Service Function Chaining is enabled in Fuel plugin.
