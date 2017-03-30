@@ -125,7 +125,7 @@ Now it is time to clone the code repository:
 
 .. code-block:: bash
 
-    $ git clone ssh://<Linux foundation user>@gerrit.opnfv.org:29418/fuel
+    $ git clone ssh://<Linux foundation user>@gerrit.opnfv.org:29418/armband
 
 Now you should have the OPNFV armband repository with its
 directories stored locally on your build host.

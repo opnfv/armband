@@ -40,11 +40,11 @@ supplemented with OPNFV unique components such as:
 - `Open vSwitch for NFV <https://wiki.opnfv.org/ovsnfv>`_
 - `BGPVPN <http://docs.openstack.org/developer/networking-bgpvpn>`_
 - `Tacker <https://wiki.openstack.org/wiki/Tacker>`_
+- `Service Function Chaining <https://wiki.opnfv.org/service_function_chaining>`_
+- `SDN distributed routing and VPN <https://wiki.opnfv.org/sdnvpn>`_
 
 The following OPNFV plugins are not yet ported for AArch64:
 
-- `Service Function Chaining <https://wiki.opnfv.org/service_function_chaining>`_
-- `SDN distributed routing and VPN <https://wiki.opnfv.org/sdnvpn>`_
 - `NFV Hypervisors-KVM <https://wiki.opnfv.org/nfv-kvm>`_
 - `VSPERF <https://wiki.opnfv.org/characterize_vswitch_performance_for_telco_nfv_use_cases>`_
 - `Promise <https://wiki.opnfv.org/display/promise>`_
@@ -238,5 +238,3 @@ Fuel in OPNFV
 14) `OPNFV Build instruction for the AArch64 Danube release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/development_overview_build/index.html>`_
 
 15) `OPNFV Release Note for the AArch64 Danube release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/release_release-notes/index.html>`_
-
-.. [1] OpenDaylight Boron RC2 is used when Service Function Chaining is enabled in Fuel plugin.
