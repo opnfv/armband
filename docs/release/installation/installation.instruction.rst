@@ -338,7 +338,7 @@ Install additional Plugins/Features on the FUEL node
 
    .. figure:: img/plugin_install.png
 
-   **NOTE**: AArch64 Colorado 1.0 ships only with ODL, OVS, BGPVPN and Tacker
+   **NOTE**: AArch64 Danube 1.0 ships only with ODL, OVS, BGPVPN, SFC and Tacker
    plugins, see *Reference 15*.
 
 Create an OpenStack Environment
@@ -350,7 +350,7 @@ Create an OpenStack Environment
 
    .. figure:: img/newenv.png
 
-#. Select "<Mitaka on Ubuntu 14.04 (aarch64)>" and press <Next>
+#. Select "<Newton on Ubuntu 16.04 (aarch64)>" and press <Next>
 
 #. Select "compute virtulization method".
 
@@ -715,7 +715,7 @@ Fuel
 11) `Fuel Plugin Developers Guide <http://docs.openstack.org/developer/fuel-docs/plugindocs/fuel-plugin-sdk-guide.html>`_
 12) `(N/A on AArch64) Fuel OpenStack Hardware Compatibility List <https://www.mirantis.com/software/hardware-compatibility/>`_
 
-Fuel in OPNFV
+Armband Fuel in OPNFV
 
 13) `OPNFV Installation instruction for the AArch64 Danube release of OPNFV when using Fuel as a deployment tool <http://artifacts.opnfv.org/armband/docs/release_installation/index.html>`_
 
