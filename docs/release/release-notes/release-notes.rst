@@ -38,13 +38,13 @@ supplemented with OPNFV unique components such as:
 
 - `OpenDaylight <http://www.opendaylight.org/software>`_
 - `Open vSwitch for NFV <https://wiki.opnfv.org/ovsnfv>`_
-- `BGPVPN <http://docs.openstack.org/developer/networking-bgpvpn>`_
 - `Tacker <https://wiki.openstack.org/wiki/Tacker>`_
 - `Service Function Chaining <https://wiki.opnfv.org/service_function_chaining>`_
-- `SDN distributed routing and VPN <https://wiki.opnfv.org/sdnvpn>`_
 
 The following OPNFV plugins are not yet ported for AArch64:
 
+- `BGPVPN <http://docs.openstack.org/developer/networking-bgpvpn>`_
+- `SDN distributed routing and VPN <https://wiki.opnfv.org/sdnvpn>`_
 - `NFV Hypervisors-KVM <https://wiki.opnfv.org/nfv-kvm>`_
 - `VSPERF <https://wiki.opnfv.org/characterize_vswitch_performance_for_telco_nfv_use_cases>`_
 - `Promise <https://wiki.opnfv.org/display/promise>`_
