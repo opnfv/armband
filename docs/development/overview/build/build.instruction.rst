@@ -218,7 +218,7 @@ should first initialize the submodules and apply armband patches
 
 .. code-block:: bash
 
-    $ make patches-import
+    $ make fuel-patches-import
 
 
 Configure your build environment
@@ -227,15 +227,14 @@ Configure your build environment
 ** Configuring the build environment should not be performed if building
 standard Danube release **
 
-Select the versions of the components you want to build by editing the
-<armband/upstream/fuel/build/config.mk> and
-<armband/upstream/fuel/build/armband.mk> files.
+Select the versions of the components you want to build by editing
+<armband/armband-fuel-config.mk>.
 
 Note! The same observation as above, before altering Makefile, run:
 
 .. code-block:: bash
 
-    $ make patches-import
+    $ make fuel-patches-import
 
 
 Non official build: Selecting which plugins to build
@@ -246,7 +245,7 @@ individual developer locally), the selection if which Fuel plugins to
 build (if any) can be done by environment variable
 "BUILD_FUEL_PLUGINS" prior to building.
 
-Only the plugin targets from <armband/upstream/fuel/build/armband.mk> that
+Only the plugin targets from <armband/armband-fuel-config.mk> that
 are specified in the environment variable will then be built. In order to
 completely disable the building of plugins, the environment variable
 is set to " ". When using this functionality, the resulting iso file
@@ -279,7 +278,7 @@ Following targets exist:
 
 - release - this will do the same as:
 
-  - make submodules-clean patches-import build
+  - make submodules-clean fuel-patches-import build
 
 - none/all/build -  this will:
 

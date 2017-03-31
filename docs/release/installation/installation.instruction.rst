@@ -547,6 +547,10 @@ Allocate nodes to environment and assign functional roles
 OPTIONAL - Set Local Mirror Repos
 =================================
 
+**NOTE**: Support for local mirrors is incomplete in Danube 1.0.
+You may opt in for it to fetch less packages from internet during deployment,
+but an internet connection is still required.
+
 The following steps must be executed if you are in an environment with
 no connection to the Internet. The Fuel server delivers a local repo
 that can be used for installation / deployment of openstack.
@@ -555,11 +559,11 @@ that can be used for installation / deployment of openstack.
 
    - Replace the URI values for the "Name" values outlined below:
 
-   - "ubuntu" URI="deb http://<ip-of-fuel-server>:8080/mirrors/ubuntu/ trusty main"
+   - "ubuntu" URI="deb http://<ip-of-fuel-server>:8080/mirrors/ubuntu/ xenial main"
 
-   - "mos" URI="deb http://<ip-of-fuel-server>::8080/mitaka-9.0/ubuntu/x86_64 mos9.0 main restricted"
+   - "mos" URI="deb http://<ip-of-fuel-server>::8080/newton-10.0/ubuntu/x86_64 mos10.0 main restricted"
 
-   - "Auxiliary" URI="deb http://<ip-of-fuel-server>:8080/mitaka-9.0/ubuntu/auxiliary auxiliary main restricted"
+   - "Auxiliary" URI="deb http://<ip-of-fuel-server>:8080/newton-10.0/ubuntu/auxiliary auxiliary main restricted"
 
    - Click <Save Settings> at the bottom to Save your changes
 
@@ -588,6 +592,28 @@ Target specific configuration
    - mysqldump (untested);
 
    .. figure:: img/fuelwsrepsst.png
+
+#. [AArch64 specific] Use kernel 4.8 for experimental GICv3 features
+
+   **NOTE**: This kernel is required for: SFC scenarios, GICv3 live migration.
+
+   **NOTE**: This kernel is included in the Armband ISO, all that is needed
+   for it to be used in a specific environemnt is to explicitly add it to
+   the list of packages that will be installed by baremetal provisioning.
+
+   In the FUEL UI of your Environment, click the <Settings> tab, click
+   <General> on the left side pane, then at the bottom of the page, in the
+   <Provision> subsection, amend the package list:
+
+   - remove <linux-headers-generic-lts-xenial>;
+
+   - remove <linux-image-generic-lts-xenial>;
+
+   - add <linux-image-4.8.0-9944-generic>;
+
+   - add <linux-headers-4.8.0-9944-generic>;
+
+   - add <linux-image-extra-4.8.0-9944-generic> (optional);
 
 #. Set up targets for provisioning with non-default "Offloading Modes"
 
