@@ -593,27 +593,27 @@ Target specific configuration
 
    .. figure:: img/fuelwsrepsst.png
 
-#. [AArch64 specific] Use kernel 4.8 for experimental GICv3 features
+#. [AArch64 specific] Using a different kernel
 
-   **NOTE**: This kernel is required for: SFC scenarios, GICv3 live migration.
+   **NOTE**: By default, a 4.8 based kernel is used, for enabling experimental
+   GICv3 features (e.g. live migration) and SFC support (required by OVS-NSH).
 
-   **NOTE**: This kernel is included in the Armband ISO, all that is needed
-   for it to be used in a specific environemnt is to explicitly add it to
-   the list of packages that will be installed by baremetal provisioning.
-
-   In the FUEL UI of your Environment, click the <Settings> tab, click
+   To use Ubuntu Xenial LTS generic kernel (also available in offline mirror),
+   in the FUEL UI of your Environment, click the <Settings> tab, click
    <General> on the left side pane, then at the bottom of the page, in the
    <Provision> subsection, amend the package list:
 
-   - remove <linux-headers-generic-lts-xenial>;
+   - add <linux-headers-generic-lts-xenial>;
 
-   - remove <linux-image-generic-lts-xenial>;
+   - add <linux-image-generic-lts-xenial>;
 
-   - add <linux-image-4.8.0-9944-generic>;
+   - add <linux-image-extra-lts-xenial> (optional);
 
-   - add <linux-headers-4.8.0-9944-generic>;
+   - remove <linux-image-4.8.0-9944-generic>;
 
-   - add <linux-image-extra-4.8.0-9944-generic> (optional);
+   - remove <linux-headers-4.8.0-9944-generic>;
+
+   - remove <linux-image-extra-4.8.0-9944-generic>;
 
 #. Set up targets for provisioning with non-default "Offloading Modes"
 
