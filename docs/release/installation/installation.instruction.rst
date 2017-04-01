@@ -593,28 +593,6 @@ Target specific configuration
 
    .. figure:: img/fuelwsrepsst.png
 
-#. [AArch64 specific] Use kernel 4.8 for experimental GICv3 features
-
-   **NOTE**: This kernel is required for: SFC scenarios, GICv3 live migration.
-
-   **NOTE**: This kernel is included in the Armband ISO, all that is needed
-   for it to be used in a specific environemnt is to explicitly add it to
-   the list of packages that will be installed by baremetal provisioning.
-
-   In the FUEL UI of your Environment, click the <Settings> tab, click
-   <General> on the left side pane, then at the bottom of the page, in the
-   <Provision> subsection, amend the package list:
-
-   - remove <linux-headers-generic-lts-xenial>;
-
-   - remove <linux-image-generic-lts-xenial>;
-
-   - add <linux-image-4.8.0-9944-generic>;
-
-   - add <linux-headers-4.8.0-9944-generic>;
-
-   - add <linux-image-extra-4.8.0-9944-generic> (optional);
-
 #. Set up targets for provisioning with non-default "Offloading Modes"
 
    Some target nodes may require additional configuration after they are
