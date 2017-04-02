@@ -269,7 +269,7 @@ Install Fuel master
    the OPNFV bootstrap build scripts and will lead to a failed bootstrap
    image build.
 
-   **NOTE:** Cannot be used in tandem with local repository support.
+   **NOTE**: Cannot be used in tandem with local repository support.
 
    .. figure:: img/fuelmenu5.png
 
@@ -282,6 +282,10 @@ Install Fuel master
    - NTP Server 3 <Customer NTP server 3>
 
    .. figure:: img/fuelmenu6.png
+
+#. In the "Feature groups" section - Enable "Experimental features" if you plan on using Ceilometer and/or MongoDB.
+
+   **NOTE**: Ceilometer and MongoDB are experimental features starting with Danube.1.0.
 
 #. Start the installation.
 
