@@ -1,0 +1,41 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB, Cavium and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From 4e380d21119b9bdb5dcad4430c107704b6c160bb Mon Sep 17 00:00:00 2001
+From: Catalina Focsa <catalina.focsa@enea.com>
+Date: Tue, 4 Apr 2017 14:11:13 +0200
+Subject: [PATCH] Update Host OS NTP Servers in fuel menu
+
+Old *.fuel.pool.ntp.org values are no longer accessible
+JIRA: https://jira.opnfv.org/browse/ARMBAND-225
+LP: https://bugs.launchpad.net/fuel/+bug/1679636
+
+Signed-off-by: Catalina Focsa <catalina.focsa@enea.com>
+---
+ fuelmenu/settings.yaml | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fuelmenu/settings.yaml b/fuelmenu/settings.yaml
+index e93309a..96f4c93 100644
+--- a/fuelmenu/settings.yaml
++++ b/fuelmenu/settings.yaml
+@@ -2,9 +2,9 @@ HOSTNAME: "fuel"
+ DNS_DOMAIN: "domain.tld"
+ DNS_SEARCH: "domain.tld"
+ DNS_UPSTREAM: "8.8.8.8"
+-NTP1: "0.fuel.pool.ntp.org"
+-NTP2: "1.fuel.pool.ntp.org"
+-NTP3: "2.fuel.pool.ntp.org"
++NTP1: "0.pool.ntp.org"
++NTP2: "1.pool.ntp.org"
++NTP3: "2.pool.ntp.org"
+ FUEL_ACCESS:
+   user: "admin"
+   password: "admin"
+--
+1.9.1
