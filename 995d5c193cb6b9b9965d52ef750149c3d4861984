@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ab8dda7_323d56bc",
+        "filename": "patches/fuel-web/0005-Update-Host-OS-NTP-Servers-in-web.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-04-04T14:16:48Z",
+      "side": 1,
+      "message": "should only be Enea AB here",
+      "range": {
+        "startLine": 2,
+        "startChar": 21,
+        "endLine": 2,
+        "endChar": 36
+      },
+      "revId": "995d5c193cb6b9b9965d52ef750149c3d4861984",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_52580a32",
+        "filename": "patches/fuel-web/0005-Update-Host-OS-NTP-Servers-in-web.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-04-04T14:16:48Z",
+      "side": 1,
+      "message": "This line should be removed.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 70
+      },
+      "revId": "995d5c193cb6b9b9965d52ef750149c3d4861984",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_1242923e",
+        "filename": "patches/fuel-web/0005-Update-Host-OS-NTP-Servers-in-web.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-04-04T14:16:48Z",
+      "side": 1,
+      "message": "Upstream bug report in Fuel@Openstack should be added either here or in the ARMBAND ticket.",
+      "revId": "995d5c193cb6b9b9965d52ef750149c3d4861984",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_725bce2e",
+        "filename": "patches/fuel-web/0005-Update-Host-OS-NTP-Servers-in-web.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-04-04T14:16:48Z",
+      "side": 1,
+      "message": "git signature should be removed too",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 5
+      },
+      "revId": "995d5c193cb6b9b9965d52ef750149c3d4861984",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
