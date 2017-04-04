@@ -1,0 +1,38 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From 3581ccc60a0c17403c2a9b7f1c77221cd9d5b7af Mon Sep 17 00:00:00 2001
+Date: Mon, 3 Apr 2017 11:30:10 +0200
+Subject: [PATCH] Update Host OS NTP Servers to pool.ntp.org
+
+Old *.fuel.pool.ntp.org values are no longer accessible
+LP: https://bugs.launchpad.net/fuel/+bug/1679636
+JIRA: https://jira.opnfv.org/browse/ARMBAND-225
+
+Signed-off-by: Catalina Focsa <catalina.focsa@enea.com>
+---
+ nailgun/nailgun/settings.yaml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/nailgun/nailgun/settings.yaml b/nailgun/nailgun/settings.yaml
+index 92b3518..1041c66 100644
+--- a/nailgun/nailgun/settings.yaml
++++ b/nailgun/nailgun/settings.yaml
+@@ -1100,8 +1100,8 @@ DNS_UPSTREAM:
+   - '8.8.8.8'
+   - '8.8.4.4'
+ NTP_UPSTREAM:
+-  - '0.fuel.pool.ntp.org'
+-  - '1.fuel.pool.ntp.org'
++  - '0.pool.ntp.org'
++  - '1.pool.ntp.org'
+
+ # deadlocks detection settings
+ LOG_DEADLOCKS_WARNINGS: 1
+--
+1.9.1
