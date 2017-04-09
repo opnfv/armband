@@ -36,10 +36,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  deploy/cloud/configure_settings.py                 |   4 +
  deploy/cloud/deployment.py                         |  12 +
  deploy/deploy.py                                   |  25 +-
- deploy/deploy_cache.py                             | 312 +++++++++++++++++++++
+ deploy/deploy_cache.py                             | 314 +++++++++++++++++++++
  deploy/deploy_env.py                               |  13 +-
  deploy/install_fuel_master.py                      |   9 +-
- 8 files changed, 470 insertions(+), 9 deletions(-)
+ 8 files changed, 472 insertions(+), 9 deletions(-)
  create mode 100644 build/f_repos/patch/fuel-main/0006-bootstrap_admin_node.sh-deploy_cache-install-hook.patch
  create mode 100644 deploy/deploy_cache.py
 
@@ -372,10 +372,10 @@ index 7648baf..ee3cb7a 100755
                'deploy_log': args.deploy_log}
 diff --git a/deploy/deploy_cache.py b/deploy/deploy_cache.py
 new file mode 100644
-index 0000000..7df43c6
+index 0000000..30bfe30
 --- /dev/null
 +++ b/deploy/deploy_cache.py
-@@ -0,0 +1,312 @@
+@@ -0,0 +1,314 @@
 +###############################################################################
 +# Copyright (c) 2016 Enea AB and others.
 +# Alexandru.Avadanii@enea.com
@@ -433,7 +433,7 @@ index 0000000..7df43c6
 +# Cache fingerprint covers:
 +# - bootstrap:
 +#   - local mirror contents
-+#   - package list (and everything else in fuel_bootstrap_cli.yaml)
++#   - FIXME(armband): [disabled] package list (old fuel_bootstrap_cli.yaml)
 +# - target image:
 +#   - local mirror contents
 +#   - package list (determined from DEA)
@@ -472,8 +472,8 @@ index 0000000..7df43c6
 +# Relative path for collecting target image(s) for deployed enviroment
 +NAILGUN_TIMAGES_SUBDIR = TARGETIMAGES
 +
-+# OPNFV Fuel bootstrap settings file that will be injected at deploy
-+ISO_BOOTSTRAP_CLI_YAML = '/opnfv/fuel_bootstrap_cli.yaml'
++# FIXME(armband): re-include package list (old fuel_bootstrap_cli.yaml)
++# ISO_BOOTSTRAP_CLI_YAML = '/opnfv/fuel_bootstrap_cli.yaml'
 +
 +# OPNFV Deploy Cache path on Fuel Master, where artifacts will be injected
 +REMOTE_CACHE_PATH = '/var/cache/opnfv'
@@ -522,10 +522,12 @@ index 0000000..7df43c6
 +    def __fingerprint_bootstrap(self, chroot_path):
 +        """Collect bootstrap image metadata fingerprints"""
 +        # FIXME(armband): include 'extra_dirs' contents
-+        cli_yaml_path = os.path.join(chroot_path, ISO_BOOTSTRAP_CLI_YAML[1:])
-+        bootstrap_cli_yaml = open(cli_yaml_path).read()
-+        bootstrap_data = yaml.load(bootstrap_cli_yaml)
-+        sorted_data = json.dumps(bootstrap_data, sort_keys=True)
++        sorted_data = ''
++        # FIXME(armband): re-include package list (old fuel_bootstrap_cli.yaml)
++        # cli_yaml_path = os.path.join(chroot_path, ISO_BOOTSTRAP_CLI_YAML[1:])
++        # bootstrap_cli_yaml = open(cli_yaml_path).read()
++        # bootstrap_data = yaml.load(bootstrap_cli_yaml)
++        # sorted_data = json.dumps(bootstrap_data, sort_keys=True)
 +        self.fingerprints[BOOTSTRAPS] = hashlib.sha1(sorted_data).hexdigest()
 +
 +    def __fingerprint_target(self, dea_file):
