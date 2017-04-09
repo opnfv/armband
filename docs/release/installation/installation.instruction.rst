@@ -262,14 +262,11 @@ Install Fuel master
    .. figure:: img/fuelmenu4.png
 
 
-#. **DO NOT CHANGE** anything in "Bootstrap Image" section (see figure below).
+#. OPTION TO ENABLE PROXY SUPPORT - In the "Bootstrap Image" section (see figure below), edit the following fields to define a proxy. (**NOTE:** cannot be used in tandem with local repository support)
 
-   In ArmbandFuel@OPNFV, this data is **NOT** actually used for bootstrap
-   image building. Any change here will replace the configuration from
-   the OPNFV bootstrap build scripts and will lead to a failed bootstrap
-   image build.
+   - Navigate to "HTTP proxy" and enter your http proxy address
 
-   **NOTE**: Cannot be used in tandem with local repository support.
+   - Select <Check> and press [Enter]
 
    .. figure:: img/fuelmenu5.png
 
@@ -289,7 +286,9 @@ Install Fuel master
 
 #. Start the installation.
 
-   - Press <F8>
+   **NOTE**: Saving each section and hitting <F8> does not apply all settings!
+
+   - Select Quit Setup and press Save and Quit.
 
    - The installation will now start, wait until the login screen is shown.
 
