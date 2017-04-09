@@ -289,7 +289,9 @@ Install Fuel master
 
 #. Start the installation.
 
-   - Press <F8>
+   **NOTE**: Saving each section and hitting <F8> does not apply all settings!
+
+   - Select Quit Setup and press Save and Quit.
 
    - The installation will now start, wait until the login screen is shown.
 

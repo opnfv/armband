@@ -1,0 +1,50 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 14 Mar 2017 19:56:50 +0100
+Subject: [PATCH] bootstrap defaults: Pin kernel to 4.8.0-9944
+
+Since newer kernels have issues with AAVMF + vhost_net,
+we need to also temporarily blacklist vhost_net.
+
+TODO: Remove vhost_net blacklist (later).
+
+JIRA: https://jira.opnfv.org/browse/ARMBAND-161
+JIRA: https://jira.opnfv.org/browse/ARMBAND-171
+JIRA: https://jira.opnfv.org/browse/ARMBAND-227
+JIRA: https://jira.opnfv.org/browse/ARMBAND-230
+JIRA: https://jira.opnfv.org/browse/ARMBAND-239
+JIRA: https://jira.opnfv.org/browse/ARMBAND-244
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample | 5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample
+index ff5baa8..42765b6 100644
+--- a/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample
++++ b/contrib/fuel_bootstrap/fuel_bootstrap_cli/fuel_bootstrap/settings.yaml.sample
+@@ -13,13 +13,14 @@
+ output_dir: /tmp/
+ # Defines kernel version
+-kernel_flavor: linux-image-generic-lts-xenial
++kernel_flavor: linux-image-4.8.0-9944-generic
+ # Define packages list
+ packages:
+   - daemonize
+   - fuel-agent
+   - hwloc
+   - i40e-dkms
+   - linux-firmware
+-  - linux-headers-generic
++  - linux-image-extra-4.8.0-9944-generic
++  - linux-headers-4.8.0-9944-generic
+   - live-boot
+   - live-boot-initramfs-tools
