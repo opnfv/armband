@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ab8dda7_3e6f46c7",
+        "filename": "patches/opnfv-fuel/0010-Read-or-add-default-mtu-values-for-each-interface.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-04-26T15:39:55Z",
+      "side": 1,
+      "message": "instead of iterating the whole structure for filtering only mtu, could we just:\nv \u003d { \u0027mtu\u0027: v[\u0027mtu\u0027] }\n?",
+      "range": {
+        "startLine": 44,
+        "startChar": 13,
+        "endLine": 47,
+        "endChar": 30
+      },
+      "revId": "56f0579d42268df186e203339d95310e164772ca",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_7e75be96",
+        "filename": "patches/opnfv-fuel/0010-Read-or-add-default-mtu-values-for-each-interface.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-04-26T15:39:55Z",
+      "side": 1,
+      "message": "Most of the time, MTU 1500 is indeed the default.\nHowever, we should not hardcode this value if it\u0027s not present in the input data already.\nInstead, the mtu should be omitted or set to null in this case.",
+      "range": {
+        "startLine": 50,
+        "startChar": 17,
+        "endLine": 50,
+        "endChar": 32
+      },
+      "revId": "56f0579d42268df186e203339d95310e164772ca",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_7e9cdec0",
+        "filename": "patches/opnfv-fuel/0010-Read-or-add-default-mtu-values-for-each-interface.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-04-26T15:39:55Z",
+      "side": 1,
+      "message": "We could compact this + the init above into\nproperties_name \u003d self.check_dict_exists(properties, interface) if properties else None;",
+      "range": {
+        "startLine": 52,
+        "startChar": 9,
+        "endLine": 53,
+        "endChar": 76
+      },
+      "revId": "56f0579d42268df186e203339d95310e164772ca",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab8dda7_3ea66611",
+        "filename": "patches/opnfv-fuel/0010-Read-or-add-default-mtu-values-for-each-interface.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-04-26T15:39:55Z",
+      "side": 1,
+      "message": "git signature again :P",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 5
+      },
+      "revId": "56f0579d42268df186e203339d95310e164772ca",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
