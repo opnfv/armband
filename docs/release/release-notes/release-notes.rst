@@ -80,10 +80,10 @@ Release Data
 | **Project**                          | armband                              |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/tag**                         | danube.1.0                           |
+| **Repo/tag**                         | danube.2.0                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release designation**              | Danube 1.0                           |
+| **Release designation**              | Danube 2.0                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 | **Release date**                     | March 27 2017                        |
@@ -103,7 +103,7 @@ Version Change
 
 Module Version Changes
 ----------------------
-This is the Danube 1.0 release.
+This is the Danube 2.0 release.
 It is based on following upstream versions:
 
 - Fuel 10.0 Base Release
@@ -114,7 +114,7 @@ It is based on following upstream versions:
 
 Document Changes
 ----------------
-This is the Danube 1.0 release.
+This is the Danube 2.0 release.
 It comes with the following documentation:
 
 - Installation instructions
@@ -137,7 +137,7 @@ Bug Corrections
 
 **JIRA TICKETS:**
 
-`Danube 1.0 bug fixes  <https://jira.opnfv.org/issues/?filter=11615>`_
+`Danube 2.0 bug fixes  <https://jira.opnfv.org/issues/?filter=11615>`_
 
 (Also See respective Integrated feature project's bug tracking)
 
@@ -198,13 +198,13 @@ Workarounds
 ============
 Test Results
 ============
-The Danube 1.0 release with the Fuel deployment tool has undergone QA test
+The Danube 2.0 release with the Fuel deployment tool has undergone QA test
 runs, see separate test results.
 
 ==========
 References
 ==========
-For more information on the OPNFV Danube 1.0 release, please see:
+For more information on the OPNFV Danube 2.0 release, please see:
 
 OPNFV
 =====

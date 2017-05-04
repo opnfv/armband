@@ -135,7 +135,7 @@ Check out the Danube release:
 .. code-block:: bash
 
     $ cd armband
-    $ git checkout danube.1.0
+    $ git checkout danube.2.0
 
 Clone the armband@OPNFV code Git repository without a SSH key
 -------------------------------------------------------------
