@@ -1,0 +1,50 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Andrei Varvara <andrei.varvara@enea.com>
+Date: Thu, 4 May 2017 13:35:32 +0200
+Subject: [PATCH] nailgun: Add NIC vendorid and device id for Cavium NIC
+
+In order to enable DPDK and ovs-dpdk in Fuel, a checkbox must be enabled
+in the interface configuration menu of the nodes.
+
+This did not work on ThunderX based PODs, because Fuel filters out NICs based
+on Vendor Id (currently Intel only) and Product Id. This is implemented
+via a static list of known Vid and Pid pairs in openstack.yaml file.
+
+Added Cavium NIC to the list of DPDK supported NICs so that fuel will
+enable the DPDK checkbox.
+
+Signed-off-by: Andrei Varvara <andrei.varvara@enea.com>
+---
+ nailgun/nailgun/fixtures/openstack.yaml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/nailgun/nailgun/fixtures/openstack.yaml b/nailgun/nailgun/fixtures/openstack.yaml
+index 0b27611..070004e 100644
+--- a/nailgun/nailgun/fixtures/openstack.yaml
++++ b/nailgun/nailgun/fixtures/openstack.yaml
+@@ -2293,7 +2293,7 @@
+           "15ad:07b0", "8086:15a5", "1137:0043", "1137:0071", "14e4:168a",
+           "14e4:16a9", "14e4:164f", "14e4:168e", "14e4:16af", "14e4:163d",
+           "14e4:163f", "14e4:168d", "14e4:16a1", "14e4:16a2", "14e4:16ad",
+-          "14e4:16ae", "14e4:163e", "14e4:16a4", "8086:10f8"
++          "14e4:16ae", "14e4:163e", "14e4:16a4", "8086:10f8", "177d:a034"
+         ]
+ - pk: 3
+   extend: *ubuntu_xenial
+@@ -2635,7 +2635,7 @@
+           "15ad:07b0", "8086:15a5", "1137:0043", "1137:0071", "14e4:168a",
+           "14e4:16a9", "14e4:164f", "14e4:168e", "14e4:16af", "14e4:163d",
+           "14e4:163f", "14e4:168d", "14e4:16a1", "14e4:16a2", "14e4:16ad",
+-          "14e4:16ae", "14e4:163e", "14e4:16a4"
++          "14e4:16ae", "14e4:163e", "14e4:16a4", "177d:a034"
+         ]
+ - pk: 5
+   extend: *ubuntu_aarch64_xenial
+
