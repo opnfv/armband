@@ -1,0 +1,38 @@
+-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+-: Copyright (c) 2017 Enea AB and others.
+-:
+-: All rights reserved. This program and the accompanying materials
+-: are made available under the terms of the Apache License, Version 2.0
+-: which accompanies this distribution, and is available at
+-: http://www.apache.org/licenses/LICENSE-2.0
+-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Catalina Focsa <catalina.focsa@enea.com>
+Date: Wed, 17 May 2017 11:41:21 +0200
+Subject: [PATCH] Append properties containing MTU to interfaces
+
+Select for each interface the section containing
+MTU Custom value and append it to the interface
+properties
+
+JIRA: ARMBAND-199
+
+Signed-off-by: Catalina Focsa <catalina.focsa@enea.com>
+---
+ deploy/reap.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/deploy/reap.py b/deploy/reap.py
+index fe6bebf..b7a7593 100644
+--- a/deploy/reap.py
++++ b/deploy/reap.py
+@@ -358,6 +358,8 @@ class Reap(object):
+                     pxe_mac = interface['mac']
+             if networks:
+                 interface_config[interface['name']] = networks
++                mtu_node = {'mtu': {k:v for k, v in interface['attributes']['mtu'].items() if k == 'value'}}
++                interface_config[interface['name']].append({'interface_properties': dict(mtu_node)})
+         return interface_config, pxe_mac
+
+     def read_yaml(self, yaml_file):
+--
+1.9.1
