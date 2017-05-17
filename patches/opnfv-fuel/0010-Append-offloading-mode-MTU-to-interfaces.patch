@@ -1,0 +1,41 @@
+-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+-: Copyright (c) 2017 Enea AB and others.
+-:
+-: All rights reserved. This program and the accompanying materials
+-: are made available under the terms of the Apache License, Version 2.0
+-: which accompanies this distribution, and is available at
+-: http://www.apache.org/licenses/LICENSE-2.0
+-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Catalina Focsa <catalina.focsa@enea.com>
+Date: Wed, 17 May 2017 17:41:47 +0200
+Subject: [PATCH] Append offloading mode & MTU to interfaces
+
+Select for each interface the section containing
+MTU Custom value and the Offloading Custom value
+and append these to the interface properties
+
+JIRA: ARMBAND-199
+JIRA: ARMBAND-251
+JIRA: ARMBAND-253
+
+Signed-off-by: Catalina Focsa <catalina.focsa@enea.com>
+---
+ deploy/reap.py | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/deploy/reap.py b/deploy/reap.py
+index fe6bebf..35a63d2 100644
+--- a/deploy/reap.py
++++ b/deploy/reap.py
+@@ -358,6 +358,9 @@ class Reap(object):
+                     pxe_mac = interface['mac']
+             if networks:
+                 interface_config[interface['name']] = networks
++                dict_prop = {'mtu': {k:v for k, v in interface['attributes']['mtu'].items() if k == 'value'}}
++                dict_prop.update({'offloading': {k:v for k, v in interface['attributes']['offloading'].items() if k == 'modes'}})
++                interface_config[interface['name']].append({'interface_properties': dict_prop})
+         return interface_config, pxe_mac
+
+     def read_yaml(self, yaml_file):
+--
+1.9.1
