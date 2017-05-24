@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5aaae553_74cc5636",
+        "filename": "patches/opnfv-fuel/0010-Append-properties-containing-MTU-to-interfaces.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-05-24T14:48:54Z",
+      "side": 1,
+      "message": "First, we should make this change as an edit on the existing 0010-reap.py... patch we merged in [1].\nWhile I was looking at that commit, I noticed the license header has some extra leading \u0027-\u0027 chars, please remove those as well.\n\n[1] https://github.com/opnfv/armband/commit/cd56dd8984b01c36ceaf439784fdd3fdd5e8cd0f\n[2] https://github.com/opnfv/armband/blob/master/patches/opnfv-fuel/0010-reap.py-Support-reading-MTU-values.patch#L1-L8",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 79
+      },
+      "revId": "4225084d335ef685b1c1952bd1d77c832f82103d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_14d162cd",
+        "filename": "patches/opnfv-fuel/0010-Append-properties-containing-MTU-to-interfaces.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-05-24T14:48:54Z",
+      "side": 1,
+      "message": "lines too long",
+      "range": {
+        "startLine": 32,
+        "startChar": 15,
+        "endLine": 33,
+        "endChar": 101
+      },
+      "revId": "4225084d335ef685b1c1952bd1d77c832f82103d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
