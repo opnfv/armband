@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5aaae553_44a40357",
+        "filename": "patches/opnfv-fuel/0010-Append-offloading-modes-and-MTU-to-interfaces.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-05-26T12:35:46Z",
+      "side": 1,
+      "message": "extra line",
+      "revId": "1435228046e57f219cfd14d8b358c3abb51d6551",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_64957fe3",
+        "filename": "patches/opnfv-fuel/0010-Append-offloading-modes-and-MTU-to-interfaces.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-05-26T12:35:46Z",
+      "side": 1,
+      "message": "extra spaces",
+      "range": {
+        "startLine": 12,
+        "startChar": 16,
+        "endLine": 12,
+        "endChar": 21
+      },
+      "revId": "1435228046e57f219cfd14d8b358c3abb51d6551",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_249f8705",
+        "filename": "patches/opnfv-fuel/0010-Append-offloading-modes-and-MTU-to-interfaces.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-05-26T12:35:46Z",
+      "side": 1,
+      "message": "extra spaces",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 4
+      },
+      "revId": "1435228046e57f219cfd14d8b358c3abb51d6551",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
