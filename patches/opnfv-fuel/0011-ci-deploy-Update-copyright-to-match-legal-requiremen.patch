@@ -1,0 +1,40 @@
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 <Company or Individual> and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Andrei Varvara <Andrei.Varvara@enea.com>
+Date: Wed, 31 May 2017 14:10:24 +0200
+Subject: [PATCH] ci-deploy : Update copyright to match legal requirements
+
+Signed-off-by: Andrei Varvara <Andrei.Varvara@enea.com>
+---
+ ci/deploy.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/ci/deploy.sh b/ci/deploy.sh
+index 179b168..f157a9e 100755
+--- a/ci/deploy.sh
++++ b/ci/deploy.sh
+@@ -1,12 +1,13 @@
+-#!/bin/bash
+-#
+-# (c) 2016 Enea Software AB
++##############################################################################
++# Copyright (c) 2017 Enea Software AB and others.
+ #
+ # All rights reserved. This program and the accompanying materials
+ # are made available under the terms of the Apache License, Version 2.0
+ # which accompanies this distribution, and is available at
+ # http://www.apache.org/licenses/LICENSE-2.0
+-#
++##############################################################################
++#!/bin/bash
++
+ set -e
+ 
+ cd $WORKSPACE
+
