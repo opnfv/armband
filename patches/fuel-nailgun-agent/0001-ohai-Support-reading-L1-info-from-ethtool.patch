@@ -51,7 +51,7 @@ index 0000000..8ae8c49
 +index c764a68..978131f 100755
 +--- a/agent
 ++++ b/agent
-+@@ -316,7 +316,11 @@ class NodeAgent
++@@ -602,7 +602,11 @@ class NodeAgent
 +                 int_meta[:current_speed] = int_info.current_mode.speed
 +               end
 +             rescue
@@ -62,8 +62,8 @@ index 0000000..8ae8c49
 ++                int_meta[:current_speed] = nil
 ++              end
 +             end
-+           elsif (addrinfo[:family] rescue nil) =~ /^inet$/
-+             int_meta[:ip] = addr
++
++             unless int_meta[:driver]
 diff --git a/debian/patches/series b/debian/patches/series
 new file mode 100644
 index 0000000..b221a98

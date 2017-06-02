@@ -1,0 +1,77 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 19 May 2017 20:39:12 +0200
+Subject: [PATCH] AArch64: Allow removable storage on platform bus
+
+Some devices might have removable storage directly on the AArch64
+specific "platform" bus, which is currently filtered-out by
+nailgun-agent.
+
+Allow such devices to be considered as valid storage.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ...4-Allow-removable-storage-on-platform-bus.patch | 38 ++++++++++++++++++++++
+ debian/patches/series                              |  1 +
+ 2 files changed, 39 insertions(+)
+ create mode 100644 debian/patches/0005-AArch64-Allow-removable-storage-on-platform-bus.patch
+
+diff --git a/debian/patches/0005-AArch64-Allow-removable-storage-on-platform-bus.patch b/debian/patches/0005-AArch64-Allow-removable-storage-on-platform-bus.patch
+new file mode 100644
+index 0000000..7417b8b
+--- /dev/null
++++ b/debian/patches/0005-AArch64-Allow-removable-storage-on-platform-bus.patch
+@@ -0,0 +1,37 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Fri, 19 May 2017 20:30:43 +0200
++Subject: [PATCH 4/4] AArch64: Allow removable storage on platform bus
++
++Some devices might have removable storage directly on the AArch64
++specific "platform" bus, which is currently filtered-out by
++nailgun-agent.
++
++Allow such devices to be considered as valid storage.
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ agent | 11 ++++++++++-
++ 1 file changed, 10 insertions(+), 1 deletion(-)
++
++diff --git a/agent b/agent
++index 01c17fe..1249746 100755
++--- a/agent
+++++ b/agent
++@@ -938,7 +938,16 @@ class NodeAgent
++       # For the example given above, vendor ID should be found as '0x10b5'.
++       # Next ID of '0x8086' belongs to PCIe slot to which PCIe RAID disk adapter is inserted.
++       devpath = Hash[udevadm_walk.select { |k, v| v['SUBSYSTEMS'] == 'pci' }].keys.max
++-      udevadm_walk[devpath]['ATTRS{vendor}']
+++      if devpath
+++        udevadm_walk[devpath]['ATTRS{vendor}']
+++      elsif Hash[udevadm_walk.select { |k, v| v['SUBSYSTEMS'] == 'platform' }]
+++        # NOTE(armband): AArch64 targets might have removable storage on the
+++        # "platform" bus, which should be filtered-in as valid storage.
+++
+++        # TODO(armband): Rewrite this as separate functionality instead of
+++        # hijacking PCI filtering and masquerading as a removable PCI ID.
+++        REMOVABLE_PCI_VENDORS[0]
+++      end
++     end
++   rescue => e
++     @logger.error("Error '#{e.message}' in obtaining PCI vendor ID: #{e.backtrace}")
+diff --git a/debian/patches/series b/debian/patches/series
+index 93ef079..33c8326 100644
+--- a/debian/patches/series
++++ b/debian/patches/series
+@@ -2,3 +2,4 @@
+ 0002-Temporary-SR-IOV-Fix-VNICs-broken-filter.patch
+ 0003-AArch64-Add-CPU-details-detection.patch
+ 0004-AArch64-Read-hugepage-size-from-proc-meminfo.patch
++0005-AArch64-Allow-removable-storage-on-platform-bus.patch
