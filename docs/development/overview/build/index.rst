@@ -4,9 +4,9 @@
 
 .. _armband-development-overview-build-label:
 
-*********************************
-Build instruction for Fuel\@OPNFV
-*********************************
+********************************************
+Build instruction for Fuel\@OPNFV on AArch64
+********************************************
 
 .. toctree::
    :numbered:

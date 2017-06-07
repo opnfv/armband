@@ -60,7 +60,7 @@ baseline required to replicate the Danube release:
 
 .. code-block:: bash
 
-    $ git checkout danube.2.0
+    $ git checkout danube.3.0
 
 Go to the armband directory and build the .iso:
 
@@ -341,7 +341,7 @@ Install additional Plugins/Features on the FUEL node
 
    .. figure:: img/plugin_install.png
 
-   **NOTE**: AArch64 Danube 2.0 ships only with ODL, OVS, BGPVPN, SFC and Tacker
+   **NOTE**: AArch64 Danube 3.0 ships only with ODL, OVS, BGPVPN, SFC and Tacker
    plugins, see *Reference 15*.
 
 Create an OpenStack Environment
@@ -550,7 +550,7 @@ Allocate nodes to environment and assign functional roles
 OPTIONAL - Set Local Mirror Repos
 =================================
 
-**NOTE**: Support for local mirrors is incomplete in Danube 2.0.
+**NOTE**: Support for local mirrors is incomplete in Danube 3.0.
 You may opt in for it to fetch less packages from internet during deployment,
 but an internet connection is still required.
 

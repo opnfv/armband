@@ -80,13 +80,13 @@ Release Data
 | **Project**                          | armband                              |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/tag**                         | danube.2.0                           |
+| **Repo/tag**                         | danube.3.0                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release designation**              | Danube 2.0                           |
+| **Release designation**              | Danube 3.0                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release date**                     | March 27 2017                        |
+| **Release date**                     | June 08 2017                         |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 | **Purpose of the delivery**          | Danube alignment to Released         |
@@ -103,7 +103,7 @@ Version Change
 
 Module Version Changes
 ----------------------
-This is the Danube 2.0 release.
+This is the Danube 3.0 release.
 It is based on following upstream versions:
 
 - Fuel 10.0 Base Release
@@ -114,7 +114,7 @@ It is based on following upstream versions:
 
 Document Changes
 ----------------
-This is the Danube 2.0 release.
+This is the Danube 3.0 release.
 It comes with the following documentation:
 
 - Installation instructions
@@ -137,7 +137,7 @@ Bug Corrections
 
 **JIRA TICKETS:**
 
-`Danube 2.0 bug fixes  <https://jira.opnfv.org/issues/?filter=11615>`_
+`Danube 3.0 bug fixes  <https://jira.opnfv.org/issues/?filter=11802>`_
 
 (Also See respective Integrated feature project's bug tracking)
 
@@ -182,7 +182,7 @@ Known Issues
 
 **JIRA TICKETS:**
 
-`Known issues <https://jira.opnfv.org/issues/?filter=11614>`_
+`Known issues <https://jira.opnfv.org/issues/?filter=11803>`_
 
 (Also See respective Integrated feature project's bug tracking)
 
@@ -198,13 +198,13 @@ Workarounds
 ============
 Test Results
 ============
-The Danube 2.0 release with the Fuel deployment tool has undergone QA test
+The Danube 3.0 release with the Fuel deployment tool has undergone QA test
 runs, see separate test results.
 
 ==========
 References
 ==========
-For more information on the OPNFV Danube 2.0 release, please see:
+For more information on the OPNFV Danube 3.0 release, please see:
 
 OPNFV
 =====
