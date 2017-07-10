@@ -1,0 +1,32 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 11 Jul 2017 19:43:39 +0200
+Subject: [PATCH] salt.sh: Clone armband repo, apply patches from it
+
+FIXME: Revise the patching mechanism, make things more dynamic.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/scripts/salt.sh | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/mcp/scripts/salt.sh b/mcp/scripts/salt.sh
+index bb4f6cc..8bd3592 100755
+--- a/mcp/scripts/salt.sh
++++ b/mcp/scripts/salt.sh
+@@ -15,6 +15,16 @@ ssh ${SSH_OPTS} ubuntu@${SALT_MASTER} bash -s << SALT_INSTALL_END
+
+   svn export --force https://github.com/salt-formulas/salt-formulas/trunk/deploy/scripts /srv/salt/scripts
+   git clone --depth=1 --recurse-submodules https://git.opnfv.org/fuel
++  # NOTE(armband): no depth speedup on http
++  git clone http://git.opnfv.org/armband
++
++  # For patch applying purposes (workaround for empty git config)
++  export GIT_COMMITTER_NAME="OPNFV Armband"
++  export GIT_COMMITTER_EMAIL="armband@enea.com"
++  git -C /root/fuel am -3 --patch-format=mbox \
++    /root/armband/patches/opnfv-fuel/*.patch
++  git -C /root/fuel/mcp/reclass/classes/system am -3 --patch-format=mbox \
++    /root/armband/patches/reclass-system-salt-model/*.patch
+   ln -s /root/fuel/mcp/reclass /srv/salt/reclass
+
+   cd /srv/salt/scripts

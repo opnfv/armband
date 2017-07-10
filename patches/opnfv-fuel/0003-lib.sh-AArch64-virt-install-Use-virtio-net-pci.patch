@@ -1,0 +1,78 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 11 Jul 2017 19:06:47 +0200
+Subject: [PATCH] lib.sh: AArch64: virt-install: Use virtio-net-pci
+
+AArch64 virt tools (i.e. libvirt) default to "virtio-mmio", instead of
+"virtio-net-pci", at least before libvirt 3.x (see [1]).
+
+Without PCI bus info, we can't really enforce a specific order for
+the guest ethernet devices.
+
+This leads to a mismatch between cloud-init, who expects "pxe"
+network to reside on "eth0", while in fact it ends up on "eth3".
+As a consequence, we have no connectivity to the guest, as DHCP
+is only configured by cloud-init on "eth0", and also the boot
+sequence waits ~5 minutes for "eth0" to come up, before eventually
+giving up.
+
+Moreover, predictable network interface naming is out of the question
+with virtio-mmio, as there is no bus information to rely on.
+
+Therefore we will enforce "virtio-net-pci" on AArch64, instead of
+the default "virtio" (which translates into "virtio-mmio" currently).
+
+FIXME: Apparently, both legacy and modern virtio (0.9 and 1.0) are
+active, which leads to triggering bug[2].
+For now, throw some sed magic at it and disable legacy mode.
+
+[1] https://www.redhat.com/archives/libvir-list/2016-August/msg00931.html
+[2] https://bugzilla.redhat.com/show_bug.cgi?id=1370005
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/scripts/lib.sh | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
+index 282ca38..12b1ef1 100644
+--- a/mcp/scripts/lib.sh
++++ b/mcp/scripts/lib.sh
+@@ -57,23 +57,34 @@ create_vms() {
+
+   # AArch64: prepare arch specific arguments
+   local virt_extra_args=""
++  local virt_net_model="virtio"
+   if [ "$(uname -i)" = "aarch64" ]; then
+     # No Cirrus VGA on AArch64, use vga std
+     virt_extra_args="$virt_extra_args --video=vga --noautoconsole"
++    # AArch64 networking defaults to virtio-mmio before libvirt 3.x
++    virt_net_model="virtio-net-pci"
+   fi
+
+   # create vms with specified options
+   for node in "${vnodes[@]}"; do
+     virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus=6 --cpu host --accelerate \
+-    --network network:pxe,model=virtio \
+-    --network network:mgmt,model=virtio \
+-    --network network:internal,model=virtio \
+-    --network network:public,model=virtio \
++    --network network:pxe,model=${virt_net_model} \
++    --network network:mgmt,model=${virt_net_model} \
++    --network network:internal,model=${virt_net_model} \
++    --network network:public,model=${virt_net_model} \
+     --disk path=$(pwd)/images/mcp_${node}.qcow2,format=qcow2,bus=virtio,cache=none,io=native \
+     --os-type linux --os-variant none \
+     --boot hd --vnc --console pty --autostart --noreboot \
+     --disk path=$(pwd)/images/mcp_${node}.iso,device=cdrom \
+     ${virt_extra_args}
++
++    # NOTE(armband): Disable legacy virtio (0.9) in favor of modern virtio (1.0)
++    # http://blog.vmsplice.net/2011/04/how-to-pass-qemu-command-line-options.html
++    #  <qemu:commandline>
++    #   <qemu:arg value='-global'/>
++    #   <qemu:arg value='virtio-pci.disable-legacy=on'/>
++    # </qemu:commandline>
++    EDITOR="sed -i -e \"s|\(<domain.*\)>|\1 xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>|\" -e \"s|\(</domain>\)|<qemu:commandline><qemu:arg value='-global'/><qemu:arg value='virtio-pci.disable-legacy=on'/></qemu:commandline>\1|\"" virsh edit ${node}
+   done
+ }
+
