@@ -1,6 +1,5 @@
 ##############################################################################
-# Copyright (c) 2016 Cavium
-# Copyright (c) 2016 Enea AB and others.
+# Copyright (c) 2016,2017 Cavium, Enea AB and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Apache License, Version 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +48,6 @@ submodules-init: .submodules-init
 # Clean any changes made to submodules, checkout Armband root commit
 .PHONY: submodules-clean
 submodules-clean: .submodules-init
-	@test ! -d ${F_REPOS_DIR} || $(MAKE) fuel-patches-clean
 	@git submodule -q foreach ' \
 		git am -q --abort 2>/dev/null; \
 		git checkout -q -f ${A_OPNFV_TAG}-root 2>/dev/null; \
@@ -97,68 +95,6 @@ patches-import: .submodules-init .submodules-patched
 			fi \
 		done && \
 		git tag ${A_OPNFV_TAG}'
-	# Staging Fuel@OPNFV patches
-	@ls -d ${F_SUB_DIR}/* 2>/dev/null | while read p_sub_path; do \
-		SUB_NAME=`basename $$p_sub_path`; \
-		find ${A_PATCH_DIR}/$$SUB_NAME -name '*.patch' 2>/dev/null -exec sh -c '\
-			A_PATCH={}; R_PATCH=$${A_PATCH#${A_PATCH_DIR}/}; \
-			F_PATCH=${F_PATCH_DIR}/$${0}/armband/$${R_PATCH#$${0}/}; \
-			if [ -f $$F_PATCH ]; then \
-				echo "`tput setaf 3`* WARN: $$R_PATCH upstream.`tput sgr0`"; \
-			else \
-				if [ -h $$A_PATCH ]; then \
-					echo "`tput setaf 3`* PHONY: $$R_PATCH`tput sgr0`"; \
-				else \
-					echo "`tput setaf 6`* Staging $$R_PATCH`tput sgr0`"; \
-					mkdir -p `dirname $$F_PATCH` && cp $$A_PATCH $$F_PATCH; \
-				fi; \
-			fi' "$$SUB_NAME" \; || true ; \
-	done
 	@touch $@
 
-# Pass down debug/clean/deepclean/build to Fuel@OPNFV
-.PHONY: clean debug
-clean: .submodules-init
-debug: fuel-patches-import
-clean debug:
-	$(MAKE) -e --no-print-directory -C ${F_BUILD_DIR} $@
-
-.PHONY: deepclean
-deepclean: clean
-	$(MAKE) -e --no-print-directory -C ${F_BUILD_DIR} deepclean
-	@git submodule deinit -f .
-	@rm -f .submodules*
-
-.PHONY: build
-build: patches-import
-	$(MAKE) -e --no-print-directory -C ${F_BUILD_DIR} all
-
-.PHONY: release
-release: export LC_ALL=en_US.UTF-8
-release: build
-
-##############################################################################
-# Fuel@OPNFV patch operations - to be used only during development
-##############################################################################
-
-# Apply all Fuel@OPNFV patches, including Armband patches
-.PHONY: fuel-patches-import
-fuel-patches-import: .submodules-patched fuel-patches-clean
-	$(MAKE) -e -C ${F_REPOS_DIR} patches-import
-
-# Export Fuel@OPNFV patches, including Armband patches
-.PHONY: fuel-patches-export
-fuel-patches-export: .submodules-patched
-	$(MAKE) -e -C ${F_REPOS_DIR} patches-export
-	@ls -d ${F_PATCH_DIR}/* 2>/dev/null | while read p_sub_path; do \
-		SUB_NAME=`basename $$p_sub_path`; \
-		if [ -d $$p_sub_path/armband ]; then \
-			echo "`tput setaf 6`* Pulling $$SUB_NAME patches.`tput sgr0`"; \
-			cp -R $$p_sub_path/armband/* ${A_PATCH_DIR}/$$SUB_NAME && \
-				rm -rf $$p_sub_path/armband; \
-		fi \
-	done
-
-.PHONY: fuel-patches-clean
-fuel-patches-clean:
-	$(MAKE) -e -C ${F_REPOS_DIR} clean
+# TODO: Bring back clean/debug/build after Fuel@OPNFV implements them for MCP

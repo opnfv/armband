@@ -1,7 +1,7 @@
 Armband Fuel@OPNFV
 ==================
 
-This repository holds build scripts for Fuel 10.0 OPNFV installer
+This repository holds build scripts for MCP Fuel OPNFV installer
 for AArch64 machines.
 
 Workflow
@@ -28,7 +28,7 @@ The standard workflow should look as follows:
    NOTE: If you want to re-export patches, make sure to move the tag
    `${A_OPNFV_TAG}` to the latest commit that should be included.
 
-5. Build with:
+5. (not implemented yet for MCP) Build with:
    $ make build
 
 6. Re-create patches via:
@@ -48,24 +48,3 @@ and point it to `upstream/*` directory, i.e.:
 
    $ git submodule -b stable/mitaka add --name fuel-web \
      https://github.com/openstack/fuel-web.git upstream/fuel-web
-
-Fuel@OPNFV submodule patch development
---------------------------------------
-Fuel-submodules (fuel-astute, ... , fuel-ui) patches also reside in Armband,
-like previously described patches that are applied to Armband submodules,
-but they are not directly applied to any submodule in Armband.
-Instead, they are copied (staged) to Fuel@OPNFV submodule, which will
-automatically pick them up and apply them to its own submodules
-(fuel-astute, ... , fuel-ui) during ISO build.
-
-The following helpers are available for working with patches for
-Fuel-submodules (fuel-astute, ... , fuel-ui):
-
-1. Clean Fuel-submodules (fuel-astute, ... , fuel-ui) patches
-   $ make fuel-patches-clean
-
-2. Import Fuel-submodules staged patches
-   $ make fuel-patches-import
-
-3. Export Fuel-submodules patches
-   $ make fuel-patches-export
