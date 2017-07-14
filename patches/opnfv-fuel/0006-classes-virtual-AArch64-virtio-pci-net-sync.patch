@@ -32,10 +32,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  13 files changed, 36 insertions(+), 36 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
-index 4fbc787..61239ab 100644
+index 328d6df..b0984a6 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
-@@ -28,7 +28,7 @@ parameters:
+@@ -27,7 +27,7 @@ parameters:
    linux:
      network:
        interface:
@@ -130,10 +130,10 @@ index 4ea51f3..6486eca 100644
            type: eth
            mtu: ${_param:interface_mtu}
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml
-index 5932085..efde4b9 100644
+index 864c71d..27388fb 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml
-@@ -27,7 +27,7 @@ parameters:
+@@ -26,7 +26,7 @@ parameters:
    linux:
      network:
        interface:
@@ -142,7 +142,7 @@ index 5932085..efde4b9 100644
            enabled: true
            type: eth
            proto: static
-@@ -50,14 +50,14 @@ parameters:
+@@ -51,14 +51,14 @@ parameters:
              single_address: 172.16.10.105
              tenant_address: 10.1.0.105
              external_address: 10.16.0.105
@@ -232,10 +232,10 @@ index e102c10..6600a36 100644
            type: eth
            mtu: ${_param:interface_mtu}
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml
-index 66ad53b..7daee82 100644
+index 97730b1..6a6f88b 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml
-@@ -27,7 +27,7 @@ parameters:
+@@ -26,7 +26,7 @@ parameters:
    linux:
      network:
        interface:

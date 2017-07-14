@@ -34,10 +34,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 15 insertions(+), 4 deletions(-)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 282ca38..12b1ef1 100644
+index 4df1a5b..3cce4ef 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -57,23 +57,34 @@ create_vms() {
+@@ -58,23 +58,34 @@ create_vms() {
 
    # AArch64: prepare arch specific arguments
    local virt_extra_args=""
@@ -51,7 +51,7 @@ index 282ca38..12b1ef1 100644
 
    # create vms with specified options
    for node in "${vnodes[@]}"; do
-     virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus=6 --cpu host --accelerate \
+     virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus ${vnodes_vcpus[$node]} --cpu host --accelerate \
 -    --network network:pxe,model=virtio \
 -    --network network:mgmt,model=virtio \
 -    --network network:internal,model=virtio \

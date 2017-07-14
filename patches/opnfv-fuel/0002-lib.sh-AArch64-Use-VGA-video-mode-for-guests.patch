@@ -19,7 +19,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index f98246d..c803a2a 100755
+index a1f5e38..92c7947 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -230,8 +230,9 @@ pushd ${DEPLOY_DIR} > /dev/null
@@ -35,12 +35,12 @@ index f98246d..c803a2a 100755
  # Check scenario file existence
  if [[ ! -f  ../config/${DEPLOY_SCENARIO}.yaml ]]; then
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index b2998e0..282ca38 100644
+index d56049c..4df1a5b 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -55,6 +55,13 @@ create_vms() {
-   local -n vnodes=$1
+@@ -56,6 +56,13 @@ create_vms() {
    local -n vnodes_ram=$2
+   local -n vnodes_vcpus=$3
 
 +  # AArch64: prepare arch specific arguments
 +  local virt_extra_args=""
@@ -51,8 +51,8 @@ index b2998e0..282ca38 100644
 +
    # create vms with specified options
    for node in "${vnodes[@]}"; do
-     virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus=6 --cpu host --accelerate \
-@@ -65,7 +72,8 @@ create_vms() {
+     virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus ${vnodes_vcpus[$node]} --cpu host --accelerate \
+@@ -66,7 +73,8 @@ create_vms() {
      --disk path=$(pwd)/images/mcp_${node}.qcow2,format=qcow2,bus=virtio,cache=none,io=native \
      --os-type linux --os-variant none \
      --boot hd --vnc --console pty --autostart --noreboot \

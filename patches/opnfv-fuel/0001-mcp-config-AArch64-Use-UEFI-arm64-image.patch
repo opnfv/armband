@@ -9,8 +9,8 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  mcp/config/defaults.yaml | 4 ++--
- mcp/scripts/lib.sh       | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ mcp/scripts/lib.sh       | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/mcp/config/defaults.yaml b/mcp/config/defaults.yaml
 index b841e88..17fbbfc 100644
@@ -26,7 +26,7 @@ index b841e88..17fbbfc 100644
      ram: 4096
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index b3abd21..b2998e0 100644
+index fb3fc99..d56049c 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -18,7 +18,7 @@ cleanup_vms() {
@@ -38,12 +38,3 @@ index b3abd21..b2998e0 100644
    done
  }
 
-@@ -57,7 +57,7 @@ create_vms() {
-
-   # create vms with specified options
-   for node in "${vnodes[@]}"; do
--    virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus=2 --cpu host --accelerate \
-+    virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus=6 --cpu host --accelerate \
-     --network network:pxe,model=virtio \
-     --network network:mgmt,model=virtio \
-     --network network:internal,model=virtio \
