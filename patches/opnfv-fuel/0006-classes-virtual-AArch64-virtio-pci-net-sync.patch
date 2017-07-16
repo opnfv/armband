@@ -1,18 +1,21 @@
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
-Date: Tue, 11 Jul 2017 18:06:14 +0200
+Date: Sun, 16 Jul 2017 03:58:58 +0200
 Subject: [PATCH] classes: virtual: AArch64: virtio-pci-net sync
 
 grep -e "ens[[:digit:]]" -R . -l | \
   xargs sed -i \
-    -e 's/ens3/enp2s1/g' \
-    -e 's/ens4/enp2s2/g' \
-    -e 's/ens5/enp2s3/g' \
-    -e 's/ens6/enp2s4/g'
+    -e 's/ens3/eth0/g' \
+    -e 's/ens4/enp2s1/g' \
+    -e 's/ens5/enp2s2/g' \
+    -e 's/ens6/enp2s3/g'
 
 Since AArch64 will be using virtio-net-pci NIC model for guests,
 predictable interface naming yields a slightly different scheme.
 
 Update all configuration to reflect this.
+
+NOTE: PXE interfaces still uses "virtio-mmio", which translates
+into "eth0".
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
@@ -32,7 +35,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  13 files changed, 36 insertions(+), 36 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
-index 328d6df..b0984a6 100644
+index 328d6df..99e6152 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
 @@ -27,7 +27,7 @@ parameters:
@@ -40,12 +43,12 @@ index 328d6df..b0984a6 100644
      network:
        interface:
 -        ens4:
-+        enp2s2:
++        enp2s1:
            enabled: true
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
-index 6c6640a..a9bda9e 100644
+index 6c6640a..c775090 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
 @@ -11,7 +11,7 @@ parameters:
@@ -53,12 +56,12 @@ index 6c6640a..a9bda9e 100644
      network:
        interface:
 -        ens4:
-+        enp2s2:
++        enp2s1:
            enabled: true
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/compute.yml
-index 97eda6c..1948a4e 100644
+index 97eda6c..98d2ea2 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/compute.yml
 @@ -10,9 +10,9 @@ classes:
@@ -68,9 +71,9 @@ index 97eda6c..1948a4e 100644
 -    primary_interface: ens4
 -    tenant_interface: ens5
 -    external_interface: ens6
-+    primary_interface: enp2s2
-+    tenant_interface: enp2s3
-+    external_interface: enp2s4
++    primary_interface: enp2s1
++    tenant_interface: enp2s2
++    external_interface: enp2s3
      interface_mtu: 9000
      linux_system_codename: xenial
      loopback_device_size: 10
@@ -79,12 +82,12 @@ index 97eda6c..1948a4e 100644
          dhcp_int:
            enabled: true
 -          name: ens3
-+          name: enp2s1
++          name: eth0
            proto: dhcp
            type: eth
            mtu: ${_param:interface_mtu}
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/control.yml
-index 17c22c5..5a63cd6 100644
+index 17c22c5..5bd4a95 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/control.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/control.yml
 @@ -40,13 +40,13 @@ parameters:
@@ -92,19 +95,19 @@ index 17c22c5..5a63cd6 100644
      network:
        interface:
 -        ens4:
-+        enp2s2:
++        enp2s1:
            enabled: true
            type: eth
            proto: static
            address: ${_param:single_address}
            netmask: 255.255.255.0
 -        ens6:
-+        enp2s4:
++        enp2s3:
            enabled: true
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/gateway.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/gateway.yml
-index 4ea51f3..6486eca 100644
+index 4ea51f3..b5709e7 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/gateway.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/gateway.yml
 @@ -6,9 +6,9 @@ classes:
@@ -114,9 +117,9 @@ index 4ea51f3..6486eca 100644
 -    primary_interface: ens4
 -    tenant_interface: ens5
 -    external_interface: ens6
-+    primary_interface: enp2s2
-+    tenant_interface: enp2s3
-+    external_interface: enp2s4
++    primary_interface: enp2s1
++    tenant_interface: enp2s2
++    external_interface: enp2s3
      interface_mtu: 9000
      linux_system_codename: xenial
      neutron_agents:
@@ -125,12 +128,12 @@ index 4ea51f3..6486eca 100644
          dhcp_int:
            enabled: true
 -          name: ens3
-+          name: enp2s1
++          name: eth0
            proto: dhcp
            type: eth
            mtu: ${_param:interface_mtu}
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml
-index 864c71d..27388fb 100644
+index 864c71d..ae06d21 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml
 @@ -26,7 +26,7 @@ parameters:
@@ -138,7 +141,7 @@ index 864c71d..27388fb 100644
      network:
        interface:
 -        ens4:
-+        enp2s2:
++        enp2s1:
            enabled: true
            type: eth
            proto: static
@@ -147,7 +150,7 @@ index 864c71d..27388fb 100644
              tenant_address: 10.1.0.105
              external_address: 10.16.0.105
 -            dpdk0_name: ens5
-+            dpdk0_name: enp2s3
++            dpdk0_name: enp2s2
              dpdk0_pci: '"0000:00:05.0"'
          openstack_compute_node02:
            params:
@@ -155,12 +158,12 @@ index 864c71d..27388fb 100644
              tenant_address: 10.1.0.106
              external_address: 10.16.0.106
 -            dpdk0_name: ens5
-+            dpdk0_name: enp2s3
++            dpdk0_name: enp2s2
              dpdk0_pci: '"0000:00:05.0"'
          openstack_gateway_node01:
            params:
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/compute.yml
-index c23ca7f..b98d286 100644
+index c23ca7f..aeb6ba1 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/compute.yml
 @@ -12,9 +12,9 @@ classes:
@@ -170,9 +173,9 @@ index c23ca7f..b98d286 100644
 -    primary_interface: ens4
 -    tenant_interface: ens5
 -    external_interface: ens6
-+    primary_interface: enp2s2
-+    tenant_interface: enp2s3
-+    external_interface: enp2s4
++    primary_interface: enp2s1
++    tenant_interface: enp2s2
++    external_interface: enp2s3
      interface_mtu: 9000
      linux_system_codename: xenial
      loopback_device_size: 10
@@ -181,12 +184,12 @@ index c23ca7f..b98d286 100644
          dhcp_int:
            enabled: true
 -          name: ens3
-+          name: enp2s1
++          name: eth0
            proto: dhcp
            type: eth
            mtu: ${_param:interface_mtu}
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/control.yml
-index b85f085..e762da4 100644
+index b85f085..0c4b5b9 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/control.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/control.yml
 @@ -40,13 +40,13 @@ parameters:
@@ -194,19 +197,19 @@ index b85f085..e762da4 100644
      network:
        interface:
 -        ens4:
-+        enp2s2:
++        enp2s1:
            enabled: true
            type: eth
            proto: static
            address: ${_param:single_address}
            netmask: 255.255.255.0
 -        ens6:
-+        enp2s4:
++        enp2s3:
            enabled: true
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/gateway.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/gateway.yml
-index e102c10..6600a36 100644
+index e102c10..e1800de 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/gateway.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/gateway.yml
 @@ -6,9 +6,9 @@ classes:
@@ -216,9 +219,9 @@ index e102c10..6600a36 100644
 -    primary_interface: ens4
 -    tenant_interface: ens5
 -    external_interface: ens6
-+    primary_interface: enp2s2
-+    tenant_interface: enp2s3
-+    external_interface: enp2s4
++    primary_interface: enp2s1
++    tenant_interface: enp2s2
++    external_interface: enp2s3
      interface_mtu: 9000
      linux_system_codename: xenial
    neutron:
@@ -227,12 +230,12 @@ index e102c10..6600a36 100644
          dhcp_int:
            enabled: true
 -          name: ens3
-+          name: enp2s1
++          name: eth0
            proto: dhcp
            type: eth
            mtu: ${_param:interface_mtu}
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml
-index 97730b1..6a6f88b 100644
+index 97730b1..671f2f9 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml
 @@ -26,7 +26,7 @@ parameters:
@@ -240,12 +243,12 @@ index 97730b1..6a6f88b 100644
      network:
        interface:
 -        ens4:
-+        enp2s2:
++        enp2s1:
            enabled: true
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/compute.yml
-index a86a7c6..b3fe914 100644
+index a86a7c6..78acfba 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/compute.yml
 @@ -10,9 +10,9 @@ classes:
@@ -255,9 +258,9 @@ index a86a7c6..b3fe914 100644
 -    primary_interface: ens4
 -    tenant_interface: ens5
 -    external_interface: ens6
-+    primary_interface: enp2s2
-+    tenant_interface: enp2s3
-+    external_interface: enp2s4
++    primary_interface: enp2s1
++    tenant_interface: enp2s2
++    external_interface: enp2s3
      interface_mtu: 9000
      linux_system_codename: xenial
      loopback_device_size: 10
@@ -266,12 +269,12 @@ index a86a7c6..b3fe914 100644
          dhcp_int:
            enabled: true
 -          name: ens3
-+          name: enp2s1
++          name: eth0
            proto: dhcp
            type: eth
            mtu: ${_param:interface_mtu}
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/control.yml
-index ae103cd..cc99156 100644
+index ae103cd..e2ecc42 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/control.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/control.yml
 @@ -40,13 +40,13 @@ parameters:
@@ -279,19 +282,19 @@ index ae103cd..cc99156 100644
      network:
        interface:
 -        ens4:
-+        enp2s2:
++        enp2s1:
            enabled: true
            type: eth
            proto: static
            address: ${_param:single_address}
            netmask: 255.255.255.0
 -        ens6:
-+        enp2s4:
++        enp2s3:
            enabled: true
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/gateway.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/gateway.yml
-index 9257d86..e148d77 100644
+index 9257d86..0a2a622 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/gateway.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/gateway.yml
 @@ -6,9 +6,9 @@ classes:
@@ -301,9 +304,9 @@ index 9257d86..e148d77 100644
 -    primary_interface: ens4
 -    tenant_interface: ens5
 -    external_interface: ens6
-+    primary_interface: enp2s2
-+    tenant_interface: enp2s3
-+    external_interface: enp2s4
++    primary_interface: enp2s1
++    tenant_interface: enp2s2
++    external_interface: enp2s3
      interface_mtu: 9000
      linux_system_codename: xenial
    neutron:
@@ -312,7 +315,7 @@ index 9257d86..e148d77 100644
          dhcp_int:
            enabled: true
 -          name: ens3
-+          name: enp2s1
++          name: eth0
            proto: dhcp
            type: eth
            mtu: ${_param:interface_mtu}

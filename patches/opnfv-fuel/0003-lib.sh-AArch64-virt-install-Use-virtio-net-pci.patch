@@ -30,18 +30,19 @@ For now, throw some sed magic at it and disable legacy mode.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/scripts/lib.sh | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ mcp/scripts/lib.sh | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 4df1a5b..3cce4ef 100644
+index 4df1a5b..d4869c6 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -58,23 +58,34 @@ create_vms() {
+@@ -58,23 +58,35 @@ create_vms() {
 
    # AArch64: prepare arch specific arguments
    local virt_extra_args=""
-+  local virt_net_model="virtio"
++  local virt_pxe_net_model="virtio"
++  local virt_net_model="${virt_pxe_net_model}"
    if [ "$(uname -i)" = "aarch64" ]; then
      # No Cirrus VGA on AArch64, use vga std
      virt_extra_args="$virt_extra_args --video=vga --noautoconsole"
@@ -56,7 +57,7 @@ index 4df1a5b..3cce4ef 100644
 -    --network network:mgmt,model=virtio \
 -    --network network:internal,model=virtio \
 -    --network network:public,model=virtio \
-+    --network network:pxe,model=${virt_net_model} \
++    --network network:pxe,model=${virt_pxe_net_model} \
 +    --network network:mgmt,model=${virt_net_model} \
 +    --network network:internal,model=${virt_net_model} \
 +    --network network:public,model=${virt_net_model} \
