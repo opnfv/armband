@@ -1,0 +1,176 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 25 Jul 2017 19:11:56 +0200
+Subject: [PATCH] ci/deploy.sh: Rework bridge arguments for MCP
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ci/deploy.sh       | 37 ++++++++++++++++++++++++++-----------
+ mcp/scripts/lib.sh | 37 +++++++++++++++++++++++++------------
+ 2 files changed, 51 insertions(+), 23 deletions(-)
+
+diff --git a/ci/deploy.sh b/ci/deploy.sh
+index edf05be..864b231 100755
+--- a/ci/deploy.sh
++++ b/ci/deploy.sh
+@@ -29,13 +29,16 @@ cat << EOF
+ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ `basename $0`: Deploys the Fuel@OPNFV stack
+
+-usage: `basename $0` -b base-uri [-B PXE Bridge] [-f] [-F] [-H] -l lab-name -p pod-name -s deploy-scenario [-S image-dir] [-T timeout] -i iso
++usage: `basename $0` -b base-uri
++       [-B PXE Bridge [-B Mgmt Bridge [-B Internal Bridge [-B Public Bridge]]]]
++       [-f] [-F] [-H] -l lab-name -p pod-name -s deploy-scenario
++       [-S image-dir] [-T timeout] -i iso
+        -s deployment-scenario [-S optional Deploy-scenario path URI]
+        [-R optional local relen repo (containing deployment Scenarios]
+
+ OPTIONS:
+   -b  Base-uri for the stack-configuration structure
+-  -B  PXE Bridge for booting of Fuel master
++  -B  Bridge(s): 1st usage = PXE, 2nd = Mgmt, 3rd = Internal, 4th = Public
+   -d  Dry-run
+   -f  Deploy on existing Fuel master
+   -e  Do not launch environment deployment
+@@ -59,10 +62,13 @@ and provides a fairly simple mechanism to execute a deployment.
+ Input parameters to the build script is:
+ -b Base URI to the configuration directory (needs to be provided in a URI
+    style, it can be a local resource: file:// or a remote resource http(s)://)
+--B PXE Bridge for booting of Fuel master. It can be specified several times,
++-B Bridges for to be used by deploy script. It can be specified several times,
+    or as a comma separated list of bridges, or both: -B br1 -B br2,br3
+-   One NIC connected to each specified bridge will be created in the Fuel VM,
+-   in the same order as provided in the command line. The default is pxebr.
++   First occurence sets PXE Brige, next Mgmt, then Internal and Public.
++   For an empty value, the deploy script will use virsh to create the default
++   expected network (e.g. -B pxe,,,public will use existing "pxe" and "public"
++   bridges, respectively create "mgmt" and "internal").
++   The default is pxebr.
+ -d Dry-run - Produces deploy config files (config/dea.yaml and
+    config/dha.yaml), but does not execute deploy
+ -f Deploy on existing Fuel master
+@@ -112,7 +118,7 @@ clean() {
+ #
+ SCRIPT_PATH=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
+ DEPLOY_DIR=$(cd ${SCRIPT_PATH}/../mcp/scripts; pwd)
+-PXE_BRIDGE=''
++OPNFV_BRIDGES=('pxe' 'mgmt' 'internal' 'public')
+ NO_HEALTH_CHECK=''
+ USE_EXISTING_FUEL=''
+ FUEL_CREATION_ONLY=''
+@@ -124,6 +130,7 @@ if ! [ -z $DEPLOY_TIMEOUT ]; then
+ else
+     DEPLOY_TIMEOUT=""
+ fi
++
+ #
+ # END of variables to customize
+ ############################################################################
+@@ -146,9 +153,17 @@ do
+             fi
+             ;;
+         B)
+-            for bridge in ${OPTARG//,/ }; do
+-                PXE_BRIDGE+=" -b $bridge"
++            OIFS=${IFS}
++            IFS=','
++            OPT_BRIDGES=($OPTARG)
++            OPNFV_BRIDGE_IDX=0
++            for bridge in ${OPT_BRIDGES[@]}; do
++                if [ -n "${bridge}" ]; then
++                    OPNFV_BRIDGES[${OPNFV_BRIDGE_IDX}]="${bridge}"
++                fi
++                OPNFV_BRIDGE_IDX=$[OPNFV_BRIDGE_IDX + 1]
+             done
++            IFS=${OIFS}
+             ;;
+         d)
+             DRY_RUN=1
+@@ -261,9 +276,9 @@ export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i
+ # Infra setup
+ generate_ssh_key
+ prepare_vms virtual_nodes $base_image
+-create_networks
+-create_vms virtual_nodes virtual_nodes_ram virtual_nodes_vcpus
+-update_pxe_network
++create_networks OPNFV_BRIDGES
++create_vms virtual_nodes virtual_nodes_ram virtual_nodes_vcpus OPNFV_BRIDGES
++update_pxe_network OPNFV_BRIDGES
+ start_vms virtual_nodes
+ check_connection
+
+diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
+index 251c5a5..20db18a 100644
+--- a/mcp/scripts/lib.sh
++++ b/mcp/scripts/lib.sh
+@@ -39,15 +39,19 @@ prepare_vms() {
+ }
+
+ create_networks() {
++  local -n vnode_networks=$1
+   # create required networks
+-  for net in pxe mgmt internal public; do
++  for net in "${vnode_networks[@]}"; do
+     if virsh net-info $net >/dev/null 2>&1; then
+       virsh net-destroy ${net}
+       virsh net-undefine ${net}
+     fi
+-    virsh net-define net_${net}.xml
+-    virsh net-autostart ${net}
+-    virsh net-start ${net}
++    # in case of custom network, host should already have the bridge in place
++    if [ -f net_${net}.xml ]; then
++      virsh net-define net_${net}.xml
++      virsh net-autostart ${net}
++      virsh net-start ${net}
++    fi
+   done
+ }
+
+@@ -55,6 +59,7 @@ create_vms() {
+   local -n vnodes=$1
+   local -n vnodes_ram=$2
+   local -n vnodes_vcpus=$3
++  local -n vnode_networks=$4
+
+   # AArch64: prepare arch specific arguments
+   local virt_extra_args=""
+@@ -63,13 +68,17 @@ create_vms() {
+     virt_extra_args="$virt_extra_args --video=vga"
+   fi
+
++  # prepare network args
++  net_args=""
++  for net in "${vnode_networks[@]}"; do
++      net_args="${net_args} --network network:${net},model=virtio"
++  done
++
+   # create vms with specified options
+   for node in "${vnodes[@]}"; do
+-    virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus ${vnodes_vcpus[$node]} --cpu host-passthrough --accelerate \
+-    --network network:pxe,model=virtio \
+-    --network network:mgmt,model=virtio \
+-    --network network:internal,model=virtio \
+-    --network network:public,model=virtio \
++    virt-install --name ${node} \
++    --ram ${vnodes_ram[$node]} --vcpus ${vnodes_vcpus[$node]} \
++    --cpu host-passthrough --accelerate ${net_args} \
+     --disk path=$(pwd)/images/mcp_${node}.qcow2,format=qcow2,bus=virtio,cache=none,io=native \
+     --os-type linux --os-variant none \
+     --boot hd --vnc --console pty --autostart --noreboot \
+@@ -80,9 +89,13 @@ create_vms() {
+ }
+
+ update_pxe_network() {
+-  # set static ip address for salt master node
+-  virsh net-update pxe add ip-dhcp-host \
+-  "<host mac='$(virsh domiflist cfg01 | awk '/pxe/ {print $5}')' name='cfg01' ip='$SALT_MASTER'/>" --live
++  local -n vnode_networks=$1
++  if virsh net-info "${vnode_networks[0]}" >/dev/null 2>&1; then
++    # set static ip address for salt master node, only if managed via virsh
++    # NOTE: below expr assume PXE network is always the first in domiflist
++    virsh net-update "${vnode_networks[0]}" add ip-dhcp-host \
++    "<host mac='$(virsh domiflist cfg01 | awk '/network/ {print $5; exit}')' name='cfg01' ip='$SALT_MASTER'/>" --live
++  fi
+ }
+
+ start_vms() {
