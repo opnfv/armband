@@ -33,5 +33,6 @@ if ! [ -z $LAB_CONFIG_URL ]; then
     fi
 fi
 
+unset SSH_KEY
 cd upstream/fuel/ci
 ./deploy.sh $@
