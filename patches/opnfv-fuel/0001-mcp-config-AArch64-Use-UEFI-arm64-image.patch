@@ -9,8 +9,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  mcp/config/defaults.yaml | 4 ++--
- mcp/scripts/lib.sh       | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/config/defaults.yaml b/mcp/config/defaults.yaml
 index b841e88..17fbbfc 100644
@@ -24,17 +23,4 @@ index b841e88..17fbbfc 100644
 -    vcpus: 2
 +    vcpus: 6
      ram: 4096
-
-diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 1848c70..c315323 100644
---- a/mcp/scripts/lib.sh
-+++ b/mcp/scripts/lib.sh
-@@ -18,7 +18,7 @@ cleanup_vms() {
-   # clean up existing nodes
-   for node in $(virsh list --name | grep -P '\w{3}\d{2}'); do
-     virsh destroy $node
--    virsh undefine $node
-+    virsh undefine --nvram $node
-   done
- }
 
