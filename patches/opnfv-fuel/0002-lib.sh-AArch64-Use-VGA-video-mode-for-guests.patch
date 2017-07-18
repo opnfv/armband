@@ -35,10 +35,10 @@ index a1f5e38..92c7947 100755
  # Check scenario file existence
  if [[ ! -f  ../config/${DEPLOY_SCENARIO}.yaml ]]; then
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index c315323..862fdcc 100644
+index 3ec596a..b75e47e 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -56,6 +56,13 @@ create_vms() {
+@@ -58,6 +58,13 @@ create_vms() {
    local -n vnodes_ram=$2
    local -n vnodes_vcpus=$3
 
@@ -52,7 +52,7 @@ index c315323..862fdcc 100644
    # create vms with specified options
    for node in "${vnodes[@]}"; do
      virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus ${vnodes_vcpus[$node]} --cpu host --accelerate \
-@@ -67,7 +74,8 @@ create_vms() {
+@@ -69,7 +76,8 @@ create_vms() {
      --os-type linux --os-variant none \
      --boot hd --vnc --console pty --autostart --noreboot \
      --disk path=$(pwd)/images/mcp_${node}.iso,device=cdrom \

@@ -15,10 +15,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 862fdcc..251c5a5 100644
+index b75e47e..55df750 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -65,7 +65,7 @@ create_vms() {
+@@ -67,7 +67,7 @@ create_vms() {
 
    # create vms with specified options
    for node in "${vnodes[@]}"; do
