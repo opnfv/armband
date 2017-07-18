@@ -26,7 +26,7 @@ index b841e88..17fbbfc 100644
      ram: 4096
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index fb3fc99..d56049c 100644
+index 679b997..af57dcc 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -18,7 +18,7 @@ cleanup_vms() {

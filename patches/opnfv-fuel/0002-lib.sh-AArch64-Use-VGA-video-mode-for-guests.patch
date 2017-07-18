@@ -35,7 +35,7 @@ index a1f5e38..92c7947 100755
  # Check scenario file existence
  if [[ ! -f  ../config/${DEPLOY_SCENARIO}.yaml ]]; then
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index d56049c..4df1a5b 100644
+index af57dcc..245a8f4 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -56,6 +56,13 @@ create_vms() {
@@ -46,18 +46,18 @@ index d56049c..4df1a5b 100644
 +  local virt_extra_args=""
 +  if [ "$(uname -i)" = "aarch64" ]; then
 +    # No Cirrus VGA on AArch64, use vga std
-+    virt_extra_args="$virt_extra_args --video=vga --noautoconsole"
++    virt_extra_args="$virt_extra_args --video=vga"
 +  fi
 +
    # create vms with specified options
    for node in "${vnodes[@]}"; do
      virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus ${vnodes_vcpus[$node]} --cpu host --accelerate \
-@@ -66,7 +73,8 @@ create_vms() {
-     --disk path=$(pwd)/images/mcp_${node}.qcow2,format=qcow2,bus=virtio,cache=none,io=native \
+@@ -67,7 +74,8 @@ create_vms() {
      --os-type linux --os-variant none \
      --boot hd --vnc --console pty --autostart --noreboot \
--    --disk path=$(pwd)/images/mcp_${node}.iso,device=cdrom
-+    --disk path=$(pwd)/images/mcp_${node}.iso,device=cdrom \
+     --disk path=$(pwd)/images/mcp_${node}.iso,device=cdrom \
+-    --noautoconsole
++    --noautoconsole \
 +    ${virt_extra_args}
    done
  }
