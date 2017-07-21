@@ -34,7 +34,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 16 insertions(+), 4 deletions(-)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 245a8f4..5fcecbd 100644
+index 862fdcc..7c4c46f 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -58,24 +58,36 @@ create_vms() {

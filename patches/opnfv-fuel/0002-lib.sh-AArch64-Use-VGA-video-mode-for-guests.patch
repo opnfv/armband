@@ -35,7 +35,7 @@ index a1f5e38..92c7947 100755
  # Check scenario file existence
  if [[ ! -f  ../config/${DEPLOY_SCENARIO}.yaml ]]; then
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index af57dcc..245a8f4 100644
+index c315323..862fdcc 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -56,6 +56,13 @@ create_vms() {
