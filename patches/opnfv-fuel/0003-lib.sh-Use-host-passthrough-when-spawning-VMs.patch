@@ -15,15 +15,15 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 7c4c46f..2be3e65 100644
+index 862fdcc..251c5a5 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -69,7 +69,7 @@ create_vms() {
+@@ -65,7 +65,7 @@ create_vms() {
 
    # create vms with specified options
    for node in "${vnodes[@]}"; do
 -    virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus ${vnodes_vcpus[$node]} --cpu host --accelerate \
 +    virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus ${vnodes_vcpus[$node]} --cpu host-passthrough --accelerate \
-     --network network:pxe,model=${virt_pxe_net_model} \
-     --network network:mgmt,model=${virt_net_model} \
-     --network network:internal,model=${virt_net_model} \
+     --network network:pxe,model=virtio \
+     --network network:mgmt,model=virtio \
+     --network network:internal,model=virtio \
