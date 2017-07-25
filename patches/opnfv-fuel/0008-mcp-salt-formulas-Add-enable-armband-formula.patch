@@ -1,0 +1,178 @@
+From: Guillermo Herrero <Guillermo.Herrero@enea.com>
+Date: Tue, 25 Jul 2017 00:58:32 +0200
+Subject: [PATCH] mcp: salt-formulas: Add & enable armband formula
+
+FIXME: Re-enable apparmor.
+FIXME: Detect baremetal and re-enable acceleration.
+
+- install qemu-efi;
+- install vgabios;
+- disable apparmor as security driver for libvirt (temporary);
+- fix missing link for vgabios binary blob;
+- nova: virt_type=qemu (temporary, until we support baremetal too);
+- nova: pointer_model=ps2mouse since AArch64 has no USB tablet;
+- nova: cpu_model=cortex-a57;
+- nova: libvirt driver: Add ttyAMA0 by default on AArch64;
+- nova: libvirt driver: Use VGA video type by default on AArch64;
+
+Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
+Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/states/openstack                        |  2 +
+ .../armband/files/nova-libvirt-driver.diff         | 48 ++++++++++++++++++++++
+ mcp/salt-formulas/armband/init.sls                 |  6 +++
+ mcp/salt-formulas/armband/libvirt_driver.sls       |  5 +++
+ mcp/salt-formulas/armband/nova.sls                 | 24 +++++++++++
+ mcp/salt-formulas/armband/qemu.sls                 |  7 ++++
+ mcp/salt-formulas/armband/vgabios.sls              |  6 +++
+ 7 files changed, 98 insertions(+)
+ create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-driver.diff
+ create mode 100644 mcp/salt-formulas/armband/init.sls
+ create mode 100644 mcp/salt-formulas/armband/libvirt_driver.sls
+ create mode 100644 mcp/salt-formulas/armband/nova.sls
+ create mode 100644 mcp/salt-formulas/armband/qemu.sls
+ create mode 100644 mcp/salt-formulas/armband/vgabios.sls
+
+diff --git a/mcp/config/states/openstack b/mcp/config/states/openstack
+index 57ca585..23aaf72 100755
+--- a/mcp/config/states/openstack
++++ b/mcp/config/states/openstack
+@@ -23,3 +23,5 @@ salt -I 'neutron:gateway' state.sls neutron
+ salt -I 'nova:compute' state.sls nova
+
+ salt -I 'horizon:server' state.sls horizon
++
++salt -I 'nova:compute' state.sls armband
+diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff b/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff
+new file mode 100644
+index 0000000..a5b08da
+--- /dev/null
++++ b/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff
+@@ -0,0 +1,48 @@
++From: Stanislaw Kardach <stanislaw.kardach@cavium.com>
++Date: Tue, 22 Mar 2016 12:05:09 +0100
++Subject: [PATCH] nova: Update vga, console defaults for armv7, aarch64
++
++Nova hardcodes default options for both video=cirrus and console.
++armv7 and aarch64 VMs require video=vga, and since most applications
++use PL011 serial driver for guests, adding console=ttyAMA0 is also
++a nice UX addition.
++
++Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
++
++---
++ usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py | 10 +++++++++-
++ 1 file changed, 9 insertions(+), 1 deletion(-)
++
++diff --git a/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py b/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
++index bba9b00..99e86be 100644
++--- a/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
+++++ b/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
++@@ -4179,7 +4179,12 @@ class LibvirtDriver(driver.ComputeDriver):
++         if virt_type == "xen":
++             guest.os_cmdline = "ro root=%s" % root_device_name
++         else:
+++            guestarch = libvirt_utils.get_arch(image_meta)
++             guest.os_cmdline = ("root=%s %s" % (root_device_name, CONSOLE))
+++            if guestarch in (fields.Architecture.ARMV7,
+++                             fields.Architecture.AARCH64):
+++                # NOTE(armband): ARM v7/v8 use PL011 drv, add ttyAMA0 console
+++                guest.os_cmdline += " console=ttyAMA0"
++             if virt_type == "qemu":
++                 guest.os_cmdline += " no_timer_check"
++         if instance.ramdisk_id:
++@@ -4288,9 +4293,12 @@ class LibvirtDriver(driver.ComputeDriver):
++             video.type = 'xen'
++         elif CONF.libvirt.virt_type == 'parallels':
++             video.type = 'vga'
++-        elif guestarch in (fields.Architecture.PPC,
+++        elif guestarch in (fields.Architecture.ARMV7,
+++                           fields.Architecture.AARCH64,
+++                           fields.Architecture.PPC,
++                            fields.Architecture.PPC64,
++                            fields.Architecture.PPC64LE):
+++            # NOTE(armband): Added ARM v7/v8, same as on PPC.
++             # NOTE(ldbragst): PowerKVM doesn't support 'cirrus' be default
++             # so use 'vga' instead when running on Power hardware.
++             video.type = 'vga'
+diff --git a/mcp/salt-formulas/armband/init.sls b/mcp/salt-formulas/armband/init.sls
+new file mode 100644
+index 0000000..6e7b6ad
+--- /dev/null
++++ b/mcp/salt-formulas/armband/init.sls
+@@ -0,0 +1,6 @@
++include:
++ - armband.qemu
++ - armband.vgabios
++ - armband.nova
++ - armband.libvirt_driver
++
+diff --git a/mcp/salt-formulas/armband/libvirt_driver.sls b/mcp/salt-formulas/armband/libvirt_driver.sls
+new file mode 100644
+index 0000000..c309035
+--- /dev/null
++++ b/mcp/salt-formulas/armband/libvirt_driver.sls
+@@ -0,0 +1,5 @@
++/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py:
++  file.patch:
++  - source:  salt://armband/files/nova-libvirt-driver.diff
++  - hash: "668641080c6a77a9205d0f71d510ad5f"
++
+diff --git a/mcp/salt-formulas/armband/nova.sls b/mcp/salt-formulas/armband/nova.sls
+new file mode 100644
+index 0000000..994d505
+--- /dev/null
++++ b/mcp/salt-formulas/armband/nova.sls
+@@ -0,0 +1,24 @@
++nova_virt_type:
++  file.replace:
++    - name: "/etc/nova/nova.conf"
++    - pattern: ^virt_type =.*$
++    - repl: "virt_type = qemu"
++nova_pointer_model:
++  file.replace:
++    - name: "/etc/nova/nova.conf"
++    - pattern: ^#pointer_model=.*$
++    - repl: "pointer_model=ps2mouse"
++nova_cpu_mode:
++  file.replace:
++    - name: "/etc/nova/nova.conf"
++    - pattern: "^cpu_mode = host-passthrough"
++    - repl: "cpu_mode=custom"
++nova_cpu_model:
++  file.replace:
++    - name: "/etc/nova/nova.conf"
++    - pattern: ^#cpu_model=.*$
++    - repl: "cpu_model=cortex-a57"
++restart_nova-compute:
++  cmd:
++    - run
++    - name: "service nova-compute restart"
+diff --git a/mcp/salt-formulas/armband/qemu.sls b/mcp/salt-formulas/armband/qemu.sls
+new file mode 100644
+index 0000000..4760114
+--- /dev/null
++++ b/mcp/salt-formulas/armband/qemu.sls
+@@ -0,0 +1,7 @@
++qemu-efi:
++  pkg.installed
++/etc/libvirt/qemu.conf:
++  file.replace:
++    - pattern: ^#security_driver =.*$
++    - repl: "security_driver = none"
++
+diff --git a/mcp/salt-formulas/armband/vgabios.sls b/mcp/salt-formulas/armband/vgabios.sls
+new file mode 100644
+index 0000000..a31eafa
+--- /dev/null
++++ b/mcp/salt-formulas/armband/vgabios.sls
+@@ -0,0 +1,6 @@
++vgabios:
++  pkg.installed
++/usr/share/qemu/vgabios-stdvga.bin:
++  file.symlink:
++    - target: "/usr/share/vgabios/vgabios.bin"
++
