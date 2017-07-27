@@ -1,0 +1,40 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 27 Jul 2017 23:42:29 +0200
+Subject: [PATCH] mcp: salt-formulas: opendaylight: AArch64 leveldb
+
+ODL requires native leveldbjni support on architectures like AArch64.
+Armband provides a Debian package that provides exactly that,
+specially tailored to be applied on top of upstream Opendaylight
+Debian package.
+
+Install <armband-odl-leveldb-fix> as part of the existing Opendaylight
+salt-formula (and not as part of Armband's separate salt-formula, like
+previous fixups).
+
+Some dependencies are not self-contained in this formula yet, and
+should be handled before upstreaming this patch:
+- Armband DEB repository (mcp-repos) is added by "openstack" state;
+- only Debian systems are supported (no equivalent RPM provided);
+- only systemd is supported (unlikely to change);
+
+JIRA: https://jira.opnfv.org/browse/ARMBAND-283
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/salt-formulas/opendaylight/server.sls | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/mcp/salt-formulas/opendaylight/server.sls b/mcp/salt-formulas/opendaylight/server.sls
+index cb5b312..5a90951 100644
+--- a/mcp/salt-formulas/opendaylight/server.sls
++++ b/mcp/salt-formulas/opendaylight/server.sls
+@@ -46,4 +46,9 @@ opendaylight:
+   - pattern: ^featuresBoot=.*$
+   - repl: "featuresBoot={{ features }}"
+
++opendaylight_aarch64_leveldbjni:
++  pkg.installed:
++    {% if grains['cpuarch'] == 'aarch64'%}
++    - name: armband-odl-leveldb-fix
++    {% endif %}
+ {%- endif %}
