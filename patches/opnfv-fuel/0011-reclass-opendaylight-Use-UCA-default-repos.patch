@@ -1,0 +1,33 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 27 Jul 2017 20:09:46 +0200
+Subject: [PATCH] reclass: opendaylight: Use UCA default repos
+
+Current opendaylight pillar enforces a full apt repository cleanup,
+removing Ubuntu Cloud Archive (UCA) repos in favor of adding
+pre-hardcoded Ubuntu archive repos.
+
+Unlike UCA, main Ubuntu archive is split based on target arch, the
+main archive.ubuntu.com holding only x86 packages, while the other
+archs are hosted on ports.ubuntu.com.
+
+This leads to adding (only) x86-specific repositories to our AArch64
+UCA image.
+
+Mitigate this by ommiting "system.linux.system.repo.ubuntu" from the
+opendaylight pillar, leaving the default UCA repos in place.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml       | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
+index ec02e94..066488b 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
+@@ -1,5 +1,4 @@
+ classes:
+-- system.linux.system.repo.ubuntu
+ - system.linux.system.repo.mcp.openstack
+ - system.linux.system.repo.mcp.extra
+ - system.linux.system.repo.saltstack.xenial
