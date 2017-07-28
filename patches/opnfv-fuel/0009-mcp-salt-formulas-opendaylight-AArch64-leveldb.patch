@@ -25,12 +25,12 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/mcp/salt-formulas/opendaylight/server.sls b/mcp/salt-formulas/opendaylight/server.sls
-index cb5b312..5a90951 100644
+index 8c6c3b2..a2236ae 100644
 --- a/mcp/salt-formulas/opendaylight/server.sls
 +++ b/mcp/salt-formulas/opendaylight/server.sls
-@@ -46,4 +46,9 @@ opendaylight:
-   - pattern: ^featuresBoot=.*$
-   - repl: "featuresBoot={{ features }}"
+@@ -58,4 +58,9 @@ opendaylight:
+       - service: opendaylight
+ {%- endif %}
 
 +opendaylight_aarch64_leveldbjni:
 +  pkg.installed:

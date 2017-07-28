@@ -1,0 +1,33 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 17 Jul 2017 23:10:25 +0000
+Subject: [PATCH] deploy: Allow non-root deploys
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ci/deploy.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/ci/deploy.sh b/ci/deploy.sh
+index cf22d10..3d7ccf5 100755
+--- a/ci/deploy.sh
++++ b/ci/deploy.sh
+@@ -87,7 +87,7 @@ $(notify "Disabled input parameters (not yet supported with MCP):" 3)
+ -i (disabled) .iso image to be deployed (needs to be provided in a URI
+    style, it can be a local resource: file:// or a remote resource http(s)://)
+
+-$(notify "[NOTE] Root priviledges are needed for this script to run" 3)
++$(notify "[NOTE] sudo priviledges are needed for this script to run" 3)
+
+ Example:
+
+@@ -240,8 +240,8 @@ do
+     esac
+ done
+
+-if [[ $EUID -ne 0 ]]; then
+-    notify "[ERROR] This script must be run as root\n" 1>&2
++if [[ "$(sudo whoami)" != 'root' ]]; then
++    notify "This script requires sudo rights\n" 1>&2
+     exit 1
+ fi
+

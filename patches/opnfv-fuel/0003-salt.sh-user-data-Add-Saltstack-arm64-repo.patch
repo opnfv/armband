@@ -11,11 +11,11 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/scripts/salt.sh b/mcp/scripts/salt.sh
-index 605da89..c44168e 100755
+index 3d0fb91..589a0c4 100755
 --- a/mcp/scripts/salt.sh
 +++ b/mcp/scripts/salt.sh
-@@ -23,6 +23,10 @@ ssh ${SSH_OPTS} ubuntu@${SALT_MASTER} bash -s << SALT_INSTALL_END
-   cd /root/fuel/mcp/patches && ./patch.sh patches.list reclass
+@@ -48,6 +48,10 @@ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s << SALT_INSTALL_END
+   cd ${OPNFV_FUEL_DIR}/mcp/patches && ./patch.sh patches.list reclass
 
    cd /srv/salt/scripts
 +  if [ "\$(uname -i)" = "aarch64" ]; then

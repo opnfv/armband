@@ -19,28 +19,29 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index a1f5e38..92c7947 100755
+index 3ac7ff1..cf22d10 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
-@@ -230,8 +230,9 @@ pushd ${DEPLOY_DIR} > /dev/null
- # scenario, etc.
+@@ -270,9 +270,10 @@ pushd "${DEPLOY_DIR}" > /dev/null
 
  # Install required packages
--[ -n "$(command -v apt-get)" ] && apt-get install -y mkisofs curl virtinst cpu-checker qemu-kvm
--[ -n "$(command -v yum)" ] && yum install -y genisoimage curl virt-install qemu-kvm
-+[ -n "$(command -v apt-get)" ] && apt-get install -y mkisofs curl virtinst cpu-checker qemu-kvm vgabios && \
-+  ln -sf /usr/share/vgabios/vgabios.bin /usr/share/qemu/vgabios-stdvga.bin
-+[ -n "$(command -v yum)" ] && yum install -y genisoimage curl virt-install qemu-kvm vgabios
+ [ -n "$(command -v apt-get)" ] && apt-get install -y \
+-  git make rsync mkisofs curl virtinst cpu-checker qemu-kvm
++  git make rsync mkisofs curl virtinst cpu-checker qemu-kvm vgabios && \
++    ln -sf /usr/share/vgabios/vgabios.bin /usr/share/qemu/vgabios-stdvga.bin
+ [ -n "$(command -v yum)" ] && yum install -y \
+-  git make rsync genisoimage curl virt-install qemu-kvm
++  git make rsync genisoimage curl virt-install qemu-kvm vgabios
 
  # Check scenario file existence
  if [[ ! -f  ../config/${DEPLOY_SCENARIO}.yaml ]]; then
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 3ec596a..b75e47e 100644
+index 33dba3c..8d45100 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -58,6 +58,13 @@ create_vms() {
-   local -n vnodes_ram=$2
-   local -n vnodes_vcpus=$3
+@@ -78,6 +78,13 @@ create_vms() {
+     net_args="${net_args} --network ${net_type}=${net},model=virtio"
+   done
 
 +  # AArch64: prepare arch specific arguments
 +  local virt_extra_args=""
@@ -51,11 +52,11 @@ index 3ec596a..b75e47e 100644
 +
    # create vms with specified options
    for node in "${vnodes[@]}"; do
-     virt-install --name ${node} --ram ${vnodes_ram[$node]} --vcpus ${vnodes_vcpus[$node]} --cpu host --accelerate \
-@@ -69,7 +76,8 @@ create_vms() {
+     # shellcheck disable=SC2086
+@@ -88,7 +95,8 @@ create_vms() {
      --os-type linux --os-variant none \
      --boot hd --vnc --console pty --autostart --noreboot \
-     --disk path=$(pwd)/images/mcp_${node}.iso,device=cdrom \
+     --disk path="$(pwd)/images/mcp_${node}.iso",device=cdrom \
 -    --noautoconsole
 +    --noautoconsole \
 +    ${virt_extra_args}

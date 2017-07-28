@@ -108,7 +108,7 @@ index 17c22c5..ca3a812 100644
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/gateway.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/gateway.yml
-index 4ea51f3..ee17dbd 100644
+index e8421ca..657ddd3 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/gateway.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/gateway.yml
 @@ -6,9 +6,9 @@ classes:

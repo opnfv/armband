@@ -12,7 +12,7 @@ A_FUEL_BASE := ${ARMBAND_BASE}/upstream/fuel
 A_PATCH_DIR := ${ARMBAND_BASE}/patches
 A_OPNFV_TAG  = armband-opnfv
 A_PATCHES    = $(shell find ${A_PATCH_DIR} -name '*.patch')
-F_BUILD_DIR := ${A_FUEL_BASE}/build
+F_PATCH_DIR := ${A_FUEL_BASE}/mcp/patches
 
 # To enable remote tracking, set the following var to any non-empty string.
 # Leaving this var empty will bind each git submodule to its saved commit.

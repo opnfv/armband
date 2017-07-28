@@ -95,6 +95,35 @@ patches-import: .submodules-init .submodules-patched
 			fi \
 		done && \
 		git tag ${A_OPNFV_TAG}'
+	# Staging Fuel@OPNFV patches
+	@ls -d ${F_PATCH_DIR}/* 2>/dev/null | while read p_sub_path; do \
+		SUB_NAME=`basename $$p_sub_path`; \
+		find ${A_PATCH_DIR}/$$SUB_NAME -name '*.patch' 2>/dev/null -exec sh -c '\
+			A_PATCH={}; R_PATCH=$${A_PATCH#${A_PATCH_DIR}/}; \
+			F_PATCH=${F_PATCH_DIR}/$${0}/armband/$${R_PATCH#$${0}/}; \
+			if [ -f $$F_PATCH ]; then \
+				echo "`tput setaf 3`* WARN: $$R_PATCH upstream.`tput sgr0`"; \
+			else \
+				if [ -h $$A_PATCH ]; then \
+					echo "`tput setaf 3`* PHONY: $$R_PATCH`tput sgr0`"; \
+				else \
+					echo "`tput setaf 6`* Staging $$R_PATCH`tput sgr0`"; \
+					mkdir -p `dirname $$F_PATCH` && cp $$A_PATCH $$F_PATCH; \
+				fi; \
+			fi' "$$SUB_NAME" \; || true ; \
+	done
 	@touch $@
+
+##############################################################################
+# Fuel@OPNFV patch operations - to be used only during development
+##############################################################################
+# Apply all Fuel@OPNFV patches, including Armband patches
+.PHONY: fuel-patches-import
+fuel-patches-import: .submodules-patched fuel-patches-clean
+	$(MAKE) -e -C ${F_PATCH_DIR} patches-import
+
+.PHONY: fuel-patches-clean
+fuel-patches-clean:
+	$(MAKE) -e -C ${F_PATCH_DIR} clean
 
 # TODO: Bring back clean/debug/build after Fuel@OPNFV implements them for MCP

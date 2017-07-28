@@ -9,7 +9,11 @@
 #
 set -e
 
-cd $WORKSPACE
+SCRIPT_DIR=$(readlink -f $(dirname ${BASH_SOURCE[0]}))
+
+export ARMBAND_BASE=$(readlink -e ${SCRIPT_DIR}/..)
+
+cd ${WORKSPACE:-${ARMBAND_BASE}}
 make patches-import
 
 # source local environment variables
