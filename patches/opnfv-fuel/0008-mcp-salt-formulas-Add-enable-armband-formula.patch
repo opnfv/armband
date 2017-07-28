@@ -153,7 +153,7 @@ index 0000000..994d505
 +    - name: "service nova-compute restart"
 diff --git a/mcp/salt-formulas/armband/qemu.sls b/mcp/salt-formulas/armband/qemu.sls
 new file mode 100644
-index 0000000..4760114
+index 0000000..ecdb5ae
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/qemu.sls
 @@ -0,0 +1,7 @@
@@ -162,7 +162,7 @@ index 0000000..4760114
 +/etc/libvirt/qemu.conf:
 +  file.replace:
 +    - pattern: ^#security_driver =.*$
-+    - repl: "security_driver = none"
++    - repl: "security_driver = \"none\""
 +
 diff --git a/mcp/salt-formulas/armband/vgabios.sls b/mcp/salt-formulas/armband/vgabios.sls
 new file mode 100644
