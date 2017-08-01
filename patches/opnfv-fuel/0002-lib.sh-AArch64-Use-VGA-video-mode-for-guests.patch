@@ -19,7 +19,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index 3ac7ff1..cf22d10 100755
+index a77dd0f..aec8048 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -270,9 +270,10 @@ pushd "${DEPLOY_DIR}" > /dev/null

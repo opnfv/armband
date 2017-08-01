@@ -4,11 +4,11 @@ Subject: [PATCH] deploy: Allow non-root deploys
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ci/deploy.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ ci/deploy.sh | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index cf22d10..3d7ccf5 100755
+index aec8048..c1ec31b 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -87,7 +87,7 @@ $(notify "Disabled input parameters (not yet supported with MCP):" 3)
@@ -31,3 +31,16 @@ index cf22d10..3d7ccf5 100755
      exit 1
  fi
 
+@@ -269,10 +269,10 @@ pushd "${DEPLOY_DIR}" > /dev/null
+ # scenario, etc.
+
+ # Install required packages
+-[ -n "$(command -v apt-get)" ] && apt-get install -y \
++[ -n "$(command -v apt-get)" ] && sudo apt-get install -y \
+   git make rsync mkisofs curl virtinst cpu-checker qemu-kvm vgabios && \
+     ln -sf /usr/share/vgabios/vgabios.bin /usr/share/qemu/vgabios-stdvga.bin
+-[ -n "$(command -v yum)" ] && yum install -y \
++[ -n "$(command -v yum)" ] && sudo yum install -y \
+   git make rsync genisoimage curl virt-install qemu-kvm vgabios
+
+ # Check scenario file existence
