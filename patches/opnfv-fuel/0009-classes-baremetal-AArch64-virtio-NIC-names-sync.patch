@@ -1,0 +1,131 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 6 Aug 2017 20:42:47 +0200
+Subject: [PATCH] classes: baremetal: AArch64: virtio NIC names sync
+
+grep -e "ens[[:digit:]]" -R . -l | \
+  xargs sed -i \
+    -e 's/ens3/enp1s0/g' \
+    -e 's/ens4/enp2s0/g' \
+    -e 's/ens5/enp3s0/g' \
+    -e 's/ens6/enp4s0/g'
+
+Since AArch64 will be using virtio-net-pci NIC model for guests,
+predictable interface naming yields a slightly different scheme.
+
+Update all configuration to reflect this.
+
+NOTE: Above configuration is expected with libvirt 3.x, which puts
+each NIC on a separate PCIe bus (which also imposes virtio modern
+is used).
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../classes/cluster/baremetal-mcp-ocata-ovs/infra/config.yml      | 2 +-
+ .../classes/cluster/baremetal-mcp-ocata-ovs/infra/maas.yml        | 6 +++---
+ .../classes/cluster/baremetal-mcp-ocata-ovs/openstack/compute.yml | 8 ++++----
+ .../classes/cluster/baremetal-mcp-ocata-ovs/openstack/control.yml | 4 ++--
+ .../classes/cluster/baremetal-mcp-ocata-ovs/openstack/gateway.yml | 8 ++++----
+ 5 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/config.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/config.yml
+index a1b021a..52330fe 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/config.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/config.yml
+@@ -31,7 +31,7 @@ parameters:
+   linux:
+     network:
+       interface:
+-        ens4:
++        enp2s0:
+           enabled: true
+           type: eth
+           proto: static
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/maas.yml
+index ae75c73..96f469c 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/maas.yml
+@@ -4,9 +4,9 @@ classes:
+ - cluster.baremetal-mcp-ocata-ovs
+ parameters:
+   _param:
+-    primary_interface: ens4
+-    pxe_interface: ens5
+-    external_interface: ens6
++    primary_interface: enp2s0
++    pxe_interface: enp3s0
++    external_interface: enp4s0
+     interface_mtu: 9000
+     pxe_interface_mtu: 1500
+     linux_system_codename: xenial
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/compute.yml
+index d9c2db7..6f18a00 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/compute.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/compute.yml
+@@ -10,9 +10,9 @@ classes:
+ - cluster.baremetal-mcp-ocata-ovs
+ parameters:
+   _param:
+-    primary_interface: ens4
+-    tenant_interface: ens5
+-    external_interface: ens6
++    primary_interface: enp2s0
++    tenant_interface: enp3s0
++    external_interface: enp4s0
+     interface_mtu: 9000
+     linux_system_codename: xenial
+     loopback_device_size: 10
+@@ -47,7 +47,7 @@ parameters:
+       interface:
+         dhcp_int:
+           enabled: true
+-          name: ens3
++          name: enp1s0
+           proto: dhcp
+           type: eth
+           mtu: ${_param:interface_mtu}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/control.yml
+index 3bd7238..fbe1242 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/control.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/control.yml
+@@ -40,13 +40,13 @@ parameters:
+           version: latest
+     network:
+       interface:
+-        ens4:
++        enp2s0:
+           enabled: true
+           type: eth
+           proto: static
+           address: ${_param:single_address}
+           netmask: 255.255.255.0
+-        ens6:
++        enp4s0:
+           enabled: true
+           type: eth
+           proto: static
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/gateway.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/gateway.yml
+index 38ca78c..89d13f9 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/gateway.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/openstack/gateway.yml
+@@ -6,9 +6,9 @@ classes:
+ - cluster.baremetal-mcp-ocata-ovs
+ parameters:
+   _param:
+-    primary_interface: ens4
+-    tenant_interface: ens5
+-    external_interface: ens6
++    primary_interface: enp2s0
++    tenant_interface: enp3s0
++    external_interface: enp4s0
+     interface_mtu: 9000
+     linux_system_codename: xenial
+   neutron:
+@@ -20,7 +20,7 @@ parameters:
+       interface:
+         dhcp_int:
+           enabled: true
+-          name: ens3
++          name: enp1s0
+           proto: dhcp
+           type: eth
+           mtu: ${_param:interface_mtu}
