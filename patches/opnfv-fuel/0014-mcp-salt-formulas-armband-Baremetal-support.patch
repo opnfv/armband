@@ -1,0 +1,60 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 14 Aug 2017 23:28:52 +0200
+Subject: [PATCH] mcp: salt-formulas: armband: Baremetal support
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/states/maas             |  1 +
+ mcp/salt-formulas/armband/nova.sls | 10 ++++++++++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/mcp/config/states/maas b/mcp/config/states/maas
+index 989fe8b..1af2800 100755
+--- a/mcp/config/states/maas
++++ b/mcp/config/states/maas
+@@ -34,6 +34,7 @@ salt -C 'mas01*' pillar.item\
+ salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
+ salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
+
++salt -C 'kvm*' state.sls armband
+ salt -C 'kvm*' state.sls libvirt
+
+ salt -C '* and not cfg01* and not mas01*' state.apply salt
+diff --git a/mcp/salt-formulas/armband/nova.sls b/mcp/salt-formulas/armband/nova.sls
+index 994d505..ade8c7a 100644
+--- a/mcp/salt-formulas/armband/nova.sls
++++ b/mcp/salt-formulas/armband/nova.sls
+@@ -1,23 +1,33 @@
++{% if grains['virtual'] == 'kvm' %}
+ nova_virt_type:
+   file.replace:
+     - name: "/etc/nova/nova.conf"
+     - pattern: ^virt_type =.*$
+     - repl: "virt_type = qemu"
++{% endif %}
++
+ nova_pointer_model:
+   file.replace:
+     - name: "/etc/nova/nova.conf"
+     - pattern: ^#pointer_model=.*$
+     - repl: "pointer_model=ps2mouse"
++
+ nova_cpu_mode:
+   file.replace:
+     - name: "/etc/nova/nova.conf"
+     - pattern: "^cpu_mode = host-passthrough"
+     - repl: "cpu_mode=custom"
++
+ nova_cpu_model:
+   file.replace:
+     - name: "/etc/nova/nova.conf"
+     - pattern: ^#cpu_model=.*$
++    {% if grains['virtual'] == 'kvm' %}
+     - repl: "cpu_model=cortex-a57"
++    {% else %}
++    - repl: "cpu_model=host"
++    {% endif %}
++
+ restart_nova-compute:
+   cmd:
+     - run

@@ -5,7 +5,7 @@ Subject: [PATCH] network: public: Use arm-virtual2 POD config
 grep -e "10\.16\.0\." -R . -l | \
   xargs sed -i \
     -e 's/10\.16\.0\./10.0.9./g' \
-    -e 's/10\.0\.9\.254/10.0.9.200/g'
+    -e 's/10\.0\.9\.254/10.0.9.200/g' \
     -e 's/10\.0\.9\.1/10.0.9.254/g'
 
 NOTE: This should be converted into a dynamic configuration read from
