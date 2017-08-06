@@ -1,0 +1,21 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 17 Aug 2017 18:54:16 +0200
+Subject: [PATCH] states/network: parametrize openstack public net
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/states/networks | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/mcp/config/states/networks b/mcp/config/states/networks
+index df4c0bb..88111e5 100755
+--- a/mcp/config/states/networks
++++ b/mcp/config/states/networks
+@@ -1,3 +1,6 @@
++#!/bin/bash
++OPENSTACK_PUBLIC_NET=${OPENSTACK_PUBLIC_NET:-10.0.9.0/24}
++
+ salt 'ctl01*' cmd.run ". /root/keystonercv3; openstack compute service list; openstack network agent list; openstack stack list; openstack volume service list"
+ salt 'ctl01*' cmd.run ". /root/keystonercv3; openstack network create --external --default --provider-network-type flat --provider-physical-network physnet1 floating_net"
+-salt 'ctl01*' cmd.run ". /root/keystonercv3; openstack subnet create --gateway 10.0.9.254 --no-dhcp --allocation-pool start=10.0.9.130,end=10.0.9.200 --network floating_net --subnet-range 10.0.9.0/24 floating_subnet"
++salt 'ctl01*' cmd.run ". /root/keystonercv3; openstack subnet create --gateway ${OPENSTACK_PUBLIC_NET%.*}.254 --no-dhcp --allocation-pool start=${OPENSTACK_PUBLIC_NET%.*}.130,end=${OPENSTACK_PUBLIC_NET%.*}.200 --network floating_net --subnet-range ${OPENSTACK_PUBLIC_NET} floating_subnet"
