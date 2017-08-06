@@ -11,7 +11,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/scripts/salt.sh b/mcp/scripts/salt.sh
-index 3d0fb91..589a0c4 100755
+index 8229d24..70f3f0e 100755
 --- a/mcp/scripts/salt.sh
 +++ b/mcp/scripts/salt.sh
 @@ -48,6 +48,10 @@ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s << SALT_INSTALL_END
@@ -22,7 +22,7 @@ index 3d0fb91..589a0c4 100755
 +    # NOTE(armband): On AArch64, skip creating apt source list definitions (-r)
 +    export BOOTSTRAP_SALTSTACK_OPTS=" -r -dX stable 2016.3 "
 +  fi
-   MASTER_HOSTNAME=cfg01.${CLUSTER_DOMAIN} DISTRIB_REVISION=nightly ./salt-master-init.sh
+   MASTER_HOSTNAME=cfg01.${CLUSTER_DOMAIN} DISTRIB_REVISION=testing ./salt-master-init.sh
    salt-key -Ay
 
 diff --git a/mcp/scripts/user-data.template b/mcp/scripts/user-data.template
