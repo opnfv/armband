@@ -1,0 +1,1907 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 1 Aug 2017 22:18:41 +0200
+Subject: [PATCH] WIP: Bring in baremetal support
+
+- start by copying reclass/classes/cluster/virtual-mcp-ocata-ovs as
+  classes/cluster/baremetal-mcp-ocata-ovs;
+- add new state (maas) that will handle MaaS configuration;
+
+v1 -> v6:
+- Split PXE network in two for baremetal:
+  * rename old "pxe" virtual network to "mcpcontrol", make it
+    non-configurable and identical for baremetal/virtual deploys;
+  * new "pxebr" bridge is dedicated for MaaS fabric network, which
+    comes with its own DHCP, TFTP etc.;
+- Drop hardcoded PXE gateway & static IP for MaaS node, since
+  "mcpcontrol" remains a NAT-ed virtual network, with its own DHCP;
+- Keep internet access available on first interfaces for cfg01/mas01;
+- Align MaaS IP addrs (all x.y.z.250), add public IP for easy debug
+  via MaaS dashboard;
+- Add static IP in new network segment (192.168.11.250/24) on MaaS
+  node's PXE interface;
+- Set MaaS PXE interface MTU 1500 (weird network errors with jumbo);
+- sync_all is now upstream, drop from maas state;
+- MaaS node: Add NAT iptables traffic forward from "mcpcontrol" to
+  "pxebr" interfaces;
+- MaaS: Add harcoded lf-pod2 machine info (fixed identation in v6);
+- maas.yml: Fill in more data (OS version, kernel, domain etc.);
+- maas.yml: Align MaaS domain name with the rest of the cluster;
+
+v6 -> v8:
+- states/maas: Add automatic node commissioning + deploy;
+- maas.yml: add explicit architecture for each node;
+- maas.yml: remove cluster domain name from MaaS machine name;
+- apply basic Salt states (salt, linux, ntp) to new nodes, reboot;
+- MaaS node: net.ipv4.ip_forward=1;
+
+v8 -> v9:
+- Switch our targeted scenario to HA;
+  * scenario: s/os-nosdn-nofeature-noha/os-nosdn-nofeature-ha/
+  * cluster: s/baremetal-mcp-ocata-ovs/baremetal-mcp-ocata-ovs-ha/
+- merge Michael's reclass cluster configuration;
+  * rename cluster to OPNFV format;
+  * drop system.linux.system.repo.ubuntu in favor of default UCA;
+  * cfg01: bring back service.git.client;
+  * adjust reclass_data_repository;
+  * maas_admin_username: opnfv;
+  * maas.yml:
+    - add saltstack repo, linux codename;
+    - 3-way merge changes, leave fabric-0 hardcoded for now;
+    - switch MaaS node defition to kvm{01,02,03}, cmp{001,002};
+  * fix cluster_domain, add missing grafana pass;
+  * drop cluster init, in favor of infra/init, openstack/init;
+  * drop stacklight, telemetry: use mongodb instead of influxdb;
+  * move MaaS deploy_address param to init, keep new vars in maas.yml;
+- NOTE: in v9, not all changes are yet aligned, especially pxebr
+        network config;
+- ci/deploy.sh: fail if default scenario file is missing;
+
+v9 -> v10:
+- s/172.16.164/172.16.10/g;
+  On lf-pod2, PXE bridge network is 172.16.164.128/26. Instead of
+  joining our management network (172.16.10.0/24 for virtual deploys)
+  with it, keep them separate, allowing POD-agnostic configuration.
+- infra: misc rework:
+  * define infra_maas_node01_pxe_address (192.168.11.250), use it
+    to parametrize kvm gateway (temporary);
+  * define infra_maas_node01_external_address (10.16.0.250), move
+    them to init;
+  * move cfg01 deploy address back to 192.168.10.250;
+- MaaS subnets: use dhcp range 192.168.11.1...249;
+- MaaS node: re-enable dhcp on first interface;
+- MaaS PXE NAT: fix pxe_address after rename;
+- MaaS: use MTU 1500;
+- remove mcp team public keys, openssh.client.lab;
+- move MaaS IPs to x.y.z.250, fix MaaS DHCP;
+- some cleanup, remove trusty/centos images;
+- infra: use UCA xenial image;
+- kvm: s/br-mgm/br-mgmt/;
+- kvm: remove kernel pin, MaaS will install hwe-16.04;
+- openstack/init: s/10.167.6/10.1.0/g;
+- infra_maas_node01_deploy_address split to infra_maas_node01_address;
+- Move mgmt network back to 172.16.10.0/24;
+  * fix/realign IPs for br-ctl in 172.16.10.0/24;
+  * move from static to DHCP on kvm br-mgmt, compute mgmt;
+- cleanup: remove unused primary_{first,second}_nic;
+
+v10 -> v12:
+- cfg01: fix missing single_address on 2nd interface, add DHCP on 1st;
+- maas state: fix wait conditions for MaaS commission/deploy;
+- maas state: fix compound queries, reorder states for kvm/compute;
+- kvm{02,03}: fix overlapping addresses;
+- kvm: fix duplicate IP when moving mgmt addr from eth to bridge;
+
+v12 -> v14:
+- revert mgmt network to lf-pod2 range (s/172.16.10./10.167.4./g);
+- fix salt master IP over mgmt, switch to mcpcontrol fixed IP;
+
+TODO:
+- Read all this info from PDF (Pod Descriptor File) later;
+- investigate leftover references to eno2, eth3;
+- add public network interfaces config, IPs;
+- improve wait conditions for MaaS commision/deploy;
+
+KNOWN ISSUES (to be fixed before merge, for now we do them by hand):
+- pass mcp.rsa.pub to MaaS provisioned nodes;
+
+Change-Id: Ie8dd584b140991d2bd992acdfe47f5644bf51409
+Signed-off-by: Michael Polenchuk <mpolenchuk@mirantis.com>
+Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
+Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ci/deploy.sh                                       |  17 +-
+ mcp/config/scenario/baremetal/defaults.yaml        |   6 +
+ .../scenario/baremetal/os-nosdn-nofeature-ha.yaml  |  14 +
+ mcp/config/states/maas                             |  44 +++
+ .../haproxy_openstack_api.yml                      | 166 +++++++++++
+ .../cluster/baremetal-mcp-ocata-ovs-ha/.gitkeep    |   0
+ .../baremetal-mcp-ocata-ovs-ha/infra/config.yml    | 132 +++++++++
+ .../baremetal-mcp-ocata-ovs-ha/infra/init.yml      |  89 ++++++
+ .../baremetal-mcp-ocata-ovs-ha/infra/kvm.yml       | 149 ++++++++++
+ .../baremetal-mcp-ocata-ovs-ha/infra/maas.yml      | 128 +++++++++
+ .../cluster/baremetal-mcp-ocata-ovs-ha/init.yml    |   3 +
+ .../openstack/benchmark.yml                        |   8 +
+ .../openstack/compute.yml                          |  68 +++++
+ .../openstack/control.yml                          |  82 ++++++
+ .../openstack/control_init.yml                     |   9 +
+ .../openstack/dashboard.yml                        |  10 +
+ .../openstack/database.yml                         |  33 +++
+ .../openstack/database_init.yml                    |   2 +
+ .../openstack/gateway.yml                          |  54 ++++
+ .../baremetal-mcp-ocata-ovs-ha/openstack/init.yml  | 308 +++++++++++++++++++++
+ .../openstack/message_queue.yml                    |  23 ++
+ .../baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml |  33 +++
+ .../openstack/telemetry.yml                        |  26 ++
+ .../cfg01.baremetal-mcp-ocata-ovs-ha.local.yml     |  10 +
+ mcp/salt-formulas/maas/pxe_nat.sls                 |  30 ++
+ mcp/scripts/lib.sh                                 |  50 ++--
+ mcp/scripts/net_mcpcontrol.xml                     |  10 +
+ mcp/scripts/net_pxe.xml                            |  10 -
+ 28 files changed, 1478 insertions(+), 36 deletions(-)
+ create mode 100644 mcp/config/scenario/baremetal/defaults.yaml
+ create mode 100644 mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml
+ create mode 100755 mcp/config/states/maas
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/haproxy_openstack_api.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/.gitkeep
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/init.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/benchmark.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control_init.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database_init.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/gateway.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
+ create mode 100644 mcp/reclass/nodes/cfg01.baremetal-mcp-ocata-ovs-ha.local.yml
+ create mode 100644 mcp/salt-formulas/maas/pxe_nat.sls
+ create mode 100644 mcp/scripts/net_mcpcontrol.xml
+ delete mode 100644 mcp/scripts/net_pxe.xml
+
+diff --git a/ci/deploy.sh b/ci/deploy.sh
+index a39d494..4ab457b 100755
+--- a/ci/deploy.sh
++++ b/ci/deploy.sh
+@@ -68,7 +68,11 @@ $(notify "Input parameters to the build script are:" 2)
+    For an empty value, the deploy script will use virsh to create the default
+    expected network (e.g. -B pxe,,,public will use existing "pxe" and "public"
+    bridges, respectively create "mgmt" and "internal").
+-   The default is pxebr.
++   Note that a virtual network "mcpcontrol" is always created. For virtual
++   deploys, "mcpcontrol" is also used for PXE, leaving the PXE bridge unused.
++   For baremetal deploys, PXE bridge is used for baremetal node provisioning,
++   while "mcpcontrol" is used to provision the infrastructure VMs only.
++   The default is 'pxebr'.
+ -h Print this message and exit
+ -l Lab name as defined in the configuration directory, e.g. lf
+ -p POD name as defined in the configuration directory, e.g. pod-1
+@@ -130,11 +134,12 @@ clean() {
+ SCRIPT_PATH=$(readlink -f "$(dirname "${BASH_SOURCE[0]}")")
+ DEPLOY_DIR=$(cd "${SCRIPT_PATH}/../mcp/scripts"; pwd)
+ DEPLOY_TYPE='baremetal'
+-OPNFV_BRIDGES=('pxe' 'mgmt' 'internal' 'public')
++OPNFV_BRIDGES=('pxebr' 'mgmt' 'internal' 'public')
+ URI_REGEXP='(file|https?|ftp)://.*'
+
+ export SSH_KEY=${SSH_KEY:-mcp.rsa}
+ export SALT_MASTER=${SALT_MASTER_IP:-192.168.10.100}
++export MAAS_IP=${MAAS_IP:-192.168.10.250}
+ export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${SSH_KEY}"
+
+ # Variables below are disabled for now, to be re-introduced or removed later
+@@ -290,10 +295,14 @@ if [ "$(uname -i)" = "aarch64" ]; then
+ fi
+
+ # Check scenario file existence
+-if [[ ! -f  ../config/scenario/${DEPLOY_TYPE}/${DEPLOY_SCENARIO}.yaml ]]; then
++if [ ! -f  ../config/scenario/${DEPLOY_TYPE}/${DEPLOY_SCENARIO}.yaml ]; then
+     notify "[WARN] ${DEPLOY_SCENARIO}.yaml not found! \
+             Setting simplest scenario (os-nosdn-nofeature-noha)\n" 3
+     DEPLOY_SCENARIO='os-nosdn-nofeature-noha'
++    if [ ! -f  ../config/scenario/${DEPLOY_TYPE}/${DEPLOY_SCENARIO}.yaml ]; then
++        notify "[ERROR] Scenario definition file is missing!\n" 1>&2
++        exit 1
++    fi
+ fi
+
+ # Get required infra deployment data
+@@ -316,7 +325,7 @@ generate_ssh_key
+ prepare_vms virtual_nodes "${base_image}"
+ create_networks OPNFV_BRIDGES
+ create_vms virtual_nodes virtual_nodes_ram virtual_nodes_vcpus OPNFV_BRIDGES
+-update_pxe_network OPNFV_BRIDGES
++update_mcpcontrol_network
+ start_vms virtual_nodes
+ check_connection
+
+diff --git a/mcp/config/scenario/baremetal/defaults.yaml b/mcp/config/scenario/baremetal/defaults.yaml
+new file mode 100644
+index 0000000..b841e88
+--- /dev/null
++++ b/mcp/config/scenario/baremetal/defaults.yaml
+@@ -0,0 +1,6 @@
++base_image: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
++virtual:
++  default:
++    vcpus: 2
++    ram: 4096
++
+diff --git a/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml b/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml
+new file mode 100644
+index 0000000..4021fb0
+--- /dev/null
++++ b/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml
+@@ -0,0 +1,14 @@
++cluster:
++  domain: baremetal-mcp-ocata-ovs-ha.local
++  states:
++    - maas
++    - openstack
++    - neutron_compute
++    - networks
++virtual:
++  nodes:
++    - cfg01
++    - mas01
++  mas01:
++    vcpus: 4
++    ram: 16384
+diff --git a/mcp/config/states/maas b/mcp/config/states/maas
+new file mode 100755
+index 0000000..d240593
+--- /dev/null
++++ b/mcp/config/states/maas
+@@ -0,0 +1,44 @@
++# MaaS rack/region controller, node commissioning
++salt -C 'mas01*' cmd.run "add-apt-repository ppa:maas/stable"
++
++salt -C 'mas01*' state.apply linux,salt,openssh,ntp
++salt -C 'mas01*' state.apply linux.network.interface
++salt -C 'mas01*' state.apply maas.pxe_nat
++salt -C 'mas01*' state.apply maas.cluster,maas.region
++
++salt -C 'mas01*' state.apply maas.machines
++while true; do
++  # FIXME: we clearly need to improve this condition
++  salt 'mas01*' --out yaml state.apply maas.machines.status | \
++    fgrep -q 'Ready: 5' && break || true
++  sleep 10
++done
++
++# MaaS node deployment
++salt -C 'mas01*' state.apply maas.machines.deploy
++while true; do
++  salt 'mas01*' --out yaml state.apply maas.machines.status | \
++    fgrep -q 'Deployed: 5' && break || true
++  sleep 10
++done
++
++salt -C 'mas01*' pillar.item\
++  maas:region:admin:username \
++  maas:region:admin:password
++
++# KVM, compute node prereqs (libvirt first), VCP deployment
++salt -C '*' saltutil.sync_all
++
++salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
++salt -C 'kvm*' state.sls libvirt
++
++salt -C '* and not cfg01* and not mas01*' state.apply salt
++salt -C '* and not cfg01* and not mas01*' system.reboot
++
++# TODO: wait for systems to come back online / drop reboot?
++
++# salt -C 'kvm*' state.sls salt.control
++
++# salt -C '*' saltutil.sync_all
++# salt -C '*' state.apply salt
++# salt -C '*' state.apply linux,ntp
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/haproxy_openstack_api.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/haproxy_openstack_api.yml
+new file mode 100644
+index 0000000..e63e9d5
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/haproxy_openstack_api.yml
+@@ -0,0 +1,166 @@
++parameters:
++  _param:
++    haproxy_check: check inter 15s fastinter 2s downinter 4s rise 3 fall 3
++  haproxy:
++    proxy:
++      listen:
++        cinder_api:
++          type: openstack-service
++          service_name: cinder
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 8776
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 8776
++            params: ${_param:haproxy_check}
++        glance_api:
++          type: openstack-service
++          service_name: glance
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 9292
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 9292
++            params: ${_param:haproxy_check}
++        glance_registry_api:
++          type: general-service
++          service_name: glance
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 9191
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 9191
++            params: ${_param:haproxy_check}
++        glare:
++          type: general-service
++          service_name: glare
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 9494
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 9494
++            params: ${_param:haproxy_check}
++        heat_cloudwatch_api:
++          type: openstack-service
++          service_name: heat
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 8003
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 8003
++            params: ${_param:haproxy_check}
++        heat_api:
++          type: openstack-service
++          service_name: heat
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 8004
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 8004
++            params: ${_param:haproxy_check}
++        heat_cfn_api:
++          type: openstack-service
++          service_name: heat
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 8000
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 8000
++            params: ${_param:haproxy_check}
++        keystone_public_api:
++          type: openstack-service
++          service_name: keystone
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 5000
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 5000
++            params: ${_param:haproxy_check}
++        keystone_admin_api:
++          type: openstack-service
++          service_name: keystone
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 35357
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 35357
++            params: ${_param:haproxy_check}
++        neutron_api:
++          type: openstack-service
++          service_name: neutron
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 9696
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 9696
++            params: ${_param:haproxy_check}
++        nova_placement_api:
++          mode: http
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 8778
++          options:
++          - httpclose
++          - httplog
++          health-check:
++            http:
++              options:
++              - expect status 401
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 8778
++            params: ${_param:haproxy_check}
++        nova_ec2_api:
++          type: general-service
++          service_name: nova
++          check: false
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 8773
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 8773
++            params: ${_param:haproxy_check}
++        nova_api:
++          type: openstack-service
++          service_name: nova
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 8774
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 8774
++            params: ${_param:haproxy_check}
++        nova_metadata_api:
++          type: openstack-service
++          binds:
++          - address: ${_param:cluster_vip_address}
++            port: 8775
++          servers:
++          - name: ctl01
++            host: ${_param:cluster_node01_address}
++            port: 8775
++            params: ${_param:haproxy_check}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/.gitkeep b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/.gitkeep
+new file mode 100644
+index 0000000..e69de29
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml
+new file mode 100644
+index 0000000..77443de
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml
+@@ -0,0 +1,132 @@
++classes:
++- service.git.client
++- system.linux.system.single
++- system.linux.system.repo.mcp.salt
++- system.linux.system.repo.saltstack.xenial
++- system.salt.master.api
++- system.salt.master.pkg
++- system.salt.minion.ca.salt_master
++- system.reclass.storage.salt
++- system.reclass.storage.system.physical_control_cluster
++- system.reclass.storage.system.openstack_control_cluster
++- system.reclass.storage.system.openstack_proxy_cluster
++- system.reclass.storage.system.openstack_gateway_cluster
++- system.reclass.storage.system.openstack_database_cluster
++- system.reclass.storage.system.openstack_message_queue_cluster
++- system.reclass.storage.system.openstack_telemetry_cluster
++# - system.reclass.storage.system.stacklight_log_cluster
++# - system.reclass.storage.system.stacklight_monitor_cluster
++# - system.reclass.storage.system.stacklight_telemetry_cluster
++- system.reclass.storage.system.infra_maas_single
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    salt_master_base_environment: prd
++    reclass_data_repository: local
++    salt_master_environment_repository: "https://github.com/tcpcloud"
++    salt_master_environment_revision: master
++    reclass_config_master: ${_param:infra_config_deploy_address}
++    single_address: ${_param:infra_config_address}
++    deploy_address: ${_param:infra_config_deploy_address}
++    salt_master_host: ${_param:infra_config_deploy_address}
++    salt_api_password_hash: "$6$sGnRlxGf$al5jMCetLP.vfI/fTl3Z0N7Za1aeiexL487jAtyRABVfT3NlwZxQGVhO7S1N8OwS/34VHYwZQA8lkXwKMN/GS1"
++  linux:
++    network:
++      interface:
++        ens3: ${_param:linux_dhcp_interface}
++        ens4: ${_param:linux_single_interface}
++  salt:
++    master:
++      accept_policy: open_mode
++  reclass:
++    storage:
++      data_source:
++        engine: local
++      node:
++        infra_kvm_node01:
++          params:
++            keepalived_vip_priority: 100
++            linux_system_codename: xenial
++        infra_kvm_node02:
++          params:
++            keepalived_vip_priority: 101
++            linux_system_codename: xenial
++        infra_kvm_node03:
++          params:
++            keepalived_vip_priority: 102
++            linux_system_codename: xenial
++        openstack_telemetry_node01:
++          params:
++            linux_system_codename: xenial
++        openstack_telemetry_node02:
++          params:
++            linux_system_codename: xenial
++        openstack_telemetry_node03:
++          params:
++            linux_system_codename: xenial
++        openstack_message_queue_node01:
++          params:
++            linux_system_codename: xenial
++        openstack_message_queue_node02:
++          params:
++            linux_system_codename: xenial
++        openstack_message_queue_node03:
++          params:
++            linux_system_codename: xenial
++        openstack_proxy_node01:
++          params:
++            linux_system_codename: xenial
++        openstack_proxy_node02:
++          params:
++            linux_system_codename: xenial
++#        stacklight_log_node01:
++#          classes:
++#          - system.elasticsearch.client.single
++#        stacklight_monitor_node01:
++#          classes:
++#          - system.grafana.client.single
++#          - system.kibana.client.single
++        openstack_control_node01:
++          classes:
++          - cluster.${_param:cluster_name}.openstack.control_init
++          params:
++            linux_system_codename: xenial
++        openstack_control_node02:
++          params:
++            linux_system_codename: xenial
++        openstack_control_node03:
++          params:
++            linux_system_codename: xenial
++        openstack_database_node01:
++          classes:
++          - cluster.${_param:cluster_name}.openstack.database_init
++          params:
++            linux_system_codename: xenial
++        openstack_database_node02:
++          params:
++            linux_system_codename: xenial
++        openstack_database_node03:
++          params:
++            linux_system_codename: xenial
++        openstack_compute_node01:
++          name: ${_param:openstack_compute_node01_hostname}
++          domain: ${_param:cluster_domain}
++          classes:
++          - cluster.${_param:cluster_name}.openstack.compute
++          params:
++            salt_master_host: ${_param:reclass_config_master}
++            linux_system_codename: xenial
++            control_address: ${_param:openstack_compute_node01_control_address}
++            single_address: ${_param:openstack_compute_node01_single_address}
++            tenant_address: ${_param:openstack_compute_node01_tenant_address}
++        openstack_compute_node02:
++          name: ${_param:openstack_compute_node02_hostname}
++          domain: ${_param:cluster_domain}
++          classes:
++          - cluster.${_param:cluster_name}.openstack.compute
++          params:
++            salt_master_host: ${_param:reclass_config_master}
++            linux_system_codename: xenial
++            control_address: ${_param:openstack_compute_node02_control_address}
++            single_address: ${_param:openstack_compute_node02_single_address}
++            tenant_address: ${_param:openstack_compute_node02_tenant_address}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
+new file mode 100644
+index 0000000..db1e3e8
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
+@@ -0,0 +1,89 @@
++classes:
++- system.linux.system.single
++- cluster.baremetal-mcp-ocata-ovs-ha.openstack
++# - cluster.baremetal-mcp-ocata-ovs-ha.stacklight
++# - cluster.baremetal-mcp-ocata-ovs-ha.stacklight.client
++parameters:
++  _param:
++    apt_mk_version: nightly
++    mcp_repo_version: 1.1
++    cluster_name: baremetal-mcp-ocata-ovs-ha
++    cluster_domain: ${_param:cluster_name}.local
++#    stacklight_environment: ${_param:cluster_domain}
++    reclass_data_revision: master
++    cluster_public_host: ${_param:openstack_proxy_address}
++    infra_config_hostname: cfg01
++    infra_maas_database_password: opnfv_secret
++
++    # infra service addresses
++    infra_config_address: 10.167.4.100
++    infra_config_deploy_address: 192.168.10.100
++    infra_maas_node01_address: 10.167.4.250
++    infra_maas_node01_deploy_address: 192.168.10.250
++    infra_maas_node01_pxe_address: 192.168.11.250
++    infra_maas_node01_external_address: 10.16.0.250
++    infra_compute_node01_address: 10.167.4.141
++    infra_compute_node02_address: 10.167.4.142
++    infra_compute_node03_address: 10.167.4.143
++
++    infra_kvm_address: 10.167.4.140
++    infra_kvm_node01_address: 10.167.4.141
++    infra_kvm_node02_address: 10.167.4.142
++    infra_kvm_node03_address: 10.167.4.143
++
++    infra_maas_node01_hostname: mas01
++    infra_kvm_node01_hostname: kvm01
++    infra_kvm_node02_hostname: kvm02
++    infra_kvm_node03_hostname: kvm03
++
++    # Interface definitions
++    reclass:
++      storage:
++        node:
++          name: default
++    linux_dhcp_interface:
++      enabled: true
++      type: eth
++      proto: dhcp
++    linux_single_interface:
++      enabled: true
++      type: eth
++      proto: static
++      address: ${_param:single_address}
++      netmask: 255.255.255.0
++
++    salt_control_xenial_image: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
++    salt_api_password_hash: "$6$WV0P1shnoDh2gI/Z$22/Bcd7ffMv0jDlFpT63cAU4PiXHz9pjXwngToKwqAsgoeK4HNR3PiKaushjxp3JsQ8hNoJmAC6TxzVqfV8WH/"
++  linux:
++    network:
++      host:
++        cfg01:
++          address: ${_param:infra_config_address}
++          names:
++          - cfg01
++          - cfg01.${_param:cluster_domain}
++        cfg:
++          address: ${_param:infra_config_address}
++          names:
++          - ${_param:infra_config_hostname}
++          - ${_param:infra_config_hostname}.${_param:cluster_domain}
++        mas01:
++          address: ${_param:infra_maas_node01_address}
++          names:
++          - ${_param:infra_maas_node01_hostname}
++          - ${_param:infra_maas_node01_hostname}.${_param:cluster_domain}
++        kvm01:
++          address: ${_param:infra_kvm_node01_address}
++          names:
++          - ${_param:infra_kvm_node01_hostname}
++          - ${_param:infra_kvm_node01_hostname}.${_param:cluster_domain}
++        kvm02:
++          address: ${_param:infra_kvm_node02_address}
++          names:
++          - ${_param:infra_kvm_node02_hostname}
++          - ${_param:infra_kvm_node02_hostname}.${_param:cluster_domain}
++        kvm03:
++          address: ${_param:infra_kvm_node03_address}
++          names:
++          - ${_param:infra_kvm_node03_hostname}
++          - ${_param:infra_kvm_node03_hostname}.${_param:cluster_domain}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
+new file mode 100644
+index 0000000..73eb10f
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
+@@ -0,0 +1,149 @@
++classes:
++- system.linux.system.repo.mcp.openstack
++- system.linux.system.repo.mcp.extra
++- system.linux.system.repo.saltstack.xenial
++- service.keepalived.cluster.single
++- system.glusterfs.server.volume.glance
++- system.glusterfs.server.volume.keystone
++- system.glusterfs.server.cluster
++- system.salt.control.virt
++- system.salt.control.cluster.openstack_control_cluster
++- system.salt.control.cluster.openstack_proxy_cluster
++- system.salt.control.cluster.openstack_database_cluster
++- system.salt.control.cluster.openstack_message_queue_cluster
++- system.salt.control.cluster.openstack_telemetry_cluster
++# - system.salt.control.cluster.stacklight_server_cluster
++# - system.salt.control.cluster.stacklight_log_cluster
++# - system.salt.control.cluster.stacklight_telemetry_cluster
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    linux_system_codename: xenial
++    cluster_vip_address: ${_param:infra_kvm_address}
++    cluster_node01_address: ${_param:infra_kvm_node01_address}
++    cluster_node02_address: ${_param:infra_kvm_node02_address}
++    cluster_node03_address: ${_param:infra_kvm_node03_address}
++    keepalived_vip_interface: br-ctl
++    keepalived_vip_virtual_router_id: 69
++    deploy_nic: enp6s0
++  salt:
++    control:
++      size: #RAM 4096,8192,16384,32768,65536
++      ##Default production sizing
++        openstack.control:
++          cpu: 6
++          ram: 8192
++          disk_profile: small
++          net_profile: default
++        openstack.database:
++          cpu: 6
++          ram: 8192
++          disk_profile: large
++          net_profile: default
++        openstack.message_queue:
++          cpu: 6
++          ram: 8192
++          disk_profile: small
++          net_profile: default
++        openstack.telemetry:
++          cpu: 4
++          ram: 4096
++          disk_profile: xxlarge
++          net_profile: default
++        openstack.proxy:
++          cpu: 4
++          ram: 4096
++          disk_profile: small
++          net_profile: default
++#        stacklight.log:
++#          cpu: 2
++#          ram: 4096
++#          disk_profile: xxlarge
++#          net_profile: default
++#        stacklight.server:
++#          cpu: 2
++#          ram: 4096
++#          disk_profile: small
++#          net_profile: default
++#        stacklight.telemetry:
++#          cpu: 2
++#          ram: 4096
++#          disk_profile: xxlarge
++#          net_profile: default
++      cluster:
++        internal:
++          node:
++            prx02:
++              provider: kvm03.${_param:cluster_domain}
++            mdb01:
++              image: ${_param:salt_control_xenial_image}
++            mdb02:
++              image: ${_param:salt_control_xenial_image}
++            mdb03:
++              image: ${_param:salt_control_xenial_image}
++            ctl01:
++              image: ${_param:salt_control_xenial_image}
++            ctl02:
++              image: ${_param:salt_control_xenial_image}
++            ctl03:
++              image: ${_param:salt_control_xenial_image}
++            dbs01:
++              image: ${_param:salt_control_xenial_image}
++            dbs02:
++              image: ${_param:salt_control_xenial_image}
++            dbs03:
++              image: ${_param:salt_control_xenial_image}
++            msg01:
++              image: ${_param:salt_control_xenial_image}
++            msg02:
++              image: ${_param:salt_control_xenial_image}
++            msg03:
++              image: ${_param:salt_control_xenial_image}
++            prx01:
++              image: ${_param:salt_control_xenial_image}
++            prx02:
++              image: ${_param:salt_control_xenial_image}
++  virt:
++    nic:
++      default:
++        eth1:
++          bridge: br-mgmt
++          model: virtio
++        eth0:
++          bridge: br-ctl
++          model: virtio
++  linux:
++    network:
++      interface:
++        eth3:
++          enabled: true
++          type: eth
++          proto: manual
++          address: 0.0.0.0
++          netmask: 255.255.255.0
++          name: ${_param:deploy_nic}
++          ipflush_onchange: true
++        br-mgmt:
++          enabled: true
++          proto: dhcp
++          type: bridge
++          name_servers:
++          - 8.8.8.8
++          - 8.8.4.4
++          use_interfaces:
++          - ${_param:deploy_nic}
++        vlan300:
++          enabled: true
++          proto: manual
++          type: vlan
++          name: ${_param:deploy_nic}.300
++          use_interfaces:
++          - ${_param:deploy_nic}
++        br-ctl:
++          enabled: true
++          type: bridge
++          proto: static
++          address: ${_param:single_address}
++          netmask: 255.255.255.0
++          use_interfaces:
++          - ${_param:deploy_nic}.300
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
+new file mode 100644
+index 0000000..94a8a3a
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
+@@ -0,0 +1,128 @@
++classes:
++- system.linux.system.repo.saltstack.xenial
++- system.maas.region.single
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    dhcp_interface: ens3
++    primary_interface: ens4
++    pxe_interface: ens5
++    external_interface: ens6
++    interface_mtu: 1500
++    # MaaS has issues using MTU > 1500 for PXE interface
++    pxe_interface_mtu: 1500
++    linux_system_codename: xenial
++    maas_admin_username: opnfv
++    maas_admin_password: opnfv_secret
++    maas_db_password: opnfv_secret
++    dns_server01: 8.8.4.4
++  maas:
++    region:
++      salt_master_ip: ${_param:infra_config_deploy_address}
++      domain: ${_param:cluster_domain}
++      maas_config:
++        commissioning_distro_series: 'xenial'
++        default_distro_series: 'xenial'
++        default_osystem: 'ubuntu'
++        default_storage_layout: 'lvm'
++        disk_erase_with_secure_erase: false
++        dnssec_validation: 'no'
++        enable_third_party_drivers: true
++        network_discovery: 'enabled'
++        default_min_hwe_kernel: 'hwe-16.04'
++# TODO: pass mcp.rsa.pub or read from ~ubuntu/.ssh/authorized_keys
++#      sshprefs:
++#      - 'ssh-rsa ... user@host'
++      subnets:
++# TODO: parametrize address root (192.168.11), fabric-2, dhcp start/end?
++        192.168.11.0/24:
++          fabric: fabric-2
++          cidr: 192.168.11.0/24
++          gateway_ip: ${_param:infra_maas_node01_pxe_address}
++          iprange:
++            start: 192.168.11.1
++            end: 192.168.11.249
++      machines:
++        kvm01:
++          interface:
++            mac: "00:25:b5:a0:00:2a"
++          power_parameters:
++            power_address: "172.30.8.75"
++            power_password: "octopus"
++            power_type: ipmi
++            power_user: "admin"
++          architecture: 'amd64/generic'
++          distro_series: xenial
++          hwe_kernel: hwe-16.04
++        kvm02:
++          interface:
++            mac: "00:25:b5:a0:00:3a"
++          power_parameters:
++            power_address: "172.30.8.65"
++            power_password: "octopus"
++            power_type: ipmi
++            power_user: "admin"
++          architecture: 'amd64/generic'
++          distro_series: xenial
++          hwe_kernel: hwe-16.04
++        kvm03:
++          interface:
++            mac: "00:25:b5:a0:00:4a"
++          power_parameters:
++            power_address: "172.30.8.74"
++            power_password: "octopus"
++            power_type: ipmi
++            power_user: "admin"
++          architecture: 'amd64/generic'
++          distro_series: xenial
++          hwe_kernel: hwe-16.04
++        cmp001:
++          interface:
++            mac: "00:25:b5:a0:00:5a"
++          power_parameters:
++            power_address: "172.30.8.73"
++            power_password: "octopus"
++            power_type: ipmi
++            power_user: "admin"
++          architecture: 'amd64/generic'
++          distro_series: xenial
++          hwe_kernel: hwe-16.04
++        cmp002:
++          interface:
++            mac: "00:25:b5:a0:00:6a"
++          power_parameters:
++            power_address: "172.30.8.72"
++            power_password: "octopus"
++            power_type: ipmi
++            power_user: "admin"
++          architecture: 'amd64/generic'
++          distro_series: xenial
++          hwe_kernel: hwe-16.04
++  linux:
++    network:
++      interface:
++        dhcp_interface: ${_param:linux_dhcp_interface}
++        primary_interface:
++          enabled: true
++          name: ${_param:primary_interface}
++          mtu: ${_param:interface_mtu}
++          proto: static
++          address: ${_param:infra_maas_node01_address}
++          netmask: 255.255.255.0
++          type: eth
++        pxe_interface:
++          enabled: true
++          name: ${_param:pxe_interface}
++          mtu: ${_param:pxe_interface_mtu}
++          proto: static
++          address: ${_param:infra_maas_node01_pxe_address}
++          netmask: 255.255.255.0
++          type: eth
++        external_interface:
++          enabled: true
++          name: ${_param:external_interface}
++          mtu: ${_param:interface_mtu}
++          proto: static
++          address: ${_param:infra_maas_node01_external_address}
++          netmask: 255.255.255.0
++          type: eth
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/init.yml
+new file mode 100644
+index 0000000..4029239
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/init.yml
+@@ -0,0 +1,3 @@
++classes:
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++- cluster.baremetal-mcp-ocata-ovs-ha.openstack
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/benchmark.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/benchmark.yml
+new file mode 100644
+index 0000000..371928a
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/benchmark.yml
+@@ -0,0 +1,8 @@
++classes:
++- cluster.baremetal-mcp-ocata-ovs-ha
++parameters:
++  linux:
++    network:
++      interface:
++        eth0: ${_param:linux_dhcp_interface}
++        eth1: ${_param:linux_single_interface}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
+new file mode 100644
+index 0000000..088bf83
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
+@@ -0,0 +1,68 @@
++classes:
++- system.linux.system.repo.mcp.openstack
++- system.linux.system.repo.mcp.extra
++- system.linux.system.repo.saltstack.xenial
++- system.nova.compute.cluster
++- system.nova.compute.nfv.hugepages
++- system.nova.compute.nfv.cpu_pinning
++- system.neutron.compute.cluster
++- system.ceilometer.agent.cluster
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    cluster_vip_address: ${_param:openstack_control_address}
++    cluster_local_address: ${_param:control_address}
++    cluster_node01_hostname: ctl01
++    cluster_node01_address: ${_param:openstack_control_node01_address}
++    cluster_node02_hostname: ctl02
++    cluster_node02_address: ${_param:openstack_control_node02_address}
++    cluster_node03_hostname: ctl03
++    cluster_node03_address: ${_param:openstack_control_node03_address}
++    nova_vncproxy_url: https://${_param:cluster_public_host}:6080
++    mgmt_nic: enp6s0
++    tenant_nic: enp7s0
++    linux_system_codename: xenial
++  linux:
++    network:
++      bridge: openvswitch
++      interface:
++        mgmt_nic:
++          enabled: true
++          type: eth
++          proto: dhcp
++          name: ${_param:mgmt_nic}
++        tenant_nic:
++          enabled: true
++          type: eth
++          proto: manual
++          name: ${_param:tenant_nic}
++        br-mesh:
++          enabled: true
++          type: bridge
++          address: ${_param:tenant_address}
++          netmask: 255.255.255.0
++          mtu: 1500
++          use_interfaces:
++          - ${_param:tenant_nic}.302
++        vlan300:
++          enabled: true
++          proto: manual
++          type: vlan
++          name: ${_param:mgmt_nic}.300
++          use_interfaces:
++          - ${_param:mgmt_nic}
++        vlan302:
++          enabled: true
++          proto: manual
++          type: vlan
++          name: ${_param:tenant_nic}.302
++          use_interfaces:
++          - ${_param:tenant_nic}
++        br-ctl:
++          enabled: true
++          type: bridge
++          proto: static
++          address: ${_param:single_address}
++          netmask: 255.255.255.0
++          use_interfaces:
++          - ${_param:tenant_nic}.302
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
+new file mode 100644
+index 0000000..995c50c
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
+@@ -0,0 +1,82 @@
++classes:
++- system.linux.system.repo.mcp.openstack
++- system.linux.system.repo.mcp.extra
++- system.linux.system.repo.saltstack.xenial
++- system.ceilometer.client
++- system.memcached.server.single
++- system.keystone.server.cluster
++- system.keystone.server.wsgi
++- system.glance.control.cluster
++- system.neutron.control.openvswitch.cluster
++- system.nova.control.cluster
++- system.cinder.control.cluster
++- system.cinder.volume.single
++- system.heat.server.cluster
++- system.designate.server.cluster
++- system.designate.server.backend.bind
++- system.bind.server.single
++- system.haproxy.proxy.listen.openstack.nova-placement
++- system.haproxy.proxy.listen.openstack.glare
++- system.glusterfs.client.cluster
++- system.glusterfs.client.volume.glance
++- system.glusterfs.client.volume.keystone
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    keepalived_vip_interface: ens3
++    keepalived_vip_virtual_router_id: 50
++    cluster_vip_address: ${_param:openstack_control_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: ctl01
++    cluster_node01_address: ${_param:openstack_control_node01_address}
++    cluster_node02_hostname: ctl02
++    cluster_node02_address: ${_param:openstack_control_node02_address}
++    cluster_node03_hostname: ctl03
++    cluster_node03_address: ${_param:openstack_control_node03_address}
++    nova_vncproxy_url: https://${_param:cluster_public_host}:6080
++  linux:
++    network:
++      interface:
++        ens3: ${_param:linux_single_interface}
++  bind:
++    server:
++      control:
++        mgmt:
++          enabled: true
++          bind:
++            address: ${_param:single_address}
++            port: 953
++          allow:
++            - ${_param:openstack_control_node01_address}
++            - ${_param:openstack_control_node02_address}
++            - ${_param:openstack_control_node03_address}
++          keys:
++            - designate
++  designate:
++    server:
++      pools:
++        default:
++          description: 'test pool'
++          targets:
++            default:
++              description: 'test target1'
++            default1:
++              type: ${_param:designate_pool_target_type}
++              description: 'test target2'
++              masters: ${_param:designate_pool_target_masters}
++              options:
++                host: ${_param:openstack_control_node02_address}
++                port: 53
++                rndc_host: ${_param:openstack_control_node02_address}
++                rndc_port: 953
++                rndc_key_file: /etc/designate/rndc.key
++            default2:
++              type: ${_param:designate_pool_target_type}
++              description: 'test target3'
++              masters: ${_param:designate_pool_target_masters}
++              options:
++                host: ${_param:openstack_control_node03_address}
++                port: 53
++                rndc_host: ${_param:openstack_control_node03_address}
++                rndc_port: 953
++                rndc_key_file: /etc/designate/rndc.key
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control_init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control_init.yml
+new file mode 100644
+index 0000000..e759c0c
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control_init.yml
+@@ -0,0 +1,9 @@
++classes:
++- system.keystone.client.single
++- system.keystone.client.service.aodh
++- system.keystone.client.service.ceilometer
++- system.keystone.client.service.nova21
++- system.keystone.client.service.nova-placement
++- system.keystone.client.service.glare
++- system.keystone.client.service.cinder3
++- system.keystone.client.service.designate
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml
+new file mode 100644
+index 0000000..b7ed814
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml
+@@ -0,0 +1,10 @@
++classes:
++- system.horizon.server.single
++- cluster.baremetal-mcp-ocata-ovs-ha
++parameters:
++  _param:
++    horizon_site_branding: OpenStack Dashboard
++  linux:
++    network:
++      interface:
++        ens3: ${_param:linux_single_interface}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml
+new file mode 100644
+index 0000000..c0e21aa
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml
+@@ -0,0 +1,33 @@
++classes:
++- system.linux.system.repo.mcp.openstack
++- system.linux.system.repo.mcp.extra
++- system.linux.system.repo.saltstack.xenial
++- system.galera.server.cluster
++- system.galera.server.database.aodh
++- system.galera.server.database.ceilometer
++- system.galera.server.database.cinder
++- system.galera.server.database.designate
++- system.galera.server.database.glance
++- system.galera.server.database.grafana
++- system.galera.server.database.heat
++- system.galera.server.database.keystone
++- system.galera.server.database.nova
++- system.galera.server.database.neutron
++- cluster.baremetal-mcp-ocata-ovs-ha
++parameters:
++  _param:
++    keepalived_vip_interface: ens3
++    keepalived_vip_virtual_router_id: 80
++    galera_server_cluster_name: openstack_cluster
++    cluster_vip_address: ${_param:openstack_database_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: dbs01
++    cluster_node01_address: ${_param:openstack_database_node01_address}
++    cluster_node02_hostname: dbs02
++    cluster_node02_address: ${_param:openstack_database_node02_address}
++    cluster_node03_hostname: dbs03
++    cluster_node03_address: ${_param:openstack_database_node03_address}
++  linux:
++    network:
++      interface:
++        ens3: ${_param:linux_single_interface}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database_init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database_init.yml
+new file mode 100644
+index 0000000..b16f055
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database_init.yml
+@@ -0,0 +1,2 @@
++classes:
++- system.mysql.client.single
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/gateway.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/gateway.yml
+new file mode 100644
+index 0000000..b9dcf72
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/gateway.yml
+@@ -0,0 +1,54 @@
++classes:
++- system.linux.system.repo.mcp.openstack
++- system.linux.system.repo.mcp.extra
++- system.linux.system.repo.saltstack.xenial
++- system.neutron.gateway.cluster
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    interface_mtu: 1500
++    cluster_vip_address: ${_param:openstack_control_address}
++
++    linux_system_codename: xenial
++    keepalived_vip_interface: br-ctl
++    keepalived_vip_virtual_router_id: 69
++    primary_first_nic: eno2
++  linux:
++    network:
++      bridge: openvswitch
++      interface:
++        primary_first_nic:
++          enabled: true
++          type: slave
++          proto: manual
++          name: ${_param:primary_first_nic}
++          master: bond0
++        bond0:
++          enabled: true
++          proto: manual
++          ovs_bridge: br-floating
++          ovs_type: OVSPort
++          type: bond
++          use_interfaces:
++          - ${_param:primary_first_nic}
++          slaves: ${_param:primary_first_nic}
++          mode: active-backup
++        br-floating:
++          enabled: true
++          type: ovs_bridge
++        br-ctl:
++          enabled: true
++          type: ovs_port
++          bridge: br-floating
++          proto: static
++          ovs_options: tag=2408
++          address: ${_param:single_address}
++          netmask: 255.255.255.0
++        br-mesh:
++          enabled: true
++          type: ovs_port
++          bridge: br-floating
++          proto: static
++          ovs_options: tag=2409
++          address: ${_param:tenant_address}
++          netmask: 255.255.255.0
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
+new file mode 100644
+index 0000000..4036be1
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
+@@ -0,0 +1,308 @@
++parameters:
++  _param:
++
++    openstack_version: ocata
++
++    openstack_gateway_node01_address: 10.167.4.124
++    openstack_gateway_node02_address: 10.167.4.125
++    openstack_gateway_node03_address: 10.167.4.126
++    openstack_gateway_node01_tenant_address: 10.1.0.6
++    openstack_gateway_node02_tenant_address: 10.1.0.7
++    openstack_gateway_node03_tenant_address: 10.1.0.9
++    openstack_gateway_node01_hostname: gtw01
++    openstack_gateway_node02_hostname: gtw02
++    openstack_gateway_node03_hostname: gtw03
++
++    # openstack service addresses
++    openstack_proxy_address: 10.167.4.80
++    openstack_proxy_node01_address: 10.167.4.81
++    openstack_proxy_node02_address: 10.167.4.82
++    openstack_control_address: 10.167.4.10
++    openstack_control_node01_address: 10.167.4.11
++    openstack_control_node02_address: 10.167.4.12
++    openstack_control_node03_address: 10.167.4.13
++    openstack_database_address: 10.167.4.50
++    openstack_database_node01_address: 10.167.4.51
++    openstack_database_node02_address: 10.167.4.52
++    openstack_database_node03_address: 10.167.4.53
++    openstack_message_queue_address: 10.167.4.40
++    openstack_message_queue_node01_address: 10.167.4.41
++    openstack_message_queue_node02_address: 10.167.4.42
++    openstack_message_queue_node03_address: 10.167.4.43
++
++
++    openstack_telemetry_hostname: mdb
++    openstack_telemetry_node01_hostname: mdb01
++    openstack_telemetry_node02_hostname: mdb02
++    openstack_telemetry_node03_hostname: mdb03
++
++    openstack_telemetry_address: 10.167.4.75
++    openstack_telemetry_node01_address: 10.167.4.76
++    openstack_telemetry_node02_address: 10.167.4.77
++    openstack_telemetry_node03_address: 10.167.4.78
++
++    # OpenStack Compute
++    openstack_compute_node01_single_address: 10.167.4.101
++    openstack_compute_node02_single_address: 10.167.4.102
++    openstack_compute_node03_single_address: 10.167.4.103
++    openstack_compute_node01_control_address: 10.167.4.101
++    openstack_compute_node02_control_address: 10.167.4.102
++    openstack_compute_node03_control_address: 10.167.4.103
++    openstack_compute_node01_tenant_address: 10.1.0.101
++    openstack_compute_node02_tenant_address: 10.1.0.102
++    openstack_compute_node03_tenant_address: 10.1.0.103
++
++    # openstack service hostnames
++    openstack_proxy_hostname: prx
++    openstack_proxy_node01_hostname: prx01
++    openstack_proxy_node02_hostname: prx02
++    openstack_control_hostname: ctl
++    openstack_control_node01_hostname: ctl01
++    openstack_control_node02_hostname: ctl02
++    openstack_control_node03_hostname: ctl03
++    openstack_database_hostname: dbs
++    openstack_database_node01_hostname: dbs01
++    openstack_database_node02_hostname: dbs02
++    openstack_database_node03_hostname: dbs03
++    openstack_message_queue_hostname: msg
++    openstack_message_queue_node01_hostname: msg01
++    openstack_message_queue_node02_hostname: msg02
++    openstack_message_queue_node03_hostname: msg03
++
++    # openstack compute
++    openstack_compute_node01_hostname: cmp001
++    openstack_compute_node02_hostname: cmp002
++
++    openstack_region: RegionOne
++    admin_email: root@localhost
++    ##Neutron osv/nodvr
++    neutron_control_dvr: False
++    neutron_tenant_network_types: "flat,vxlan"
++    neutron_l3_ha: True
++    neutron_global_physnet_mtu: 1500
++    neutron_external_mtu: 1500
++    neutron_gateway_dvr: False
++    neutron_gateway_agent_mode: legacy
++    neutron_compute_dvr: False
++    neutron_compute_agent_mode: legacy
++    neutron_compute_external_access: False
++    galera_server_cluster_name: openstack_cluster
++    galera_server_maintenance_password: opnfv_secret
++    galera_server_admin_password: opnfv_secret
++    rabbitmq_secret_key: opnfv_secret
++    rabbitmq_admin_password: opnfv_secret
++    rabbitmq_openstack_password: opnfv_secret
++    nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
++    compute_hugepages_size: 1G
++    compute_hugepages_count: 16
++    compute_hugepages_mount: /mnt/hugepages_1G
++    compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
++    glance_version: ${_param:openstack_version}
++    glance_service_host: ${_param:openstack_control_address}
++    keystone_version: ${_param:openstack_version}
++    keystone_service_host: ${_param:openstack_control_address}
++    heat_version: ${_param:openstack_version}
++    heat_service_host: ${_param:openstack_control_address}
++    heat_domain_admin_password: opnfv_secret
++    cinder_version: ${_param:openstack_version}
++    cinder_service_host: ${_param:openstack_control_address}
++    ceilometer_version: ${_param:openstack_version}
++    ceilometer_service_host: ${_param:openstack_telemetry_address}
++    ceilometer_influxdb_password: opnfv_secret
++    nova_version: ${_param:openstack_version}
++    nova_service_host: ${_param:openstack_control_address}
++    neutron_version: ${_param:openstack_version}
++    neutron_service_host: ${_param:openstack_control_address}
++    glusterfs_service_host: ${_param:infra_kvm_address}
++    mysql_admin_user: root
++    mysql_admin_password: opnfv_secret
++    mysql_cinder_password: opnfv_secret
++    mysql_ceilometer_password: opnfv_secret
++    mysql_glance_password: opnfv_secret
++    mysql_grafana_password: opnfv_secret
++    mysql_heat_password: opnfv_secret
++    mysql_keystone_password: opnfv_secret
++    mysql_neutron_password: opnfv_secret
++    mysql_nova_password: opnfv_secret
++    mysql_aodh_password: opnfv_secret
++    mysql_designate_password: opnfv_secret
++    aodh_version: ${_param:openstack_version}
++    keystone_aodh_password: opnfv_secret
++    keystone_service_token: opnfv_secret
++    keystone_admin_password: opnfv_secret
++    keystone_ceilometer_password: opnfv_secret
++    keystone_cinder_password: opnfv_secret
++    keystone_glance_password: opnfv_secret
++    keystone_heat_password: opnfv_secret
++    keystone_keystone_password: opnfv_secret
++    keystone_neutron_password: opnfv_secret
++    keystone_nova_password: opnfv_secret
++    keystone_designate_password: opnfv_secret
++    ceilometer_secret_key: opnfv_secret
++    horizon_version: ${_param:openstack_version}
++    horizon_secret_key: opaesee8Que2yahJoh9fo0eefo1Aeyo6ahyei8zeiboh3aeth5loth7ieNa5xi5e
++    horizon_identity_host: ${_param:openstack_control_address}
++    horizon_identity_encryption: none
++    horizon_identity_version: 2
++    mongodb_server_replica_set: ceilometer
++    mongodb_ceilometer_password: opnfv_secret
++    mongodb_admin_password: opnfv_secret
++    mongodb_shared_key: eoTh1AwahlahqueingeejooLughah4tei9feing0eeVaephooDi2li1TaeV1ooth
++    metadata_password: opnfv_secret
++    openstack_telemetry_keepalived_password: opnfv_secret
++    aodh_service_host: ${_param:openstack_telemetry_address}
++    designate_service_host: ${_param:openstack_control_address}
++    designate_bind9_rndc_key: 4pc+X4PDqb2q+5o72dISm72LM1Ds9X2EYZjqg+nmsS7FhdTwzFFY8l/iEDmHxnyjkA33EQC8H+z0fLLBunoitw==
++    designate_domain_id: 5186883b-91fb-4891-bd49-e6769234a8fc
++    designate_pool_ns_records:
++      - hostname: 'ns1.example.org.'
++        priority: 10
++    designate_pool_nameservers:
++      - host: ${_param:openstack_control_node01_address}
++        port: 53
++      - host: ${_param:openstack_control_node02_address}
++        port: 53
++      - host: ${_param:openstack_control_node03_address}
++        port: 53
++    designate_pool_target_type: bind9
++    designate_pool_target_masters:
++      - host: ${_param:openstack_control_node01_address}
++        port: 5354
++      - host: ${_param:openstack_control_node02_address}
++        port: 5354
++      - host: ${_param:openstack_control_node03_address}
++        port: 5354
++    designate_pool_target_options:
++      host: ${_param:openstack_control_node01_address}
++      port: 53
++      rndc_host: ${_param:openstack_control_node01_address}
++      rndc_port: 953
++      rndc_key_file: /etc/designate/rndc.key
++    designate_version: ${_param:openstack_version}
++    # Billing
++    #keystone_billometer_password: opnfv_secret
++    #keystone_billometer_address: ${_param:billometer_service_host}
++    #billometer_service_host: ${_param:openstack_billing_address}
++    #billometer_version: ${_param:openstack_version}
++    #billometer_secret_key: opnfv_secretpasswordpasswordpassword
++    #billometer_identity_password: ${_param:keystone_billometer_password}
++    #billometer_identity_host: ${_param:openstack_control_address}
++    #billometer_identity_token: ${_param:keystone_service_token}
++  linux:
++    network:
++      host:
++        prx:
++          address: ${_param:openstack_proxy_address}
++          names:
++          - ${_param:openstack_proxy_hostname}
++          - ${_param:openstack_proxy_hostname}.${_param:cluster_domain}
++        prx01:
++          address: ${_param:openstack_proxy_node01_address}
++          names:
++          - ${_param:openstack_proxy_node01_hostname}
++          - ${_param:openstack_proxy_node01_hostname}.${_param:cluster_domain}
++        prx02:
++          address: ${_param:openstack_proxy_node02_address}
++          names:
++          - ${_param:openstack_proxy_node02_hostname}
++          - ${_param:openstack_proxy_node02_hostname}.${_param:cluster_domain}
++        ctl:
++          address: ${_param:openstack_control_address}
++          names:
++          - ${_param:openstack_control_hostname}
++          - ${_param:openstack_control_hostname}.${_param:cluster_domain}
++        ctl01:
++          address: ${_param:openstack_control_node01_address}
++          names:
++          - ${_param:openstack_control_node01_hostname}
++          - ${_param:openstack_control_node01_hostname}.${_param:cluster_domain}
++        ctl02:
++          address: ${_param:openstack_control_node02_address}
++          names:
++          - ${_param:openstack_control_node02_hostname}
++          - ${_param:openstack_control_node02_hostname}.${_param:cluster_domain}
++        ctl03:
++          address: ${_param:openstack_control_node03_address}
++          names:
++          - ${_param:openstack_control_node03_hostname}
++          - ${_param:openstack_control_node03_hostname}.${_param:cluster_domain}
++        msg:
++          address: ${_param:openstack_message_queue_address}
++          names:
++          - ${_param:openstack_message_queue_hostname}
++          - ${_param:openstack_message_queue_hostname}.${_param:cluster_domain}
++        msg01:
++          address: ${_param:openstack_message_queue_node01_address}
++          names:
++          - ${_param:openstack_message_queue_node01_hostname}
++          - ${_param:openstack_message_queue_node01_hostname}.${_param:cluster_domain}
++        msg02:
++          address: ${_param:openstack_message_queue_node02_address}
++          names:
++          - ${_param:openstack_message_queue_node02_hostname}
++          - ${_param:openstack_message_queue_node02_hostname}.${_param:cluster_domain}
++        msg03:
++          address: ${_param:openstack_message_queue_node03_address}
++          names:
++          - ${_param:openstack_message_queue_node03_hostname}
++          - ${_param:openstack_message_queue_node03_hostname}.${_param:cluster_domain}
++        dbs:
++          address: ${_param:openstack_database_address}
++          names:
++          - ${_param:openstack_database_hostname}
++          - ${_param:openstack_database_hostname}.${_param:cluster_domain}
++        dbs01:
++          address: ${_param:openstack_database_node01_address}
++          names:
++          - ${_param:openstack_database_node01_hostname}
++          - ${_param:openstack_database_node01_hostname}.${_param:cluster_domain}
++        dbs02:
++          address: ${_param:openstack_database_node02_address}
++          names:
++          - ${_param:openstack_database_node02_hostname}
++          - ${_param:openstack_database_node02_hostname}.${_param:cluster_domain}
++        dbs03:
++          address: ${_param:openstack_database_node03_address}
++          names:
++          - ${_param:openstack_database_node03_hostname}
++          - ${_param:openstack_database_node03_hostname}.${_param:cluster_domain}
++        mdb:
++          address: ${_param:openstack_telemetry_address}
++          names:
++          - ${_param:openstack_telemetry_hostname}
++          - ${_param:openstack_telemetry_hostname}.${_param:cluster_domain}
++        mdb01:
++          address: ${_param:openstack_telemetry_node01_address}
++          names:
++          - ${_param:openstack_telemetry_node01_hostname}
++          - ${_param:openstack_telemetry_node01_hostname}.${_param:cluster_domain}
++        mdb02:
++          address: ${_param:openstack_telemetry_node02_address}
++          names:
++          - ${_param:openstack_telemetry_node02_hostname}
++          - ${_param:openstack_telemetry_node02_hostname}.${_param:cluster_domain}
++        mdb03:
++          address: ${_param:openstack_telemetry_node03_address}
++          names:
++          - ${_param:openstack_telemetry_node03_hostname}
++          - ${_param:openstack_telemetry_node03_hostname}.${_param:cluster_domain}
++        cmp001:
++          address: ${_param:openstack_compute_node01_control_address}
++          names:
++          - ${_param:openstack_compute_node01_hostname}
++          - ${_param:openstack_compute_node01_hostname}.${_param:cluster_domain}
++        cmp002:
++          address: ${_param:openstack_compute_node02_control_address}
++          names:
++          - ${_param:openstack_compute_node02_hostname}
++          - ${_param:openstack_compute_node02_hostname}.${_param:cluster_domain}
++        gtw01:
++          address: ${_param:openstack_gateway_node01_address}
++          names:
++          - ${_param:openstack_gateway_node01_hostname}
++          - ${_param:openstack_gateway_node01_hostname}.${_param:cluster_domain}
++        gtw02:
++          address: ${_param:openstack_gateway_node02_address}
++          names:
++          - ${_param:openstack_gateway_node02_hostname}
++          - ${_param:openstack_gateway_node02_hostname}.${_param:cluster_domain}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml
+new file mode 100644
+index 0000000..3b79030
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml
+@@ -0,0 +1,23 @@
++classes:
++- system.linux.system.repo.mcp.openstack
++- system.linux.system.repo.mcp.extra
++- system.linux.system.repo.saltstack.xenial
++- system.rabbitmq.server.cluster
++- system.rabbitmq.server.vhost.openstack
++- cluster.baremetal-mcp-ocata-ovs-ha
++parameters:
++  _param:
++    keepalived_vip_interface: ens3
++    keepalived_vip_virtual_router_id: 90
++    cluster_vip_address: ${_param:openstack_message_queue_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: msg01
++    cluster_node01_address: ${_param:openstack_message_queue_node01_address}
++    cluster_node02_hostname: msg02
++    cluster_node02_address: ${_param:openstack_message_queue_node02_address}
++    cluster_node03_hostname: msg03
++    cluster_node03_address: ${_param:openstack_message_queue_node03_address}
++  linux:
++    network:
++      interface:
++        ens3: ${_param:linux_single_interface}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
+new file mode 100644
+index 0000000..2695c96
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
+@@ -0,0 +1,33 @@
++classes:
++- system.linux.system.repo.mcp.openstack
++- system.linux.system.repo.mcp.extra
++- system.linux.system.repo.saltstack.xenial
++- system.nginx.server.single
++- system.nginx.server.proxy.openstack_api
++- system.nginx.server.proxy.openstack_vnc
++- system.nginx.server.proxy.openstack_web
++- system.horizon.server.single
++- system.salt.minion.cert.proxy
++- system.sphinx.server.doc.reclass
++- service.keepalived.cluster.single
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++- cluster.baremetal-mcp-ocata-ovs-ha.openstack.dashboard
++# - cluster.baremetal-mcp-ocata-ovs-ha.stacklight.proxy
++parameters:
++  _param:
++    keepalived_vip_interface: ens3
++    keepalived_vip_virtual_router_id: 240
++    nginx_proxy_ssl:
++      enabled: true
++      authority: ${_param:salt_minion_ca_authority}
++      engine: salt
++      mode: secure
++    cluster_vip_address: ${_param:openstack_proxy_address}
++    salt_minion_ca_host: cfg01.${_param:cluster_domain}
++  linux:
++    network:
++      interface:
++        ens3: ${_param:linux_single_interface}
++    system:
++      package:
++        libapache2-mod-wsgi:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
+new file mode 100644
+index 0000000..ca655dd
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
+@@ -0,0 +1,26 @@
++classes:
++- system.linux.system.repo.mcp.openstack
++- system.linux.system.repo.mcp.extra
++- system.linux.system.repo.saltstack.xenial
++- system.ceilometer.server.backend.mongodb
++# - system.ceilometer.server.backend.influxdb
++# - system.heka.ceilometer_collector.single
++- system.ceilometer.server.cluster
++- system.aodh.server.cluster
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    keepalived_vip_interface: ens3
++    keepalived_vip_virtual_router_id: 230
++    cluster_vip_address: ${_param:openstack_telemetry_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: mdb01
++    cluster_node01_address: ${_param:openstack_telemetry_node01_address}
++    cluster_node02_hostname: mdb02
++    cluster_node02_address: ${_param:openstack_telemetry_node02_address}
++    cluster_node03_hostname: mdb03
++    cluster_node03_address: ${_param:openstack_telemetry_node03_address}
++  linux:
++    network:
++      interface:
++        ens3: ${_param:linux_single_interface}
+diff --git a/mcp/reclass/nodes/cfg01.baremetal-mcp-ocata-ovs-ha.local.yml b/mcp/reclass/nodes/cfg01.baremetal-mcp-ocata-ovs-ha.local.yml
+new file mode 100644
+index 0000000..468557d
+--- /dev/null
++++ b/mcp/reclass/nodes/cfg01.baremetal-mcp-ocata-ovs-ha.local.yml
+@@ -0,0 +1,10 @@
++classes:
++- cluster.baremetal-mcp-ocata-ovs-ha.infra.config
++parameters:
++  _param:
++    linux_system_codename: xenial
++    reclass_data_revision: master
++  linux:
++    system:
++      name: cfg01
++      domain: baremetal-mcp-ocata-ovs-ha.local
+diff --git a/mcp/salt-formulas/maas/pxe_nat.sls b/mcp/salt-formulas/maas/pxe_nat.sls
+new file mode 100644
+index 0000000..caad968
+--- /dev/null
++++ b/mcp/salt-formulas/maas/pxe_nat.sls
+@@ -0,0 +1,30 @@
++net.ipv4.ip_forward:
++  sysctl.present:
++    - value: 1
++
++iptables_pxe_nat:
++  iptables.append:
++    - table: nat
++    - chain: POSTROUTING
++    - jump: MASQUERADE
++    - destination: 0/0
++    - source: {{ salt['pillar.get']('_param:infra_maas_node01_pxe_address') }}/24
++    - save: True
++
++iptables_pxe_source:
++  iptables.append:
++    - table: filter
++    - chain: INPUT
++    - jump: ACCEPT
++    - destination: 0/0
++    - source: {{ salt['pillar.get']('_param:infra_maas_node01_pxe_address') }}/24
++    - save: True
++
++iptables_pxe_destination:
++  iptables.append:
++    - table: filter
++    - chain: INPUT
++    - jump: ACCEPT
++    - destination: {{ salt['pillar.get']('_param:infra_maas_node01_pxe_address') }}/24
++    - source: 0/0
++    - save: True
+diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
+index 8d45100..28b11e1 100644
+--- a/mcp/scripts/lib.sh
++++ b/mcp/scripts/lib.sh
+@@ -46,10 +46,12 @@ prepare_vms() {
+
+ create_networks() {
+   local -n vnode_networks=$1
+-  # create required networks
+-  for net in "${vnode_networks[@]}"; do
++  # create required networks, including constant "mcpcontrol"
++  # FIXME(alav): since we renamed "pxe" to "mcpcontrol", we need to make sure
++  # we delete the old "pxe" virtual network, or it would cause IP conflicts.
++  for net in "pxe" "mcpcontrol" "${vnode_networks[@]}"; do
+     if virsh net-info "${net}" >/dev/null 2>&1; then
+-      virsh net-destroy "${net}"
++      virsh net-destroy "${net}" || true
+       virsh net-undefine "${net}"
+     fi
+     # in case of custom network, host should already have the bridge in place
+@@ -67,17 +69,6 @@ create_vms() {
+   local -n vnodes_vcpus=$3
+   local -n vnode_networks=$4
+
+-  # prepare network args
+-  net_args=""
+-  for net in "${vnode_networks[@]}"; do
+-    net_type="network"
+-    # in case of custom network, host should already have the bridge in place
+-    if [ ! -f "net_${net}.xml" ]; then
+-      net_type="bridge"
+-    fi
+-    net_args="${net_args} --network ${net_type}=${net},model=virtio"
+-  done
+-
+   # AArch64: prepare arch specific arguments
+   local virt_extra_args=""
+   if [ "$(uname -i)" = "aarch64" ]; then
+@@ -87,6 +78,21 @@ create_vms() {
+
+   # create vms with specified options
+   for node in "${vnodes[@]}"; do
++    # prepare network args
++    net_args=" --network network=mcpcontrol,model=virtio"
++    if [ "${node}" = "mas01" ]; then
++      # MaaS node's 3rd interface gets connected to PXE/Admin Bridge
++      vnode_networks[2]="${vnode_networks[0]}"
++    fi
++    for net in "${vnode_networks[@]:1}"; do
++      net_type="network"
++      # in case of custom network, host should already have the bridge in place
++      if [ ! -f "net_${net}.xml" ]; then
++        net_type="bridge"
++      fi
++      net_args="${net_args} --network ${net_type}=${net},model=virtio"
++    done
++
+     # shellcheck disable=SC2086
+     virt-install --name "${node}" \
+     --ram "${vnodes_ram[$node]}" --vcpus "${vnodes_vcpus[$node]}" \
+@@ -100,14 +106,14 @@ create_vms() {
+   done
+ }
+
+-update_pxe_network() {
+-  local -n vnode_networks=$1
+-  if virsh net-info "${vnode_networks[0]}" >/dev/null 2>&1; then
+-    # set static ip address for salt master node, only if managed via virsh
+-    # NOTE: below expr assume PXE network is always the first in domiflist
+-    virsh net-update "${vnode_networks[0]}" add ip-dhcp-host \
+-    "<host mac='$(virsh domiflist cfg01 | awk '/network/ {print $5; exit}')' name='cfg01' ip='${SALT_MASTER}'/>" --live
+-  fi
++update_mcpcontrol_network() {
++  # set static ip address for salt master node, MaaS node
++  local cmac=$(virsh domiflist cfg01 2>&1| awk '/mcpcontrol/ {print $5; exit}')
++  local amac=$(virsh domiflist mas01 2>&1| awk '/mcpcontrol/ {print $5; exit}')
++  virsh net-update "mcpcontrol" add ip-dhcp-host \
++    "<host mac='${cmac}' name='cfg01' ip='${SALT_MASTER}'/>" --live
++  [ -z "${amac}" ] || virsh net-update "mcpcontrol" add ip-dhcp-host \
++    "<host mac='${amac}' name='mas01' ip='${MAAS_IP}'/>" --live
+ }
+
+ start_vms() {
+diff --git a/mcp/scripts/net_mcpcontrol.xml b/mcp/scripts/net_mcpcontrol.xml
+new file mode 100644
+index 0000000..f756ee0
+--- /dev/null
++++ b/mcp/scripts/net_mcpcontrol.xml
+@@ -0,0 +1,10 @@
++<network>
++  <name>mcpcontrol</name>
++  <bridge name="mcpcontrol"/>
++  <forward mode="nat"/>
++  <ip address="192.168.10.1" netmask="255.255.255.0">
++    <dhcp>
++      <range start="192.168.10.100" end="192.168.10.254"/>
++    </dhcp>
++  </ip>
++</network>
+diff --git a/mcp/scripts/net_pxe.xml b/mcp/scripts/net_pxe.xml
+deleted file mode 100644
+index 92eaa6b..0000000
+--- a/mcp/scripts/net_pxe.xml
++++ /dev/null
+@@ -1,10 +0,0 @@
+-<network>
+-  <name>pxe</name>
+-  <bridge name="pxe"/>
+-  <forward mode="nat"/>
+-  <ip address="192.168.10.1" netmask="255.255.255.0">
+-    <dhcp>
+-      <range start="192.168.10.100" end="192.168.10.254"/>
+-    </dhcp>
+-  </ip>
+-</network>
