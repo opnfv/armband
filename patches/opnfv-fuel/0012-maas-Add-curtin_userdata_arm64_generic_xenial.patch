@@ -1,0 +1,104 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 7 Aug 2017 19:45:01 +0200
+Subject: [PATCH] maas: Add curtin_userdata_arm64_generic_xenial
+
+Add AArch64 specific configuration.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ...-Add-curtin_userdata_arm64_generic_xenial.patch | 76 ++++++++++++++++++++++
+ mcp/patches/patches.list                           |  1 +
+ 2 files changed, 77 insertions(+)
+ create mode 100644 mcp/patches/0004-maas-Add-curtin_userdata_arm64_generic_xenial.patch
+
+diff --git a/mcp/patches/0004-maas-Add-curtin_userdata_arm64_generic_xenial.patch b/mcp/patches/0004-maas-Add-curtin_userdata_arm64_generic_xenial.patch
+new file mode 100644
+index 0000000..b969e07
+--- /dev/null
++++ b/mcp/patches/0004-maas-Add-curtin_userdata_arm64_generic_xenial.patch
+@@ -0,0 +1,76 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Sat, 5 Aug 2017 02:03:01 +0200
++Subject: [PATCH] maas: Add curtin_userdata_arm64_generic_xenial
++
++Based on curtin_userdata_amd64_generic_xenial, add new arm64
++specific configuration file:
++- curtin_userdata_arm64_generic_xenial
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++
++diff --git a/maas/region.sls b/maas/region.sls
++--- a/maas/region.sls
+++++ b/maas/region.sls
++@@ -70,6 +70,18 @@
++   - require:
++     - pkg: maas_region_packages
++
+++/etc/maas/preseeds/curtin_userdata_arm64_generic_xenial:
+++  file.managed:
+++  - source: salt://maas/files/curtin_userdata_arm64_generic_xenial
+++  - template: jinja
+++  - user: root
+++  - group: root
+++  - mode: 644
+++  - context:
+++      salt_master_ip: {{ region.salt_master_ip }}
+++  - require:
+++    - pkg: maas_region_packages
+++
++ maas_region_services:
++   service.running:
++   - enable: true
++diff --git a/maas/files/curtin_userdata_arm64_generic_xenial b/maas/files/curtin_userdata_arm64_generic_xenial
++new file mode 100644
++--- /dev/null
+++++ b/maas/files/curtin_userdata_arm64_generic_xenial
++@@ -0,0 +1,38 @@
+++{%- from "maas/map.jinja" import server with context %}
+++{% raw %}
+++#cloud-config
+++debconf_selections:
+++ maas: |
+++  {{for line in str(curtin_preseed).splitlines()}}
+++  {{line}}
+++  {{endfor}}
+++{{if third_party_drivers and driver}}
+++early_commands:
+++  {{py: key_string = ''.join(['\\x%x' % x for x in map(ord, driver['key_binary'])])}}
+++  driver_00_get_key: /bin/echo -en '{{key_string}}' > /tmp/maas-{{driver['package']}}.gpg
+++  driver_01_add_key: ["apt-key", "add", "/tmp/maas-{{driver['package']}}.gpg"]
+++  driver_02_add: ["add-apt-repository", "-y", "deb {{driver['repository']}} {{node.get_distro_series()}} main"]
+++  driver_03_update_install: ["sh", "-c", "apt-get update --quiet && apt-get --assume-yes install {{driver['package']}}"]
+++  driver_04_load: ["sh", "-c", "depmod && modprobe {{driver['module']}}"]
+++{{endif}}
+++late_commands:
+++  maas: [wget, '--no-proxy', {{node_disable_pxe_url|escape.json}}, '--post-data', {{node_disable_pxe_data|escape.json}}, '-O', '/dev/null']
+++  apt_00_set_repo: ["curtin", "in-target", "--", "sh", "-c", "echo 'deb [arch=arm64] http://linux.enea.com/saltstack/apt/ubuntu/16.04/arm64/latest xenial main' >> /etc/apt/sources.list"]
+++  apt_01_set_gpg: ["curtin", "in-target", "--", "sh", "-c", "echo 'LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYxCgptUUVOQkZhZ0Fyb0JDQURXYm9OSWp1RjZsQjFtV3YyK0VidnFZM2xLbDVtTEtocjJEblNVa0tlSFVQQnY4Z05NCnFLOFEwMEFNSXlQaXlFaGdqQStkV2l6Wis1YUJneG9pWTdvTWVMSjJYeW0zNlUvOFNZcTJCV2QzU0dDYk1Ob3oKU0pEeERVU00vSEZWczZhdEYxTTNEWTlvTjY1aFNWbnU0dXk1VHU2YXNmNms0cmhBeWswejQrcFJjUEJDdTJ2cQptbkdpM0NPTS8rOVBTaHJFS2VWT3g1VzJ2Ukp5d1VGdXE4RUR2UW5Sb0owR3ZNMjhKaUpJYW53MTdZd0lQeGhnCkJLWlZwWmphbjVYK2loVk1Yd0EyaC9HL0ZTNU9taGQ1MFJxVjZMV1NZczk0VkpKZ1lxSHg4VU1tN2l6Y3hJK1AKY3QzSWNiRDE5NWJQYkorU2J1aUZlNDVaTHNkWTFNeUdpVTJCQUJFQkFBRzBLMFZ1WldFZ1FYSnRZbUZ1WkNCRQpaWFp2Y0hNZ1ZHVmhiU0E4WVhKdFltRnVaRUJsYm1WaExtTnZiVDZKQVQ0RUV3RUNBQ2dGQWxhZ0Fyb0NHd01GCkNRUENad0FHQ3drSUJ3TUNCaFVJQWdrS0N3UVdBZ01CQWg0QkFoZUFBQW9KRU42cmtMcDVpckhSc0c4SC8yUDIKaE82akZIUFJEMXU4ajl1Zk85QXhvSW5hRUc5R2VSanV2TWMxdENVem92WHZUczEwNlRaMGFzNk1iQUoxUzZ1NQpFOFV5UTErVkdlcHZkSUpQWHgzUEN4TG1VdDZXSXFtZE9kcUZyeEljbG9oaWcva2FyZGkzTmZYMU1CdmxFVi9jCjdRNTFINDNocmxNcU1wcWdZMUJtKzUzUExDNHVqamxESkJ0Sk9FVTlka2kzMTliVW1uZytnTzlCQWxqREpGWHYKSnFZNitQL2VyN0lnQ2JSWFVYWWZ5Snpnang5SndsS2JtZFE4UW5DclpqRi9WSElXNDAvbXU1SUlKdUZ2dUN0aQp0Y29nK1NOU2xEbUNPUyt3RThDQ29qZXVKcXVwSU9jejl6eXBWR3pldXMvTjVRNUVFRmU3R1lXWVMvNU5LVWtFCjFUdXVGZVpLdTVOSkM1cmt3SVU9Cj03cDYwCi0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0K'|base64 -d|apt-key add -"]
+++  apt_03_update: ["curtin", "in-target", "--", "apt-get", "update"]
+++  salt_01_install: ["curtin", "in-target", "--", "apt-get", "-y", "install", "salt-minion"]
+++{% endraw %}
+++  salt_02_hostname_set: ["curtin", "in-target", "--", "echo", "{% raw %}{{node.hostname}}{% endraw %}.{{pillar.linux.system.domain}}"]
+++  salt_03_hostname_get: ["curtin", "in-target", "--", "sh", "-c", "echo 'id: {% raw %}{{node.hostname}}{% endraw %}.{{pillar.linux.system.domain}}' >> /etc/salt/minion"]
+++  salt_04_master: ["curtin", "in-target", "--", "sh", "-c", "echo 'master: {{ salt_master_ip }}' >> /etc/salt/minion"]
+++{% raw %}
+++{{if third_party_drivers and driver}}
+++  driver_00_key_get: curtin in-target -- sh -c "/bin/echo -en '{{key_string}}' > /tmp/maas-{{driver['package']}}.gpg"
+++  driver_02_key_add: ["curtin", "in-target", "--", "apt-key", "add", "/tmp/maas-{{driver['package']}}.gpg"]
+++  driver_03_add: ["curtin", "in-target", "--", "add-apt-repository", "-y", "deb {{driver['repository']}} {{node.get_distro_series()}} main"]
+++  driver_04_update_install: ["curtin", "in-target", "--", "apt-get", "update", "--quiet"]
+++  driver_05_install: ["curtin", "in-target", "--", "apt-get", "-y", "install", "{{driver['package']}}"]
+++  driver_06_depmod: ["curtin", "in-target", "--", "depmod"]
+++  driver_07_update_initramfs: ["curtin", "in-target", "--", "update-initramfs", "-u"]
+++{{endif}}
+++{% endraw %}
+diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
+index e55e679..aa2d0a0 100644
+--- a/mcp/patches/patches.list
++++ b/mcp/patches/patches.list
+@@ -1,3 +1,4 @@
+ /usr/share/salt-formulas/env: 0001-opendaylight-formula-neutron.patch
+ /usr/share/salt-formulas/env: 0002-maas-region-skip-credentials-update.patch
+ /usr/share/salt-formulas/env: 0003-maas-region-force-artifact-download.patch
++/usr/share/salt-formulas/env: 0004-maas-Add-curtin_userdata_arm64_generic_xenial.patch
