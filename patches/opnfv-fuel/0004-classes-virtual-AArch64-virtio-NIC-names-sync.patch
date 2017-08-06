@@ -49,10 +49,10 @@ index 328d6df..57c6cec 100644
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
-index 6c6640a..ec02e94 100644
+index 38431a5..066488b 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
-@@ -11,7 +11,7 @@ parameters:
+@@ -10,7 +10,7 @@ parameters:
    linux:
      network:
        interface:
