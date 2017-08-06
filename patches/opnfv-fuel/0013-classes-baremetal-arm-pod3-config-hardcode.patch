@@ -1,0 +1,75 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 7 Aug 2017 21:09:33 +0200
+Subject: [PATCH] classes: baremetal: arm-pod3 config hardcode
+
+Populate MaaS configuration with node information for arm-pod3.
+
+FIXME: Read all this info from PDF (Pod Descriptor File) later
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../cluster/baremetal-mcp-ocata-ovs/infra/maas.yml | 51 ++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/maas.yml
+index 60c6682..11db0dc 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs/infra/maas.yml
+@@ -14,6 +14,57 @@ parameters:
+   maas:
+     region:
+       salt_master_ip: 192.168.10.100
++   machines:
++     kvm02.${_param:cluster_domain}:
++        interface:
++          mac: "e0:ff:f7:00:08:ae"
++        power_parameters:
++          power_address: "10.0.8.3"
++          power_password: "admin"
++          power_type: ipmi
++          power_user: "admin"
++        distro_series: xenial
++        hwe_kernel: hwe-16.04
++     cmp01.${_param:cluster_domain}:
++        interface:
++          mac: "e0:ff:f7:00:08:b1"
++        power_parameters:
++          power_address: "10.0.8.4"
++          power_password: "admin"
++          power_type: ipmi
++          power_user: "admin"
++        distro_series: xenial
++        hwe_kernel: hwe-16.04
++     cmp02.${_param:cluster_domain}:
++        interface:
++          mac: "e0:ff:f7:00:08:bd"
++        power_parameters:
++          power_address: "10.0.8.5"
++          power_password: "admin"
++          power_type: ipmi
++          power_user: "admin"
++        distro_series: xenial
++        hwe_kernel: hwe-16.04
++     cmp03.${_param:cluster_domain}:
++        interface:
++          mac: "e0:ff:f7:00:08:c6"
++        power_parameters:
++          power_address: "10.0.8.6"
++          power_password: "admin"
++          power_type: ipmi
++          power_user: "admin"
++        distro_series: xenial
++        hwe_kernel: hwe-16.04
++     cmp04.${_param:cluster_domain}:
++        interface:
++          mac: "e0:ff:f7:00:08:cf"
++        power_parameters:
++          power_address: "10.0.8.7"
++          power_password: "admin"
++          power_type: ipmi
++          power_user: "admin"
++        distro_series: xenial
++        hwe_kernel: hwe-16.04
+   linux:
+     network:
+       interface:
