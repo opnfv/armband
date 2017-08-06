@@ -20,6 +20,11 @@ is used).
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
+ .../classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml | 2 +-
+ .../cluster/virtual-mcp-ocata-odl-router/opendaylight/control.yml | 2 +-
+ .../cluster/virtual-mcp-ocata-odl-router/openstack/compute.yml    | 8 ++++----
+ .../cluster/virtual-mcp-ocata-odl-router/openstack/control.yml    | 4 ++--
+ .../cluster/virtual-mcp-ocata-odl-router/openstack/gateway.yml    | 8 ++++----
  .../classes/cluster/virtual-mcp-ocata-odl/infra/config.yml        | 2 +-
  .../cluster/virtual-mcp-ocata-odl/opendaylight/control.yml        | 2 +-
  .../classes/cluster/virtual-mcp-ocata-odl/openstack/compute.yml   | 8 ++++----
@@ -33,8 +38,106 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  .../classes/cluster/virtual-mcp-ocata-ovs/openstack/compute.yml   | 8 ++++----
  .../classes/cluster/virtual-mcp-ocata-ovs/openstack/control.yml   | 4 ++--
  .../classes/cluster/virtual-mcp-ocata-ovs/openstack/gateway.yml   | 8 ++++----
- 13 files changed, 36 insertions(+), 36 deletions(-)
+ 18 files changed, 48 insertions(+), 48 deletions(-)
 
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml
+index 63e58a2..76c42b5 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml
+@@ -27,7 +27,7 @@ parameters:
+   linux:
+     network:
+       interface:
+-        ens4:
++        enp2s2:
+           enabled: true
+           type: eth
+           proto: static
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/opendaylight/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/opendaylight/control.yml
+index 6e37978..5140ec5 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/opendaylight/control.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/opendaylight/control.yml
+@@ -11,7 +11,7 @@ parameters:
+   linux:
+     network:
+       interface:
+-        ens4:
++        enp2s2:
+           enabled: true
+           type: eth
+           proto: static
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/compute.yml
+index ba710a3..e29ef08 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/compute.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/compute.yml
+@@ -10,9 +10,9 @@ classes:
+ - cluster.virtual-mcp-ocata-odl-router
+ parameters:
+   _param:
+-    primary_interface: ens4
+-    tenant_interface: ens5
+-    external_interface: ens6
++    primary_interface: enp2s2
++    tenant_interface: enp3s0
++    external_interface: enp4s0
+     interface_mtu: 9000
+     linux_system_codename: xenial
+     loopback_device_size: 10
+@@ -54,7 +54,7 @@ parameters:
+       interface:
+         dhcp_int:
+           enabled: true
+-          name: ens3
++          name: enp1s0
+           proto: dhcp
+           type: eth
+           mtu: ${_param:interface_mtu}
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/control.yml
+index 4d31b09..23abc40 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/control.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/control.yml
+@@ -40,13 +40,13 @@ parameters:
+           version: latest
+     network:
+       interface:
+-        ens4:
++        enp2s2:
+           enabled: true
+           type: eth
+           proto: static
+           address: ${_param:single_address}
+           netmask: 255.255.255.0
+-        ens6:
++        enp4s0:
+           enabled: true
+           type: eth
+           proto: static
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/gateway.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/gateway.yml
+index fee8097..1e3703c 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/gateway.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/gateway.yml
+@@ -6,9 +6,9 @@ classes:
+ - cluster.virtual-mcp-ocata-odl-router
+ parameters:
+   _param:
+-    primary_interface: ens4
+-    tenant_interface: ens5
+-    external_interface: ens6
++    primary_interface: enp2s2
++    tenant_interface: enp3s0
++    external_interface: enp4s0
+     interface_mtu: 9000
+     linux_system_codename: xenial
+     neutron_agents:
+@@ -33,7 +33,7 @@ parameters:
+       interface:
+         dhcp_int:
+           enabled: true
+-          name: ens3
++          name: enp1s0
+           proto: dhcp
+           type: eth
+           mtu: ${_param:interface_mtu}
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
 index 328d6df..57c6cec 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
@@ -49,10 +152,10 @@ index 328d6df..57c6cec 100644
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
-index 6c6640a..ec02e94 100644
+index 38431a5..066488b 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
-@@ -11,7 +11,7 @@ parameters:
+@@ -10,7 +10,7 @@ parameters:
    linux:
      network:
        interface:

@@ -8,13 +8,13 @@ While at it, bump default vCPU number from 2 to 6.
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/defaults.yaml | 4 ++--
+ mcp/config/scenario/virtual/defaults.yaml | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mcp/config/defaults.yaml b/mcp/config/defaults.yaml
+diff --git a/mcp/config/scenario/virtual/defaults.yaml b/mcp/config/scenario/virtual/defaults.yaml
 index b841e88..17fbbfc 100644
---- a/mcp/config/defaults.yaml
-+++ b/mcp/config/defaults.yaml
+--- a/mcp/config/scenario/virtual/defaults.yaml
++++ b/mcp/config/scenario/virtual/defaults.yaml
 @@ -1,6 +1,6 @@
 -base_image: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
 +base_image: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-arm64-uefi1.img
