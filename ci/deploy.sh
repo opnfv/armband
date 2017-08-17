@@ -18,7 +18,7 @@ make patches-import
 
 # source local environment variables
 if ! [ -z $LAB_CONFIG_URL ]; then
-    while getopts "l:p:" OPTION 2>/dev/null
+    while getopts "b:B:dfFl:L:p:s:S:T:i:he" OPTION 2>/dev/null
     do
         case $OPTION in
             l) TARGET_LAB=$OPTARG;;
