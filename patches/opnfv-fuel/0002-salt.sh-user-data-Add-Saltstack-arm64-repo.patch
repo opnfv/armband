@@ -2,25 +2,39 @@ From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Tue, 11 Jul 2017 18:57:57 +0200
 Subject: [PATCH] salt.sh, user-data: Add Saltstack arm64 repo
 
+While at it, add arm64 suppport to salt-master-setup.sh.
+Upstream commit [1] broke Salt bootstrap on AArch64, by
+introducing an architecture condition that is too strict to allow
+Debian package installation (even if we provide our own repo).
+
+Add "arm64" to the list of supported architectures. This needs
+to be done on the fly, as the bootstrap script is fetched using
+`curl` from <salt-master-setup.sh>, which is also fetched
+dynamically using `svn export`.
+
+[1] https://github.com/saltstack/salt-bootstrap/commit/caa6d7d
+
 FIXME: Use https for fetching GPG repo key.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/scripts/salt.sh            | 4 ++++
+ mcp/scripts/salt.sh            | 6 ++++++
  mcp/scripts/user-data.template | 9 +++++++--
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/scripts/salt.sh b/mcp/scripts/salt.sh
-index 36ee27b..5732f4c 100755
+index 36ee27b..1779954 100755
 --- a/mcp/scripts/salt.sh
 +++ b/mcp/scripts/salt.sh
-@@ -48,6 +48,10 @@ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s << SALT_INSTALL_END
+@@ -48,6 +48,12 @@ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s << SALT_INSTALL_END
    cd ${OPNFV_FUEL_DIR}/mcp/patches && ./patch.sh patches.list reclass
 
    cd /srv/salt/scripts
 +  if [ "\$(uname -i)" = "aarch64" ]; then
 +    # NOTE(armband): On AArch64, skip creating apt source list definitions (-r)
 +    export BOOTSTRAP_SALTSTACK_OPTS=" -r -dX stable 2016.3 "
++    sed -i 's/bootstrap.saltstack.com | $SUDO/bootstrap.saltstack.com | sed '"'"'s@"amd64")@"amd64"|"arm64")@g'"'"' | $SUDO/g' \
++      ./salt-master-setup.sh
 +  fi
    MASTER_HOSTNAME=cfg01.${CLUSTER_DOMAIN} DISTRIB_REVISION=nightly ./salt-master-init.sh
    salt-key -Ay
