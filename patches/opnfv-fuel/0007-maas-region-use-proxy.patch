@@ -1,0 +1,53 @@
+From ddf4b413b0c8dddd2d9c14412103563780a15e4e Mon Sep 17 00:00:00 2001
+From: chko <charalampos.Kominos@enea.com>
+Date: Fri, 18 Aug 2017 19:34:39 +0200
+Subject: [PATCH] p/fuel: MaaS: Fix 503 API server error
+---
+ mcp/patches/0007-maas-region-use-proxy.patch       | 29 ++++++++
+ mcp/patches/patches.list                           |  1 +
+ 2 files changed, 30 insertions(+)
+ create mode 100644 mcp/patches/0007-maas-region-use-proxy.patch
+ create mode 100644 mcp/patches/reclass-system-salt-model/armband/0001-linux-system-repo-mcp-Add-Armband-repos.patch
+ create mode 100644 mcp/patches/reclass-system-salt-model/armband/0002-linux-system-AArch64-Remove-mcelog.patch
+
+diff --git a/mcp/patches/0007-maas-region-use-proxy.patch b/mcp/patches/0007-maas-region-use-proxy.patch
+new file mode 100644
+index 0000000..4474950
+--- /dev/null
++++ b/mcp/patches/0007-maas-region-use-proxy.patch
+@@ -0,0 +1,29 @@
++From: Charalampos Kominos <charalampos.kominos@enea.com>
++Date: Fre, 18 Aug 2017 18:12:01 +0200
++Subject: [PATCH] maas.region fix
++
++Patching maas http requests from localhost
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
++Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
++---
++diff --git a/maas/region.sls b/maas/region.sls
++index d3227ca..8a2243d 100644
++--- a/maas/region.sls
+++++ b/maas/region.sls
++@@ -12,6 +12,11 @@
++   - require:
++     - pkg: maas_region_packages
++ 
+++/etc/environment:
+++  file.append:
+++  - name: /etc/environment
+++  - text: 'no_proxy="localhost,127.0.0.1,::1"'
+++
++ /usr/lib/python3/dist-packages/provisioningserver/templates/proxy/maas-proxy.conf.template:
++   file.managed:
++   - source: salt://maas/files/maas-proxy.conf.template
+diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
+index 8bc328a..8385e7d 100644
+--- a/mcp/patches/patches.list
++++ b/mcp/patches/patches.list
+@@ -5,3 +5,4 @@
+ /usr/share/salt-formulas/env: 0005-maas-vlan-DHCP-enable-on-fabric-2.patch
+ /usr/share/salt-formulas/env: 0006-linux.network.interface-noifupdown-support.patch
+ /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
++/usr/share/salt-formulas/env: 0007-maas-region-use-proxy.patch
