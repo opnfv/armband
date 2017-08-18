@@ -8,15 +8,15 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mcp/patches/0003-maas-region-force-artifact-download.patch b/mcp/patches/0003-maas-region-force-artifact-download.patch
-index 72114bb..4be68da 100644
+index 646bed3..ca61e5e 100644
 --- a/mcp/patches/0003-maas-region-force-artifact-download.patch
 +++ b/mcp/patches/0003-maas-region-force-artifact-download.patch
 @@ -24,7 +24,7 @@ index d3227ca..8a2243d 100644
 
  +maas_force_artifact_sync:
  +  cmd.run:
--+  - name: "maas login {{ region.admin.username }} http://{{ region.bind.host }}/MAAS/api/2.0 - < /var/lib/maas/.maas_credentials && while ! grep -qzE '(Unable to probe for DHCP servers|DHCP probe complete).*Rack controller' /var/log/maas/rackd.log; do sleep 5; echo -n '.'; done && maas opnfv boot-resources import && while maas opnfv boot-resources is-importing | grep -q -e 'true'; do sleep 5; echo -n '.'; done && maas opnfv rack-controllers import-boot-images && while ! test -d /var/lib/maas/boot-resources/current/ubuntu; do sleep 5; echo -n '.'; done"
-++  - name: "maas login {{ region.admin.username }} http://{{ region.bind.host }}/MAAS/api/2.0 - < /var/lib/maas/.maas_credentials && while ! grep -qzE '(Unable to probe for DHCP servers|DHCP probe complete).*Rack controller' /var/log/maas/rackd.log; do sleep 5; echo -n '.'; done && maas opnfv boot-resources import && while maas opnfv boot-resources is-importing | grep -q -e 'true'; do sleep 5; echo -n '.'; done && maas opnfv rack-controllers import-boot-images && while ! test -d /var/lib/maas/boot-resources/current/ubuntu; do sleep 5; echo -n '.'; done && maas opnfv boot-source-selection update 1 1 arches='amd64' arches='arm64' && maas opnfv boot-resources import && while maas opnfv boot-resources is-importing | grep -q -e 'true'; do sleep 5; echo -n '.'; done && maas opnfv rack-controllers import-boot-images && while ! test -d /var/lib/maas/boot-resources/current/ubuntu/arm64; do sleep 5; echo -n '.'; done"
+-+  - name: "maas login {{ region.admin.username }} http://{{ region.bind.host }}:5240/MAAS/api/2.0 - < /var/lib/maas/.maas_credentials && while ! grep -qzE '(Unable to probe for DHCP servers|DHCP probe complete).*Rack controller' /var/log/maas/rackd.log; do sleep 5; echo -n '.'; done && maas opnfv boot-resources import && while maas opnfv boot-resources is-importing | grep -q -e 'true'; do sleep 5; echo -n '.'; done && maas opnfv rack-controllers import-boot-images && while ! test -d /var/lib/maas/boot-resources/current/ubuntu; do sleep 5; echo -n '.'; done"
+++  - name: "maas login {{ region.admin.username }} http://{{ region.bind.host }}:5240/MAAS/api/2.0 - < /var/lib/maas/.maas_credentials && while ! grep -qzE '(Unable to probe for DHCP servers|DHCP probe complete).*Rack controller' /var/log/maas/rackd.log; do sleep 5; echo -n '.'; done && maas opnfv boot-resources import && while maas opnfv boot-resources is-importing | grep -q -e 'true'; do sleep 5; echo -n '.'; done && maas opnfv rack-controllers import-boot-images && while ! test -d /var/lib/maas/boot-resources/current/ubuntu; do sleep 5; echo -n '.'; done && maas opnfv boot-source-selection update 1 1 arches='amd64' arches='arm64' && maas opnfv boot-resources import && while maas opnfv boot-resources is-importing | grep -q -e 'true'; do sleep 5; echo -n '.'; done && maas opnfv rack-controllers import-boot-images && while ! test -d /var/lib/maas/boot-resources/current/ubuntu/arm64; do sleep 5; echo -n '.'; done"
  +  - require:
  +    - cmd: maas_login_admin
  +
