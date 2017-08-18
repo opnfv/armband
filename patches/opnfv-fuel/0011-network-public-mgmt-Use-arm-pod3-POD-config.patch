@@ -14,7 +14,7 @@ fi
  4 files changed, 41 insertions(+), 41 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index 1ace950..b3ed5ec 100755
+index cf7b3b3..2b4e724 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -139,7 +139,7 @@ URI_REGEXP='(file|https?|ftp)://.*'
@@ -27,7 +27,7 @@ index 1ace950..b3ed5ec 100755
 
  # Variables below are disabled for now, to be re-introduced or removed later
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 3b722ea..235f0b2 100755
+index f02fff8..21c7afe 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -20,7 +20,7 @@ salt -C 'mas01*' state.apply linux.network.interface

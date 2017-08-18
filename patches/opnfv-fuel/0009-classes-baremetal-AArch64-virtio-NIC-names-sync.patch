@@ -106,7 +106,7 @@ index 5c33f9e..8b09e76 100644
 -          - ${_param:deploy_nic}.300
 +          - ${_param:trunk_nic}.2183
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
-index 7fc45e2..428a74b 100644
+index a7a502f..694fae7 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
 @@ -4,10 +4,10 @@ classes:
