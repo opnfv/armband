@@ -4,19 +4,28 @@ Subject: [PATCH] maas: boot-resources: Add arm64 architecture
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/patches/0003-maas-region-force-artifact-download.patch | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mcp/patches/0003-maas-region-force-artifact-download.patch | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/patches/0003-maas-region-force-artifact-download.patch b/mcp/patches/0003-maas-region-force-artifact-download.patch
-index 646bed3..ca61e5e 100644
+index f0ce50f..9997552 100644
 --- a/mcp/patches/0003-maas-region-force-artifact-download.patch
 +++ b/mcp/patches/0003-maas-region-force-artifact-download.patch
-@@ -24,7 +24,7 @@ index d3227ca..8a2243d 100644
-
- +maas_force_artifact_sync:
- +  cmd.run:
--+  - name: "maas login {{ region.admin.username }} http://{{ region.bind.host }}:5240/MAAS/api/2.0 - < /var/lib/maas/.maas_credentials && while ! grep -qzE '(Unable to probe for DHCP servers|DHCP probe complete).*Rack controller' /var/log/maas/rackd.log; do sleep 5; echo -n '.'; done && maas opnfv boot-resources import && while maas opnfv boot-resources is-importing | grep -q -e 'true'; do sleep 5; echo -n '.'; done && maas opnfv rack-controllers import-boot-images && while ! test -d /var/lib/maas/boot-resources/current/ubuntu; do sleep 5; echo -n '.'; done"
-++  - name: "maas login {{ region.admin.username }} http://{{ region.bind.host }}:5240/MAAS/api/2.0 - < /var/lib/maas/.maas_credentials && while ! grep -qzE '(Unable to probe for DHCP servers|DHCP probe complete).*Rack controller' /var/log/maas/rackd.log; do sleep 5; echo -n '.'; done && maas opnfv boot-resources import && while maas opnfv boot-resources is-importing | grep -q -e 'true'; do sleep 5; echo -n '.'; done && maas opnfv rack-controllers import-boot-images && while ! test -d /var/lib/maas/boot-resources/current/ubuntu; do sleep 5; echo -n '.'; done && maas opnfv boot-source-selection update 1 1 arches='amd64' arches='arm64' && maas opnfv boot-resources import && while maas opnfv boot-resources is-importing | grep -q -e 'true'; do sleep 5; echo -n '.'; done && maas opnfv rack-controllers import-boot-images && while ! test -d /var/lib/maas/boot-resources/current/ubuntu/arm64; do sleep 5; echo -n '.'; done"
- +  - require:
- +    - cmd: maas_login_admin
- +
+@@ -42,7 +42,7 @@ diff --git a/maas/files/maas-artifact-sync.sh b/maas/files/maas-artifact-sync.sh
+ new file mode 100644
+ --- /dev/null
+ +++ b/maas/files/maas-artifact-sync.sh
+-@@ -0,0 +1,21 @@
++@@ -0,0 +1,26 @@
+ +{%- from "maas/map.jinja" import region with context %}
+ +#!/bin/bash
+ +function wait_for {
+@@ -64,3 +64,8 @@ new file mode 100644
+ +wait_for 90 "! maas opnfv boot-resources is-importing | grep -q 'true'"
+ +maas opnfv rack-controllers import-boot-images || exit 3
+ +wait_for 30 "test -d /var/lib/maas/boot-resources/current/ubuntu/amd64"
+++maas opnfv boot-source-selection update 1 1 arches='amd64' arches='arm64' || exit 4
+++maas opnfv boot-resources import || exit 2
+++wait_for 90 "! maas opnfv boot-resources is-importing | grep -q 'true'"
+++maas opnfv rack-controllers import-boot-images || exit 3
+++wait_for 30 "test -d /var/lib/maas/boot-resources/current/ubuntu/arm64"
