@@ -1,0 +1,54 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 21 Aug 2017 20:42:00 +0200
+Subject: [PATCH] seedng: module: Add AArch64 repo
+
+salt custom py module seedng.py should use custom repo arg
+"-R linux.enea.com/saltstack" on AArch64 nodes.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../0105-seedng-module-Add-AArch64-repo.patch      | 25 ++++++++++++++++++++++
+ mcp/patches/patches.list                           |  1 +
+ 2 files changed, 26 insertions(+)
+ create mode 100644 mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
+
+diff --git a/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch b/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
+new file mode 100644
+index 0000000..e191421
+--- /dev/null
++++ b/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
+@@ -0,0 +1,25 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Mon, 21 Aug 2017 02:03:01 +0200
++Subject: [PATCH] seedng: module: Add AArch64 repo
++
++salt custom py module seedng.py should use custom repo arg
++"-R linux.enea.com/saltstack" on AArch64 nodes.
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++
++diff --git a/_modules/seedng.py b/_modules/seedng.py
++--- a/_modules/seedng.py
+++++ b/_modules/seedng.py
++@@ -256,8 +256,10 @@
++     boot_, tmppath = (prep_bootstrap(mpt)
++              or salt.syspaths.BOOTSTRAP)
++     # Exec the chroot command
+++    cmdR = '-R linux.enea.com/saltstack' if os.uname()[-1] == 'aarch64' else ''
++     cmd = 'if type salt-minion; then exit 0; '
++-    cmd += 'else sh {0} -c /tmp; fi'.format(os.path.join(tmppath, 'bootstrap-salt.sh'))
+++    cmd += 'else sh {0} {1} -c /tmp; fi'.format(
+++        os.path.join(tmppath, 'bootstrap-salt.sh'), cmdR)
++     return not __salt__['cmd.run_chroot'](mpt, cmd, python_shell=True)['retcode']
++
++
+diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
+index 67b9c82..b4b2b30 100644
+--- a/mcp/patches/patches.list
++++ b/mcp/patches/patches.list
+@@ -9,3 +9,4 @@
+ /usr/share/salt-formulas/env: 0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
+ /usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
+ /usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
++/usr/share/salt-formulas/env: 0105-seedng-module-Add-AArch64-repo.patch
