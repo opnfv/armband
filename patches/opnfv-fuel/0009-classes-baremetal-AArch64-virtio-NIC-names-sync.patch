@@ -24,13 +24,13 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  .../cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml   | 18 ++++++++++++------
  .../cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml  |  8 ++++----
  .../baremetal-mcp-ocata-ovs-ha/openstack/compute.yml   | 18 +++++++++---------
- .../baremetal-mcp-ocata-ovs-ha/openstack/control.yml   |  4 ++--
- .../baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml |  2 +-
- .../baremetal-mcp-ocata-ovs-ha/openstack/database.yml  |  4 ++--
- .../openstack/message_queue.yml                        |  4 ++--
- .../baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml     |  4 ++--
- .../baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml |  4 ++--
- 10 files changed, 38 insertions(+), 32 deletions(-)
+ .../baremetal-mcp-ocata-ovs-ha/openstack/control.yml   |  6 +++---
+ .../baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml |  4 ++--
+ .../baremetal-mcp-ocata-ovs-ha/openstack/database.yml  |  6 +++---
+ .../openstack/message_queue.yml                        |  6 +++---
+ .../baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml     |  6 +++---
+ .../baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml |  6 +++---
+ 10 files changed, 44 insertions(+), 38 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml
 index 77443de..824b979 100644
@@ -172,113 +172,125 @@ index 18a7a0b..d052e23 100644
 -          - ${_param:mgmt_nic}.300
 +          - ${_param:tenant_nic}.2183
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
-index 995c50c..97f44ca 100644
+index 20b470d..5ba1411 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
 @@ -23,7 +23,7 @@ classes:
  - cluster.baremetal-mcp-ocata-ovs-ha.infra
  parameters:
    _param:
--    keepalived_vip_interface: ens3
-+    keepalived_vip_interface: enp1s0
+-    keepalived_vip_interface: ens4
++    keepalived_vip_interface: enp2s0
      keepalived_vip_virtual_router_id: 50
      cluster_vip_address: ${_param:openstack_control_address}
      cluster_local_address: ${_param:single_address}
-@@ -37,7 +37,7 @@ parameters:
+@@ -37,8 +37,8 @@ parameters:
    linux:
      network:
        interface:
--        ens3: ${_param:linux_single_interface}
-+        enp1s0: ${_param:linux_single_interface}
+-        ens3: ${_param:linux_dhcp_interface}
+-        ens4: ${_param:linux_single_interface}
++        enp1s0: ${_param:linux_dhcp_interface}
++        enp2s0: ${_param:linux_single_interface}
    bind:
      server:
        control:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml
-index b7ed814..bfca091 100644
+index 522719a..18f622c 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/dashboard.yml
-@@ -7,4 +7,4 @@ parameters:
+@@ -7,5 +7,5 @@ parameters:
    linux:
      network:
        interface:
--        ens3: ${_param:linux_single_interface}
-+        enp1s0: ${_param:linux_single_interface}
+-        ens3: ${_param:linux_dhcp_interface}
+-        ens4: ${_param:linux_single_interface}
++        enp1s0: ${_param:linux_dhcp_interface}
++        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml
-index c0e21aa..3fcf34b 100644
+index 8aa8b70..7a6934b 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml
 @@ -16,7 +16,7 @@ classes:
  - cluster.baremetal-mcp-ocata-ovs-ha
  parameters:
    _param:
--    keepalived_vip_interface: ens3
-+    keepalived_vip_interface: enp1s0
+-    keepalived_vip_interface: ens4
++    keepalived_vip_interface: enp2s0
      keepalived_vip_virtual_router_id: 80
      galera_server_cluster_name: openstack_cluster
      cluster_vip_address: ${_param:openstack_database_address}
-@@ -30,4 +30,4 @@ parameters:
+@@ -30,5 +30,5 @@ parameters:
    linux:
      network:
        interface:
--        ens3: ${_param:linux_single_interface}
-+        enp1s0: ${_param:linux_single_interface}
+-        ens3: ${_param:linux_dhcp_interface}
+-        ens4: ${_param:linux_single_interface}
++        enp1s0: ${_param:linux_dhcp_interface}
++        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml
-index 3b79030..4910196 100644
+index 0840cc4..f510a7b 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml
 @@ -7,7 +7,7 @@ classes:
  - cluster.baremetal-mcp-ocata-ovs-ha
  parameters:
    _param:
--    keepalived_vip_interface: ens3
-+    keepalived_vip_interface: enp1s0
+-    keepalived_vip_interface: ens4
++    keepalived_vip_interface: enp2s0
      keepalived_vip_virtual_router_id: 90
      cluster_vip_address: ${_param:openstack_message_queue_address}
      cluster_local_address: ${_param:single_address}
-@@ -20,4 +20,4 @@ parameters:
+@@ -20,5 +20,5 @@ parameters:
    linux:
      network:
        interface:
--        ens3: ${_param:linux_single_interface}
-+        enp1s0: ${_param:linux_single_interface}
+-        ens3: ${_param:linux_dhcp_interface}
+-        ens4: ${_param:linux_single_interface}
++        enp1s0: ${_param:linux_dhcp_interface}
++        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
-index 2695c96..d146d8a 100644
+index 86f331d..4e25b78 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
 @@ -15,7 +15,7 @@ classes:
  # - cluster.baremetal-mcp-ocata-ovs-ha.stacklight.proxy
  parameters:
    _param:
--    keepalived_vip_interface: ens3
-+    keepalived_vip_interface: enp1s0
+-    keepalived_vip_interface: ens4
++    keepalived_vip_interface: enp2s0
      keepalived_vip_virtual_router_id: 240
      nginx_proxy_ssl:
        enabled: true
-@@ -27,7 +27,7 @@ parameters:
+@@ -27,8 +27,8 @@ parameters:
    linux:
      network:
        interface:
--        ens3: ${_param:linux_single_interface}
-+        enp1s0: ${_param:linux_single_interface}
+-        ens3: ${_param:linux_dhcp_interface}
+-        ens4: ${_param:linux_single_interface}
++        enp1s0: ${_param:linux_dhcp_interface}
++        enp2s0: ${_param:linux_single_interface}
      system:
        package:
          libapache2-mod-wsgi:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
-index ca655dd..69ca07f 100644
+index b46319f..6ad13ae 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
 @@ -10,7 +10,7 @@ classes:
  - cluster.baremetal-mcp-ocata-ovs-ha.infra
  parameters:
    _param:
--    keepalived_vip_interface: ens3
-+    keepalived_vip_interface: enp1s0
+-    keepalived_vip_interface: ens4
++    keepalived_vip_interface: enp2s0
      keepalived_vip_virtual_router_id: 230
      cluster_vip_address: ${_param:openstack_telemetry_address}
      cluster_local_address: ${_param:single_address}
-@@ -23,4 +23,4 @@ parameters:
+@@ -23,5 +23,5 @@ parameters:
    linux:
      network:
        interface:
--        ens3: ${_param:linux_single_interface}
-+        enp1s0: ${_param:linux_single_interface}
+-        ens3: ${_param:linux_dhcp_interface}
+-        ens4: ${_param:linux_single_interface}
++        enp1s0: ${_param:linux_dhcp_interface}
++        enp2s0: ${_param:linux_single_interface}
