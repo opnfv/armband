@@ -1,0 +1,86 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 22 Aug 2017 00:07:39 +0200
+Subject: [PATCH] baremetal: HA: Standalone openstack_ha state
+
+Replicate all calls from "openstack" state to "openstack_ha",
+while adjusting minor parameters for HA, based on [1].
+
+TODO: cleanup extra logging, re-verify states
+
+[1] https://docs.mirantis.com/mcp/1.0/mcp-deployment-guide/\
+    deploy-mcp-cluster-manually.html
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../scenario/baremetal/os-nosdn-nofeature-ha.yaml  |  1 -
+ mcp/config/states/openstack_ha                     | 43 ++++++++++++++++++++++
+ 2 files changed, 43 insertions(+), 1 deletion(-)
+
+diff --git a/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml b/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml
+index 1118d28..3f78bea 100644
+--- a/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml
++++ b/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml
+@@ -3,7 +3,6 @@ cluster:
+   states:
+     - maas
+     - openstack_ha
+-    - openstack
+     - neutron_compute
+     - networks
+ virtual:
+diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
+index 2932735..b2f8f62 100755
+--- a/mcp/config/states/openstack_ha
++++ b/mcp/config/states/openstack_ha
+@@ -1,4 +1,5 @@
+ salt -I 'keepalived:cluster' state.sls keepalived -b 1
++salt -I 'keepalived:cluster' pillar.get keepalived:cluster:instance:VIP:address
+
+ salt -I 'rabbitmq:server' state.sls rabbitmq # maybe twice
+ salt -I 'rabbitmq:server' cmd.run "rabbitmqctl cluster_status"
+@@ -10,3 +11,45 @@ salt -I 'glusterfs:server' cmd.run "gluster peer status; gluster volume status"
+ salt -I 'galera:master' state.sls galera
+ salt -I 'galera:slave' state.sls galera
+ salt -I 'galera:master' mysql.status | grep -A1 wsrep_cluster_size
++
++# Similar to 'openstack' state
++
++# salt -I 'rabbitmq:server' state.sls rabbitmq
++# salt -I 'rabbitmq:server' cmd.run "rabbitmqctl status"
++
++# salt -I 'mysql:server' state.sls mysql
++
++salt -I 'memcached:server' state.sls memcached
++
++salt -I 'haproxy:proxy' state.sls haproxy
++salt -I 'haproxy:proxy' service.status haproxy
++salt -I 'haproxy:proxy' service.restart rsyslog
++
++salt -I 'keystone:server' state.sls keystone.server -b 1
++salt -I 'keystone:server' service.restart apache2
++salt -I 'keystone:server' state.sls keystone.client
++salt -I 'keystone:server' cmd.run ". /root/keystonercv3; openstack service list"
++
++salt -I 'glance:server' state.sls glance -b 1
++salt -I 'glance:server' state.sls glusterfs.client
++salt -I 'keystone:server' state.sls keystone.server
++salt -I 'keystone:server' cmd.run ". /root/keystonercv3; glance image-list"
++
++salt -I 'nova:controller' state.sls nova -b 1
++salt -I 'keystone:server' cmd.run ". /root/keystonercv3; nova service-list"
++salt -I 'heat:server' state.sls heat
++
++salt -I 'cinder:controller' state.sls cinder -b 1
++salt -I 'keystone:server' cmd.run ". /root/keystonercv3; cinder list"
++salt -I 'cinder:volume' state.sls cinder
++
++salt -I 'neutron:server' state.sls neutron -b 1
++salt -I 'neutron:gateway' state.sls neutron
++salt -I 'keystone:server' cmd.run ". /root/keystonercv3; neutron agent-list"
++
++salt -I 'nova:compute' state.sls nova
++
++salt -I 'horizon:server' state.sls horizon
++salt -I 'nginx:server' state.sls nginx
++
++salt -I 'nova:compute' state.sls armband
