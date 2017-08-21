@@ -48,7 +48,7 @@ index 77443de..824b979 100644
      master:
        accept_policy: open_mode
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index 5c33f9e..8b09e76 100644
+index 1608c65..8677a79 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 @@ -25,7 +25,8 @@ parameters:
