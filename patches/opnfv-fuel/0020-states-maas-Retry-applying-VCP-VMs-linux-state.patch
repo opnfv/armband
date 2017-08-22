@@ -1,0 +1,22 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 22 Aug 2017 02:19:34 +0200
+Subject: [PATCH] states: maas: Retry applying VCP VMs linux state
+
+Running a heavy state like `linux` on all nodes (including VCP VMs)
+might time out the first time on slower systems.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/states/maas | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mcp/config/states/maas b/mcp/config/states/maas
+index f8ff67a..371688a 100755
+--- a/mcp/config/states/maas
++++ b/mcp/config/states/maas
+@@ -71,4 +71,4 @@ done
+
+ salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
+ salt -C '* and not cfg01* and not mas01*' state.apply salt
+-salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
++wait_for "salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp"
