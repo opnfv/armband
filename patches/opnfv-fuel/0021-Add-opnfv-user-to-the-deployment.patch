@@ -1,0 +1,87 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Charalampos Kominos <Charalampos.Kominos@enea.com>
+Date: Fri, 1 Sep 2017 12:24:35 +0200
+Subject: [PATCH] Add opnfv user to the deployment
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
+Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
+---
+ mcp/config/states/maas                                             | 2 ++
+ mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml   | 3 +++
+ .../classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml      | 1 +
+ .../classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml      | 1 +
+ mcp/salt-formulas/opnfv/adduser.sls                                | 7 +++++++
+ 5 files changed, 14 insertions(+)
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml
+ create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
+
+diff --git a/mcp/config/states/maas b/mcp/config/states/maas
+index c54225d..6bd0aef 100755
+--- a/mcp/config/states/maas
++++ b/mcp/config/states/maas
+@@ -75,6 +75,7 @@ salt -C 'mas01*' pillar.item\
+ salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
+
+ salt -C 'kvm*' pkg.install bridge-utils
++salt -C '*' state.apply opnfv.adduser
+ salt -C 'kvm*' state.apply linux.network
+ salt -C 'kvm*' state.apply armband.bootstrap_script_arm64
+ salt -C 'kvm*' system.reboot
+@@ -98,6 +99,7 @@ while [ $rc -ne 0 ]; do
+   rc=0
+   for node in $vcp_nodes; do
+     salt "$node" test.ping 2>/dev/null || { rc=$?; break; };
++    salt -C "$node" state.apply opnfv.adduser
+   done
+   sleep 5
+ done
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml
+new file mode 100644
+index 0000000..79d18be
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml
+@@ -0,0 +1,3 @@
++parameters:
++  opnfv_user_username: opnfv
++  opnfv_user_password: $1$5/pIEHT1$XFBhNWW4Q8gYd19hczgPF1
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
+index 79a8e92..fd615e4 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
+@@ -1,4 +1,5 @@
+ classes:
++- cluster.baremetal-mcp-ocata-common.opnfv
+ - system.linux.system.single
+ - cluster.baremetal-mcp-ocata-odl-ha.openstack
+ # - cluster.baremetal-mcp-ocata-odl-ha.stacklight
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
+index d09c643..f7789c6 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
+@@ -1,4 +1,5 @@
+ classes:
++- cluster.baremetal-mcp-ocata-common.opnfv
+ - system.linux.system.single
+ - cluster.baremetal-mcp-ocata-ovs-ha.openstack
+ # - cluster.baremetal-mcp-ocata-ovs-ha.stacklight
+diff --git a/mcp/salt-formulas/opnfv/adduser.sls b/mcp/salt-formulas/opnfv/adduser.sls
+new file mode 100644
+index 0000000..9692184
+--- /dev/null
++++ b/mcp/salt-formulas/opnfv/adduser.sls
+@@ -0,0 +1,7 @@
++add_opnfv_user:
++  user.present:
++  - name: ${_param:opnfv_user_username}
++  - password: ${_param:opnfv_user_password}
++  - createhome: True
++  - groups:
++    - sudo
