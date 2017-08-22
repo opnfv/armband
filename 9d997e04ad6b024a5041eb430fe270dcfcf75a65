@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_f4632faf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-22T18:07:55Z",
+      "side": 1,
+      "message": "rm this",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 9
+      },
+      "revId": "9d997e04ad6b024a5041eb430fe270dcfcf75a65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_54593bfd",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-22T18:07:55Z",
+      "side": 1,
+      "message": "this line should be removed, the parent hash is volatile in our patching system, so this line is useless",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 70
+      },
+      "revId": "9d997e04ad6b024a5041eb430fe270dcfcf75a65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_345e37e7",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-22T18:07:55Z",
+      "side": 1,
+      "message": "full name?",
+      "range": {
+        "startLine": 2,
+        "startChar": 6,
+        "endLine": 2,
+        "endChar": 10
+      },
+      "revId": "9d997e04ad6b024a5041eb430fe270dcfcf75a65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_9472a37a",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-22T18:07:55Z",
+      "side": 1,
+      "message": "extra",
+      "range": {
+        "startLine": 4,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 55
+      },
+      "revId": "9d997e04ad6b024a5041eb430fe270dcfcf75a65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_746f1f93",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-22T18:07:55Z",
+      "side": 1,
+      "message": "remove git signature, also useless",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 5
+      },
+      "revId": "9d997e04ad6b024a5041eb430fe270dcfcf75a65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
