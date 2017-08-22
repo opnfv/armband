@@ -1,0 +1,68 @@
+From: Charalampos Kominos <Charalampos.Kominos@enea.com>
+Date: Wed, 23 Aug 2017 10:18:26 +0200
+Subject: [PATCH] Add opnfv user to the deployment
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
+Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
+---
+ mcp/config/states/maas                                             | 2 +-
+ .../classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml      | 2 ++
+ .../classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml      | 2 ++
+ mcp/salt-formulas/opnfv/adduser.sls                                | 7 +++++++
+ 4 files changed, 12 insertions(+), 1 deletion(-)
+ create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
+
+diff --git a/mcp/config/states/maas b/mcp/config/states/maas
+index 383063d..94db2cc 100755
+--- a/mcp/config/states/maas
++++ b/mcp/config/states/maas
+@@ -86,8 +86,8 @@ salt -C 'kvm*' system.reboot
+ wait_for 90 "! salt '*' test.ping | tee /dev/stderr | fgrep -q 'Not connected'"
+
+ salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
+-
+ salt -C 'kvm*' state.sls armband,armband.libvirt_domain_template
++salt -C '*' state.apply opnfv.adduser
+ salt -C 'kvm*' state.sls libvirt
+
+ salt -C '* and not cfg01* and not mas01*' state.apply salt
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
+index e4765ca..55397af 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
+@@ -10,6 +10,8 @@ parameters:
+     external_interface: enp4s0
+     interface_mtu: 1500
+     # MaaS has issues using MTU > 1500 for PXE interface
++    opnfv_user_username: opnfv
++    opnfv_user_password: $1$5/pIEHT1$XFBhNWW4Q8gYd19hczgPF1
+     pxe_interface_mtu: 1500
+     linux_system_codename: xenial
+     maas_admin_username: opnfv
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
+index 26115fe..918be3a 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
+@@ -10,6 +10,8 @@ parameters:
+     external_interface: enp4s0
+     interface_mtu: 1500
+     # MaaS has issues using MTU > 1500 for PXE interface
++    opnfv_user_username: opnfv
++    opnfv_user_password: $1$5/pIEHT1$XFBhNWW4Q8gYd19hczgPF1
+     pxe_interface_mtu: 1500
+     linux_system_codename: xenial
+     maas_admin_username: opnfv
+diff --git a/mcp/salt-formulas/opnfv/adduser.sls b/mcp/salt-formulas/opnfv/adduser.sls
+new file mode 100644
+index 0000000..9692184
+--- /dev/null
++++ b/mcp/salt-formulas/opnfv/adduser.sls
+@@ -0,0 +1,7 @@
++add_opnfv_user:
++  user.present:
++  - name: ${_param:opnfv_user_username}
++  - password: ${_param:opnfv_user_password}
++  - createhome: True
++  - groups:
++    - sudo
