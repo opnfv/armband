@@ -27,7 +27,7 @@ index cf7b3b3..2b4e724 100755
 
  # Variables below are disabled for now, to be re-introduced or removed later
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 99d923b..13a8263 100755
+index 9a27a39..f83f4a7 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -20,7 +20,7 @@ salt -C 'mas01*' state.apply linux.network.interface
@@ -75,7 +75,7 @@ index 93e2de0..1d75356 100644
      infra_maas_node01_hostname: mas01
      infra_kvm_node01_hostname: kvm01
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
-index 4036be1..dce7fb7 100644
+index 9c2bc7b..c1c3ce4 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
 @@ -3,9 +3,9 @@ parameters:
