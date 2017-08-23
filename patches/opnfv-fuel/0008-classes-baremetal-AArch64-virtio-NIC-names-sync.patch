@@ -20,17 +20,17 @@ is used).
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../baremetal-mcp-ocata-ovs-ha/infra/config.yml     |  4 ++--
- .../baremetal-mcp-ocata-ovs-ha/infra/kvm.yml        | 18 ++++++++++++------
- .../baremetal-mcp-ocata-ovs-ha/infra/maas.yml       |  8 ++++----
- .../openstack/compute.yml                           | 21 ++++++++++-----------
- .../openstack/control.yml                           |  6 +++---
- .../openstack/dashboard.yml                         |  4 ++--
- .../openstack/database.yml                          |  6 +++---
- .../openstack/message_queue.yml                     |  6 +++---
- .../baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml  |  6 +++---
- .../openstack/telemetry.yml                         |  6 +++---
- 10 files changed, 45 insertions(+), 40 deletions(-)
+ .../baremetal-mcp-ocata-ovs-ha/infra/config.yml    |  4 ++--
+ .../baremetal-mcp-ocata-ovs-ha/infra/kvm.yml       | 18 ++++++++++-----
+ .../baremetal-mcp-ocata-ovs-ha/infra/maas.yml      |  8 +++----
+ .../openstack/compute.yml                          | 27 ++++++++--------------
+ .../openstack/control.yml                          |  6 ++---
+ .../openstack/dashboard.yml                        |  4 ++--
+ .../openstack/database.yml                         |  6 ++---
+ .../openstack/message_queue.yml                    |  6 ++---
+ .../baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml |  6 ++---
+ .../openstack/telemetry.yml                        |  6 ++---
+ 10 files changed, 45 insertions(+), 46 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml
 index ce2c951..7d95ebc 100644
@@ -125,7 +125,7 @@ index d193469..73215ee 100644
      # MaaS has issues using MTU > 1500 for PXE interface
      pxe_interface_mtu: 1500
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-index 070ab78..e932f0d 100644
+index 070ab78..88150b0 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 @@ -19,9 +19,8 @@ parameters:
@@ -140,7 +140,20 @@ index 070ab78..e932f0d 100644
      linux_system_codename: xenial
      interface_mtu: 1500
      keepalived_vip_interface: br-ctl
-@@ -53,19 +52,19 @@ parameters:
+@@ -40,12 +39,6 @@ parameters:
+           type: eth
+           proto: manual
+           name: ${_param:tenant_nic}
+-        external_nic:
+-          enabled: true
+-          name: ${_param:external_nic}
+-          mtu: ${_param:interface_mtu}
+-          proto: manual
+-          type: eth
+         br-mesh:
+           enabled: true
+           type: bridge
+@@ -53,19 +46,19 @@ parameters:
            netmask: 255.255.255.0
            mtu: 1500
            use_interfaces:
@@ -166,7 +179,7 @@ index 070ab78..e932f0d 100644
            use_interfaces:
            - ${_param:tenant_nic}
          br-ctl:
-@@ -75,7 +74,7 @@ parameters:
+@@ -75,7 +68,7 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -175,7 +188,7 @@ index 070ab78..e932f0d 100644
          br-floating:
            enabled: true
            type: ovs_bridge
-@@ -92,6 +91,6 @@ parameters:
+@@ -92,6 +85,6 @@ parameters:
            address: ${_param:external_address}
            netmask: 255.255.255.0
            use_interfaces:
