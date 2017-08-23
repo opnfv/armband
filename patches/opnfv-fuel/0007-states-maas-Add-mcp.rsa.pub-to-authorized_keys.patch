@@ -11,11 +11,11 @@ Change-Id: I34f79848c52e36de8d981055880321a081420874
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 ---
- mcp/config/states/maas | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ mcp/config/states/maas | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 52a9b77..600578f 100755
+index 52a9b77..fecd991 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -69,6 +69,9 @@ while [ $rc -ne 0 ]; do
@@ -23,10 +23,9 @@ index 52a9b77..600578f 100755
  done
 
 -salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
--salt -C '* and not cfg01* and not mas01*' state.apply salt
 +wait_for "salt -C '* and not cfg01* and not mas01*' ssh.set_auth_key ${SUDO_USER} \
 +  $(awk 'NR==1{print $2}' $(eval echo ~${SUDO_USER}/.ssh/authorized_keys))"
 +
 +wait_for "salt -C '* and not cfg01* and not mas01*' saltutil.sync_all"
-+wait_for "salt -C '* and not cfg01* and not mas01*' state.apply salt"
+ salt -C '* and not cfg01* and not mas01*' state.apply salt
  wait_for "salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp"
