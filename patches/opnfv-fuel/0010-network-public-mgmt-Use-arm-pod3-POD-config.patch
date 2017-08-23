@@ -26,7 +26,7 @@ index cf7b3b3..2b4e724 100755
 
  # Variables below are disabled for now, to be re-introduced or removed later
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 9a27a39..f83f4a7 100755
+index 85cee8c..46bad6f 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -20,7 +20,7 @@ salt -C 'mas01*' state.apply linux.network.interface

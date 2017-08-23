@@ -36,7 +36,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 52a9b77..9a27a39 100755
+index fecd991..85cee8c 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -51,6 +51,7 @@ wait_for "! salt '*' test.ping | tee /dev/stderr | fgrep -q 'Not connected'"
