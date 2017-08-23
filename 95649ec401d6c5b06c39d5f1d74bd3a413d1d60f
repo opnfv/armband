@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_e3bfefce",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-23T15:43:29Z",
+      "side": 1,
+      "message": "it\u0027d be nice to limit this to 50 chars",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 56
+      },
+      "revId": "95649ec401d6c5b06c39d5f1d74bd3a413d1d60f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_03bbf3e5",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 10
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-23T15:43:29Z",
+      "side": 1,
+      "message": "outdated; also patch name should be derived from commit title, e.g. 0018-Add-opnfv-user-to-the-deployment.patch",
+      "range": {
+        "startLine": 3,
+        "startChar": 13,
+        "endLine": 3,
+        "endChar": 19
+      },
+      "revId": "95649ec401d6c5b06c39d5f1d74bd3a413d1d60f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_a3ee87ea",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 10
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-23T15:43:29Z",
+      "side": 1,
+      "message": "since this is your work, I think you should keep only your signoff",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 61
+      },
+      "revId": "95649ec401d6c5b06c39d5f1d74bd3a413d1d60f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_c3f10bcf",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 10
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-23T15:43:29Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 22,
+        "startChar": 5,
+        "endLine": 22,
+        "endChar": 8
+      },
+      "revId": "95649ec401d6c5b06c39d5f1d74bd3a413d1d60f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_63e47f0d",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 10
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-23T15:43:29Z",
+      "side": 1,
+      "message": "I would go with \"opnfv\" instead of pharos.",
+      "range": {
+        "startLine": 30,
+        "startChar": 24,
+        "endLine": 30,
+        "endChar": 30
+      },
+      "revId": "95649ec401d6c5b06c39d5f1d74bd3a413d1d60f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_83e70312",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 10
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-23T15:43:29Z",
+      "side": 1,
+      "message": "let\u0027s parametrize this via reclass instead of hardcoding it in the state file.",
+      "range": {
+        "startLine": 34,
+        "startChar": 11,
+        "endLine": 34,
+        "endChar": 16
+      },
+      "revId": "95649ec401d6c5b06c39d5f1d74bd3a413d1d60f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
