@@ -21,13 +21,14 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  mcp/config/states/maas                             |  1 +
  mcp/config/states/openstack                        |  2 +
+ mcp/config/states/openstack_ha                     |  1 +
  .../armband/files/nova-libvirt-driver.diff         | 48 ++++++++++++++++++++++
  mcp/salt-formulas/armband/init.sls                 |  6 +++
  mcp/salt-formulas/armband/libvirt_driver.sls       |  5 +++
- mcp/salt-formulas/armband/nova.sls                 | 34 +++++++++++++++
+ mcp/salt-formulas/armband/nova.sls                 | 30 ++++++++++++++
  mcp/salt-formulas/armband/qemu.sls                 |  7 ++++
  mcp/salt-formulas/armband/vgabios.sls              |  6 +++
- 8 files changed, 109 insertions(+)
+ 9 files changed, 106 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-driver.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/libvirt_driver.sls
@@ -57,6 +58,18 @@ index 5ded58c..270bf35 100755
  salt -I 'horizon:server' state.sls horizon
 +
 +salt -I 'nova:compute' state.sls armband
+diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
+index 2597e82..4fc184f 100755
+--- a/mcp/config/states/openstack_ha
++++ b/mcp/config/states/openstack_ha
+@@ -41,6 +41,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
+ salt -I 'neutron:gateway' state.sls neutron
+
+ salt -I 'nova:compute' state.sls nova
++salt -I 'nova:compute' state.sls armband
+
+ salt -I 'horizon:server' state.sls horizon
+ salt -I 'nginx:server' state.sls nginx
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff b/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff
 new file mode 100644
 index 0000000..a5b08da
@@ -136,40 +149,36 @@ index 0000000..c309035
 +
 diff --git a/mcp/salt-formulas/armband/nova.sls b/mcp/salt-formulas/armband/nova.sls
 new file mode 100644
-index 0000000..ade8c7a
+index 0000000..674f371
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/nova.sls
-@@ -0,0 +1,34 @@
+@@ -0,0 +1,30 @@
 +{% if grains['virtual'] == 'kvm' %}
 +nova_virt_type:
 +  file.replace:
 +    - name: "/etc/nova/nova.conf"
-+    - pattern: ^virt_type =.*$
++    - pattern: '^virt_type\s*=.*$'
 +    - repl: "virt_type = qemu"
 +{% endif %}
-+
 +nova_pointer_model:
 +  file.replace:
 +    - name: "/etc/nova/nova.conf"
-+    - pattern: ^#pointer_model=.*$
-+    - repl: "pointer_model=ps2mouse"
-+
++    - pattern: '^#pointer_model\s*=.*$'
++    - repl: "pointer_model = ps2mouse"
 +nova_cpu_mode:
 +  file.replace:
 +    - name: "/etc/nova/nova.conf"
-+    - pattern: "^cpu_mode = host-passthrough"
-+    - repl: "cpu_mode=custom"
-+
++    - pattern:  '^cpu_mode\s*=\s*host-passthrough'
++    - repl: "cpu_mode = custom"
 +nova_cpu_model:
 +  file.replace:
 +    - name: "/etc/nova/nova.conf"
-+    - pattern: ^#cpu_model=.*$
++    - pattern: '^#cpu_model\s*=.*$'
 +    {% if grains['virtual'] == 'kvm' %}
-+    - repl: "cpu_model=cortex-a57"
++    - repl: "cpu_model = cortex-a57"
 +    {% else %}
-+    - repl: "cpu_model=host"
++    - repl: "cpu_model = host"
 +    {% endif %}
-+
 +restart_nova-compute:
 +  cmd:
 +    - run
