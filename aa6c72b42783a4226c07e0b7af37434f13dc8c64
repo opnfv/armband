@@ -16,6 +16,24 @@
       "revId": "aa6c72b42783a4226c07e0b7af37434f13dc8c64",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_1f16a3f1",
+        "filename": "patches/opnfv-fuel/0021-states-maas-rm-Ubuntu-boot-entry-on-EFI-systems.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-24T17:25:55Z",
+      "side": 1,
+      "message": "This is not the right location, because the nodes are not discovered until the routes are in place on the mas01 node ... sorry, I rushed this patch.",
+      "parentUuid": "da33351e_19ba430a",
+      "revId": "aa6c72b42783a4226c07e0b7af37434f13dc8c64",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
