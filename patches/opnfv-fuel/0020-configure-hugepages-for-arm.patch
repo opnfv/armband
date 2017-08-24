@@ -1,0 +1,52 @@
+From: chko <charalampos.kominos@enea.com>
+Date: Thu, 24 Aug 2017 19:28:14 +0200
+Subject: [PATCH] From: Charalampos Kominos <charalampos.kominos@enea.com>
+ Date: Thu, 24 Aug 2017 19:29:09 +0200 Subject: [PATCH] Configure hugepages
+ for arm
+
+The reclass model contains instructions on how to setup nova.conf.
+Those instructions need to be overwritten for ARM.
+
+Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
+Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
+---
+ .../cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml   |  4 ++--
+ .../cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml      | 10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
+index 88150b0..8bcb469 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
+@@ -3,8 +3,8 @@ classes:
+ - system.linux.system.repo.mcp.extra
+ - system.linux.system.repo.saltstack.xenial
+ - system.nova.compute.cluster
+-- system.nova.compute.nfv.hugepages
+-- system.nova.compute.nfv.cpu_pinning
++#- system.nova.compute.nfv.hugepages
++#- system.nova.compute.nfv.cpu_pinning
+ - system.neutron.gateway.cluster
+ - system.ceilometer.agent.cluster
+ - cluster.baremetal-mcp-ocata-ovs-ha.infra
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
+index 90e0cf3..c1452b4 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
+@@ -94,11 +94,11 @@ parameters:
+     rabbitmq_secret_key: opnfv_secret
+     rabbitmq_admin_password: opnfv_secret
+     rabbitmq_openstack_password: opnfv_secret
+-    nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
+-    compute_hugepages_size: 1G
+-    compute_hugepages_count: 16
+-    compute_hugepages_mount: /mnt/hugepages_1G
+-    compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
++    #  nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
++    #  compute_hugepages_size: 1G
++    #  compute_hugepages_count: 16
++    #  compute_hugepages_mount: /mnt/hugepages_1G
++    #  compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
+     glance_version: ${_param:openstack_version}
+     glance_service_host: ${_param:openstack_control_address}
+     keystone_version: ${_param:openstack_version}
