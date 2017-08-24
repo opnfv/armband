@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_19ba430a",
+        "filename": "patches/opnfv-fuel/0021-states-maas-rm-Ubuntu-boot-entry-on-EFI-systems.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-08-24T09:06:39Z",
+      "side": 1,
+      "message": "Is this placed in the right location ??\nin the maas state we first wait for the deployment to finish and then retry on failure to do the same !?. If a node fails to reboot through pxe and boots to the old FS it will never get to commisioning",
+      "revId": "aa6c72b42783a4226c07e0b7af37434f13dc8c64",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
