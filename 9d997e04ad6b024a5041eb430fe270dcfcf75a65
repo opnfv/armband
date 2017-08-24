@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "da33351e_b469a78d",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-08-24T08:40:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da33351e_54593bfd",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 70
+      },
+      "revId": "9d997e04ad6b024a5041eb430fe270dcfcf75a65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_345e37e7",
         "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
         "patchSetId": 4
