@@ -24,16 +24,16 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/files/cloud.py.diff
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 9fe7de0..0cf4f68 100755
+index fcb8ce3..12ef9ed 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
-@@ -46,6 +46,7 @@ salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
+@@ -76,6 +76,7 @@ salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
 
  salt -C 'kvm*' pkg.install bridge-utils
  salt -C 'kvm*' state.apply linux.network
 +salt -C 'kvm*' state.apply armband.bootstrap_script_arm64
  salt -C 'kvm*' system.reboot
- wait_for "! salt '*' test.ping | tee /dev/stderr | fgrep -q 'Not connected'"
+ wait_for 90 "! salt '*' test.ping | tee /dev/stderr | fgrep -q 'Not connected'"
 
 diff --git a/mcp/salt-formulas/armband/bootstrap_script_arm64.sls b/mcp/salt-formulas/armband/bootstrap_script_arm64.sls
 new file mode 100644
