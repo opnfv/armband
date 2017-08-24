@@ -1,0 +1,70 @@
+From: Charalampos Kominos <charalampos.kominos@enea.com>
+Date: Thu, 24 Aug 2017 20:58:51 +0200
+Subject: [PATCH] AArch64: Update armband state for baremetal support
+
+Configuration for baremetal on arm machines
+
+Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
+Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
+---
+ mcp/config/states/openstack_ha     |  1 +
+ mcp/salt-formulas/armband/nova.sls | 20 ++++++++------------
+ 2 files changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
+index 2597e82..4fc184f 100755
+--- a/mcp/config/states/openstack_ha
++++ b/mcp/config/states/openstack_ha
+@@ -41,6 +41,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
+ salt -I 'neutron:gateway' state.sls neutron
+
+ salt -I 'nova:compute' state.sls nova
++salt -I 'nova:compute' state.sls armband
+
+ salt -I 'horizon:server' state.sls horizon
+ salt -I 'nginx:server' state.sls nginx
+diff --git a/mcp/salt-formulas/armband/nova.sls b/mcp/salt-formulas/armband/nova.sls
+index ade8c7a..674f371 100644
+--- a/mcp/salt-formulas/armband/nova.sls
++++ b/mcp/salt-formulas/armband/nova.sls
+@@ -2,32 +2,28 @@
+ nova_virt_type:
+   file.replace:
+     - name: "/etc/nova/nova.conf"
+-    - pattern: ^virt_type =.*$
++    - pattern: '^virt_type\s*=.*$'
+     - repl: "virt_type = qemu"
+ {% endif %}
+-
+ nova_pointer_model:
+   file.replace:
+     - name: "/etc/nova/nova.conf"
+-    - pattern: ^#pointer_model=.*$
+-    - repl: "pointer_model=ps2mouse"
+-
++    - pattern: '^#pointer_model\s*=.*$'
++    - repl: "pointer_model = ps2mouse"
+ nova_cpu_mode:
+   file.replace:
+     - name: "/etc/nova/nova.conf"
+-    - pattern: "^cpu_mode = host-passthrough"
+-    - repl: "cpu_mode=custom"
+-
++    - pattern:  '^cpu_mode\s*=\s*host-passthrough'
++    - repl: "cpu_mode = custom"
+ nova_cpu_model:
+   file.replace:
+     - name: "/etc/nova/nova.conf"
+-    - pattern: ^#cpu_model=.*$
++    - pattern: '^#cpu_model\s*=.*$'
+     {% if grains['virtual'] == 'kvm' %}
+-    - repl: "cpu_model=cortex-a57"
++    - repl: "cpu_model = cortex-a57"
+     {% else %}
+-    - repl: "cpu_model=host"
++    - repl: "cpu_model = host"
+     {% endif %}
+-
+ restart_nova-compute:
+   cmd:
+     - run
