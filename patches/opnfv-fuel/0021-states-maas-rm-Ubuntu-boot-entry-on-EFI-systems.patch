@@ -1,0 +1,41 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 24 Aug 2017 04:09:59 +0200
+Subject: [PATCH] states/maas: rm Ubuntu boot entry on EFI systems
+
+On EFI-enabled systems, grub-install from grub-efi-* package
+installs a boot entry named "ubuntu".
+
+MaaS relies on IPMI to set boot order to PXE first; however
+on systems with buggy firmware or without full IPMI support,
+that fails, leading to booting Ubuntu from hard disk instead.
+
+Work around this by clearing any previous Ubuntu boot entry
+from board flash.
+
+NOTE: This only runs against nodes that are online from a
+previous deploy, and already automatically registered with
+the new Salt master node.
+
+Closes: ARMBAND-47
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/states/maas | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/mcp/config/states/maas b/mcp/config/states/maas
+index 14f32ee..764858b 100755
+--- a/mcp/config/states/maas
++++ b/mcp/config/states/maas
+@@ -44,6 +44,11 @@ function maas_fixup() {
+   return 0
+ }
+
++# UEFI: Clean up Ubuntu boot entry if kvm node online from previous deploy
++salt -C 'kvm*' cmd.run "(which efibootmgr > /dev/null 2>&1 && \
++  efibootmgr | grep -oP '(?<=Boot)[0-9]+(?=.*ubuntu)' | \
++  xargs -I{} efibootmgr --delete-bootnum --bootnum {}) || true"
++
+ # MaaS rack/region controller, node commissioning
+ salt -C 'mas01*' cmd.run "add-apt-repository ppa:maas/stable"
+
