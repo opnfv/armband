@@ -94,6 +94,30 @@
     },
     {
       "key": {
+        "uuid": "da33351e_997494fe",
+        "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
+        "patchSetId": 10
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-08-24T08:40:53Z",
+      "side": 1,
+      "message": "Why is this a typo ?I dont think it plays any role",
+      "parentUuid": "da33351e_c3f10bcf",
+      "range": {
+        "startLine": 22,
+        "startChar": 5,
+        "endLine": 22,
+        "endChar": 8
+      },
+      "revId": "95649ec401d6c5b06c39d5f1d74bd3a413d1d60f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_63e47f0d",
         "filename": "patches/opnfv-fuel/0019-adding-opnfv-user.patch",
         "patchSetId": 10
