@@ -25,7 +25,7 @@ index b841e88..17fbbfc 100644
      ram: 4096
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-index 5862ddb..ab14c58 100644
+index 5862ddb..2374dee 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 @@ -51,7 +51,7 @@ parameters:
