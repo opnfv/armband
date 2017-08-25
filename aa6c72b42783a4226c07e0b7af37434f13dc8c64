@@ -34,6 +34,24 @@
       "revId": "aa6c72b42783a4226c07e0b7af37434f13dc8c64",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_e8d6a3c2",
+        "filename": "patches/opnfv-fuel/0021-states-maas-rm-Ubuntu-boot-entry-on-EFI-systems.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-08-25T11:44:19Z",
+      "side": 1,
+      "message": "There is more. I believe that jenkins will have the rsa key from the new deployment while you will need the one from the previous one. \ni.e. you might not be able to login to delete the boot entry.",
+      "parentUuid": "da33351e_1f16a3f1",
+      "revId": "aa6c72b42783a4226c07e0b7af37434f13dc8c64",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
