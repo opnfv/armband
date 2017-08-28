@@ -43,8 +43,6 @@ diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
 index dbc72db..b064772 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -7,3 +7,4 @@
- /usr/share/salt-formulas/env: 0007-linux.network.interface-noifupdown-support.patch
- /usr/share/salt-formulas/env: 0008-Handle-file_recv-option.patch
+@@ -7,1 +7,2 @@
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 +/usr/share/salt-formulas/env: 0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
