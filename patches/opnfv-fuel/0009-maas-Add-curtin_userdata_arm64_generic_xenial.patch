@@ -94,11 +94,11 @@ index 0000000..b969e07
 ++{{endif}}
 ++{% endraw %}
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 1a651cf..c66ecb0 100644
+index 419ff26..dbc72db 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -5,3 +5,4 @@
- /usr/share/salt-formulas/env: 0005-maas-module-Obtain-fabric-ID-from-CIDR.patch
+@@ -6,3 +6,4 @@
  /usr/share/salt-formulas/env: 0006-maas-module-Add-VLAN-DHCP-enable-support.patch
  /usr/share/salt-formulas/env: 0007-linux.network.interface-noifupdown-support.patch
+ /usr/share/salt-formulas/env: 0008-Handle-file_recv-option.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch

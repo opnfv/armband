@@ -142,11 +142,11 @@ index 0000000..a9fe11b
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index a42f513..67b9c82 100644
+index b064772..2eed8f3 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -7,3 +7,5 @@
- /usr/share/salt-formulas/env: 0007-linux.network.interface-noifupdown-support.patch
+@@ -8,3 +8,5 @@
+ /usr/share/salt-formulas/env: 0008-Handle-file_recv-option.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
  /usr/share/salt-formulas/env: 0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
@@ -202,12 +202,12 @@ index 7c23b68..395ac02 100644
            net_profile: default
        cluster:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index 8677a79..914908d 100644
+index 31e87e4..a7b79d4 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 @@ -34,26 +34,41 @@ parameters:
          openstack.control:
-           cpu: 6
+           cpu: 4
            ram: 8192
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
@@ -215,7 +215,7 @@ index 8677a79..914908d 100644
            disk_profile: small
            net_profile: default
          openstack.database:
-           cpu: 6
+           cpu: 4
            ram: 8192
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
@@ -223,7 +223,7 @@ index 8677a79..914908d 100644
            disk_profile: large
            net_profile: default
          openstack.message_queue:
-           cpu: 6
+           cpu: 4
            ram: 8192
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
@@ -231,7 +231,7 @@ index 8677a79..914908d 100644
            disk_profile: small
            net_profile: default
          openstack.telemetry:
-           cpu: 4
+           cpu: 2
            ram: 4096
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
@@ -239,7 +239,7 @@ index 8677a79..914908d 100644
            disk_profile: xxlarge
            net_profile: default
          openstack.proxy:
-           cpu: 4
+           cpu: 2
            ram: 4096
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt

@@ -28,7 +28,7 @@ index f51ba5f..5582727 100755
 
  # Variables below are disabled for now, to be re-introduced or removed later
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 1e14e5f..db0241b 100755
+index 2dd62f9..3731c31 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -52,7 +52,7 @@ salt -C 'mas01*' state.apply linux.network.interface
@@ -41,7 +41,7 @@ index 1e14e5f..db0241b 100755
  wait_for 10 "salt -C 'mas01*' state.apply maas.region"
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-index 2374dee..fb5b856 100644
+index 066a6e2..eae7586 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 @@ -16,19 +16,19 @@ parameters:
@@ -170,7 +170,7 @@ index e49a205..ad99447 100644
      opendaylight_server_node01_hostname: odl01
      opendaylight_router: odl-router_v2
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-index 93e2de0..1d75356 100644
+index acf2b43..57fb461 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
 @@ -16,19 +16,19 @@ parameters:

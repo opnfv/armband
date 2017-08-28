@@ -24,7 +24,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 697f83c..383063d 100755
+index 9e0093b..4f27984 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -44,6 +44,11 @@ function maas_fixup() {
