@@ -7,17 +7,17 @@ salt custom py module seedng.py should use custom repo arg
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../0105-seedng-module-Add-AArch64-repo.patch      | 25 ++++++++++++++++++++++
- mcp/patches/patches.list                           |  1 +
- 2 files changed, 26 insertions(+)
+ .../0105-seedng-module-Add-AArch64-repo.patch       | 21 +++++++++++++++++++++
+ mcp/patches/patches.list                            |  1 +
+ 2 files changed, 22 insertions(+)
  create mode 100644 mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
 
 diff --git a/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch b/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
 new file mode 100644
-index 0000000..e191421
+index 0000000..1cb80bc
 --- /dev/null
 +++ b/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,21 @@
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Mon, 21 Aug 2017 02:03:01 +0200
 +Subject: [PATCH] seedng: module: Add AArch64 repo
@@ -31,18 +31,14 @@ index 0000000..e191421
 +diff --git a/_modules/seedng.py b/_modules/seedng.py
 +--- a/_modules/seedng.py
 ++++ b/_modules/seedng.py
-+@@ -256,8 +256,10 @@
-+     boot_, tmppath = (prep_bootstrap(mpt)
++@@ -257,6 +257,7 @@
 +              or salt.syspaths.BOOTSTRAP)
 +     # Exec the chroot command
-++    cmdR = '-R linux.enea.com/saltstack' if os.uname()[-1] == 'aarch64' else ''
++     arg = 'stable {0}'.format('.'.join(salt.version.__version__.split('.')[:2]))
+++    arg +=' -R linux.enea.com/saltstack' if os.uname()[-1] == 'aarch64' else ''
 +     cmd = 'if type salt-minion; then exit 0; '
-+-    cmd += 'else sh {0} -c /tmp; fi'.format(os.path.join(tmppath, 'bootstrap-salt.sh'))
-++    cmd += 'else sh {0} {1} -c /tmp; fi'.format(
-++        os.path.join(tmppath, 'bootstrap-salt.sh'), cmdR)
-+     return not __salt__['cmd.run_chroot'](mpt, cmd, python_shell=True)['retcode']
-+
-+
++     cmd += 'else sh {0} {1} -c /tmp; fi'.format(
++         os.path.join(tmppath, 'bootstrap-salt.sh'), arg)
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
 index 2eed8f3..1d86e35 100644
 --- a/mcp/patches/patches.list

@@ -1,0 +1,55 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 29 Aug 2017 00:50:56 +0200
+Subject: [PATCH] patches: seedng: module: Sync salt version
+
+JIRA: FUEL-282
+
+Change-Id: I6c86ce0b1113ca674b1756e7997559eee90a4e5f
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../0009-seedng-module-Sync-salt-version.patch     | 26 ++++++++++++++++++++++
+ mcp/patches/patches.list                           |  1 +
+ 2 files changed, 27 insertions(+)
+ create mode 100644 mcp/patches/0009-seedng-module-Sync-salt-version.patch
+
+diff --git a/mcp/patches/0009-seedng-module-Sync-salt-version.patch b/mcp/patches/0009-seedng-module-Sync-salt-version.patch
+new file mode 100644
+index 0000000..cfab883
+--- /dev/null
++++ b/mcp/patches/0009-seedng-module-Sync-salt-version.patch
+@@ -0,0 +1,26 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Mon, 21 Aug 2017 02:03:01 +0200
++Subject: [PATCH] seedng: module: Sync salt version
++
++salt custom py module seedng.py should use the same Salt version
++when preinstalling minion for salt-controlled VMs via bootstrap
++script.
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++
++diff --git a/_modules/seedng.py b/_modules/seedng.py
++--- a/_modules/seedng.py
+++++ b/_modules/seedng.py
++@@ -256,8 +256,10 @@
++     boot_, tmppath = (prep_bootstrap(mpt)
++              or salt.syspaths.BOOTSTRAP)
++     # Exec the chroot command
+++    arg = 'stable {0}'.format('.'.join(salt.version.__version__.split('.')[:2]))
++     cmd = 'if type salt-minion; then exit 0; '
++-    cmd += 'else sh {0} -c /tmp; fi'.format(os.path.join(tmppath, 'bootstrap-salt.sh'))
+++    cmd += 'else sh {0} {1} -c /tmp; fi'.format(
+++        os.path.join(tmppath, 'bootstrap-salt.sh'), arg)
++     return not __salt__['cmd.run_chroot'](mpt, cmd, python_shell=True)['retcode']
++
++
+diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
+index 419ff26..f65daab 100644
+--- a/mcp/patches/patches.list
++++ b/mcp/patches/patches.list
+@@ -6,3 +6,4 @@
+ /usr/share/salt-formulas/env: 0006-maas-module-Add-VLAN-DHCP-enable-support.patch
+ /usr/share/salt-formulas/env: 0007-linux.network.interface-noifupdown-support.patch
+ /usr/share/salt-formulas/env: 0008-Handle-file_recv-option.patch
++/usr/share/salt-formulas/env: 0009-seedng-module-Sync-salt-version.patch
