@@ -8,7 +8,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index de7b9ec..33ec8b0 100644
+index bf8eb12..5389ced 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -9,6 +9,11 @@ generate_ssh_key() {

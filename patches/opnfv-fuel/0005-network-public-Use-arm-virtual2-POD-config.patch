@@ -27,14 +27,13 @@ range for the public network to not include that address.
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  mcp/config/states/networks                                          | 6 +++---
+ .../classes/cluster/virtual-mcp-ocata-common/openstack_init.yml     | 2 +-
+ .../classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml   | 6 +++---
  mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml  | 6 +++---
- .../classes/cluster/virtual-mcp-ocata-odl/openstack/init.yml        | 2 +-
  .../classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml     | 6 +++---
- .../classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/init.yml   | 2 +-
  mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml  | 6 +++---
- .../classes/cluster/virtual-mcp-ocata-ovs/openstack/init.yml        | 2 +-
  mcp/scripts/net_public.xml                                          | 2 +-
- 8 files changed, 16 insertions(+), 16 deletions(-)
+ 7 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/mcp/config/states/networks b/mcp/config/states/networks
 index 505153a..bd6e923 100755
@@ -58,6 +57,43 @@ index 505153a..bd6e923 100755
 +  openstack subnet create --gateway ${PUBLIC_NET%.*}.254 --no-dhcp \
 +    --allocation-pool start=${PUBLIC_NET%.*}.130,end=${PUBLIC_NET%.*}.200 \
      --network floating_net --subnet-range ${PUBLIC_NET} floating_subnet"
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_init.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_init.yml
+index a14a711..055d98c 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_init.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_init.yml
+@@ -6,7 +6,7 @@ parameters:
+     openstack_region: RegionOne
+     admin_email: root@localhost
+     cluster_public_protocol: http
+-    cluster_public_host: 10.16.0.101
++    cluster_public_host: 10.0.9.101
+     neutron_public_protocol: http
+     neutron_control_dvr: False
+     neutron_l3_ha: False
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml
+index 2f8e94a..bc95642 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml
+@@ -51,16 +51,16 @@ parameters:
+           params:
+             single_address: 172.16.10.105
+             tenant_address: 10.1.0.105
+-            external_address: 10.16.0.105
++            external_address: 10.0.9.105
+         openstack_compute_node02:
+           params:
+             single_address: 172.16.10.106
+             tenant_address: 10.1.0.106
+-            external_address: 10.16.0.106
++            external_address: 10.0.9.106
+         openstack_gateway_node01:
+           params:
+             tenant_address: 10.1.0.110
+-            external_address: 10.16.0.110
++            external_address: 10.0.9.110
+         opendaylight_control_node01:
+           classes:
+           - cluster.${_param:cluster_name}.opendaylight.control
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
 index 57c6cec..f519e22 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
@@ -82,19 +118,6 @@ index 57c6cec..f519e22 100644
          opendaylight_control_node01:
            classes:
            - cluster.${_param:cluster_name}.opendaylight.control
-diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/init.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/init.yml
-index 66e5a97..98625ff 100644
---- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/init.yml
-+++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/openstack/init.yml
-@@ -6,7 +6,7 @@ parameters:
-     openstack_region: RegionOne
-     admin_email: root@localhost
-     cluster_public_protocol: http
--    cluster_public_host: 10.16.0.101
-+    cluster_public_host: 10.0.9.101
-     neutron_public_protocol: http
-     neutron_control_dvr: False
-     neutron_tenant_network_types: "flat,vxlan"
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml
 index aec6cde..b69258f 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml
@@ -120,19 +143,6 @@ index aec6cde..b69258f 100644
              tenant_address: 10.1.0.110
 -            external_address: 10.16.0.110
 +            external_address: 10.0.9.110
-diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/init.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/init.yml
-index dfc0b51..b106e86 100644
---- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/init.yml
-+++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs-dpdk/openstack/init.yml
-@@ -6,7 +6,7 @@ parameters:
-     openstack_region: RegionOne
-     admin_email: root@localhost
-     cluster_public_protocol: http
--    cluster_public_host: 10.16.0.101
-+    cluster_public_host: 10.0.9.101
-     neutron_public_protocol: http
-     neutron_control_dvr: False
-     neutron_tenant_network_types: "flat,vlan"
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml
 index 8cb0992..c8f8477 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml
@@ -154,19 +164,6 @@ index 8cb0992..c8f8477 100644
              tenant_address: 10.1.0.110
 -            external_address: 10.16.0.110
 +            external_address: 10.0.9.110
-diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/init.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/init.yml
-index 7079fd1..fccde1f 100644
---- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/init.yml
-+++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-ovs/openstack/init.yml
-@@ -6,7 +6,7 @@ parameters:
-     openstack_region: RegionOne
-     admin_email: root@localhost
-     cluster_public_protocol: http
--    cluster_public_host: 10.16.0.101
-+    cluster_public_host: 10.0.9.101
-     neutron_public_protocol: http
-     neutron_control_dvr: False
-     neutron_tenant_network_types: "flat,vxlan"
 diff --git a/mcp/scripts/net_public.xml b/mcp/scripts/net_public.xml
 index 61650d5..f455480 100644
 --- a/mcp/scripts/net_public.xml

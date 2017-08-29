@@ -49,11 +49,11 @@ index 01f8ee0..2dd62f9 100755
 
  salt -C '* and not cfg01* and not mas01*' state.apply salt
 diff --git a/mcp/config/states/openstack b/mcp/config/states/openstack
-index 5ded58c..270bf35 100755
+index eaab135..050b648 100755
 --- a/mcp/config/states/openstack
 +++ b/mcp/config/states/openstack
-@@ -26,3 +26,5 @@ salt -I 'neutron:gateway' state.sls neutron
- salt -I 'nova:compute' state.sls nova
+@@ -31,3 +31,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
+ salt -I 'ceilometer:agent' state.sls ceilometer
 
  salt -I 'horizon:server' state.sls horizon
 +
