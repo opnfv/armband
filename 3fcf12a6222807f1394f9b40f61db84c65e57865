@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "da33351e_4d007301",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-29T18:22:10Z",
+      "side": 1,
+      "message": "I agree, but we can achieve that by moving this one call a few lines below, after all VCP VMs are registered with salt master.",
+      "parentUuid": "da33351e_aa2005b1",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 38
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_4a4b3987",
         "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
         "patchSetId": 16
@@ -119,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "da33351e_2d036f0e",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-29T18:22:10Z",
+      "side": 1,
+      "message": "This is a good time to extend the common config, like Michael did with [1].\n[1] https://gerrit.opnfv.org/gerrit/#/c/39983/",
+      "parentUuid": "da33351e_0a301100",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 60
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_2a4eb596",
         "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
         "patchSetId": 16
@@ -154,6 +202,30 @@
       "side": 1,
       "message": "duplicating what ? The user that michael added is not the same user (not configurable).\nAs for 2) that is only partially true. A lot of the times we get issues because the network is lost due to linux.network apply (or similar). SO that means that there is a window where we can add this user before changing anything else",
       "parentUuid": "da33351e_2a4eb596",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 11
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_8d0a7b1f",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-29T18:22:10Z",
+      "side": 1,
+      "message": "I was wrong, this is leveraging linux formula [1], not duplicating it, sorry. I actually was thinking to drop this state in favor of moving this block to mcp-ocata-..-common/init.yml or something like that, but this is probably more clear in its intentions.\nAgreed on #2.\n\n[1] https://github.com/salt-formulas/salt-formula-linux/blob/master/linux/system/user.sls",
+      "parentUuid": "da33351e_aa07651c",
       "range": {
         "startLine": 62,
         "startChar": 0,
