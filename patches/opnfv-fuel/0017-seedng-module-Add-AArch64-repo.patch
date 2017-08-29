@@ -17,7 +17,7 @@ new file mode 100644
 index 0000000..1cb80bc
 --- /dev/null
 +++ b/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
-@@ -0,0 +1,21 @@
+@@ -0,0 +1,22 @@
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Mon, 21 Aug 2017 02:03:01 +0200
 +Subject: [PATCH] seedng: module: Add AArch64 repo
@@ -34,8 +34,9 @@ index 0000000..1cb80bc
 +@@ -257,6 +257,7 @@
 +              or salt.syspaths.BOOTSTRAP)
 +     # Exec the chroot command
-+     arg = 'stable {0}'.format('.'.join(salt.version.__version__.split('.')[:2]))
-++    arg +=' -R linux.enea.com/saltstack' if os.uname()[-1] == 'aarch64' else ''
++-    arg = 'stable {0}'.format('.'.join(salt.version.__version__.split('.')[:2]))
+++    arg = '-R linux.enea.com/saltstack ' if os.uname()[-1] == 'aarch64' else ''
+++    arg += 'stable {0}'.format('.'.join(salt.version.__version__.split('.')[:2]))
 +     cmd = 'if type salt-minion; then exit 0; '
 +     cmd += 'else sh {0} {1} -c /tmp; fi'.format(
 +         os.path.join(tmppath, 'bootstrap-salt.sh'), arg)
