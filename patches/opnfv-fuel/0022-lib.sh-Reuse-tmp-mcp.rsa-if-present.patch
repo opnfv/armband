@@ -1,0 +1,25 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Tue, 29 Aug 2017 02:35:37 +0200
+Subject: [PATCH] lib.sh: Reuse /tmp/mcp.rsa if present
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/scripts/lib.sh | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
+index de7b9ec..33ec8b0 100644
+--- a/mcp/scripts/lib.sh
++++ b/mcp/scripts/lib.sh
+@@ -9,6 +9,11 @@ generate_ssh_key() {
+     user=${SUDO_USER}
+   fi
+
++  if [ -f "/tmp/${SSH_KEY}" ]; then
++    cp "/tmp/${SSH_KEY}" .
++    ssh-keygen -f "${SSH_KEY}" -y > "${SSH_KEY}.pub"
++  fi
++
+   [ -f "${SSH_KEY}" ] || ssh-keygen -f "${SSH_KEY}" -N ''
+   install -o "${user}" -m 0600 "${SSH_KEY}" /tmp/
+ }
