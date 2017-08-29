@@ -129,7 +129,7 @@ fuel-patches-clean:
 # Add copyright header to patch files if not already present
 .PHONY: patches-copyright
 patches-copyright:
-	grep -e "Copyright (c)" -L ${A_PATCHES} | while read p_file; do \
+	@grep -e "Copyright (c)" -L ${A_PATCHES} | while read p_file; do \
 		ptmp=`mktemp` && \
 		cat armband-patch-copyright.template $$p_file > $$ptmp && \
 		mv $$ptmp $$p_file; \
