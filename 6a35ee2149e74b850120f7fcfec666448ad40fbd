@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_4705f478",
+        "filename": "patches/opnfv-fuel/0000-patches-seedng-module-Sync-salt-version.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-08-29T08:43:08Z",
+      "side": 1,
+      "message": "Is this patch correct ?",
+      "revId": "6a35ee2149e74b850120f7fcfec666448ad40fbd",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_2708b090",
+        "filename": "patches/opnfv-fuel/0000-patches-seedng-module-Sync-salt-version.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-08-29T08:43:08Z",
+      "side": 1,
+      "message": "perhaps not needed",
+      "revId": "6a35ee2149e74b850120f7fcfec666448ad40fbd",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
