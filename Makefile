@@ -126,4 +126,13 @@ fuel-patches-import: .submodules-patched fuel-patches-clean
 fuel-patches-clean:
 	$(MAKE) -e -C ${F_PATCH_DIR} clean
 
+# Add copyright header to patch files if not already present
+.PHONY: patches-copyright
+patches-copyright:
+	grep -e "Copyright (c)" -L ${A_PATCHES} | while read p_file; do \
+		ptmp=`mktemp` && \
+		cat armband-patch-copyright.template $$p_file > $$ptmp && \
+		mv $$ptmp $$p_file; \
+	done
+
 # TODO: Bring back clean/debug/build after Fuel@OPNFV implements them for MCP
