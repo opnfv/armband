@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_ca7749d3",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-29T17:27:58Z",
+      "side": 1,
+      "message": "unnecessary line removal",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 1
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_aa72c5e0",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-29T17:27:58Z",
+      "side": 1,
+      "message": "Applying the state here will not create the user on VCP VMs, since VCP VMs are created below this point.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 38
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_4a4b3987",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-29T17:27:58Z",
+      "side": 1,
+      "message": "this fits better in init.yml, imo; or better in baremetal-mcp-ocata-common/...",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 60
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_2a4eb596",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-08-29T17:27:58Z",
+      "side": 1,
+      "message": "I still think this might be duplicating existing code in linux formula.\nAlso, this won\u0027t work in case salt-minion from VCP nodes does not connect to the master, so debugging network issues on VCP nodes is still impossible.",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 11
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
