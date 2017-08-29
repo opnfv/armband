@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "da33351e_aa2005b1",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-08-29T18:14:51Z",
+      "side": 1,
+      "message": "I actually want ALL machines to have this user (physical as well as virtual). perhaps we can call this state multiple times !?",
+      "parentUuid": "da33351e_aa72c5e0",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 38
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_4a4b3987",
         "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
         "patchSetId": 16
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "da33351e_0a301100",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-08-29T18:14:51Z",
+      "side": 1,
+      "message": "That is true. I did not see us call or use that scenario anywhere though. that is why I did not put it there.",
+      "parentUuid": "da33351e_4a4b3987",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 60
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_2a4eb596",
         "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
         "patchSetId": 16
@@ -82,6 +130,30 @@
       "writtenOn": "2017-08-29T17:27:58Z",
       "side": 1,
       "message": "I still think this might be duplicating existing code in linux formula.\nAlso, this won\u0027t work in case salt-minion from VCP nodes does not connect to the master, so debugging network issues on VCP nodes is still impossible.",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 11
+      },
+      "revId": "3fcf12a6222807f1394f9b40f61db84c65e57865",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_aa07651c",
+        "filename": "patches/opnfv-fuel/0023-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 16
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-08-29T18:14:51Z",
+      "side": 1,
+      "message": "duplicating what ? The user that michael added is not the same user (not configurable).\nAs for 2) that is only partially true. A lot of the times we get issues because the network is lost due to linux.network apply (or similar). SO that means that there is a window where we can add this user before changing anything else",
+      "parentUuid": "da33351e_2a4eb596",
       "range": {
         "startLine": 62,
         "startChar": 0,
