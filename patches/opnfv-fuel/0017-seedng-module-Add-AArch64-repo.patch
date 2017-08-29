@@ -7,14 +7,14 @@ salt custom py module seedng.py should use custom repo arg
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../0105-seedng-module-Add-AArch64-repo.patch       | 21 +++++++++++++++++++++
- mcp/patches/patches.list                            |  1 +
- 2 files changed, 22 insertions(+)
+ .../0105-seedng-module-Add-AArch64-repo.patch      | 22 ++++++++++++++++++++++
+ mcp/patches/patches.list                           |  1 +
+ 2 files changed, 23 insertions(+)
  create mode 100644 mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
 
 diff --git a/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch b/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
 new file mode 100644
-index 0000000..1cb80bc
+index 0000000..67c1ea1
 --- /dev/null
 +++ b/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
 @@ -0,0 +1,22 @@
@@ -41,10 +41,10 @@ index 0000000..1cb80bc
 +     cmd += 'else sh {0} {1} -c /tmp; fi'.format(
 +         os.path.join(tmppath, 'bootstrap-salt.sh'), arg)
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 2eed8f3..1d86e35 100644
+index f6504ab..1faa164 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -10,3 +10,4 @@
+@@ -11,3 +11,4 @@
  /usr/share/salt-formulas/env: 0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
  /usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
  /usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
