@@ -37,7 +37,7 @@ index f51ba5f..5582727 100755
 
  # Variables below are disabled for now, to be re-introduced or removed later
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 2dd62f9..3731c31 100755
+index 6c2ae04..787d713 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -52,7 +52,7 @@ salt -C 'mas01*' state.apply linux.network.interface
@@ -50,16 +50,16 @@ index 2dd62f9..3731c31 100755
  wait_for 10 "salt -C 'mas01*' state.apply maas.region"
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 32b581f..0d33c81 100755
+index 7ba9d82..af3e298 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -46,5 +46,5 @@ salt -I 'nova:compute' state.sls armband
  salt -I 'horizon:server' state.sls horizon
  salt -I 'nginx:server' state.sls nginx
 
--salt -C 'I@nginx:server and *01*' cp.push /etc/ssl/certs/10.167.4.80-with-chain.crt upload_path='/os_cacert'
-+salt -C 'I@nginx:server and *01*' cp.push /etc/ssl/certs/172.16.10.80-with-chain.crt upload_path='/os_cacert'
- cd /etc/ssl/certs && ln -s /var/cache/salt/master/minions/prx01.*/files/os_cacert
+-salt -C 'I@nginx:server and *01*' cp.push /etc/ssl/certs/10.167.4.80-with-chain.crt upload_path='certs/os_cacert'
++salt -C 'I@nginx:server and *01*' cp.push /etc/ssl/certs/172.16.10.80-with-chain.crt upload_path='certs/os_cacert'
+ cd /etc/ssl/certs && ln -s /var/cache/salt/master/minions/prx01.*/files/certs/os_cacert
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 index c5a999b..79a8e92 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml

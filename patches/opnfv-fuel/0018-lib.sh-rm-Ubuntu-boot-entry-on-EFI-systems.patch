@@ -31,10 +31,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 10 insertions(+)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 1b439a9..bf8eb12 100644
+index 3f74058..5389ced 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -20,6 +20,15 @@ get_base_image() {
+@@ -25,6 +25,15 @@ get_base_image() {
    wget -P /tmp -N "${base_image}"
  }
 
@@ -50,7 +50,7 @@ index 1b439a9..bf8eb12 100644
  cleanup_vms() {
    # clean up existing nodes
    for node in $(virsh list --name | grep -P '\w{3}\d{2}'); do
-@@ -34,6 +43,7 @@ prepare_vms() {
+@@ -39,6 +48,7 @@ prepare_vms() {
    local -n vnodes=$1
    local base_image=$2
 
