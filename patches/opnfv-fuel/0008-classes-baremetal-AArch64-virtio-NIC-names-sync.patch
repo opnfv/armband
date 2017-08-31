@@ -67,7 +67,7 @@ index a7b08f8..b9bd3e0 100644
      master:
        accept_policy: open_mode
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index 7a15156..7c23b68 100644
+index f73d48e..32fd829 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 @@ -25,7 +25,8 @@ parameters:
@@ -369,7 +369,7 @@ index a75b41d..3979fd1 100644
      master:
        accept_policy: open_mode
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index 44301a0..31e87e4 100644
+index d919fe7..5025cd4 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 @@ -25,7 +25,8 @@ parameters:

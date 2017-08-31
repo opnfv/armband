@@ -31,10 +31,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/scripts/salt.sh b/mcp/scripts/salt.sh
-index 9f88f1c..f12194b 100755
+index b291b0f..44db0a1 100755
 --- a/mcp/scripts/salt.sh
 +++ b/mcp/scripts/salt.sh
-@@ -47,6 +47,12 @@ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s << SALT_INSTALL_END
+@@ -45,6 +45,12 @@ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s << SALT_INSTALL_END
    cd ${OPNFV_FUEL_DIR}/mcp/patches && ./patch.sh patches.list reclass
 
    cd /srv/salt/scripts

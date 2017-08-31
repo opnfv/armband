@@ -160,13 +160,13 @@ index 46a9556..f6504ab 100644
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index 7c23b68..395ac02 100644
+index 32fd829..78babbb 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 @@ -34,16 +34,25 @@ parameters:
          openstack.control:
            cpu: 4
-           ram: 8192
+           ram: 10240
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough
@@ -182,7 +182,7 @@ index 7c23b68..395ac02 100644
            net_profile: default
          openstack.message_queue:
            cpu: 4
-           ram: 8192
+           ram: 2048
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough
@@ -192,7 +192,7 @@ index 7c23b68..395ac02 100644
 @@ -54,6 +63,9 @@ parameters:
          openstack.proxy:
            cpu: 2
-           ram: 4096
+           ram: 2048
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough
@@ -210,13 +210,13 @@ index 7c23b68..395ac02 100644
            net_profile: default
        cluster:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index 31e87e4..a7b79d4 100644
+index 5025cd4..f4c6291 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 @@ -34,26 +34,41 @@ parameters:
          openstack.control:
            cpu: 4
-           ram: 8192
+           ram: 10240
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough
@@ -232,7 +232,7 @@ index 31e87e4..a7b79d4 100644
            net_profile: default
          openstack.message_queue:
            cpu: 4
-           ram: 8192
+           ram: 2048
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough
@@ -248,7 +248,7 @@ index 31e87e4..a7b79d4 100644
            net_profile: default
          openstack.proxy:
            cpu: 2
-           ram: 4096
+           ram: 2048
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough
