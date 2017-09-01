@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "da33351e_092bf694",
+        "filename": "patches/opnfv-fuel/0021-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 18
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-09-01T11:25:04Z",
+      "side": 1,
+      "message": "I actually thought of this. I think that doing it in 2 places is better for debugging reasons. We want this to happen before anythng else (and certainly before linux.network). \nThat is why I broke it in 2 places. One for Maas Machines and one for vcp machines.",
+      "parentUuid": "da33351e_098f76cd",
+      "range": {
+        "startLine": 42,
+        "startChar": 5,
+        "endLine": 42,
+        "endChar": 46
+      },
+      "revId": "cec301af4f1d2a0512bb483cd9d665d70ec14251",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_49c05ee0",
         "filename": "patches/opnfv-fuel/0021-Add-opnfv-user-to-the-deployment.patch",
         "patchSetId": 18
@@ -36,6 +60,30 @@
       "writtenOn": "2017-09-01T10:47:42Z",
       "side": 1,
       "message": "nice!",
+      "range": {
+        "startLine": 50,
+        "startChar": 6,
+        "endLine": 50,
+        "endChar": 70
+      },
+      "revId": "cec301af4f1d2a0512bb483cd9d665d70ec14251",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_6919e287",
+        "filename": "patches/opnfv-fuel/0021-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 18
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-09-01T11:25:04Z",
+      "side": 1,
+      "message": "This is interesting. I think we can give the new file a try and if it works as expected then move more config there from the scenarios like michael did for virtual envs. This should happen in fuel first though I think",
+      "parentUuid": "da33351e_49c05ee0",
       "range": {
         "startLine": 50,
         "startChar": 6,
