@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_098f76cd",
+        "filename": "patches/opnfv-fuel/0021-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 18
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-01T10:47:42Z",
+      "side": 1,
+      "message": "We could handle all nodes at once after all nodes are registered with the master instead of doing it in 2 stages.",
+      "range": {
+        "startLine": 42,
+        "startChar": 5,
+        "endLine": 42,
+        "endChar": 46
+      },
+      "revId": "cec301af4f1d2a0512bb483cd9d665d70ec14251",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_49c05ee0",
+        "filename": "patches/opnfv-fuel/0021-Add-opnfv-user-to-the-deployment.patch",
+        "patchSetId": 18
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-01T10:47:42Z",
+      "side": 1,
+      "message": "nice!",
+      "range": {
+        "startLine": 50,
+        "startChar": 6,
+        "endLine": 50,
+        "endChar": 70
+      },
+      "revId": "cec301af4f1d2a0512bb483cd9d665d70ec14251",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
