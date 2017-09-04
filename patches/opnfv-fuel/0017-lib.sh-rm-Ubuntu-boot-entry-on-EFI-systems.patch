@@ -31,7 +31,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 10 insertions(+)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 3f74058..5389ced 100644
+index 67c960a..ce217e9 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -25,6 +25,15 @@ get_base_image() {
@@ -57,4 +57,4 @@ index 3f74058..5389ced 100644
 +  cleanup_uefi
    cleanup_vms
    get_base_image "${base_image}"
-   envsubst < user-data.template > user-data.sh
+   envsubst '${SALT_MASTER},${CLUSTER_DOMAIN}' < \
