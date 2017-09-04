@@ -23,12 +23,12 @@ Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
  4 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-index cd1456a..c53f77f 100644
+index 3dd94e6..cfdba30 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-@@ -3,8 +3,8 @@ classes:
- - system.linux.system.repo.mcp.extra
+@@ -4,8 +4,8 @@ classes:
  - system.linux.system.repo.saltstack.xenial
+ - system.linux.storage.loopback
  - system.nova.compute.cluster
 -- system.nova.compute.nfv.hugepages
 -- system.nova.compute.nfv.cpu_pinning
@@ -36,7 +36,7 @@ index cd1456a..c53f77f 100644
 +#- system.nova.compute.nfv.cpu_pinning
  - system.neutron.gateway.opendaylight.single
  - system.neutron.gateway.cluster
- - system.ceilometer.agent.cluster
+ - system.cinder.volume.single
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
 index ad99447..ea95680 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
@@ -59,20 +59,20 @@ index ad99447..ea95680 100644
      glance_service_host: ${_param:openstack_control_address}
      keystone_version: ${_param:openstack_version}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-index 88150b0..8bcb469 100644
+index cea8c81..3c48cff 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-@@ -3,8 +3,8 @@ classes:
- - system.linux.system.repo.mcp.extra
+@@ -4,8 +4,8 @@ classes:
  - system.linux.system.repo.saltstack.xenial
+ - system.linux.storage.loopback
  - system.nova.compute.cluster
 -- system.nova.compute.nfv.hugepages
 -- system.nova.compute.nfv.cpu_pinning
 +#- system.nova.compute.nfv.hugepages
 +#- system.nova.compute.nfv.cpu_pinning
  - system.neutron.gateway.cluster
- - system.ceilometer.agent.cluster
- - cluster.baremetal-mcp-ocata-ovs-ha.infra
+ - system.cinder.volume.single
+ - system.cinder.volume.backend.lvm
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
 index 90e0cf3..c1452b4 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml

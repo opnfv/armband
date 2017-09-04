@@ -157,10 +157,10 @@ index 0a01af7..367343a 100644
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-index 6f0c52c..cd1456a 100644
+index 6d2c7f3..3dd94e6 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-@@ -20,10 +20,9 @@ parameters:
+@@ -23,10 +23,9 @@ parameters:
      cluster_node03_hostname: ctl03
      cluster_node03_address: ${_param:openstack_control_node03_address}
      nova_vncproxy_url: https://${_param:cluster_public_host}:6080
@@ -173,7 +173,7 @@ index 6f0c52c..cd1456a 100644
      interface_mtu: 1500
      keepalived_vip_interface: br-ctl
      keepalived_vip_virtual_router_id: 69
-@@ -57,12 +56,6 @@ parameters:
+@@ -61,12 +60,6 @@ parameters:
            type: eth
            proto: manual
            name: ${_param:tenant_nic}
@@ -186,7 +186,7 @@ index 6f0c52c..cd1456a 100644
          br-mesh:
            enabled: true
            type: bridge
-@@ -70,19 +63,19 @@ parameters:
+@@ -74,19 +67,19 @@ parameters:
            netmask: 255.255.255.0
            mtu: 1500
            use_interfaces:
@@ -212,7 +212,7 @@ index 6f0c52c..cd1456a 100644
            use_interfaces:
            - ${_param:tenant_nic}
          br-ctl:
-@@ -92,7 +85,7 @@ parameters:
+@@ -96,7 +89,7 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -221,7 +221,7 @@ index 6f0c52c..cd1456a 100644
          br-floating:
            enabled: true
            type: ovs_bridge
-@@ -109,7 +102,6 @@ parameters:
+@@ -113,7 +106,6 @@ parameters:
            address: ${_param:external_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -231,7 +231,7 @@ index 6f0c52c..cd1456a 100644
            - float-to-ex
 -
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/control.yml
-index e8666d6..149d29d 100644
+index b46e23d..040ea2c 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/control.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/control.yml
 @@ -23,7 +23,7 @@ classes:
@@ -446,10 +446,10 @@ index d193469..73215ee 100644
      # MaaS has issues using MTU > 1500 for PXE interface
      pxe_interface_mtu: 1500
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-index 070ab78..88150b0 100644
+index e11e35e..cea8c81 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-@@ -19,9 +19,8 @@ parameters:
+@@ -22,9 +22,8 @@ parameters:
      cluster_node03_hostname: ctl03
      cluster_node03_address: ${_param:openstack_control_node03_address}
      nova_vncproxy_url: https://${_param:cluster_public_host}:6080
@@ -461,7 +461,7 @@ index 070ab78..88150b0 100644
      linux_system_codename: xenial
      interface_mtu: 1500
      keepalived_vip_interface: br-ctl
-@@ -40,12 +39,6 @@ parameters:
+@@ -44,12 +43,6 @@ parameters:
            type: eth
            proto: manual
            name: ${_param:tenant_nic}
@@ -474,7 +474,7 @@ index 070ab78..88150b0 100644
          br-mesh:
            enabled: true
            type: bridge
-@@ -53,19 +46,19 @@ parameters:
+@@ -57,19 +50,19 @@ parameters:
            netmask: 255.255.255.0
            mtu: 1500
            use_interfaces:
@@ -500,7 +500,7 @@ index 070ab78..88150b0 100644
            use_interfaces:
            - ${_param:tenant_nic}
          br-ctl:
-@@ -75,7 +68,7 @@ parameters:
+@@ -79,7 +72,7 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -509,7 +509,7 @@ index 070ab78..88150b0 100644
          br-floating:
            enabled: true
            type: ovs_bridge
-@@ -92,6 +85,6 @@ parameters:
+@@ -96,6 +89,6 @@ parameters:
            address: ${_param:external_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -518,7 +518,7 @@ index 070ab78..88150b0 100644
            use_ovs_ports:
            - float-to-ex
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
-index a5913dd..638abba 100644
+index 1711ab0..0571320 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
 @@ -23,7 +23,7 @@ classes:
