@@ -31,11 +31,11 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 10 insertions(+)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 67c960a..ce217e9 100644
+index 1812663..884e852 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -25,6 +25,15 @@ get_base_image() {
-   wget -P /tmp -N "${base_image}"
+@@ -28,6 +28,15 @@ get_base_image() {
+   wget -P "${image_dir}" -N "${base_image}"
  }
 
 +cleanup_uefi() {
@@ -50,11 +50,11 @@ index 67c960a..ce217e9 100644
  cleanup_vms() {
    # clean up existing nodes
    for node in $(virsh list --name | grep -P '\w{3}\d{2}'); do
-@@ -39,6 +48,7 @@ prepare_vms() {
-   local -n vnodes=$1
+@@ -43,6 +52,7 @@ prepare_vms() {
    local base_image=$2
+   local image_dir=$3
 
 +  cleanup_uefi
    cleanup_vms
-   get_base_image "${base_image}"
+   get_base_image "${base_image}" "${image_dir}"
    envsubst '${SALT_MASTER},${CLUSTER_DOMAIN}' < \

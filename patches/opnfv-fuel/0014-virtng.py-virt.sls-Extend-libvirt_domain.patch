@@ -160,7 +160,7 @@ index 46a9556..f6504ab 100644
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index 32fd829..78babbb 100644
+index 766a495..80c7156 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 @@ -34,16 +34,25 @@ parameters:
@@ -188,7 +188,7 @@ index 32fd829..78babbb 100644
 +          cpu_model: host-passthrough
            disk_profile: small
            net_profile: default
- #        openstack.telemetry:
+         openstack.telemetry:
 @@ -54,6 +63,9 @@ parameters:
          openstack.proxy:
            cpu: 2
@@ -210,7 +210,7 @@ index 32fd829..78babbb 100644
            net_profile: default
        cluster:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index 5025cd4..f4c6291 100644
+index ca1b44b..78011a9 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 @@ -34,26 +34,41 @@ parameters:
@@ -240,7 +240,7 @@ index 5025cd4..f4c6291 100644
            net_profile: default
          openstack.telemetry:
            cpu: 2
-           ram: 4096
+           ram: 3072
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough

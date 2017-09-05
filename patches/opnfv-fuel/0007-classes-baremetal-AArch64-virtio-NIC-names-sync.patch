@@ -52,7 +52,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  21 files changed, 91 insertions(+), 94 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/config.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/config.yml
-index a7b08f8..b9bd3e0 100644
+index 3f72e18..bd439a4 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/config.yml
 @@ -33,8 +33,8 @@ parameters:
@@ -67,7 +67,7 @@ index a7b08f8..b9bd3e0 100644
      master:
        accept_policy: open_mode
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index f73d48e..32fd829 100644
+index 41366f3..766a495 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 @@ -25,7 +25,8 @@ parameters:
@@ -309,10 +309,10 @@ index f5312c1..d2e6a40 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
-index 93abf2a..8a62cee 100644
+index ee5f639..345a7d4 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
-@@ -15,7 +15,7 @@ classes:
+@@ -17,7 +17,7 @@ classes:
  # - cluster.baremetal-mcp-ocata-odl-ha.stacklight.proxy
  parameters:
    _param:
@@ -321,7 +321,7 @@ index 93abf2a..8a62cee 100644
      keepalived_vip_virtual_router_id: 240
      nginx_proxy_ssl:
        enabled: true
-@@ -27,8 +27,8 @@ parameters:
+@@ -29,8 +29,8 @@ parameters:
    linux:
      network:
        interface:
@@ -333,19 +333,19 @@ index 93abf2a..8a62cee 100644
        package:
          libapache2-mod-wsgi:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/telemetry.yml
-index 4a56b65..128ec1b 100644
+index 4e90090..c08f209 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/telemetry.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/telemetry.yml
-@@ -10,7 +10,7 @@ classes:
+@@ -12,7 +12,7 @@ classes:
  - cluster.baremetal-mcp-ocata-odl-ha.infra
  parameters:
    _param:
--    keepalived_vip_interface: ens3
-+    keepalived_vip_interface: enp2s0
+-    keepalived_openstack_telemetry_vip_interface: ens3
++    keepalived_openstack_telemetry_vip_interface: enp2s0
      keepalived_vip_virtual_router_id: 230
      cluster_vip_address: ${_param:openstack_telemetry_address}
      cluster_local_address: ${_param:single_address}
-@@ -23,5 +23,5 @@ parameters:
+@@ -25,8 +25,8 @@ parameters:
    linux:
      network:
        interface:
@@ -353,6 +353,9 @@ index 4a56b65..128ec1b 100644
 -        ens3: ${_param:linux_single_interface}
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
+   mongodb:
+     server:
+       logging:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml
 index a75b41d..3979fd1 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/config.yml
@@ -369,7 +372,7 @@ index a75b41d..3979fd1 100644
      master:
        accept_policy: open_mode
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index d919fe7..5025cd4 100644
+index 5c8026f..ca1b44b 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 @@ -25,7 +25,8 @@ parameters:
@@ -596,10 +599,10 @@ index 881644b..f510a7b 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
-index 2147741..4e25b78 100644
+index 30f2c46..72dac26 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
-@@ -15,7 +15,7 @@ classes:
+@@ -17,7 +17,7 @@ classes:
  # - cluster.baremetal-mcp-ocata-ovs-ha.stacklight.proxy
  parameters:
    _param:
@@ -608,7 +611,7 @@ index 2147741..4e25b78 100644
      keepalived_vip_virtual_router_id: 240
      nginx_proxy_ssl:
        enabled: true
-@@ -27,8 +27,8 @@ parameters:
+@@ -29,8 +29,8 @@ parameters:
    linux:
      network:
        interface:
@@ -620,19 +623,19 @@ index 2147741..4e25b78 100644
        package:
          libapache2-mod-wsgi:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
-index 505ee7f..6ad13ae 100644
+index 0e3c7bd..9702576 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
-@@ -10,7 +10,7 @@ classes:
+@@ -12,7 +12,7 @@ classes:
  - cluster.baremetal-mcp-ocata-ovs-ha.infra
  parameters:
    _param:
--    keepalived_vip_interface: ens3
-+    keepalived_vip_interface: enp2s0
+-    keepalived_openstack_telemetry_vip_interface: ens3
++    keepalived_openstack_telemetry_vip_interface: enp2s0
      keepalived_vip_virtual_router_id: 230
      cluster_vip_address: ${_param:openstack_telemetry_address}
      cluster_local_address: ${_param:single_address}
-@@ -23,5 +23,5 @@ parameters:
+@@ -25,8 +25,8 @@ parameters:
    linux:
      network:
        interface:
@@ -640,3 +643,6 @@ index 505ee7f..6ad13ae 100644
 -        ens3: ${_param:linux_single_interface}
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
+   mongodb:
+     server:
+       logging:

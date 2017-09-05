@@ -24,12 +24,12 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  7 files changed, 86 insertions(+), 86 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index f51ba5f..5582727 100755
+index 72dedfc..0f08f1c 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
-@@ -139,7 +139,7 @@ URI_REGEXP='(file|https?|ftp)://.*'
-
- export SSH_KEY=${SSH_KEY:-mcp.rsa}
+@@ -143,7 +143,7 @@ URI_REGEXP='(file|https?|ftp)://.*'
+ # unless SSH_KEY is set to point to non-root user's home (e.g. via env var).
+ export SSH_KEY=${SSH_KEY:-"${HOME}/opnfv/mcp.rsa"}
  export SALT_MASTER=${SALT_MASTER_IP:-192.168.10.100}
 -export MAAS_IP=${MAAS_IP:-192.168.10.3}
 +export MAAS_IP=${MAAS_IP:-192.168.10.2}
@@ -50,10 +50,10 @@ index 6c2ae04..787d713 100755
  wait_for 10 "salt -C 'mas01*' state.apply maas.region"
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 7ba9d82..af3e298 100755
+index 6c68e15..99483f3 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
-@@ -46,5 +46,5 @@ salt -I 'nova:compute' state.sls armband
+@@ -51,5 +51,5 @@ salt -I 'ceilometer:agent' state.sls ceilometer
  salt -I 'horizon:server' state.sls horizon
  salt -I 'nginx:server' state.sls nginx
 
