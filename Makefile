@@ -42,7 +42,6 @@ submodules-init: .submodules-init
 	else \
 		git submodule update --init 2>/dev/null; \
 	fi
-	@ln -sf ${A_FUEL_BASE}/ci/clean_cache.sh ${ARMBAND_BASE}/ci/clean_cache.sh
 	@touch $@
 
 # Clean any changes made to submodules, checkout Armband root commit
@@ -134,5 +133,3 @@ patches-copyright:
 		cat armband-patch-copyright.template $$p_file > $$ptmp && \
 		mv $$ptmp $$p_file; \
 	done
-
-# TODO: Bring back clean/debug/build after Fuel@OPNFV implements them for MCP
