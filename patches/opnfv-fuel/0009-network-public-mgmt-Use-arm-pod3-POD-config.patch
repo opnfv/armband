@@ -24,7 +24,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  7 files changed, 86 insertions(+), 86 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index 72dedfc..0f08f1c 100755
+index f73fdfc..21b8bab 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -143,7 +143,7 @@ URI_REGEXP='(file|https?|ftp)://.*'
