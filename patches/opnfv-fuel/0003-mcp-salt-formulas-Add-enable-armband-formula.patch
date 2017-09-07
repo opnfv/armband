@@ -67,7 +67,7 @@ index eaab135..050b648 100755
 +
 +salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index e507ec9..6c68e15 100755
+index b9db817..cec5895 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -41,6 +41,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -76,8 +76,8 @@ index e507ec9..6c68e15 100755
  salt -I 'nova:compute' state.sls nova
 +salt -I 'nova:compute' state.sls armband
 
- salt -I 'mongodb:server' state.sls mongodb -b 1
- salt -I 'aodh:server' state.sls aodh
+ salt -I 'mongodb:server' state.sls mongodb
+ while true; do sleep 5; salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin' && break; done
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff b/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff
 new file mode 100644
 index 0000000..a5b08da

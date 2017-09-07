@@ -50,10 +50,10 @@ index 6c2ae04..787d713 100755
  wait_for 10 "salt -C 'mas01*' state.apply maas.region"
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 6c68e15..99483f3 100755
+index cec5895..9714c70 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
-@@ -51,5 +51,5 @@ salt -I 'ceilometer:agent' state.sls ceilometer
+@@ -55,5 +55,5 @@ salt -I 'ceilometer:agent' state.sls ceilometer
  salt -I 'horizon:server' state.sls horizon
  salt -I 'nginx:server' state.sls nginx
 

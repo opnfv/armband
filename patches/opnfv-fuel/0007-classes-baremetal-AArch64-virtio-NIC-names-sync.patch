@@ -309,7 +309,7 @@ index f5312c1..d2e6a40 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
-index ee5f639..345a7d4 100644
+index 4aa7bb0..118d22d 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
 @@ -17,7 +17,7 @@ classes:
@@ -599,7 +599,7 @@ index 881644b..f510a7b 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
-index 30f2c46..72dac26 100644
+index 5e9a2c5..939fd7f 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
 @@ -17,7 +17,7 @@ classes:
