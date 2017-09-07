@@ -33,11 +33,9 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  .../cluster/virtual-mcp-ocata-common/openstack_gateway.yml        | 8 ++++----
  .../classes/cluster/virtual-mcp-ocata-odl-router/infra/config.yml | 2 +-
  .../cluster/virtual-mcp-ocata-odl-router/opendaylight/control.yml | 2 +-
- .../classes/cluster/virtual-mcp-ocata-odl/infra/config.yml        | 2 +-
- .../cluster/virtual-mcp-ocata-odl/opendaylight/control.yml        | 2 +-
  .../classes/cluster/virtual-mcp-ocata-ovs-dpdk/infra/config.yml   | 6 +++---
  .../classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml        | 2 +-
- 9 files changed, 18 insertions(+), 18 deletions(-)
+ 7 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
 index 0cb7ccb..808fbab 100644
@@ -128,32 +126,6 @@ diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/opendaylig
 index 6bc0f51..4dacc73 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/opendaylight/control.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/opendaylight/control.yml
-@@ -10,7 +10,7 @@ parameters:
-   linux:
-     network:
-       interface:
--        ens4:
-+        enp2s0:
-           enabled: true
-           type: eth
-           proto: static
-diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
-index 328d6df..57c6cec 100644
---- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
-+++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/infra/config.yml
-@@ -27,7 +27,7 @@ parameters:
-   linux:
-     network:
-       interface:
--        ens4:
-+        enp2s0:
-           enabled: true
-           type: eth
-           proto: static
-diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
-index 38431a5..066488b 100644
---- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
-+++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl/opendaylight/control.yml
 @@ -10,7 +10,7 @@ parameters:
    linux:
      network:
