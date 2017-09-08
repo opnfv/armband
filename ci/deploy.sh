@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# (c) 2016 Enea Software AB
+# (c) 2017 Enea Software AB
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Apache License, Version 2.0
@@ -37,6 +37,5 @@ if ! [ -z $LAB_CONFIG_URL ]; then
     fi
 fi
 
-unset SSH_KEY
 cd upstream/fuel/ci
 ./deploy.sh $@
