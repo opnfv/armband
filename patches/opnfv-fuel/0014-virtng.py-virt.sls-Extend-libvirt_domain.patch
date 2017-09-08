@@ -26,9 +26,9 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  .../0103-virtng-module-Extend-libvirt_domain.patch | 54 ++++++++++++++++++++++
  ...4-salt-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++++
  mcp/patches/patches.list                           |  2 +
- .../baremetal-mcp-ocata-odl-ha/infra/kvm.yml       | 15 ++++++
+ .../baremetal-mcp-ocata-odl-ha/infra/kvm.yml       | 18 ++++++++
  .../baremetal-mcp-ocata-ovs-ha/infra/kvm.yml       | 15 ++++++
- 5 files changed, 137 insertions(+)
+ 5 files changed, 140 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
  create mode 100644 mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 
@@ -160,10 +160,10 @@ index 46a9556..f6504ab 100644
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index 766a495..80c7156 100644
+index 766a495..f072e0e 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-@@ -34,16 +34,25 @@ parameters:
+@@ -34,26 +34,41 @@ parameters:
          openstack.control:
            cpu: 4
            ram: 10240
@@ -189,7 +189,13 @@ index 766a495..80c7156 100644
            disk_profile: small
            net_profile: default
          openstack.telemetry:
-@@ -54,6 +63,9 @@ parameters:
+           cpu: 2
+           ram: 3072
++          hw_firmware_type: uefi
++          virt_machine_model: virt
++          cpu_model: host-passthrough
+           disk_profile: xxlarge
+           net_profile: default
          openstack.proxy:
            cpu: 2
            ram: 2048
@@ -199,7 +205,7 @@ index 766a495..80c7156 100644
            disk_profile: small
            net_profile: default
  #        stacklight.log:
-@@ -74,6 +86,9 @@ parameters:
+@@ -74,6 +89,9 @@ parameters:
          opendaylight.server:
            cpu: 4
            ram: 6144
