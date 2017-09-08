@@ -24,12 +24,12 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  7 files changed, 86 insertions(+), 86 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index f73fdfc..21b8bab 100755
+index 4b64000..059ace5 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
-@@ -143,7 +143,7 @@ URI_REGEXP='(file|https?|ftp)://.*'
- # unless SSH_KEY is set to point to non-root user's home (e.g. via env var).
- export SSH_KEY=${SSH_KEY:-"${HOME}/opnfv/mcp.rsa"}
+@@ -141,7 +141,7 @@ URI_REGEXP='(file|https?|ftp)://.*'
+
+ export SSH_KEY=${SSH_KEY:-"/var/lib/opnfv/mcp.rsa"}
  export SALT_MASTER=${SALT_MASTER_IP:-192.168.10.100}
 -export MAAS_IP=${MAAS_IP:-192.168.10.3}
 +export MAAS_IP=${MAAS_IP:-192.168.10.2}

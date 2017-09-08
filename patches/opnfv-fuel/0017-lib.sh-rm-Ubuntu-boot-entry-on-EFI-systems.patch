@@ -31,7 +31,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 10 insertions(+)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 1812663..884e852 100644
+index 94a9bd3..f1781e8 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -28,6 +28,15 @@ get_base_image() {
@@ -50,11 +50,11 @@ index 1812663..884e852 100644
  cleanup_vms() {
    # clean up existing nodes
    for node in $(virsh list --name | grep -P '\w{3}\d{2}'); do
-@@ -43,6 +52,7 @@ prepare_vms() {
+@@ -45,6 +54,7 @@ prepare_vms() {
    local base_image=$2
    local image_dir=$3
 
 +  cleanup_uefi
    cleanup_vms
    get_base_image "${base_image}" "${image_dir}"
-   envsubst '${SALT_MASTER},${CLUSTER_DOMAIN}' < \
+   # shellcheck disable=SC2016
