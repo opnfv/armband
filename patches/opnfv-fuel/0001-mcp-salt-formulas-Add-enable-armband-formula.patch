@@ -45,10 +45,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 710ec0e..6c2ae04 100755
+index db0bd3f..9576333 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
-@@ -81,6 +81,7 @@ wait_for 90 "! salt 'kvm*' test.ping | tee /dev/stderr | fgrep -q 'Not connected
+@@ -86,6 +86,7 @@ wait_for 90 "! salt 'kvm*' test.ping | tee /dev/stderr | fgrep -q 'Not connected
 
  salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
 
@@ -67,7 +67,7 @@ index eaab135..050b648 100755
 +
 +salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index b9db817..cec5895 100755
+index 8ca76e4..c0b8ee3 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -41,6 +41,7 @@ salt -I 'neutron:server' state.sls neutron -b 1

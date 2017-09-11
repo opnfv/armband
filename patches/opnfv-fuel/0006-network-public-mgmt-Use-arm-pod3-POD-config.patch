@@ -16,31 +16,30 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  ci/deploy.sh                                       |  2 +-
  mcp/config/states/maas                             |  2 +-
- mcp/config/states/openstack_ha                     |  2 +-
  .../baremetal-mcp-ocata-odl-ha/infra/init.yml      | 22 ++++----
  .../baremetal-mcp-ocata-odl-ha/openstack/init.yml  | 62 +++++++++++-----------
  .../baremetal-mcp-ocata-ovs-ha/infra/init.yml      | 22 ++++----
  .../baremetal-mcp-ocata-ovs-ha/openstack/init.yml  | 60 ++++++++++-----------
- 7 files changed, 86 insertions(+), 86 deletions(-)
+ 6 files changed, 85 insertions(+), 85 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index 4b64000..059ace5 100755
+index 36056c8..a2a0c02 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
-@@ -141,7 +141,7 @@ URI_REGEXP='(file|https?|ftp)://.*'
-
+@@ -142,7 +142,7 @@ URI_REGEXP='(file|https?|ftp)://.*'
  export SSH_KEY=${SSH_KEY:-"/var/lib/opnfv/mcp.rsa"}
  export SALT_MASTER=${SALT_MASTER_IP:-192.168.10.100}
+ export SALT_MASTER_USER=${SALT_MASTER_USER:-ubuntu}
 -export MAAS_IP=${MAAS_IP:-192.168.10.3}
 +export MAAS_IP=${MAAS_IP:-192.168.10.2}
  export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${SSH_KEY}"
+ export SSH_SALT="${SALT_MASTER_USER}@${SALT_MASTER}"
 
- # Variables below are disabled for now, to be re-introduced or removed later
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 6c2ae04..787d713 100755
+index 9576333..603b530 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
-@@ -52,7 +52,7 @@ salt -C 'mas01*' state.apply linux.network.interface
+@@ -57,7 +57,7 @@ salt -C 'mas01*' state.apply linux.network.interface
  salt -C 'mas01*' state.apply maas.pxe_nat
  salt -C 'mas01*' state.apply maas.cluster
  salt -C 'cfg01*' cmd.run \
@@ -49,19 +48,8 @@ index 6c2ae04..787d713 100755
 
  wait_for 10 "salt -C 'mas01*' state.apply maas.region"
 
-diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index cec5895..9714c70 100755
---- a/mcp/config/states/openstack_ha
-+++ b/mcp/config/states/openstack_ha
-@@ -55,5 +55,5 @@ salt -I 'ceilometer:agent' state.sls ceilometer
- salt -I 'horizon:server' state.sls horizon
- salt -I 'nginx:server' state.sls nginx
-
--salt -C 'I@nginx:server and *01*' cp.push /etc/ssl/certs/10.167.4.80-with-chain.crt upload_path='certs/os_cacert'
-+salt -C 'I@nginx:server and *01*' cp.push /etc/ssl/certs/172.16.10.80-with-chain.crt upload_path='certs/os_cacert'
- cd /etc/ssl/certs && ln -s /var/cache/salt/master/minions/prx01.*/files/certs/os_cacert
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-index c5a999b..79a8e92 100644
+index f1769d7..393cbb3 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 @@ -16,19 +16,19 @@ parameters:
@@ -190,7 +178,7 @@ index e49a205..ad99447 100644
      opendaylight_server_node01_hostname: odl01
      opendaylight_router: odl-router_v2
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-index 23f205f..d09c643 100644
+index d7e365a..0b8bf2f 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
 @@ -16,19 +16,19 @@ parameters:
