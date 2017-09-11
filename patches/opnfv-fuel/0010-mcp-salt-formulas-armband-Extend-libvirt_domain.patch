@@ -29,10 +29,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/libvirt_domain_template.sls
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 787d713..633f544 100755
+index 603b530..f6de2cb 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
-@@ -81,7 +81,7 @@ wait_for 90 "! salt 'kvm*' test.ping | tee /dev/stderr | fgrep -q 'Not connected
+@@ -86,7 +86,7 @@ wait_for 90 "! salt 'kvm*' test.ping | tee /dev/stderr | fgrep -q 'Not connected
 
  salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
 
