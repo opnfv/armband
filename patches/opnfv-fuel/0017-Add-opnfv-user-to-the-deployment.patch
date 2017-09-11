@@ -24,7 +24,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 22d83be..03d336b 100755
+index 8b1b32d..40d940d 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -80,6 +80,7 @@ salt -C 'mas01*' pillar.item\
@@ -54,7 +54,7 @@ index 0000000..4cea805
 +    opnfv_user_username: opnfv
 +    opnfv_user_password: $1$5/pIEHT1$XFBhNWW4Q8gYd19hczgPF1
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-index 393cbb3..eb0a8bc 100644
+index b84c46c..7ad4db5 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 @@ -1,4 +1,5 @@
@@ -64,7 +64,7 @@ index 393cbb3..eb0a8bc 100644
  - cluster.baremetal-mcp-ocata-odl-ha.openstack
  # - cluster.baremetal-mcp-ocata-odl-ha.stacklight
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-index 0b8bf2f..fb2acda 100644
+index 12aa3e3..1277adf 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
 @@ -1,4 +1,5 @@

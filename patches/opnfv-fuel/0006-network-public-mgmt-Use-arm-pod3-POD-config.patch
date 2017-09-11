@@ -10,46 +10,16 @@ From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Tue, 8 Aug 2017 03:49:53 +0200
 Subject: [PATCH] network: public, mgmt: Use arm-pod3 POD config
 
-Move MaaS IPs to x.y.z.2 (upstream Fuel uses x.y.z.3).
-
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ci/deploy.sh                                       |  2 +-
- mcp/config/states/maas                             |  2 +-
- .../baremetal-mcp-ocata-odl-ha/infra/init.yml      | 22 ++++----
+ .../baremetal-mcp-ocata-odl-ha/infra/init.yml      | 20 +++----
  .../baremetal-mcp-ocata-odl-ha/openstack/init.yml  | 62 +++++++++++-----------
- .../baremetal-mcp-ocata-ovs-ha/infra/init.yml      | 22 ++++----
+ .../baremetal-mcp-ocata-ovs-ha/infra/init.yml      | 20 +++----
  .../baremetal-mcp-ocata-ovs-ha/openstack/init.yml  | 60 ++++++++++-----------
- 6 files changed, 85 insertions(+), 85 deletions(-)
-
-diff --git a/ci/deploy.sh b/ci/deploy.sh
-index 36056c8..a2a0c02 100755
---- a/ci/deploy.sh
-+++ b/ci/deploy.sh
-@@ -142,7 +142,7 @@ URI_REGEXP='(file|https?|ftp)://.*'
- export SSH_KEY=${SSH_KEY:-"/var/lib/opnfv/mcp.rsa"}
- export SALT_MASTER=${SALT_MASTER_IP:-192.168.10.100}
- export SALT_MASTER_USER=${SALT_MASTER_USER:-ubuntu}
--export MAAS_IP=${MAAS_IP:-192.168.10.3}
-+export MAAS_IP=${MAAS_IP:-192.168.10.2}
- export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${SSH_KEY}"
- export SSH_SALT="${SALT_MASTER_USER}@${SALT_MASTER}"
-
-diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 9576333..603b530 100755
---- a/mcp/config/states/maas
-+++ b/mcp/config/states/maas
-@@ -57,7 +57,7 @@ salt -C 'mas01*' state.apply linux.network.interface
- salt -C 'mas01*' state.apply maas.pxe_nat
- salt -C 'mas01*' state.apply maas.cluster
- salt -C 'cfg01*' cmd.run \
--  "route add -net 192.168.11.0/24 gw ${MAAS_IP:-192.168.10.3}"
-+  "route add -net 192.168.11.0/24 gw ${MAAS_IP:-192.168.10.2}"
-
- wait_for 10 "salt -C 'mas01*' state.apply maas.region"
+ 4 files changed, 81 insertions(+), 81 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-index f1769d7..393cbb3 100644
+index d08bdbb..b84c46c 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 @@ -16,19 +16,19 @@ parameters:
@@ -58,15 +28,14 @@ index f1769d7..393cbb3 100644
      # infra service addresses
 -    infra_config_address: 10.167.4.100
 +    infra_config_address: 172.16.10.100
-     infra_config_deploy_address: 192.168.10.100
+     infra_config_deploy_address: 10.20.0.2
 -    infra_maas_node01_address: 10.167.4.3
--    infra_maas_node01_deploy_address: 192.168.11.3
++    infra_maas_node01_address: 172.16.10.2
+     infra_maas_node01_deploy_address: 192.168.11.3
 -    infra_maas_node01_external_address: 10.16.0.3
 -    infra_compute_node01_address: 10.167.4.141
 -    infra_compute_node02_address: 10.167.4.142
 -    infra_compute_node03_address: 10.167.4.143
-+    infra_maas_node01_address: 172.16.10.2
-+    infra_maas_node01_deploy_address: 192.168.11.2
 +    infra_maas_node01_external_address: 10.0.8.2
 +    infra_compute_node01_address: 172.16.10.141
 +    infra_compute_node02_address: 172.16.10.142
@@ -178,7 +147,7 @@ index e49a205..ad99447 100644
      opendaylight_server_node01_hostname: odl01
      opendaylight_router: odl-router_v2
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-index d7e365a..0b8bf2f 100644
+index b6261f6..12aa3e3 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
 @@ -16,19 +16,19 @@ parameters:
@@ -187,15 +156,14 @@ index d7e365a..0b8bf2f 100644
      # infra service addresses
 -    infra_config_address: 10.167.4.100
 +    infra_config_address: 172.16.10.100
-     infra_config_deploy_address: 192.168.10.100
+     infra_config_deploy_address: 10.20.0.2
 -    infra_maas_node01_address: 10.167.4.3
--    infra_maas_node01_deploy_address: 192.168.11.3
++    infra_maas_node01_address: 172.16.10.2
+     infra_maas_node01_deploy_address: 192.168.11.3
 -    infra_maas_node01_external_address: 10.16.0.3
 -    infra_compute_node01_address: 10.167.4.141
 -    infra_compute_node02_address: 10.167.4.142
 -    infra_compute_node03_address: 10.167.4.143
-+    infra_maas_node01_address: 172.16.10.2
-+    infra_maas_node01_deploy_address: 192.168.11.2
 +    infra_maas_node01_external_address: 10.0.8.2
 +    infra_compute_node01_address: 172.16.10.141
 +    infra_compute_node02_address: 172.16.10.142
