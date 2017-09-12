@@ -19,10 +19,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  4 files changed, 81 insertions(+), 81 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-index d08bdbb..b84c46c 100644
+index 730193a..af3daf5 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-@@ -16,19 +16,19 @@ parameters:
+@@ -17,19 +17,19 @@ parameters:
      infra_maas_database_password: opnfv_secret
 
      # infra service addresses
@@ -30,8 +30,8 @@ index d08bdbb..b84c46c 100644
 +    infra_config_address: 172.16.10.100
      infra_config_deploy_address: 10.20.0.2
 -    infra_maas_node01_address: 10.167.4.3
-+    infra_maas_node01_address: 172.16.10.2
-     infra_maas_node01_deploy_address: 192.168.11.3
++    infra_maas_node01_address: 172.16.10.3
+     infra_maas_node01_deploy_address: ${_param:opnfv_fuel_maas_pxe_address}
 -    infra_maas_node01_external_address: 10.16.0.3
 -    infra_compute_node01_address: 10.167.4.141
 -    infra_compute_node02_address: 10.167.4.142
@@ -147,10 +147,10 @@ index e49a205..ad99447 100644
      opendaylight_server_node01_hostname: odl01
      opendaylight_router: odl-router_v2
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-index b6261f6..12aa3e3 100644
+index 6bf0fbe..9df480f 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-@@ -16,19 +16,19 @@ parameters:
+@@ -17,19 +17,19 @@ parameters:
      infra_maas_database_password: opnfv_secret
 
      # infra service addresses
@@ -158,8 +158,8 @@ index b6261f6..12aa3e3 100644
 +    infra_config_address: 172.16.10.100
      infra_config_deploy_address: 10.20.0.2
 -    infra_maas_node01_address: 10.167.4.3
-+    infra_maas_node01_address: 172.16.10.2
-     infra_maas_node01_deploy_address: 192.168.11.3
++    infra_maas_node01_address: 172.16.10.3
+     infra_maas_node01_deploy_address: ${_param:opnfv_fuel_maas_pxe_address}
 -    infra_maas_node01_external_address: 10.16.0.3
 -    infra_compute_node01_address: 10.167.4.141
 -    infra_compute_node02_address: 10.167.4.142

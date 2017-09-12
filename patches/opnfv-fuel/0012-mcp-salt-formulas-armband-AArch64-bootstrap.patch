@@ -32,10 +32,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/files/cloud.py.diff
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 5e2ca01..8b1b32d 100755
+index 6beef6f..3aafaf5 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
-@@ -81,6 +81,7 @@ salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
+@@ -80,6 +80,7 @@ salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
 
  salt -C 'kvm*' pkg.install bridge-utils
  salt -C 'kvm*' state.apply linux.network

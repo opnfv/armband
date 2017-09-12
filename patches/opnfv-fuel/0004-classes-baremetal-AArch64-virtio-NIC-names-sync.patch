@@ -125,7 +125,7 @@ index 41366f3..766a495 100644
 -          - ${_param:deploy_nic}.300
 +          - ${_param:trunk_nic}.2183
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
-index c4bc929..5649990 100644
+index 72b9f52..08a3b48 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
 @@ -4,10 +4,10 @@ classes:
@@ -309,7 +309,7 @@ index f5312c1..d2e6a40 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
-index 4aa7bb0..118d22d 100644
+index 89a1930..6e542b0 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
 @@ -17,7 +17,7 @@ classes:
@@ -430,7 +430,7 @@ index 5c8026f..ca1b44b 100644
 -          - ${_param:deploy_nic}.300
 +          - ${_param:trunk_nic}.2183
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
-index d193469..73215ee 100644
+index f77abea..37e8377 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
 @@ -4,10 +4,10 @@ classes:

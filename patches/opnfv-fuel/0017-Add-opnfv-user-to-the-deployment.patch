@@ -14,20 +14,17 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 ---
- mcp/config/states/maas                                             | 2 ++
- mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml   | 4 ++++
- .../classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml      | 1 +
- .../classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml      | 1 +
- mcp/salt-formulas/opnfv/adduser.sls                                | 7 +++++++
- 5 files changed, 15 insertions(+)
- create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml
+ mcp/config/states/maas                                          | 2 ++
+ mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml | 4 ++++
+ mcp/salt-formulas/opnfv/adduser.sls                             | 7 +++++++
+ 3 files changed, 13 insertions(+)
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 8b1b32d..40d940d 100755
+index 3aafaf5..546a53f 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
-@@ -80,6 +80,7 @@ salt -C 'mas01*' pillar.item\
+@@ -79,6 +79,7 @@ salt -C 'mas01*' pillar.item\
  salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
 
  salt -C 'kvm*' pkg.install bridge-utils
@@ -35,7 +32,7 @@ index 8b1b32d..40d940d 100755
  salt -C 'kvm*' state.apply linux.network
  salt -C 'kvm*' state.apply armband.bootstrap_script_arm64
  salt -C 'kvm*' system.reboot
-@@ -103,6 +104,7 @@ while [ $rc -ne 0 ]; do
+@@ -102,6 +103,7 @@ while [ $rc -ne 0 ]; do
    rc=0
    for node in $vcp_nodes; do
      salt "$node" test.ping 2>/dev/null || { rc=$?; break; };
@@ -43,36 +40,17 @@ index 8b1b32d..40d940d 100755
    done
    sleep 5
  done
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml
-new file mode 100644
-index 0000000..4cea805
---- /dev/null
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/opnfv.yml
-@@ -0,0 +1,4 @@
+diff --git a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
+index 28619ba..fd96969 100644
+--- a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
++++ b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
+@@ -1,2 +1,6 @@
+ classes:
+ - cluster.all-mcp-ocata-common.opnfv.runtime
 +parameters:
 +  _param:
 +    opnfv_user_username: opnfv
 +    opnfv_user_password: $1$5/pIEHT1$XFBhNWW4Q8gYd19hczgPF1
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-index b84c46c..7ad4db5 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-@@ -1,4 +1,5 @@
- classes:
-+- cluster.baremetal-mcp-ocata-common.opnfv
- - system.linux.system.single
- - cluster.baremetal-mcp-ocata-odl-ha.openstack
- # - cluster.baremetal-mcp-ocata-odl-ha.stacklight
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-index 12aa3e3..1277adf 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-@@ -1,4 +1,5 @@
- classes:
-+- cluster.baremetal-mcp-ocata-common.opnfv
- - system.linux.system.single
- - cluster.baremetal-mcp-ocata-ovs-ha.openstack
- # - cluster.baremetal-mcp-ocata-ovs-ha.stacklight
 diff --git a/mcp/salt-formulas/opnfv/adduser.sls b/mcp/salt-formulas/opnfv/adduser.sls
 new file mode 100644
 index 0000000..78ef993

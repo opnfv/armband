@@ -21,7 +21,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 40 insertions(+), 40 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
-index 5649990..e4765ca 100644
+index 08a3b48..3568c78 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
 @@ -48,57 +48,57 @@ parameters:
@@ -103,7 +103,7 @@ index 5649990..e4765ca 100644
            hwe_kernel: hwe-16.04
    linux:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
-index 73215ee..26115fe 100644
+index 37e8377..d71b3a6 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
 @@ -48,57 +48,57 @@ parameters:
