@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_b8d79b22",
+        "filename": "patches/opnfv-fuel/0006-network-public-mgmt-Use-arm-pod3-POD-config.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-09-12T13:00:52Z",
+      "side": 0,
+      "message": "I am confused :P\n\nThe deploy.sh I believe was moved in the fuel project which explains why some variables are removed.\n\nBut I cant find where the states for maas are applied\n\nFor example this \nsalt -C \u0027mas01*\u0027 state.apply maas.pxe_nat contains a part which enables ip forwarding which was zero on maas which is not correct IMO.\n\nHowever I do not understand how the compute nodes were commissioned in the first place :P",
+      "revId": "9519a11e1fe0eb26cf5b776d8479065f2f710737",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
