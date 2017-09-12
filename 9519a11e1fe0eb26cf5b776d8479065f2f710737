@@ -16,6 +16,24 @@
       "revId": "9519a11e1fe0eb26cf5b776d8479065f2f710737",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_98829792",
+        "filename": "patches/opnfv-fuel/0006-network-public-mgmt-Use-arm-pod3-POD-config.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-12T15:29:19Z",
+      "side": 0,
+      "message": "deploy.sh was not moved, it just got some minor updates, including changing 192.168.10.3 to 10.20.0.3.\nWith that in place, and Salt master being at 10.20.0.2, we no longer need to override the MAAS_IP (Armband used to chagne it from 192.168.10.3 to 192.168.10.2 to align with its public IP, 10.0.8.2, which is forced upon us by OOB (IPMI) IPs being at 10.0.8.3...).\nSo this patch merely removes another Armband divergent change, and aligns with upstream Fuel@OPNFV.\nip forwarding is 0 by default on Ubuntu, and we need 1 to allow NAT-ing between mcpcontrol and MaaS PXE.",
+      "parentUuid": "da33351e_b8d79b22",
+      "revId": "9519a11e1fe0eb26cf5b776d8479065f2f710737",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
