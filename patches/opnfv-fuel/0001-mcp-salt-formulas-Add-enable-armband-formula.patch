@@ -171,7 +171,7 @@ index 0000000..bc3121f
 +                 (virt_type == "xen" and guest.os_type == fields.VMMode.HVM)):
 +-            guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
 ++            guestarch = libvirt_utils.get_arch(image_meta)
-++            if (guestarch not in (arch.ARMV7, arch.AARCH64) or
+++            if (guestarch not in (fields.Architecture.ARMV7, fields.Architecture.AARCH64) or
 ++                image_meta.properties.get('hw_firmware_type') == 'uefi'):
 ++                    guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
 +             guest.features.append(vconfig.LibvirtConfigGuestFeatureAPIC())
