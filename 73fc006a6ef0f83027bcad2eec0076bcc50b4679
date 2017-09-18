@@ -34,6 +34,24 @@
       "revId": "73fc006a6ef0f83027bcad2eec0076bcc50b4679",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_7a7cd8b5",
+        "filename": "patches/opnfv-fuel/0001-mcp-salt-formulas-Add-enable-armband-formula.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-09-18T12:06:24Z",
+      "side": 1,
+      "message": "confirmed.\nlets change with this:\n\nif (guestarch not in (fields.Architecture.ARMV7,fields.Architecture.AARCH64) or",
+      "parentUuid": "da33351e_dabec464",
+      "revId": "73fc006a6ef0f83027bcad2eec0076bcc50b4679",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
