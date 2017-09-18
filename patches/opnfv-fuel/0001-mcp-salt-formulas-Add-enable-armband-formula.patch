@@ -60,17 +60,17 @@ index 0d733ba..bfedbae 100755
 
  salt -C '* and not cfg01* and not mas01*' state.apply salt
 diff --git a/mcp/config/states/openstack b/mcp/config/states/openstack
-index eaab135..050b648 100755
+index beb6abb..885f2ac 100755
 --- a/mcp/config/states/openstack
 +++ b/mcp/config/states/openstack
-@@ -31,3 +31,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
+@@ -35,3 +35,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
  salt -I 'ceilometer:agent' state.sls ceilometer
 
  salt -I 'horizon:server' state.sls horizon
 +
 +salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 8ca76e4..c0b8ee3 100755
+index 78da80a..dcceb02 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -41,6 +41,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -137,7 +137,7 @@ index 0000000..a5b08da
 +             video.type = 'vga'
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff b/mcp/salt-formulas/armband/files/nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff
 new file mode 100644
-index 0000000..bc3121f
+index 0000000..7c1b78a
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff
 @@ -0,0 +1,45 @@
@@ -171,7 +171,7 @@ index 0000000..bc3121f
 +                 (virt_type == "xen" and guest.os_type == fields.VMMode.HVM)):
 +-            guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
 ++            guestarch = libvirt_utils.get_arch(image_meta)
-++            if (guestarch not in (arch.ARMV7, arch.AARCH64) or
+++            if (guestarch not in (fields.Architecture.ARMV7, fields.Architecture.AARCH64) or
 ++                image_meta.properties.get('hw_firmware_type') == 'uefi'):
 ++                    guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
 +             guest.features.append(vconfig.LibvirtConfigGuestFeatureAPIC())
