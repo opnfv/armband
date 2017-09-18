@@ -22,6 +22,7 @@ FIXME: Detect baremetal and re-enable acceleration.
 - nova: cpu_model=cortex-a57;
 - nova: libvirt driver: Add ttyAMA0 by default on AArch64;
 - nova: libvirt driver: Use VGA video type by default on AArch64;
+- nova: libvirt driver: AArch64: ACPI depends on AAVMF;
 
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
@@ -30,14 +31,16 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  mcp/config/states/maas                             |  1 +
  mcp/config/states/openstack                        |  2 +
  mcp/config/states/openstack_ha                     |  1 +
- .../armband/files/nova-libvirt-driver.diff         | 48 ++++++++++++++++++++++
+ ...ate-vga-console-defaults-for-armv7-aarch64.diff | 48 ++++++++++++++++++++++
+ ...nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff | 45 ++++++++++++++++++++
  mcp/salt-formulas/armband/init.sls                 |  6 +++
- mcp/salt-formulas/armband/libvirt_driver.sls       |  5 +++
+ mcp/salt-formulas/armband/libvirt_driver.sls       | 11 +++++
  mcp/salt-formulas/armband/nova.sls                 | 30 ++++++++++++++
  mcp/salt-formulas/armband/qemu.sls                 |  7 ++++
  mcp/salt-formulas/armband/vgabios.sls              |  6 +++
- 9 files changed, 106 insertions(+)
- create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-driver.diff
+ 10 files changed, 157 insertions(+)
+ create mode 100644 mcp/salt-formulas/armband/files/nova-Update-vga-console-defaults-for-armv7-aarch64.diff
+ create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/libvirt_driver.sls
  create mode 100644 mcp/salt-formulas/armband/nova.sls
@@ -78,11 +81,11 @@ index 8ca76e4..c0b8ee3 100755
 
  salt -I 'mongodb:server' state.sls mongodb
  while true; do sleep 5; salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin' && break; done
-diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff b/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff
+diff --git a/mcp/salt-formulas/armband/files/nova-Update-vga-console-defaults-for-armv7-aarch64.diff b/mcp/salt-formulas/armband/files/nova-Update-vga-console-defaults-for-armv7-aarch64.diff
 new file mode 100644
 index 0000000..a5b08da
 --- /dev/null
-+++ b/mcp/salt-formulas/armband/files/nova-libvirt-driver.diff
++++ b/mcp/salt-formulas/armband/files/nova-Update-vga-console-defaults-for-armv7-aarch64.diff
 @@ -0,0 +1,48 @@
 +From: Stanislaw Kardach <stanislaw.kardach@cavium.com>
 +Date: Tue, 22 Mar 2016 12:05:09 +0100
@@ -132,6 +135,57 @@ index 0000000..a5b08da
 +             # NOTE(ldbragst): PowerKVM doesn't support 'cirrus' be default
 +             # so use 'vga' instead when running on Power hardware.
 +             video.type = 'vga'
+diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff b/mcp/salt-formulas/armband/files/nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff
+new file mode 100644
+index 0000000..bc3121f
+--- /dev/null
++++ b/mcp/salt-formulas/armband/files/nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff
+@@ -0,0 +1,45 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Thu, 24 Aug 2017 10:57:28 +0200
++Subject: [PATCH] libvirt: AArch64: ACPI depends on AAVMF
++
++On AArch64, ACPI should be added to domain XML only if guest UEFI
++(AAVMF) is also used.
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Signed-off-by: Ciprian Barbu <ciprian.barbu@enea.com>
++
++---
++
++diff --git a/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py b/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
++--- a/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
+++++ b/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
++@@ -4255,7 +4255,7 @@
++             tmhyperv.present = True
++             clk.add_timer(tmhyperv)
++
++-    def _set_features(self, guest, os_type, caps, virt_type):
+++    def _set_features(self, guest, os_type, image_meta, caps, virt_type):
++         if virt_type == "xen":
++             # PAE only makes sense in X86
++             if caps.host.cpu.arch in (fields.Architecture.I686,
++@@ -4264,7 +4264,10 @@
++
++         if (virt_type not in ("lxc", "uml", "parallels", "xen") or
++                 (virt_type == "xen" and guest.os_type == fields.VMMode.HVM)):
++-            guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
+++            guestarch = libvirt_utils.get_arch(image_meta)
+++            if (guestarch not in (arch.ARMV7, arch.AARCH64) or
+++                image_meta.properties.get('hw_firmware_type') == 'uefi'):
+++                    guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
++             guest.features.append(vconfig.LibvirtConfigGuestFeatureAPIC())
++
++         if (virt_type in ("qemu", "kvm") and
++@@ -4799,7 +4802,7 @@
++             self._conf_non_lxc_uml(virt_type, guest, root_device_name, rescue,
++                     instance, inst_path, image_meta, disk_info)
++
++-        self._set_features(guest, instance.os_type, caps, virt_type)
+++        self._set_features(guest, instance.os_type, image_meta, caps, virt_type)
++         self._set_clock(guest, instance.os_type, image_meta, virt_type)
++
++         storage_configs = self._get_guest_storage_config(
 diff --git a/mcp/salt-formulas/armband/init.sls b/mcp/salt-formulas/armband/init.sls
 new file mode 100644
 index 0000000..6e7b6ad
@@ -146,15 +200,21 @@ index 0000000..6e7b6ad
 +
 diff --git a/mcp/salt-formulas/armband/libvirt_driver.sls b/mcp/salt-formulas/armband/libvirt_driver.sls
 new file mode 100644
-index 0000000..c309035
+index 0000000..9bc3c81
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/libvirt_driver.sls
-@@ -0,0 +1,5 @@
-+/usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py:
+@@ -0,0 +1,11 @@
++nova-libvirt-vga-console:
 +  file.patch:
-+  - source:  salt://armband/files/nova-libvirt-driver.diff
-+  - hash: "668641080c6a77a9205d0f71d510ad5f"
++  - name: /usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
++  - source: salt://armband/files/nova-Update-vga-console-defaults-for-armv7-aarch64.diff
++  - hash: "71b22839913e6351edc70b6d59505f17"
 +
++nova-libvirt-ACPI-AAVMF:
++  file.patch:
++  - name: /usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
++  - source: salt://armband/files/nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff
++  - hash: "7fd76813be226b4b0b731e635a461ead"
 diff --git a/mcp/salt-formulas/armband/nova.sls b/mcp/salt-formulas/armband/nova.sls
 new file mode 100644
 index 0000000..674f371
