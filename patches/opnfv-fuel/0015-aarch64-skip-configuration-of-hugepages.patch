@@ -23,7 +23,7 @@ Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
  4 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-index 6f1162d..5e9f542 100644
+index 79cea91..1febe8a 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 @@ -5,8 +5,8 @@ classes:
@@ -59,7 +59,7 @@ index ad99447..ea95680 100644
      glance_service_host: ${_param:openstack_control_address}
      keystone_version: ${_param:openstack_version}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-index 7f5a602..4730124 100644
+index 19c7f0b..498cc1d 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 @@ -5,8 +5,8 @@ classes:
@@ -74,7 +74,7 @@ index 7f5a602..4730124 100644
  - system.cinder.volume.single
  - system.cinder.volume.backend.lvm
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
-index 90e0cf3..c1452b4 100644
+index eff5651..fcec76a 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
 @@ -94,11 +94,11 @@ parameters:
