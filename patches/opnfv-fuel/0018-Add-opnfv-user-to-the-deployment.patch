@@ -41,12 +41,13 @@ index 3aafaf5..546a53f 100755
    sleep 5
  done
 diff --git a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
-index 28619ba..fd96969 100644
+index 4cb4f2f..16cf4ec 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
 +++ b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
-@@ -1,2 +1,6 @@
+@@ -1,3 +1,7 @@
  classes:
  - cluster.all-mcp-ocata-common.opnfv.runtime
+ - cluster.all-mcp-ocata-common.opnfv.pod_config
 +parameters:
 +  _param:
 +    opnfv_user_username: opnfv
