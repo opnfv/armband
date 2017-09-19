@@ -14,12 +14,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  .../baremetal-mcp-ocata-odl-ha/infra/init.yml      | 20 +++----
  .../baremetal-mcp-ocata-odl-ha/openstack/init.yml  | 62 +++++++++++-----------
- .../baremetal-mcp-ocata-ovs-ha/infra/init.yml      | 20 +++----
- .../baremetal-mcp-ocata-ovs-ha/openstack/init.yml  | 60 ++++++++++-----------
- 4 files changed, 81 insertions(+), 81 deletions(-)
+ 2 files changed, 41 insertions(+), 41 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-index 730193a..af3daf5 100644
+index dc164dd..72b0df9 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 @@ -17,19 +17,19 @@ parameters:
@@ -31,7 +29,7 @@ index 730193a..af3daf5 100644
      infra_config_deploy_address: 10.20.0.2
 -    infra_maas_node01_address: 10.167.4.3
 +    infra_maas_node01_address: 172.16.10.3
-     infra_maas_node01_deploy_address: ${_param:opnfv_fuel_maas_pxe_address}
+     infra_maas_node01_deploy_address: ${_param:opnfv_maas_pxe_address}
 -    infra_maas_node01_external_address: 10.16.0.3
 -    infra_compute_node01_address: 10.167.4.141
 -    infra_compute_node02_address: 10.167.4.142
@@ -146,127 +144,3 @@ index e49a205..ad99447 100644
      opendaylight_service_host: ${_param:opendaylight_server_node01_single_address}
      opendaylight_server_node01_hostname: odl01
      opendaylight_router: odl-router_v2
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-index 6bf0fbe..9df480f 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/init.yml
-@@ -17,19 +17,19 @@ parameters:
-     infra_maas_database_password: opnfv_secret
-
-     # infra service addresses
--    infra_config_address: 10.167.4.100
-+    infra_config_address: 172.16.10.100
-     infra_config_deploy_address: 10.20.0.2
--    infra_maas_node01_address: 10.167.4.3
-+    infra_maas_node01_address: 172.16.10.3
-     infra_maas_node01_deploy_address: ${_param:opnfv_fuel_maas_pxe_address}
--    infra_maas_node01_external_address: 10.16.0.3
--    infra_compute_node01_address: 10.167.4.141
--    infra_compute_node02_address: 10.167.4.142
--    infra_compute_node03_address: 10.167.4.143
-+    infra_maas_node01_external_address: 10.0.8.2
-+    infra_compute_node01_address: 172.16.10.141
-+    infra_compute_node02_address: 172.16.10.142
-+    infra_compute_node03_address: 172.16.10.143
-
--    infra_kvm_address: 10.167.4.140
--    infra_kvm_node01_address: 10.167.4.141
--    infra_kvm_node02_address: 10.167.4.142
--    infra_kvm_node03_address: 10.167.4.143
-+    infra_kvm_address: 172.16.10.140
-+    infra_kvm_node01_address: 172.16.10.141
-+    infra_kvm_node02_address: 172.16.10.142
-+    infra_kvm_node03_address: 172.16.10.143
-
-     infra_maas_node01_hostname: mas01
-     infra_kvm_node01_hostname: kvm01
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
-index 9c2bc7b..90e0cf3 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
-@@ -3,9 +3,9 @@ parameters:
-
-     openstack_version: ocata
-
--    openstack_gateway_node01_address: 10.167.4.124
--    openstack_gateway_node02_address: 10.167.4.125
--    openstack_gateway_node03_address: 10.167.4.126
-+    openstack_gateway_node01_address: 172.16.10.124
-+    openstack_gateway_node02_address: 172.16.10.125
-+    openstack_gateway_node03_address: 172.16.10.126
-     openstack_gateway_node01_tenant_address: 10.1.0.6
-     openstack_gateway_node02_tenant_address: 10.1.0.7
-     openstack_gateway_node03_tenant_address: 10.1.0.9
-@@ -14,21 +14,21 @@ parameters:
-     openstack_gateway_node03_hostname: gtw03
-
-     # openstack service addresses
--    openstack_proxy_address: 10.167.4.80
--    openstack_proxy_node01_address: 10.167.4.81
--    openstack_proxy_node02_address: 10.167.4.82
--    openstack_control_address: 10.167.4.10
--    openstack_control_node01_address: 10.167.4.11
--    openstack_control_node02_address: 10.167.4.12
--    openstack_control_node03_address: 10.167.4.13
--    openstack_database_address: 10.167.4.50
--    openstack_database_node01_address: 10.167.4.51
--    openstack_database_node02_address: 10.167.4.52
--    openstack_database_node03_address: 10.167.4.53
--    openstack_message_queue_address: 10.167.4.40
--    openstack_message_queue_node01_address: 10.167.4.41
--    openstack_message_queue_node02_address: 10.167.4.42
--    openstack_message_queue_node03_address: 10.167.4.43
-+    openstack_proxy_address: 172.16.10.80
-+    openstack_proxy_node01_address: 172.16.10.81
-+    openstack_proxy_node02_address: 172.16.10.82
-+    openstack_control_address: 172.16.10.10
-+    openstack_control_node01_address: 172.16.10.11
-+    openstack_control_node02_address: 172.16.10.12
-+    openstack_control_node03_address: 172.16.10.13
-+    openstack_database_address: 172.16.10.50
-+    openstack_database_node01_address: 172.16.10.51
-+    openstack_database_node02_address: 172.16.10.52
-+    openstack_database_node03_address: 172.16.10.53
-+    openstack_message_queue_address: 172.16.10.40
-+    openstack_message_queue_node01_address: 172.16.10.41
-+    openstack_message_queue_node02_address: 172.16.10.42
-+    openstack_message_queue_node03_address: 172.16.10.43
-
-
-     openstack_telemetry_hostname: mdb
-@@ -36,23 +36,23 @@ parameters:
-     openstack_telemetry_node02_hostname: mdb02
-     openstack_telemetry_node03_hostname: mdb03
-
--    openstack_telemetry_address: 10.167.4.75
--    openstack_telemetry_node01_address: 10.167.4.76
--    openstack_telemetry_node02_address: 10.167.4.77
--    openstack_telemetry_node03_address: 10.167.4.78
-+    openstack_telemetry_address: 172.16.10.75
-+    openstack_telemetry_node01_address: 172.16.10.76
-+    openstack_telemetry_node02_address: 172.16.10.77
-+    openstack_telemetry_node03_address: 172.16.10.78
-
-     # OpenStack Compute
--    openstack_compute_node01_single_address: 10.167.4.101
--    openstack_compute_node02_single_address: 10.167.4.102
--    openstack_compute_node03_single_address: 10.167.4.103
--    openstack_compute_node01_control_address: 10.167.4.101
--    openstack_compute_node02_control_address: 10.167.4.102
--    openstack_compute_node03_control_address: 10.167.4.103
-+    openstack_compute_node01_single_address: 172.16.10.101
-+    openstack_compute_node02_single_address: 172.16.10.102
-+    openstack_compute_node03_single_address: 172.16.10.103
-+    openstack_compute_node01_control_address: 172.16.10.101
-+    openstack_compute_node02_control_address: 172.16.10.102
-+    openstack_compute_node03_control_address: 172.16.10.103
-     openstack_compute_node01_tenant_address: 10.1.0.101
-     openstack_compute_node02_tenant_address: 10.1.0.102
-     openstack_compute_node03_tenant_address: 10.1.0.103
--    openstack_compute_node01_external_address: 172.30.10.2
--    openstack_compute_node02_external_address: 172.30.10.3
-+    openstack_compute_node01_external_address: 10.0.8.101
-+    openstack_compute_node02_external_address: 10.0.8.102
-
-     # openstack service hostnames
-     openstack_proxy_hostname: prx
