@@ -200,7 +200,7 @@ index 0000000..6e7b6ad
 +
 diff --git a/mcp/salt-formulas/armband/libvirt_driver.sls b/mcp/salt-formulas/armband/libvirt_driver.sls
 new file mode 100644
-index 0000000..9bc3c81
+index 0000000..9b47e2f
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/libvirt_driver.sls
 @@ -0,0 +1,11 @@
@@ -214,7 +214,7 @@ index 0000000..9bc3c81
 +  file.patch:
 +  - name: /usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
 +  - source: salt://armband/files/nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff
-+  - hash: "7fd76813be226b4b0b731e635a461ead"
++  - hash: "c02969d59f16f57242eb74a75e46b0cf"
 diff --git a/mcp/salt-formulas/armband/nova.sls b/mcp/salt-formulas/armband/nova.sls
 new file mode 100644
 index 0000000..674f371
