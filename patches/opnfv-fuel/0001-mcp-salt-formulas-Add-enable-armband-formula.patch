@@ -208,7 +208,7 @@ index 0000000..9bc3c81
 +  file.patch:
 +  - name: /usr/lib/python2.7/dist-packages/nova/virt/libvirt/driver.py
 +  - source: salt://armband/files/nova-Update-vga-console-defaults-for-armv7-aarch64.diff
-+  - hash: "71b22839913e6351edc70b6d59505f17"
++  - hash: "8aef583d911d3a62d9521089cee11491"
 +
 +nova-libvirt-ACPI-AAVMF:
 +  file.patch:
