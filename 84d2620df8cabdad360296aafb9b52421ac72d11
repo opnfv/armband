@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_253fc8d7",
+        "filename": "patches/opnfv-fuel/0001-mcp-salt-formulas-Add-enable-armband-formula.patch",
+        "patchSetId": 9
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-20T18:16:32Z",
+      "side": 1,
+      "message": "actually, this hash was correct, it\u0027s the one below that needs to be updated",
+      "range": {
+        "startLine": 211,
+        "startChar": 12,
+        "endLine": 211,
+        "endChar": 44
+      },
+      "revId": "84d2620df8cabdad360296aafb9b52421ac72d11",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
