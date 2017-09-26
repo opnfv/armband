@@ -160,10 +160,10 @@ index 4d75677..2211c14 100644
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index bbdf354..06a5d0c 100644
+index f9427be..a5cc5b0 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-@@ -34,26 +34,41 @@ parameters:
+@@ -35,26 +35,41 @@ parameters:
          openstack.control:
            cpu: 4
            ram: 12288
@@ -204,8 +204,8 @@ index bbdf354..06a5d0c 100644
 +          cpu_model: host-passthrough
            disk_profile: small
            net_profile: default
- #        stacklight.log:
-@@ -74,6 +89,9 @@ parameters:
+         # stacklight.log:
+@@ -75,6 +90,9 @@ parameters:
          opendaylight.server:
            cpu: 4
            ram: 6144
@@ -216,10 +216,10 @@ index bbdf354..06a5d0c 100644
            net_profile: default
        cluster:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index 0ae3f4d..4243d91 100644
+index 95bacb2..0fa27e3 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-@@ -34,26 +34,41 @@ parameters:
+@@ -35,21 +35,33 @@ parameters:
          openstack.control:
            cpu: 4
            ram: 12288
@@ -252,6 +252,8 @@ index 0ae3f4d..4243d91 100644
 +          cpu_model: host-passthrough
            disk_profile: xxlarge
            net_profile: default
+         # stacklight.log:
+@@ -70,6 +82,9 @@ parameters:
          openstack.proxy:
            cpu: 2
            ram: 2048
@@ -260,4 +262,4 @@ index 0ae3f4d..4243d91 100644
 +          cpu_model: host-passthrough
            disk_profile: small
            net_profile: default
- #        stacklight.log:
+       cluster:

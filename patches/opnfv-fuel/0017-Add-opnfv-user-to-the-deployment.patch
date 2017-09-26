@@ -21,10 +21,10 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index c4f59cc..7b3dacc 100755
+index 1adccbf..85d1a9e 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
-@@ -81,6 +81,7 @@ salt -C 'mas01*' pillar.item\
+@@ -84,6 +84,7 @@ salt -C 'mas01*' pillar.item\
  salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
 
  salt -C 'kvm*' pkg.install bridge-utils
@@ -32,7 +32,7 @@ index c4f59cc..7b3dacc 100755
  salt -C 'kvm*' state.apply linux.network
  salt -C 'kvm*' state.apply armband.bootstrap_script_arm64
  salt -C 'kvm*' system.reboot
-@@ -105,6 +106,7 @@ while [ $rc -ne 0 ]; do
+@@ -108,6 +109,7 @@ while [ $rc -ne 0 ]; do
    rc=0
    for node in $vcp_nodes; do
      salt "$node" test.ping 2>/dev/null || { rc=$?; break; };
@@ -41,13 +41,13 @@ index c4f59cc..7b3dacc 100755
    sleep 5
  done
 diff --git a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
-index 4cb4f2f..16cf4ec 100644
+index c9be2c2..5c84ec6 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
 +++ b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
-@@ -1,3 +1,7 @@
+@@ -2,3 +2,7 @@
  classes:
- - cluster.all-mcp-ocata-common.opnfv.runtime
- - cluster.all-mcp-ocata-common.opnfv.pod_config
+   - cluster.all-mcp-ocata-common.opnfv.runtime
+   - cluster.all-mcp-ocata-common.opnfv.pod_config
 +parameters:
 +  _param:
 +    opnfv_user_username: opnfv
