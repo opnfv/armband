@@ -18,7 +18,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
-index a40d23e..8590fb8 100644
+index 4db9ee0..9e37954 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
 @@ -203,7 +203,7 @@ parameters:
