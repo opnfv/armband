@@ -16,10 +16,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 63 insertions(+), 62 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/pod_config.yml b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/pod_config.yml
-index b17816f..0d03712 100644
+index 90c3c85..68b048f 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/pod_config.yml
 +++ b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/pod_config.yml
-@@ -1,92 +1,93 @@
+@@ -2,92 +2,93 @@
  parameters:
    _param:
      # infra service addresses
