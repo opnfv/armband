@@ -17,10 +17,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 40 insertions(+), 40 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-index 29b2521..fe264ce 100644
+index b1cd5d2..50c590d 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/init.yml
-@@ -17,18 +17,18 @@ parameters:
+@@ -18,18 +18,18 @@ parameters:
      infra_maas_database_password: opnfv_secret
 
      # infra service addresses
@@ -49,10 +49,10 @@ index 29b2521..fe264ce 100644
      infra_maas_node01_hostname: mas01
      infra_kvm_node01_hostname: kvm01
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
-index e49a205..ad99447 100644
+index 16bdc06..e288322 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
-@@ -3,9 +3,9 @@ parameters:
+@@ -4,9 +4,9 @@ parameters:
 
      openstack_version: ocata
 
@@ -65,7 +65,7 @@ index e49a205..ad99447 100644
      openstack_gateway_node01_tenant_address: 10.1.0.6
      openstack_gateway_node02_tenant_address: 10.1.0.7
      openstack_gateway_node03_tenant_address: 10.1.0.9
-@@ -14,21 +14,21 @@ parameters:
+@@ -15,21 +15,21 @@ parameters:
      openstack_gateway_node03_hostname: gtw03
 
      # openstack service addresses
@@ -102,7 +102,7 @@ index e49a205..ad99447 100644
 
 
      openstack_telemetry_hostname: mdb
-@@ -36,26 +36,26 @@ parameters:
+@@ -37,26 +37,26 @@ parameters:
      openstack_telemetry_node02_hostname: mdb02
      openstack_telemetry_node03_hostname: mdb03
 
@@ -139,6 +139,6 @@ index e49a205..ad99447 100644
      # opendaylight options
 -    opendaylight_server_node01_single_address: 10.167.4.111
 +    opendaylight_server_node01_single_address: 172.16.10.111
+     # yamllint disable rule:line-length
      opendaylight_service_host: ${_param:opendaylight_server_node01_single_address}
      opendaylight_server_node01_hostname: odl01
-     opendaylight_router: odl-router_v2

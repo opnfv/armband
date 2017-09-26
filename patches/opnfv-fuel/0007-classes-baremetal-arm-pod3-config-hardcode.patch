@@ -20,10 +20,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 20 insertions(+), 20 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
-index 40d9c2d..b6735fc 100644
+index cb98e0e..ebee892 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
-@@ -47,57 +47,57 @@ parameters:
+@@ -48,57 +48,57 @@ parameters:
        machines:
          kvm01:
            interface:
