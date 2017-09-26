@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_61dff20d",
+        "filename": "patches/opnfv-fuel/0004-classes-baremetal-AArch64-virtio-NIC-names-sync.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-26T16:32:20Z",
+      "side": 1,
+      "message": "we need to parameterize this too, so we can drop this patch",
+      "range": {
+        "startLine": 109,
+        "startChar": 17,
+        "endLine": 109,
+        "endChar": 36
+      },
+      "revId": "3a6060a0c57e132a69cd76909a88a20e0867432a",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
