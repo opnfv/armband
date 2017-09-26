@@ -1,0 +1,88 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 30 Aug 2017 22:15:07 +0200
+Subject: [PATCH] baremetal, virtual: Extend arch list for UCA repo
+
+JIRA: https://jira.opnfv.org/browse/ARMBAND-304
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml       | 2 +-
+ .../cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml       | 2 +-
+ .../classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml  | 2 +-
+ .../classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml      | 2 +-
+ .../classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml     | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
+index 4db9ee0..9e37954 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
+@@ -203,7 +203,7 @@ parameters:
+       repo:
+         uca:
+           source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
+-          architectures: amd64
++          architectures: amd64,arm64
+           key_id: EC4926EA
+           key_server: keyserver.ubuntu.com
+       kernel:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
+index 696c5a5..b90b20b 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
+@@ -61,7 +61,7 @@ parameters:
+         uca:
+           # yamllint disable-line rule:line-length
+           source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
+-          architectures: amd64
++          architectures: amd64,arm64
+           key_id: EC4926EA
+           key_server: keyserver.ubuntu.com
+     network:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml
+index 9fa69ba..3f3cdb4 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml
+@@ -204,7 +204,7 @@ parameters:
+       repo:
+         uca:
+           source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
+-          architectures: amd64
++          architectures: amd64,arm64
+           key_id: EC4926EA
+           key_server: keyserver.ubuntu.com
+       kernel:
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
+index d072956..e96e091 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
+@@ -59,7 +59,7 @@ parameters:
+         uca:
+           # yamllint disable-line rule:line-length
+           source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
+-          architectures: amd64
++          architectures: amd64,arm64
+           key_id: EC4926EA
+           key_server: keyserver.ubuntu.com
+       kernel:
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml
+index ed03eb4..40fb60d 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml
+@@ -11,7 +11,7 @@ parameters:
+         uca:
+           # yamllint disable-line rule:line-length
+           source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
+-          architectures: amd64
++          architectures: amd64,arm64
+           key_id: EC4926EA
+           key_server: keyserver.ubuntu.com
+     network:
