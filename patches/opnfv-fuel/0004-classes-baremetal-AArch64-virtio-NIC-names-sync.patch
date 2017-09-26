@@ -28,34 +28,34 @@ is used).
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../baremetal-mcp-ocata-odl-ha/infra/config.yml    |  4 ++--
- .../baremetal-mcp-ocata-odl-ha/infra/kvm.yml       | 18 ++++++++++-----
- .../baremetal-mcp-ocata-odl-ha/infra/maas.yml      |  6 ++---
- .../opendaylight/control.yml                       |  2 +-
- .../openstack/compute.yml                          | 27 ++++++++--------------
- .../openstack/control.yml                          |  6 ++---
- .../openstack/dashboard.yml                        |  4 ++--
- .../openstack/database.yml                         |  6 ++---
- .../openstack/message_queue.yml                    |  6 ++---
- .../baremetal-mcp-ocata-odl-ha/openstack/proxy.yml |  6 ++---
- .../openstack/telemetry.yml                        |  6 ++---
- .../baremetal-mcp-ocata-ovs-ha/infra/config.yml    |  4 ++--
- .../baremetal-mcp-ocata-ovs-ha/infra/kvm.yml       | 16 +++++++++----
- .../baremetal-mcp-ocata-ovs-ha/infra/maas.yml      |  6 ++---
- .../openstack/compute.yml                          | 19 +++++----------
- .../openstack/control.yml                          |  6 ++---
- .../openstack/dashboard.yml                        |  4 ++--
- .../openstack/database.yml                         |  6 ++---
- .../openstack/message_queue.yml                    |  6 ++---
- .../baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml |  6 ++---
- .../openstack/telemetry.yml                        |  6 ++---
- 21 files changed, 84 insertions(+), 86 deletions(-)
+ .../baremetal-mcp-ocata-odl-ha/infra/config.yml       |  4 ++--
+ .../cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml  | 16 +++++++++++-----
+ .../cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml |  6 +++---
+ .../opendaylight/control.yml                          |  2 +-
+ .../baremetal-mcp-ocata-odl-ha/openstack/compute.yml  | 19 ++++++-------------
+ .../baremetal-mcp-ocata-odl-ha/openstack/control.yml  |  6 +++---
+ .../openstack/dashboard.yml                           |  4 ++--
+ .../baremetal-mcp-ocata-odl-ha/openstack/database.yml |  6 +++---
+ .../openstack/message_queue.yml                       |  6 +++---
+ .../baremetal-mcp-ocata-odl-ha/openstack/proxy.yml    |  6 +++---
+ .../openstack/telemetry.yml                           |  6 +++---
+ .../baremetal-mcp-ocata-ovs-ha/infra/config.yml       |  4 ++--
+ .../cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml  | 16 +++++++++++-----
+ .../cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml |  6 +++---
+ .../baremetal-mcp-ocata-ovs-ha/openstack/compute.yml  | 19 ++++++-------------
+ .../baremetal-mcp-ocata-ovs-ha/openstack/control.yml  |  6 +++---
+ .../openstack/dashboard.yml                           |  4 ++--
+ .../baremetal-mcp-ocata-ovs-ha/openstack/database.yml |  6 +++---
+ .../openstack/message_queue.yml                       |  6 +++---
+ .../baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml    |  6 +++---
+ .../openstack/telemetry.yml                           |  6 +++---
+ 21 files changed, 79 insertions(+), 81 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/config.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/config.yml
-index 4cf2a60..697e697 100644
+index 15202f1..6ddb8a2 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/config.yml
-@@ -35,8 +35,8 @@ parameters:
+@@ -34,8 +34,8 @@ parameters:
    linux:
      network:
        interface:
@@ -67,7 +67,7 @@ index 4cf2a60..697e697 100644
      master:
        accept_policy: open_mode
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index 99ac02e..f9427be 100644
+index da26254..5e4ea66 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 @@ -26,7 +26,8 @@ parameters:
@@ -101,31 +101,26 @@ index 99ac02e..f9427be 100644
          br-mgmt:
            enabled: true
            proto: dhcp
-@@ -159,13 +165,13 @@ parameters:
-           use_interfaces:
-             - ${_param:deploy_nic}
-           noifupdown: true
--        vlan300:
-+        vlan2183:
+@@ -161,9 +167,9 @@ parameters:
            enabled: true
            proto: manual
            type: vlan
--          name: ${_param:deploy_nic}.300
-+          name: ${_param:trunk_nic}.2183
+-          name: ${_param:deploy_nic}.${_param:opnfv_net_mgmt_vlan}
++          name: ${_param:trunk_nic}.${_param:opnfv_net_mgmt_vlan}
            use_interfaces:
 -            - ${_param:deploy_nic}
 +            - ${_param:trunk_nic}
          br-ctl:
            enabled: true
            type: bridge
-@@ -173,4 +179,4 @@ parameters:
+@@ -171,4 +177,4 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
--            - ${_param:deploy_nic}.300
-+            - ${_param:trunk_nic}.2183
+-            - ${_param:deploy_nic}.${_param:opnfv_net_mgmt_vlan}
++            - ${_param:trunk_nic}.${_param:opnfv_net_mgmt_vlan}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
-index 2a2fedb..cb98e0e 100644
+index cbb1caf..e54621c 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
 @@ -5,9 +5,9 @@ classes:
@@ -155,7 +150,7 @@ index d473a07..d77d204 100644
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-index 82b1a6e..605bfe1 100644
+index ba0f385..a41df69 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 @@ -25,10 +25,9 @@ parameters:
@@ -184,38 +179,24 @@ index 82b1a6e..605bfe1 100644
          br-mesh:
            enabled: true
            type: bridge
-@@ -91,19 +84,19 @@ parameters:
-           netmask: 255.255.255.0
-           mtu: 1500
-           use_interfaces:
--            - ${_param:tenant_nic}.302
--        vlan300:
-+            - ${_param:tenant_nic}.2185
-+        vlan2183:
+@@ -96,9 +89,9 @@ parameters:
            enabled: true
            proto: manual
            type: vlan
--          name: ${_param:mgmt_nic}.300
-+          name: ${_param:tenant_nic}.2183
+-          name: ${_param:mgmt_nic}.${_param:opnfv_net_mgmt_vlan}
++          name: ${_param:tenant_nic}.${_param:opnfv_net_mgmt_vlan}
            use_interfaces:
 -            - ${_param:mgmt_nic}
--        vlan302:
 +            - ${_param:tenant_nic}
-+        vlan2185:
+         tenant-vlan:
            enabled: true
            proto: manual
-           type: vlan
--          name: ${_param:tenant_nic}.302
-+          name: ${_param:tenant_nic}.2185
-           use_interfaces:
-             - ${_param:tenant_nic}
-         br-ctl:
 @@ -113,7 +106,7 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
--            - ${_param:mgmt_nic}.300
-+            - ${_param:tenant_nic}.2183
+-            - ${_param:mgmt_nic}.${_param:opnfv_net_mgmt_vlan}
++            - ${_param:tenant_nic}.${_param:opnfv_net_mgmt_vlan}
          br-floating:
            enabled: true
            type: ovs_bridge
