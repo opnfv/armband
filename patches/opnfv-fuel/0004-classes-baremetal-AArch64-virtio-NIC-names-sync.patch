@@ -120,10 +120,10 @@ index da26254..5e4ea66 100644
 -            - ${_param:deploy_nic}.${_param:opnfv_net_mgmt_vlan}
 +            - ${_param:trunk_nic}.${_param:opnfv_net_mgmt_vlan}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
-index cbb1caf..e54621c 100644
+index 0900b65..a8c6d81 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
-@@ -5,9 +5,9 @@ classes:
+@@ -6,9 +6,9 @@ classes:
    - cluster.baremetal-mcp-ocata-odl-ha.infra
  parameters:
    _param:
@@ -403,10 +403,10 @@ index 9e023e3..95bacb2 100644
 -            - ${_param:deploy_nic}.${_param:opnfv_net_mgmt_vlan}
 +            - ${_param:trunk_nic}.${_param:opnfv_net_mgmt_vlan}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
-index 2922fa3..99ca6ce 100644
+index bf57837..86b2f94 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
-@@ -5,9 +5,9 @@ classes:
+@@ -6,9 +6,9 @@ classes:
    - cluster.baremetal-mcp-ocata-ovs-ha.infra
  parameters:
    _param:
