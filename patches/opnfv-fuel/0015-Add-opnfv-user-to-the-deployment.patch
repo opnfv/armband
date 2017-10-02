@@ -21,7 +21,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 1adccbf..85d1a9e 100755
+index 68390c0..036f76a 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -84,6 +84,7 @@ salt -C 'mas01*' pillar.item\

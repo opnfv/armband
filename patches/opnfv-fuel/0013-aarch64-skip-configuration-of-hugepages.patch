@@ -23,10 +23,10 @@ Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
  4 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-index a41df69..10a5a88 100644
+index e2179ee..e4aaba1 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-@@ -6,8 +6,8 @@ classes:
+@@ -5,8 +5,8 @@ classes:
    - system.linux.storage.loopback
    - system.glusterfs.client.cluster
    - system.nova.compute.cluster
@@ -59,10 +59,10 @@ index c7df472..4db9ee0 100644
      glance_service_host: ${_param:openstack_control_address}
      keystone_version: ${_param:openstack_version}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-index e3f0cff..6ed1622 100644
+index 36465cd..5c01d2d 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-@@ -6,8 +6,8 @@ classes:
+@@ -5,8 +5,8 @@ classes:
    - system.linux.storage.loopback
    - system.glusterfs.client.cluster
    - system.nova.compute.cluster
