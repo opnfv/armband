@@ -67,10 +67,10 @@ index 15202f1..6ddb8a2 100644
      master:
        accept_policy: open_mode
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index da26254..5e4ea66 100644
+index 67a2c4d..331a262 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-@@ -26,7 +26,8 @@ parameters:
+@@ -25,7 +25,8 @@ parameters:
      cluster_node03_address: ${_param:infra_kvm_node03_address}
      keepalived_vip_interface: br-ctl
      keepalived_vip_virtual_router_id: 69
@@ -80,7 +80,7 @@ index da26254..5e4ea66 100644
    salt:
      control:
        size:  # RAM 4096,8192,16384,32768,65536
-@@ -141,7 +142,7 @@ parameters:
+@@ -140,7 +141,7 @@ parameters:
    linux:
      network:
        interface:
@@ -89,7 +89,7 @@ index da26254..5e4ea66 100644
            enabled: true
            type: eth
            proto: manual
-@@ -149,6 +150,11 @@ parameters:
+@@ -148,6 +149,11 @@ parameters:
            netmask: 255.255.255.0
            name: ${_param:deploy_nic}
            noifupdown: true
@@ -101,7 +101,7 @@ index da26254..5e4ea66 100644
          br-mgmt:
            enabled: true
            proto: dhcp
-@@ -161,9 +167,9 @@ parameters:
+@@ -160,9 +166,9 @@ parameters:
            enabled: true
            proto: manual
            type: vlan
@@ -113,17 +113,17 @@ index da26254..5e4ea66 100644
          br-ctl:
            enabled: true
            type: bridge
-@@ -171,4 +177,4 @@ parameters:
+@@ -170,4 +176,4 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
 -            - ${_param:deploy_nic}.${_param:opnfv_net_mgmt_vlan}
 +            - ${_param:trunk_nic}.${_param:opnfv_net_mgmt_vlan}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
-index 0900b65..a8c6d81 100644
+index 737d6cb..074cadc 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/maas.yml
-@@ -6,9 +6,9 @@ classes:
+@@ -5,9 +5,9 @@ classes:
    - cluster.baremetal-mcp-ocata-odl-ha.infra
  parameters:
    _param:
@@ -137,10 +137,10 @@ index 0900b65..a8c6d81 100644
      # MaaS has issues using MTU > 1500 for PXE interface
      pxe_interface_mtu: 1500
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/opendaylight/control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/opendaylight/control.yml
-index d473a07..d77d204 100644
+index ce1bdfd..bbf4453 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/opendaylight/control.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/opendaylight/control.yml
-@@ -11,7 +11,7 @@ parameters:
+@@ -10,7 +10,7 @@ parameters:
    linux:
      network:
        interface:
@@ -150,10 +150,10 @@ index d473a07..d77d204 100644
            type: eth
            proto: static
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-index ba0f385..a41df69 100644
+index f2dab39..e2179ee 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-@@ -25,10 +25,9 @@ parameters:
+@@ -24,10 +24,9 @@ parameters:
      cluster_node03_hostname: ctl03
      cluster_node03_address: ${_param:openstack_control_node03_address}
      nova_vncproxy_url: https://${_param:cluster_public_host}:6080
@@ -166,7 +166,7 @@ index ba0f385..a41df69 100644
      interface_mtu: 1500
      keepalived_vip_interface: br-ctl
      keepalived_vip_virtual_router_id: 69
-@@ -78,12 +77,6 @@ parameters:
+@@ -77,12 +76,6 @@ parameters:
            type: eth
            proto: manual
            name: ${_param:tenant_nic}
@@ -179,7 +179,7 @@ index ba0f385..a41df69 100644
          br-mesh:
            enabled: true
            type: bridge
-@@ -96,9 +89,9 @@ parameters:
+@@ -95,9 +88,9 @@ parameters:
            enabled: true
            proto: manual
            type: vlan
@@ -191,7 +191,7 @@ index ba0f385..a41df69 100644
          tenant-vlan:
            enabled: true
            proto: manual
-@@ -113,7 +106,7 @@ parameters:
+@@ -112,7 +105,7 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -200,7 +200,7 @@ index ba0f385..a41df69 100644
          br-floating:
            enabled: true
            type: ovs_bridge
-@@ -130,6 +123,6 @@ parameters:
+@@ -129,6 +122,6 @@ parameters:
            address: ${_param:external_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -209,10 +209,10 @@ index ba0f385..a41df69 100644
            use_ovs_ports:
              - float-to-ex
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/control.yml
-index 9b72199..c863313 100644
+index b04513f..535de37 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/control.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/control.yml
-@@ -24,7 +24,7 @@ classes:
+@@ -23,7 +23,7 @@ classes:
    - cluster.baremetal-mcp-ocata-odl-ha.infra
  parameters:
    _param:
@@ -221,7 +221,7 @@ index 9b72199..c863313 100644
      keepalived_vip_virtual_router_id: 50
      cluster_vip_address: ${_param:openstack_control_address}
      cluster_local_address: ${_param:single_address}
-@@ -38,8 +38,8 @@ parameters:
+@@ -37,8 +37,8 @@ parameters:
    linux:
      network:
        interface:
@@ -245,10 +245,10 @@ index ddcc196..2f56b5a 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/database.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/database.yml
-index e59c479..66e1905 100644
+index 12fbe91..7e0fd6c 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/database.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/database.yml
-@@ -17,7 +17,7 @@ classes:
+@@ -16,7 +16,7 @@ classes:
    - cluster.baremetal-mcp-ocata-odl-ha
  parameters:
    _param:
@@ -257,7 +257,7 @@ index e59c479..66e1905 100644
      keepalived_vip_virtual_router_id: 80
      galera_server_cluster_name: openstack_cluster
      galera_max_connections: 3072
-@@ -33,5 +33,5 @@ parameters:
+@@ -32,5 +32,5 @@ parameters:
    linux:
      network:
        interface:
@@ -266,10 +266,10 @@ index e59c479..66e1905 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/message_queue.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/message_queue.yml
-index 3c6427c..2ab5489 100644
+index 4bbd92f..25c99da 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/message_queue.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/message_queue.yml
-@@ -8,7 +8,7 @@ classes:
+@@ -7,7 +7,7 @@ classes:
    - cluster.baremetal-mcp-ocata-odl-ha
  parameters:
    _param:
@@ -278,7 +278,7 @@ index 3c6427c..2ab5489 100644
      keepalived_vip_virtual_router_id: 90
      cluster_vip_address: ${_param:openstack_message_queue_address}
      cluster_local_address: ${_param:single_address}
-@@ -21,5 +21,5 @@ parameters:
+@@ -20,5 +20,5 @@ parameters:
    linux:
      network:
        interface:
@@ -287,10 +287,10 @@ index 3c6427c..2ab5489 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
-index 446157d..266b536 100644
+index b8d7109..c3ae104 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/proxy.yml
-@@ -18,7 +18,7 @@ classes:
+@@ -17,7 +17,7 @@ classes:
    # - cluster.baremetal-mcp-ocata-odl-ha.stacklight.proxy
  parameters:
    _param:
@@ -299,7 +299,7 @@ index 446157d..266b536 100644
      keepalived_vip_virtual_router_id: 240
      nginx_proxy_ssl:
        enabled: true
-@@ -30,8 +30,8 @@ parameters:
+@@ -29,8 +29,8 @@ parameters:
    linux:
      network:
        interface:
@@ -311,10 +311,10 @@ index 446157d..266b536 100644
        package:
          libapache2-mod-wsgi:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/telemetry.yml
-index e1c969c..920b657 100644
+index 8c4d65a..a6a6fde 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/telemetry.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/telemetry.yml
-@@ -13,7 +13,7 @@ classes:
+@@ -12,7 +12,7 @@ classes:
    - cluster.baremetal-mcp-ocata-odl-ha.infra
  parameters:
    _param:
@@ -323,7 +323,7 @@ index e1c969c..920b657 100644
      keepalived_vip_virtual_router_id: 230
      cluster_vip_address: ${_param:openstack_telemetry_address}
      cluster_local_address: ${_param:single_address}
-@@ -26,8 +26,8 @@ parameters:
+@@ -25,8 +25,8 @@ parameters:
    linux:
      network:
        interface:
@@ -350,10 +350,10 @@ index 3966dae..7fd1716 100644
      master:
        accept_policy: open_mode
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index 9e023e3..95bacb2 100644
+index aa3cb4f..163cf5f 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-@@ -26,7 +26,8 @@ parameters:
+@@ -25,7 +25,8 @@ parameters:
      cluster_node03_address: ${_param:infra_kvm_node03_address}
      keepalived_vip_interface: br-ctl
      keepalived_vip_virtual_router_id: 69
@@ -363,7 +363,7 @@ index 9e023e3..95bacb2 100644
    salt:
      control:
        size:  # RAM 4096,8192,16384,32768,65536
-@@ -131,7 +132,7 @@ parameters:
+@@ -130,7 +131,7 @@ parameters:
    linux:
      network:
        interface:
@@ -372,7 +372,7 @@ index 9e023e3..95bacb2 100644
            enabled: true
            type: eth
            proto: manual
-@@ -139,6 +140,11 @@ parameters:
+@@ -138,6 +139,11 @@ parameters:
            netmask: 255.255.255.0
            name: ${_param:deploy_nic}
            noifupdown: true
@@ -384,7 +384,7 @@ index 9e023e3..95bacb2 100644
          br-mgmt:
            enabled: true
            proto: dhcp
-@@ -151,9 +157,9 @@ parameters:
+@@ -150,9 +156,9 @@ parameters:
            enabled: true
            proto: manual
            type: vlan
@@ -396,17 +396,17 @@ index 9e023e3..95bacb2 100644
          br-ctl:
            enabled: true
            type: bridge
-@@ -161,4 +167,4 @@ parameters:
+@@ -160,4 +166,4 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
 -            - ${_param:deploy_nic}.${_param:opnfv_net_mgmt_vlan}
 +            - ${_param:trunk_nic}.${_param:opnfv_net_mgmt_vlan}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
-index bf57837..86b2f94 100644
+index cebc779..b2da07e 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/maas.yml
-@@ -6,9 +6,9 @@ classes:
+@@ -5,9 +5,9 @@ classes:
    - cluster.baremetal-mcp-ocata-ovs-ha.infra
  parameters:
    _param:
@@ -420,10 +420,10 @@ index bf57837..86b2f94 100644
      # MaaS has issues using MTU > 1500 for PXE interface
      pxe_interface_mtu: 1500
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-index ff97fe8..e3f0cff 100644
+index a6fd289..36465cd 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-@@ -24,9 +24,8 @@ parameters:
+@@ -23,9 +23,8 @@ parameters:
      cluster_node03_hostname: ctl03
      cluster_node03_address: ${_param:openstack_control_node03_address}
      nova_vncproxy_url: https://${_param:cluster_public_host}:6080
@@ -435,7 +435,7 @@ index ff97fe8..e3f0cff 100644
      linux_system_codename: xenial
      interface_mtu: 1500
      keepalived_vip_interface: br-ctl
-@@ -61,12 +60,6 @@ parameters:
+@@ -60,12 +59,6 @@ parameters:
            type: eth
            proto: manual
            name: ${_param:tenant_nic}
@@ -448,7 +448,7 @@ index ff97fe8..e3f0cff 100644
          br-mesh:
            enabled: true
            type: bridge
-@@ -79,9 +72,9 @@ parameters:
+@@ -78,9 +71,9 @@ parameters:
            enabled: true
            proto: manual
            type: vlan
@@ -460,7 +460,7 @@ index ff97fe8..e3f0cff 100644
          tenant-vlan:
            enabled: true
            proto: manual
-@@ -96,7 +89,7 @@ parameters:
+@@ -95,7 +88,7 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -469,7 +469,7 @@ index ff97fe8..e3f0cff 100644
          br-floating:
            enabled: true
            type: ovs_bridge
-@@ -113,6 +106,6 @@ parameters:
+@@ -112,6 +105,6 @@ parameters:
            address: ${_param:external_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -478,10 +478,10 @@ index ff97fe8..e3f0cff 100644
            use_ovs_ports:
              - float-to-ex
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
-index f0c03cc..aa92d99 100644
+index 5d796eb..ec0f83a 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/control.yml
-@@ -24,7 +24,7 @@ classes:
+@@ -23,7 +23,7 @@ classes:
    - cluster.baremetal-mcp-ocata-ovs-ha.infra
  parameters:
    _param:
@@ -490,7 +490,7 @@ index f0c03cc..aa92d99 100644
      keepalived_vip_virtual_router_id: 50
      cluster_vip_address: ${_param:openstack_control_address}
      cluster_local_address: ${_param:single_address}
-@@ -38,8 +38,8 @@ parameters:
+@@ -37,8 +37,8 @@ parameters:
    linux:
      network:
        interface:
@@ -514,10 +514,10 @@ index f2e010d..160d69c 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml
-index b8a43d8..b449230 100644
+index 7346f55..561e945 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/database.yml
-@@ -17,7 +17,7 @@ classes:
+@@ -16,7 +16,7 @@ classes:
    - cluster.baremetal-mcp-ocata-ovs-ha
  parameters:
    _param:
@@ -526,7 +526,7 @@ index b8a43d8..b449230 100644
      keepalived_vip_virtual_router_id: 80
      galera_server_cluster_name: openstack_cluster
      galera_max_connections: 3072
-@@ -33,5 +33,5 @@ parameters:
+@@ -32,5 +32,5 @@ parameters:
    linux:
      network:
        interface:
@@ -535,10 +535,10 @@ index b8a43d8..b449230 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml
-index 66b5822..4cd076d 100644
+index 083cf75..d5f5973 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/message_queue.yml
-@@ -8,7 +8,7 @@ classes:
+@@ -7,7 +7,7 @@ classes:
    - cluster.baremetal-mcp-ocata-ovs-ha
  parameters:
    _param:
@@ -547,7 +547,7 @@ index 66b5822..4cd076d 100644
      keepalived_vip_virtual_router_id: 90
      cluster_vip_address: ${_param:openstack_message_queue_address}
      cluster_local_address: ${_param:single_address}
-@@ -21,5 +21,5 @@ parameters:
+@@ -20,5 +20,5 @@ parameters:
    linux:
      network:
        interface:
@@ -556,10 +556,10 @@ index 66b5822..4cd076d 100644
 +        enp1s0: ${_param:linux_dhcp_interface}
 +        enp2s0: ${_param:linux_single_interface}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
-index e948d93..b4cf0ca 100644
+index 6e04793..c23331a 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/proxy.yml
-@@ -18,7 +18,7 @@ classes:
+@@ -17,7 +17,7 @@ classes:
    # - cluster.baremetal-mcp-ocata-ovs-ha.stacklight.proxy
  parameters:
    _param:
@@ -568,7 +568,7 @@ index e948d93..b4cf0ca 100644
      keepalived_vip_virtual_router_id: 240
      nginx_proxy_ssl:
        enabled: true
-@@ -30,8 +30,8 @@ parameters:
+@@ -29,8 +29,8 @@ parameters:
    linux:
      network:
        interface:
@@ -580,10 +580,10 @@ index e948d93..b4cf0ca 100644
        package:
          libapache2-mod-wsgi:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
-index 4389a49..0f8f467 100644
+index 8254d97..61136bb 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/telemetry.yml
-@@ -13,7 +13,7 @@ classes:
+@@ -12,7 +12,7 @@ classes:
    - cluster.baremetal-mcp-ocata-ovs-ha.infra
  parameters:
    _param:
@@ -592,7 +592,7 @@ index 4389a49..0f8f467 100644
      keepalived_vip_virtual_router_id: 230
      cluster_vip_address: ${_param:openstack_telemetry_address}
      cluster_local_address: ${_param:single_address}
-@@ -26,8 +26,8 @@ parameters:
+@@ -25,8 +25,8 @@ parameters:
    linux:
      network:
        interface:

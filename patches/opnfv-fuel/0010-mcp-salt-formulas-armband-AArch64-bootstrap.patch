@@ -32,7 +32,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/files/cloud.py.diff
 
 diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 42738e3..1adccbf 100755
+index baa9b13..68390c0 100755
 --- a/mcp/config/states/maas
 +++ b/mcp/config/states/maas
 @@ -85,6 +85,7 @@ salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
