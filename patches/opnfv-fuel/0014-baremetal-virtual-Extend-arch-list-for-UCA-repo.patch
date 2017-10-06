@@ -61,7 +61,7 @@ index 9fa69ba..3f3cdb4 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
-index 58cad51..d55406d 100644
+index ddd804a..f989b6c 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
 @@ -58,7 +58,7 @@ parameters:

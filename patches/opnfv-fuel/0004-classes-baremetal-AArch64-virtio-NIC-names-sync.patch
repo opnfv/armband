@@ -137,7 +137,7 @@ index 2e39588..e5c6573 100644
      # MaaS has issues using MTU > 1500 for PXE interface
      pxe_interface_mtu: 1500
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/opendaylight/control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/opendaylight/control.yml
-index ce1bdfd..bbf4453 100644
+index ec25ad1..f00a775 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/opendaylight/control.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/opendaylight/control.yml
 @@ -10,7 +10,7 @@ parameters:
