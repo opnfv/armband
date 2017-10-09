@@ -35,10 +35,10 @@ index 4db9ee0..9e37954 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
-index 8db9d13..adf5618 100644
+index 13d45f7..e7e0ff2 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
-@@ -60,7 +60,7 @@ parameters:
+@@ -59,7 +59,7 @@ parameters:
          uca:
            # yamllint disable-line rule:line-length
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"

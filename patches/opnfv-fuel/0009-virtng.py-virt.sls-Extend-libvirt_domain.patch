@@ -160,7 +160,7 @@ index 4dc47c7..f6312b6 100644
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index 331a262..a328d02 100644
+index b8b5208..badecc8 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 @@ -34,26 +34,41 @@ parameters:
@@ -216,7 +216,7 @@ index 331a262..a328d02 100644
            net_profile: default
        cluster:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index 163cf5f..578979e 100644
+index 730de08..2da10d7 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
 @@ -34,21 +34,33 @@ parameters:
