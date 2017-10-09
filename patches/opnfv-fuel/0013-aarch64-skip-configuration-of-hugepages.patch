@@ -23,7 +23,7 @@ Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
  4 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-index e2179ee..e4aaba1 100644
+index e898353..1e58fee 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
 @@ -5,8 +5,8 @@ classes:
@@ -59,7 +59,7 @@ index c7df472..4db9ee0 100644
      glance_service_host: ${_param:openstack_control_address}
      keystone_version: ${_param:openstack_version}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-index 36465cd..5c01d2d 100644
+index cad293d..ca7a539 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 @@ -5,8 +5,8 @@ classes:
