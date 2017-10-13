@@ -28,9 +28,9 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/maas                             |  1 +
  mcp/config/states/openstack                        |  2 +
  mcp/config/states/openstack_ha                     |  1 +
+ mcp/config/states/virtual_control_plane            |  1 +
  ...ate-vga-console-defaults-for-armv7-aarch64.diff | 48 ++++++++++++++++++++++
  ...nova-libvirt-AArch64-ACPI-depends-on-AAVMF.diff | 45 ++++++++++++++++++++
  mcp/salt-formulas/armband/init.sls                 |  6 +++
@@ -47,18 +47,6 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/qemu.sls
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
-diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 67ef6d5..ad61b97 100755
---- a/mcp/config/states/maas
-+++ b/mcp/config/states/maas
-@@ -90,6 +90,7 @@ wait_for 90 "! salt 'kvm*' test.ping | tee /dev/stderr | fgrep -q 'Not connected
-
- salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
-
-+salt -C 'kvm*' state.sls armband
- salt -C 'kvm*' state.sls libvirt
-
- salt -C '* and not cfg01* and not mas01*' state.apply salt
 diff --git a/mcp/config/states/openstack b/mcp/config/states/openstack
 index beb6abb..885f2ac 100755
 --- a/mcp/config/states/openstack
@@ -70,17 +58,29 @@ index beb6abb..885f2ac 100755
 +
 +salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 78da80a..dcceb02 100755
+index c4c513d..9084678 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
-@@ -41,6 +41,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
+@@ -44,6 +44,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
  salt -I 'neutron:gateway' state.sls neutron.gateway
 
  salt -I 'nova:compute' state.sls nova
 +salt -I 'nova:compute' state.sls armband
 
  salt -I 'mongodb:server' state.sls mongodb
- while true; do sleep 5; salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin' && break; done
+ wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
+diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
+index 645009b..79ad880 100755
+--- a/mcp/config/states/virtual_control_plane
++++ b/mcp/config/states/virtual_control_plane
+@@ -12,6 +12,7 @@ wait_for 90 "! salt 'kvm*' test.ping | tee /dev/stderr | grep -Fq 'Not connected
+
+ salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
+
++salt -C 'kvm*' state.sls armband
+ salt -C 'kvm*' state.sls libvirt
+
+ salt -C '* and not cfg01* and not mas01*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-Update-vga-console-defaults-for-armv7-aarch64.diff b/mcp/salt-formulas/armband/files/nova-Update-vga-console-defaults-for-armv7-aarch64.diff
 new file mode 100644
 index 0000000..a5b08da

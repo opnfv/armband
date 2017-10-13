@@ -14,25 +14,25 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 ---
- mcp/config/states/maas                                          | 2 ++
+ mcp/config/states/virtual_control_plane                         | 2 ++
  mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml | 4 ++++
  mcp/salt-formulas/opnfv/adduser.sls                             | 7 +++++++
  3 files changed, 13 insertions(+)
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
-diff --git a/mcp/config/states/maas b/mcp/config/states/maas
-index 68390c0..036f76a 100755
---- a/mcp/config/states/maas
-+++ b/mcp/config/states/maas
-@@ -84,6 +84,7 @@ salt -C 'mas01*' pillar.item\
- salt -C '* and not cfg01* and not mas01*' saltutil.sync_all
+diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
+index 59424ac..12fff84 100755
+--- a/mcp/config/states/virtual_control_plane
++++ b/mcp/config/states/virtual_control_plane
+@@ -6,6 +6,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
 
+ # KVM, compute node prereqs (libvirt first), VCP deployment
  salt -C 'kvm*' pkg.install bridge-utils
 +salt -C '*' state.apply opnfv.adduser
  salt -C 'kvm*' state.apply linux.network
  salt -C 'kvm*' state.apply armband.bootstrap_script_arm64
  salt -C 'kvm*' system.reboot
-@@ -108,6 +109,7 @@ while [ $rc -ne 0 ]; do
+@@ -30,6 +31,7 @@ while [ $rc -ne 0 ]; do
    rc=0
    for node in $vcp_nodes; do
      salt "$node" test.ping 2>/dev/null || { rc=$?; break; };

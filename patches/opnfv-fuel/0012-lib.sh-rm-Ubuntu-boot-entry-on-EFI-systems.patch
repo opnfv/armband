@@ -31,14 +31,14 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 10 insertions(+)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index fcc5d76..c0eb330 100644
+index 3a6deec..c355141 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
-@@ -28,6 +28,15 @@ get_base_image() {
+@@ -28,6 +28,15 @@ function get_base_image {
    wget -P "${image_dir}" -N "${base_image}"
  }
 
-+cleanup_uefi() {
++function cleanup_uefi {
 +  # Clean up Ubuntu boot entry if cfg01, kvm nodes online from previous deploy
 +  # shellcheck disable=SC2086
 +  ssh ${SSH_OPTS} "ubuntu@${SALT_MASTER}" "sudo salt -C 'kvm* or cmp*' cmd.run \
@@ -47,10 +47,10 @@ index fcc5d76..c0eb330 100644
 +    xargs -I{} efibootmgr --delete-bootnum --bootnum {}\"" || true
 +}
 +
- cleanup_vms() {
+ function cleanup_vms {
    # clean up existing nodes
    for node in $(virsh list --name | grep -P '\w{3}\d{2}'); do
-@@ -45,6 +54,7 @@ prepare_vms() {
+@@ -45,6 +54,7 @@ function prepare_vms {
    local base_image=$2
    local image_dir=$3
 
