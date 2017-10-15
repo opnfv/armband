@@ -26,9 +26,9 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  .../0103-virtng-module-Extend-libvirt_domain.patch | 54 ++++++++++++++++++++++
  ...4-salt-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++++
  mcp/patches/patches.list                           |  2 +
- .../baremetal-mcp-ocata-odl-ha/infra/kvm.yml       | 18 ++++++++
- .../baremetal-mcp-ocata-ovs-ha/infra/kvm.yml       | 15 ++++++
- 5 files changed, 140 insertions(+)
+ .../baremetal-mcp-ocata-common/infra/kvm.yml       | 15 ++++++
+ .../baremetal-mcp-ocata-odl-ha/infra/kvm.yml       |  3 ++
+ 5 files changed, 125 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
  create mode 100644 mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 
@@ -150,20 +150,20 @@ index 0000000..a9fe11b
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 4dc47c7..f6312b6 100644
+index 093bf05..7032a6d 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -9,3 +9,5 @@
+@@ -16,3 +16,5 @@
  /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
  /usr/share/salt-formulas/env: 0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index b8b5208..badecc8 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-@@ -34,26 +34,41 @@ parameters:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
+index b270e0f..4bf8dec 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
+@@ -40,21 +40,33 @@ parameters:
          openstack.control:
            cpu: 4
            ram: 12288
@@ -196,67 +196,25 @@ index b8b5208..badecc8 100644
 +          cpu_model: host-passthrough
            disk_profile: xxlarge
            net_profile: default
+         # stacklight.log:
+@@ -75,6 +87,9 @@ parameters:
          openstack.proxy:
            cpu: 2
            ram: 2048
-+          hw_firmware_type: uefi
-+          virt_machine_model: virt
-+          cpu_model: host-passthrough
-           disk_profile: small
-           net_profile: default
-         # stacklight.log:
-@@ -74,6 +89,9 @@ parameters:
-         opendaylight.server:
-           cpu: 4
-           ram: 6144
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough
            disk_profile: small
            net_profile: default
        cluster:
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-index 730de08..2da10d7 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/infra/kvm.yml
-@@ -34,21 +34,33 @@ parameters:
-         openstack.control:
-           cpu: 4
-           ram: 12288
-+          hw_firmware_type: uefi
-+          virt_machine_model: virt
-+          cpu_model: host-passthrough
-           disk_profile: small
-           net_profile: default
-         openstack.database:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
+index 344b190..3ac09f2 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
+@@ -17,6 +17,9 @@ parameters:
+         opendaylight.server:
            cpu: 4
            ram: 6144
-+          hw_firmware_type: uefi
-+          virt_machine_model: virt
-+          cpu_model: host-passthrough
-           disk_profile: large
-           net_profile: default
-         openstack.message_queue:
-           cpu: 4
-           ram: 2048
-+          hw_firmware_type: uefi
-+          virt_machine_model: virt
-+          cpu_model: host-passthrough
-           disk_profile: small
-           net_profile: default
-         openstack.telemetry:
-           cpu: 2
-           ram: 3072
-+          hw_firmware_type: uefi
-+          virt_machine_model: virt
-+          cpu_model: host-passthrough
-           disk_profile: xxlarge
-           net_profile: default
-         # stacklight.log:
-@@ -69,6 +81,9 @@ parameters:
-         openstack.proxy:
-           cpu: 2
-           ram: 2048
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough

@@ -32,10 +32,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/files/cloud.py.diff
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 327b159..59424ac 100755
+index fb47893..899972c 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -7,6 +7,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
+@@ -13,6 +13,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
  # KVM, compute node prereqs (libvirt first), VCP deployment
  salt -C 'kvm*' pkg.install bridge-utils
  salt -C 'kvm*' state.apply linux.network

@@ -16,53 +16,14 @@ Those instructions need to be overwritten for ARM.
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
 ---
- .../cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml   |  4 ++--
- .../cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml      | 10 +++++-----
- .../cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml   |  4 ++--
- .../cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml      | 10 +++++-----
- 4 files changed, 14 insertions(+), 14 deletions(-)
+ .../classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml  | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-index e898353..1e58fee 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/compute.yml
-@@ -5,8 +5,8 @@ classes:
-   - system.linux.storage.loopback
-   - system.glusterfs.client.cluster
-   - system.nova.compute.cluster
--  - system.nova.compute.nfv.hugepages
--  - system.nova.compute.nfv.cpu_pinning
-+  # - system.nova.compute.nfv.hugepages
-+  # - system.nova.compute.nfv.cpu_pinning
-   - system.neutron.gateway.opendaylight.single
-   - system.neutron.gateway.cluster
-   - system.cinder.volume.single
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
-index c7df472..4db9ee0 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
-@@ -102,11 +102,11 @@ parameters:
-     rabbitmq_secret_key: opnfv_secret
-     rabbitmq_admin_password: opnfv_secret
-     rabbitmq_openstack_password: opnfv_secret
--    nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
--    compute_hugepages_size: 1G
--    compute_hugepages_count: 16
--    compute_hugepages_mount: /mnt/hugepages_1G
--    compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
-+    # nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
-+    # compute_hugepages_size: 1G
-+    # compute_hugepages_count: 16
-+    # compute_hugepages_mount: /mnt/hugepages_1G
-+    # compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
-     glance_version: ${_param:openstack_version}
-     glance_service_host: ${_param:openstack_control_address}
-     keystone_version: ${_param:openstack_version}
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-index cad293d..ca7a539 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-@@ -5,8 +5,8 @@ classes:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
+index 07561cd..60c9bb9 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
+@@ -12,8 +12,8 @@ classes:
    - system.linux.storage.loopback
    - system.glusterfs.client.cluster
    - system.nova.compute.cluster
@@ -73,24 +34,3 @@ index cad293d..ca7a539 100644
    - system.neutron.gateway.cluster
    - system.cinder.volume.single
    - system.cinder.volume.backend.lvm
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
-index 7ce282b..9401f60 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/init.yml
-@@ -96,11 +96,11 @@ parameters:
-     rabbitmq_secret_key: opnfv_secret
-     rabbitmq_admin_password: opnfv_secret
-     rabbitmq_openstack_password: opnfv_secret
--    nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
--    compute_hugepages_size: 1G
--    compute_hugepages_count: 16
--    compute_hugepages_mount: /mnt/hugepages_1G
--    compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
-+    # nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
-+    # compute_hugepages_size: 1G
-+    # compute_hugepages_count: 16
-+    # compute_hugepages_mount: /mnt/hugepages_1G
-+    # compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
-     glance_version: ${_param:openstack_version}
-     glance_service_host: ${_param:openstack_control_address}
-     keystone_version: ${_param:openstack_version}

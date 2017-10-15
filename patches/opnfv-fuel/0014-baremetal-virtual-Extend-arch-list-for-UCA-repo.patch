@@ -22,10 +22,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  5 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
-index 4db9ee0..9e37954 100644
+index 9a04c84..80e5bb7 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
-@@ -203,7 +203,7 @@ parameters:
+@@ -27,7 +27,7 @@ parameters:
        repo:
          uca:
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
@@ -35,12 +35,12 @@ index 4db9ee0..9e37954 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
-index 13d45f7..e7e0ff2 100644
+index aa6b4e3..5b6752e 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
-@@ -59,7 +59,7 @@ parameters:
+@@ -25,7 +25,7 @@ parameters:
+       repo:
          uca:
-           # yamllint disable-line rule:line-length
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
 -          architectures: amd64
 +          architectures: amd64,arm64
@@ -48,10 +48,10 @@ index 13d45f7..e7e0ff2 100644
            key_server: keyserver.ubuntu.com
      network:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml
-index 9fa69ba..3f3cdb4 100644
+index 5e855ac..2392cf0 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml
-@@ -204,7 +204,7 @@ parameters:
+@@ -27,7 +27,7 @@ parameters:
        repo:
          uca:
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
@@ -61,12 +61,12 @@ index 9fa69ba..3f3cdb4 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
-index ddd804a..f989b6c 100644
+index 4a48b36..1e84493 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
-@@ -58,7 +58,7 @@ parameters:
+@@ -64,7 +64,7 @@ parameters:
+       repo:
          uca:
-           # yamllint disable-line rule:line-length
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
 -          architectures: amd64
 +          architectures: amd64,arm64
@@ -74,12 +74,12 @@ index ddd804a..f989b6c 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml
-index ed03eb4..40fb60d 100644
+index 5be63e5..1cfd5a3 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml
-@@ -11,7 +11,7 @@ parameters:
+@@ -17,7 +17,7 @@ parameters:
+       repo:
          uca:
-           # yamllint disable-line rule:line-length
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
 -          architectures: amd64
 +          architectures: amd64,arm64
