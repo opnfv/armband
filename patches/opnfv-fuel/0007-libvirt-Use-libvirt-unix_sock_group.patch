@@ -48,10 +48,10 @@ index 0000000..003b249
 + # Set the UNIX socket permissions for the R/O socket. This is used
 + # for monitoring VM status only
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index b2a6325..4dc47c7 100644
+index 9bdbff5..093bf05 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -8,3 +8,4 @@
+@@ -15,3 +15,4 @@
  /usr/share/salt-formulas/env: 0009-seedng-module-Sync-salt-version.patch
  /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch

@@ -33,10 +33,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/mcp/salt-formulas/opendaylight/server.sls b/mcp/salt-formulas/opendaylight/server.sls
-index f7a9741..adb9e8a 100644
+index 5de4eee..4bf81a9 100644
 --- a/mcp/salt-formulas/opendaylight/server.sls
 +++ b/mcp/salt-formulas/opendaylight/server.sls
-@@ -65,4 +65,9 @@ opendaylight:
+@@ -72,4 +72,9 @@ opendaylight:
        - service: opendaylight
  {%- endif %}
 
