@@ -27,12 +27,12 @@ index 826969b..01b9cc5 100644
              priority: 1100
              package: '*'
 +        armband_mcp_extra:
-+          source: "deb [arch=arm64] http://linux.enea.com/apt-mk/${_param:linux_system_codename}/ ${_param:linux_system_repo_mcp_extra_version} extra"
++          source: "deb [arch=arm64] http://linux.enea.com/apt-mk/${_param:linux_system_codename}/ nightly extra"
 +          architectures: arm64
 +          key_url: "http://linux.enea.com/apt-mk/public.gpg"
 +          clean_file: true
 +          pin:
-+          - pin: 'release a=${_param:linux_system_repo_mcp_extra_version}'
++          - pin: 'release a=nightly'
 +            priority: 1100
 +            package: '*'
 diff --git a/linux/system/repo/mcp/openstack.yml b/linux/system/repo/mcp/openstack.yml
@@ -84,10 +84,10 @@ index 2235b2c..be8ffd2 100644
 +            priority: 1100
 +            package: '*'
 +        armband_mk_openstack:
-+          source: "deb [arch=arm64] http://linux.enea.com/apt-mk/${_param:linux_system_codename}/ ${_param:linux_system_repo_mk_openstack_version} ${_param:openstack_version}"
++          source: "deb [arch=arm64] http://linux.enea.com/apt-mk/${_param:linux_system_codename}/ nightly ${_param:openstack_version}"
 +          architectures: arm64
 +          key_url: "http://linux.enea.com/apt-mk/public.gpg"
 +          pin:
-+          - pin: 'release a=${_param:linux_system_repo_mk_openstack_version}'
++          - pin: 'release a=nightly'
 +            priority: 1100
 +            package: '*'
