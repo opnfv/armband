@@ -102,10 +102,10 @@ index 0000000..b969e07
 ++{{endif}}
 ++{% endraw %}
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index e20a341..b2a6325 100644
+index 744304d..9bdbff5 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -7,3 +7,4 @@
+@@ -14,3 +14,4 @@
  /usr/share/salt-formulas/env: 0008-Handle-file_recv-option.patch
  /usr/share/salt-formulas/env: 0009-seedng-module-Sync-salt-version.patch
  /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
