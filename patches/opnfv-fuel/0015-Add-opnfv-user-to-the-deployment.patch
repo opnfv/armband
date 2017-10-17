@@ -21,18 +21,18 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 899972c..1ea14b1 100755
+index 31cca95..1e7cd56 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -12,6 +12,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
+@@ -14,6 +14,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
 
  # KVM, compute node prereqs (libvirt first), VCP deployment
  salt -C 'kvm*' pkg.install bridge-utils
 +salt -C '*' state.apply opnfv.adduser
  salt -C 'kvm*' state.apply linux.network
+ salt -C 'cmp*' state.apply linux.system
  salt -C 'kvm*' state.apply armband.bootstrap_script_arm64
- salt -C 'kvm*' system.reboot
-@@ -36,6 +37,7 @@ while [ $rc -ne 0 ]; do
+@@ -41,6 +42,7 @@ while [ $rc -ne 0 ]; do
    rc=0
    for node in $vcp_nodes; do
      salt "$node" test.ping 2>/dev/null || { rc=$?; break; };

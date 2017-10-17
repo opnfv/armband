@@ -21,24 +21,23 @@ specific values.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/virtual_control_plane            |  2 +-
+ mcp/config/states/virtual_control_plane            |  1 +
  .../armband/files/libvirt_domain.jinja.diff        | 46 ++++++++++++++++++++++
  .../armband/libvirt_domain_template.sls            |  4 ++
- 3 files changed, 51 insertions(+), 1 deletion(-)
+ 3 files changed, 51 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/libvirt_domain.jinja.diff
  create mode 100644 mcp/salt-formulas/armband/libvirt_domain_template.sls
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index c645ffd..fb47893 100755
+index 602eab2..13696fb 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -18,7 +18,7 @@ wait_for 90 "! salt 'kvm*' test.ping | tee /dev/stderr | grep -Fq 'Not connected
-
+@@ -23,6 +23,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
  salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
 
--salt -C 'kvm*' state.sls armband
-+salt -C 'kvm*' state.sls armband,armband.libvirt_domain_template
- salt -C 'kvm*' state.sls libvirt
+ salt -C 'kvm*' state.sls armband || true
++salt -C 'kvm*' state.sls armband.libvirt_domain_template
+ wait_for 5 "salt -C 'kvm*' state.sls libvirt"
 
  salt -C '* and not cfg01* and not mas01*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/libvirt_domain.jinja.diff b/mcp/salt-formulas/armband/files/libvirt_domain.jinja.diff

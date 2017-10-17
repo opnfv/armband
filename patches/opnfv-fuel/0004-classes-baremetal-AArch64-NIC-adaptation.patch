@@ -64,7 +64,7 @@ index ce81f42..b270e0f 100644
 -            - ${_param:deploy_nic}.${_param:opnfv_net_mgmt_vlan}
 +            - ${_param:trunk_nic}.${_param:opnfv_net_mgmt_vlan}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
-index aca416e..07561cd 100644
+index 1540133..d370496 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
 @@ -30,7 +30,6 @@ parameters:
@@ -75,7 +75,7 @@ index aca416e..07561cd 100644
      interface_mtu: 1500
      keepalived_vip_interface: br-ctl
      keepalived_vip_virtual_router_id: 69
-@@ -60,19 +59,13 @@ parameters:
+@@ -58,19 +57,13 @@ parameters:
            type: eth
            proto: dhcp
            name: ${_param:mgmt_nic}
@@ -97,7 +97,7 @@ index aca416e..07561cd 100644
          br-ctl:
            enabled: true
            type: bridge
-@@ -80,7 +73,7 @@ parameters:
+@@ -78,7 +71,7 @@ parameters:
            address: ${_param:single_address}
            netmask: 255.255.255.0
            use_interfaces:
@@ -106,7 +106,7 @@ index aca416e..07561cd 100644
          br-floating:
            enabled: true
            type: ovs_bridge
-@@ -97,6 +90,6 @@ parameters:
+@@ -95,6 +88,6 @@ parameters:
            address: ${_param:external_address}
            netmask: 255.255.255.0
            use_interfaces:
