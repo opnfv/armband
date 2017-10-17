@@ -32,17 +32,17 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/files/cloud.py.diff
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index fb47893..899972c 100755
+index fe84222..75386a7 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -13,6 +13,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
- # KVM, compute node prereqs (libvirt first), VCP deployment
+@@ -16,6 +16,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
  salt -C 'kvm*' pkg.install bridge-utils
  salt -C 'kvm*' state.apply linux.network
-+salt -C 'kvm*' state.apply armband.bootstrap_script_arm64
- salt -C 'kvm*' system.reboot
- wait_for 90 "! salt 'kvm*' test.ping | tee /dev/stderr | grep -Fq 'Not connected'"
-
+ salt -C 'cmp*' state.apply linux.system
++salt -C 'kvm*' state.apply armband.bootstrap_script_arm64 || true
+ salt -C 'kvm* or cmp*' system.reboot
+ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
+   "tee /dev/stderr | grep -Fq 'Not connected'"
 diff --git a/mcp/salt-formulas/armband/bootstrap_script_arm64.sls b/mcp/salt-formulas/armband/bootstrap_script_arm64.sls
 new file mode 100644
 index 0000000..845dedd
