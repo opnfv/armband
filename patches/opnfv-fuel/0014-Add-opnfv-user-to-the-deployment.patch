@@ -21,7 +21,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 54cd1f4..a7ca03b 100755
+index 78076f5..955281b 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -14,6 +14,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
@@ -32,14 +32,14 @@ index 54cd1f4..a7ca03b 100755
  salt -C 'kvm*' state.apply linux.network
  salt -C 'cmp*' state.apply linux.system
  salt -C 'cmp*' state.apply linux.network || true
-@@ -42,6 +43,7 @@ while [ $rc -ne 0 ]; do
+@@ -44,6 +45,7 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
    rc=0
    for node in $vcp_nodes; do
      salt "$node" test.ping 2>/dev/null || { rc=$?; break; };
 +    salt -C "$node" state.apply opnfv.adduser
    done
    sleep 5
- done
+   ((attempt+=1))
 diff --git a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
 index aa780e6..e4069c0 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml

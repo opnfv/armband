@@ -32,7 +32,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/files/cloud.py.diff
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 68b4f2f..54cd1f4 100755
+index d7c5e6c..78076f5 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -17,6 +17,7 @@ salt -C 'kvm*' pkg.install bridge-utils
