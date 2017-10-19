@@ -21,7 +21,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 78076f5..955281b 100755
+index a5fc061..b2d005b 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -14,6 +14,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"

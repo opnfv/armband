@@ -29,7 +29,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/libvirt_domain_template.sls
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 996d0a0..d7c5e6c 100755
+index 7611c12..6d63838 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -24,6 +24,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
