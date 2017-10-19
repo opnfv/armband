@@ -32,13 +32,13 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/files/cloud.py.diff
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index fe84222..75386a7 100755
+index 68b4f2f..54cd1f4 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -16,6 +16,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
- salt -C 'kvm*' pkg.install bridge-utils
+@@ -17,6 +17,7 @@ salt -C 'kvm*' pkg.install bridge-utils
  salt -C 'kvm*' state.apply linux.network
  salt -C 'cmp*' state.apply linux.system
+ salt -C 'cmp*' state.apply linux.network || true
 +salt -C 'kvm*' state.apply armband.bootstrap_script_arm64 || true
  salt -C 'kvm* or cmp*' system.reboot
  wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
