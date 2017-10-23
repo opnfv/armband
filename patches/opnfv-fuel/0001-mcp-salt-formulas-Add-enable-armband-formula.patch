@@ -58,7 +58,7 @@ index 19cd417..73983d2 100755
 +
 +salt -I 'nova:compute' state.sls armband || true
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index aada4ad..afd6c53 100755
+index 89733cc..f1479ef 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -67,7 +67,7 @@ index aada4ad..afd6c53 100755
  salt -I 'nova:compute' state.sls nova
 +salt -I 'nova:compute' state.sls armband || true
 
- salt -I 'mongodb:server' state.sls mongodb
+ salt -I 'mongodb:server' state.sls mongodb || true
  wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
 index 0650869..7611c12 100755

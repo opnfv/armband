@@ -31,7 +31,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 10 insertions(+)
 
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index a165bb3..2a694a7 100644
+index a165bb3..bfde237 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -35,6 +35,15 @@ function get_base_image {
@@ -41,7 +41,7 @@ index a165bb3..2a694a7 100644
 +function cleanup_uefi {
 +  # Clean up Ubuntu boot entry if cfg01, kvm nodes online from previous deploy
 +  # shellcheck disable=SC2086
-+  ssh ${SSH_OPTS} "ubuntu@${SALT_MASTER}" "sudo salt -C 'kvm* or cmp*' cmd.run \
++  ssh ${SSH_OPTS} "${SSH_SALT}" "sudo salt -C 'kvm* or cmp*' cmd.run \
 +    \"which efibootmgr > /dev/null 2>&1 && \
 +    efibootmgr | grep -oP '(?<=Boot)[0-9]+(?=.*ubuntu)' | \
 +    xargs -I{} efibootmgr --delete-bootnum --bootnum {}\"" || true
