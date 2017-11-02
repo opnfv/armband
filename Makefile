@@ -61,6 +61,7 @@ submodules-clean: .submodules-init
 patches-export: .submodules-init
 	@git submodule -q foreach ' \
 		SUB_DIR=${A_PATCH_DIR}/$$name; \
+		rm -rf $$SUB_DIR/*; \
 		git tag | awk "!/root/ && /${A_OPNFV_TAG}-fuel/" | while read A_TAG; do \
 			SUB_FEATURE=`dirname $${A_TAG#${A_OPNFV_TAG}-fuel/}`; \
 			echo "`tput setaf 2`== exporting $$name ($$A_TAG)`tput sgr0`"; \
