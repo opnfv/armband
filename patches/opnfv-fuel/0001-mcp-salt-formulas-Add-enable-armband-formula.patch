@@ -58,7 +58,7 @@ index 19cd417..73983d2 100755
 +
 +salt -I 'nova:compute' state.sls armband || true
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 9237cc0..17421a9 100755
+index e816a9d..f688f5c 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -70,10 +70,10 @@ index 9237cc0..17421a9 100755
  salt -I 'mongodb:server' state.sls mongodb || true
  wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 0650869..7611c12 100755
+index 9ebf4bf..044e645 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -23,6 +23,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
+@@ -26,6 +26,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
 
  salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
 
