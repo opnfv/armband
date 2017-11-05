@@ -1,0 +1,46 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 5 Nov 2017 21:02:17 +0100
+Subject: [PATCH] baremetal: linux-image-generic-hwe-16.04-edge
+
+The Salt way to pin the kernel version is via its reclass model, by
+defining system.kernel.version. However, this only works with
+explicit kernel package names and not with meta package names
+(e.g. linux-image-4.13.0-9916-generic is expected instead of
+      linux-image-generic-hwe-16.04-edge, which would break the
+`linux_kernel_old_absent` state).
+
+For now, let's explicitly call `pkg.install` for the kernel and
+headers packages, using the meta package name to ensure automatic
+fallback to Ubuntu packages if Armband repos are missing,
+respectively to automatically pick up new kernel package names
+in case of meta + kernel packages bump later.
+
+JIRA: ARMBAND-280
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/states/virtual_control_plane | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
+index ccf7152..8fcb8fe 100755
+--- a/mcp/config/states/virtual_control_plane
++++ b/mcp/config/states/virtual_control_plane
+@@ -22,6 +22,9 @@ salt -C 'kvm*' state.apply linux.network
+ salt -C 'cmp*' state.apply linux.system
+ salt -C 'cmp*' state.apply linux.network || true
+ salt -C 'kvm*' state.apply armband.bootstrap_script_arm64 || true
++# NOTE(armband): Should be later moved to reclass as system.kernel.version
++salt -C 'kvm* or cmp*' pkg.install \
++  linux-image-generic-hwe-16.04-edge,linux-headers-generic-hwe-16.04-edge
+ salt -C 'kvm* or cmp*' system.reboot
+ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
+   "tee /dev/stderr | grep -Fq 'Not connected'"
