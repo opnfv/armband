@@ -31,10 +31,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 3 insertions(+)
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 7746bac..a54b7fe 100755
+index 585a808..b4e25a0 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -23,6 +23,9 @@ salt -C 'kvm*' state.apply linux.network
+@@ -30,6 +30,9 @@ salt -C 'kvm*' state.apply linux.network
  salt -C 'cmp*' state.apply linux.system
  salt -C 'cmp*' state.apply linux.network || true
  salt -C 'kvm*' state.apply armband.bootstrap_script_arm64 || true
