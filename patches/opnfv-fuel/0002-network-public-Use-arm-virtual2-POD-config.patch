@@ -63,10 +63,10 @@ index d4735ad..e566903 100755
 +    --allocation-pool start=${PUBLIC_NET%.*}.130,end=${PUBLIC_NET%.*}.200 \
      --network floating_net --subnet-range ${PUBLIC_NET} floating_subnet"
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/infra/config.yml
-index 3c3d526..e114ec2 100644
+index 21ed8d3..306adc2 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/infra/config.yml
-@@ -61,13 +61,13 @@ parameters:
+@@ -70,13 +70,13 @@ parameters:
            params:
              single_address: 172.16.10.105
              tenant_address: 10.1.0.105
