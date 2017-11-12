@@ -48,10 +48,10 @@ index 0000000..003b249
 + # Set the UNIX socket permissions for the R/O socket. This is used
 + # for monitoring VM status only
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 88b3ffe..e355700 100644
+index 6946c9f..d3352cc 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -16,3 +16,4 @@
+@@ -17,3 +17,4 @@
  /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/reclass: 0011-service.horizon.server.cluster-Default-to-v2-API.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
