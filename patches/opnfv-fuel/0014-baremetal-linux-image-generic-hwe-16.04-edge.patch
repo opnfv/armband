@@ -27,15 +27,19 @@ JIRA: ARMBAND-280
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/virtual_control_plane | 3 +++
- 1 file changed, 3 insertions(+)
+ mcp/config/states/virtual_control_plane | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 585a808..b4e25a0 100755
+index 585a808..13bd63d 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -30,6 +30,9 @@ salt -C 'kvm*' state.apply linux.network
- salt -C 'cmp*' state.apply linux.system
+@@ -27,9 +27,12 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
+ salt -C 'kvm*' pkg.install bridge-utils
+ salt -C '*' state.apply opnfv.adduser
+ salt -C 'kvm*' state.apply linux.network
+-salt -C 'cmp*' state.apply linux.system
++salt -C 'kvm* or cmp*' state.apply linux.system
  salt -C 'cmp*' state.apply linux.network || true
  salt -C 'kvm*' state.apply armband.bootstrap_script_arm64 || true
 +# NOTE(armband): Should be later moved to reclass as system.kernel.version
