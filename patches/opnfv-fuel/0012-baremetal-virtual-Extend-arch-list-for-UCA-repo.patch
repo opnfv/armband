@@ -61,10 +61,10 @@ index 5e855ac..2392cf0 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
-index 4a48b36..1e84493 100644
+index ad06754..d4e1c40 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
-@@ -64,7 +64,7 @@ parameters:
+@@ -65,7 +65,7 @@ parameters:
        repo:
          uca:
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/ocata main"
