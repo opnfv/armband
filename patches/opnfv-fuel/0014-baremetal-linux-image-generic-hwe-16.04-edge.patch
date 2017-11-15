@@ -24,14 +24,15 @@ respectively to automatically pick up new kernel package names
 in case of meta + kernel packages bump later.
 
 JIRA: ARMBAND-280
+JIRA: ARMBAND-330
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/virtual_control_plane | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ mcp/config/states/virtual_control_plane | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 585a808..13bd63d 100755
+index 585a808..373281d 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -27,9 +27,12 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
@@ -48,3 +49,14 @@ index 585a808..13bd63d 100755
  salt -C 'kvm* or cmp*' system.reboot
  wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
    "tee /dev/stderr | grep -Fq 'Not connected'"
+@@ -69,3 +72,10 @@ wait_for 10 "! salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply linux,ntp |
+
+ wait_for 10 "salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' ssh.set_auth_key ${SUDO_USER} \
+   $(awk 'NR==1{print $2}' "$(eval echo "~${SUDO_USER}/.ssh/authorized_keys")")"
++
++# NOTE(armband): Should be later moved to reclass as system.kernel.version
++salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' pkg.install \
++  linux-image-generic-hwe-16.04-edge,linux-headers-generic-hwe-16.04-edge
++salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' system.reboot
++wait_for 90 "! salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' test.ping | " \
++  "tee /dev/stderr | grep -Fq 'Not connected'"
