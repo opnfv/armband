@@ -1,0 +1,487 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Guillermo Herrero <Guillermo.Herrero@enea.com>
+Date: Tue, 25 Jul 2017 00:58:32 +0200
+Subject: [PATCH] salt-formulas: Add & enable armband formula
+
+- prereq: install qemu-efi;
+- prereq: install vgabios;
+- prereq: fix missing link for vgabios binary blob;
+- nova patch: Support qemu >= 2.10 (backport from [1]);
+- nova patch: Add video type virtio for AArch64 (backport from [2]);
+- nova patch: libvirt driver: Add ttyAMA0 by default on AArch64;
+- nova patch: libvirt driver: AArch64: ACPI depends on AAVMF;
+- nova conf: cpu_model=cortex-a57 (only for virtual deploys);
+- nova conf: virt_type=qemu (only for virtual deploys);
+- nova conf: pointer_model=ps2mouse since AArch64 has no USB tablet;
+
+[1] https://github.com/openstack/nova/commit/8075797
+[2] https://github.com/openstack/nova/commit/f0f0953
+
+Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
+Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/states/openstack                        |   2 +
+ mcp/config/states/openstack_ha                     |   1 +
+ mcp/config/states/virtual_control_plane            |   1 +
+ .../armband/files/nova-libvirt-aarch64-rollup.diff | 317 +++++++++++++++++++++
+ mcp/salt-formulas/armband/init.sls                 |   7 +
+ mcp/salt-formulas/armband/nova_config.sls          |  30 ++
+ mcp/salt-formulas/armband/nova_libvirt.sls         |   7 +
+ mcp/salt-formulas/armband/qemu_efi.sls             |   2 +
+ mcp/salt-formulas/armband/vgabios.sls              |   7 +
+ 9 files changed, 374 insertions(+)
+ create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
+ create mode 100644 mcp/salt-formulas/armband/init.sls
+ create mode 100644 mcp/salt-formulas/armband/nova_config.sls
+ create mode 100644 mcp/salt-formulas/armband/nova_libvirt.sls
+ create mode 100644 mcp/salt-formulas/armband/qemu_efi.sls
+ create mode 100644 mcp/salt-formulas/armband/vgabios.sls
+
+diff --git a/mcp/config/states/openstack b/mcp/config/states/openstack
+index 19cd417..73983d2 100755
+--- a/mcp/config/states/openstack
++++ b/mcp/config/states/openstack
+@@ -43,3 +43,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
+ salt -I 'ceilometer:agent' state.sls ceilometer
+
+ salt -I 'horizon:server' state.sls horizon
++
++salt -I 'nova:compute' state.sls armband || true
+diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
+index e1fdf73..e1f705c 100755
+--- a/mcp/config/states/openstack_ha
++++ b/mcp/config/states/openstack_ha
+@@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
+ salt -I 'neutron:gateway' state.sls neutron.gateway
+
+ salt -I 'nova:compute' state.sls nova
++salt -I 'nova:compute' state.sls armband || true
+
+ salt -I 'mongodb:server' state.sls mongodb || true
+ wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
+diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
+index 43d1520..88e7080 100755
+--- a/mcp/config/states/virtual_control_plane
++++ b/mcp/config/states/virtual_control_plane
+@@ -34,6 +34,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
+
+ salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
+
++salt -C 'kvm*' state.sls armband || true
+ wait_for 5 "salt -C 'kvm*' state.sls libvirt"
+
+ salt -C '* and not cfg01* and not mas01*' state.apply salt
+diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
+new file mode 100644
+index 0000000..4d7f04c
+--- /dev/null
++++ b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
+@@ -0,0 +1,317 @@
++From 807579755c4a116309eca5b2bcdbab9d1f393bab Mon Sep 17 00:00:00 2001
++From: Matt Riedemann <mriedem.os@gmail.com>
++Date: Wed, 20 Sep 2017 10:44:11 -0400
++Subject: [PATCH] Support qemu >= 2.10
++
++Qemu 2.10 added the requirement of a --force-share flag to qemu-img
++info when reading information about a disk that is in use by a
++guest. We do this a lot in Nova for operations like gathering
++information before live migration.
++
++Up until this point all qemu/libvirt version matching has been solely
++inside the libvirt driver, however all the image manip code was moved
++out to nova.virt.images. We need the version of QEMU available there.
++
++This does it by initializing that version on driver init host. The net
++effect is also that broken libvirt connections are figured out
++earlier, as there is an active probe for this value.
++
++Co-Authored-By: Sean Dague <sean@dague.net>
++
++[ Alexandru.Avadanii@enea.com ]
++Minor patch adjustment to apply cleanly on Newton without further
++backporting.
++
++Change-Id: Iae2962bb86100f03fd3ad9aac3767da876291e74
++Closes-Bug: #1718295
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ nova/test.py                                |  3 +++
++ nova/tests/unit/virt/libvirt/test_driver.py | 20 ++++++++++++++++++--
++ nova/tests/unit/virt/libvirt/test_utils.py  | 25 +++++++++++++++++++++++++
++ nova/virt/images.py                         | 10 ++++++++++
++ nova/virt/libvirt/driver.py                 | 14 +++++++++-----
++ 5 files changed, 65 insertions(+), 7 deletions(-)
++
++diff --git a/nova/test.py b/nova/test.py
++index f0e6953b965..9b9ea9507e8 100644
++--- a/nova/test.py
+++++ b/nova/test.py
++@@ -61,6 +61,7 @@
++ from nova.tests.unit import policy_fixture
++ from nova.tests import uuidsentinel as uuids
++ from nova import utils
+++from nova.virt import images
++
++
++ CONF = cfg.CONF
++@@ -303,6 +304,8 @@ def setUp(self):
++         # nova.utils._IS_NEUTRON.  We set it to None to avoid any
++         # caching of that value.
++         utils._IS_NEUTRON = None
+++        # Reset the global QEMU version flag.
+++        images.QEMU_VERSION = None
++
++         mox_fixture = self.useFixture(moxstubout.MoxStubout())
++         self.mox = mox_fixture.mox
++diff --git a/nova/tests/unit/virt/libvirt/test_driver.py b/nova/tests/unit/virt/libvirt/test_driver.py
++index fe54dc75e7f..4e9f2bd250e 100644
++--- a/nova/tests/unit/virt/libvirt/test_driver.py
+++++ b/nova/tests/unit/virt/libvirt/test_driver.py
++@@ -986,6 +986,23 @@ def test_next_min_qemu_version_ok(self, mock_warning, mock_get_libversion):
++                 break
++         self.assertFalse(version_arg_found)
++
+++    # NOTE(sdague): python2.7 and python3.5 have different behaviors
+++    # when it comes to comparing against the sentinel, so
+++    # has_min_version is needed to pass python3.5.
+++    @mock.patch.object(nova.virt.libvirt.host.Host, "has_min_version",
+++                       return_value=True)
+++    @mock.patch.object(fakelibvirt.Connection, 'getVersion',
+++                       return_value=mock.sentinel.qemu_version)
+++    def test_qemu_image_version(self, mock_get_libversion, min_ver):
+++        """Test that init_host sets qemu image version
+++
+++        A sentinel is used here so that we aren't chasing this value
+++        against minimums that get raised over time.
+++        """
+++        drvr = libvirt_driver.LibvirtDriver(fake.FakeVirtAPI(), True)
+++        drvr.init_host("dummyhost")
+++        self.assertEqual(images.QEMU_VERSION, mock.sentinel.qemu_version)
+++
++     @mock.patch.object(fakelibvirt.Connection, 'getLibVersion',
++                        return_value=versionutils.convert_version_to_int(
++                            libvirt_driver.MIN_LIBVIRT_OTHER_ARCH.get(
++@@ -11605,9 +11622,8 @@ def test_command_with_broken_connection(self):
++                               return_value=service_mock),
++             mock.patch.object(host.Host, "get_capabilities")):
++
++-            drvr.init_host("wibble")
++             self.assertRaises(exception.HypervisorUnavailable,
++-                              drvr.get_num_instances)
+++                              drvr.init_host, ("wibble",))
++             self.assertTrue(service_mock.disabled)
++
++     def test_service_resume_after_broken_connection(self):
++diff --git a/nova/tests/unit/virt/libvirt/test_utils.py b/nova/tests/unit/virt/libvirt/test_utils.py
++index 646a72c8599..49945a3cd3b 100644
++--- a/nova/tests/unit/virt/libvirt/test_utils.py
+++++ b/nova/tests/unit/virt/libvirt/test_utils.py
++@@ -173,6 +173,31 @@ def test_qemu_info_canon(self, mock_execute, mock_exists):
++
++     @mock.patch('os.path.exists', return_value=True)
++     @mock.patch('nova.utils.execute')
+++    def test_qemu_info_canon_qemu_2_10(self, mock_execute, mock_exists):
+++        images.QEMU_VERSION = images.QEMU_VERSION_REQ_SHARED
+++        path = "disk.config"
+++        example_output = """image: disk.config
+++file format: raw
+++virtual size: 64M (67108864 bytes)
+++cluster_size: 65536
+++disk size: 96K
+++blah BLAH: bb
+++"""
+++        mock_execute.return_value = (example_output, '')
+++        image_info = images.qemu_img_info(path)
+++        mock_execute.assert_called_once_with('env', 'LC_ALL=C', 'LANG=C',
+++                                             'qemu-img', 'info', path,
+++                                             '--force-share',
+++                                             prlimit=images.QEMU_IMG_LIMITS)
+++        mock_exists.assert_called_once_with(path)
+++        self.assertEqual('disk.config', image_info.image)
+++        self.assertEqual('raw', image_info.file_format)
+++        self.assertEqual(67108864, image_info.virtual_size)
+++        self.assertEqual(98304, image_info.disk_size)
+++        self.assertEqual(65536, image_info.cluster_size)
+++
+++    @mock.patch('os.path.exists', return_value=True)
+++    @mock.patch('nova.utils.execute')
++     def test_qemu_info_canon2(self, mock_execute, mock_exists):
++         path = "disk.config"
++         example_output = """image: disk.config
++diff --git a/nova/virt/images.py b/nova/virt/images.py
++index dae6bc7ef52..be2a9d9e062 100644
++--- a/nova/virt/images.py
+++++ b/nova/virt/images.py
++@@ -19,6 +19,7 @@
++ Handling of VM disk images.
++ """
++
+++import operator
++ import os
++
++ from oslo_concurrency import processutils
++@@ -42,6 +43,11 @@
++     cpu_time=8,
++     address_space=1 * units.Gi)
++
+++# This is set by the libvirt driver on startup. The version is used to
+++# determine what flags need to be set on the command line.
+++QEMU_VERSION = None
+++QEMU_VERSION_REQ_SHARED = 2010000
+++
++
++ def qemu_img_info(path, format=None):
++     """Return an object containing the parsed output from qemu-img info."""
++@@ -60,6 +66,10 @@ def qemu_img_info(path, format=None):
++         cmd = ('env', 'LC_ALL=C', 'LANG=C', 'qemu-img', 'info', path)
++         if format is not None:
++             cmd = cmd + ('-f', format)
+++        # Check to see if the qemu version is >= 2.10 because if so, we need
+++        # to add the --force-share flag.
+++        if QEMU_VERSION and operator.ge(QEMU_VERSION, QEMU_VERSION_REQ_SHARED):
+++            cmd = cmd + ('--force-share',)
++         out, err = utils.execute(*cmd, prlimit=QEMU_IMG_LIMITS)
++     except processutils.ProcessExecutionError as exp:
++         # this means we hit prlimits, make the exception more specific
++diff --git a/nova/virt/libvirt/driver.py b/nova/virt/libvirt/driver.py
++index 82dc2b99f6a..8d4eb90ecf5 100644
++--- a/nova/virt/libvirt/driver.py
+++++ b/nova/virt/libvirt/driver.py
++@@ -481,11 +481,15 @@ def init_host(self, host):
++                 _('Nova requires libvirt version %s or greater.') %
++                 self._version_to_string(MIN_LIBVIRT_VERSION))
++
++-        if (CONF.libvirt.virt_type in ("qemu", "kvm") and
++-            not self._host.has_min_version(hv_ver=MIN_QEMU_VERSION)):
++-            raise exception.InternalError(
++-                _('Nova requires QEMU version %s or greater.') %
++-                self._version_to_string(MIN_QEMU_VERSION))
+++        if CONF.libvirt.virt_type in ("qemu", "kvm"):
+++            if self._host.has_min_version(hv_ver=MIN_QEMU_VERSION):
+++                # "qemu-img info" calls are version dependent, so we need to
+++                # store the version in the images module.
+++                images.QEMU_VERSION = self._host.get_connection().getVersion()
+++            else:
+++                raise exception.InternalError(
+++                    _('Nova requires QEMU version %s or greater.') %
+++                    self._version_to_string(MIN_QEMU_VERSION))
++
++         if CONF.libvirt.virt_type == 'parallels':
++             if not self._host.has_min_version(hv_ver=MIN_VIRTUOZZO_VERSION):
++--
++
++From: Stanislaw Kardach <stanislaw.kardach@cavium.com>
++Date: Tue, 22 Mar 2016 12:05:09 +0100
++Subject: [PATCH] nova: Update console defaults for armv7, aarch64
++
++Nova hardcodes default options for serial console.
++For armv7 and aarch64 direct kernel boot, adding console=ttyAMA0 is
++a nice UX addition.
++
++Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
++
++---
++
++diff --git a/nova/virt/libvirt/driver.py b/nova/virt/libvirt/driver.py
++--- a/nova/virt/libvirt/driver.py
+++++ b/nova/virt/libvirt/driver.py
++@@ -4179,7 +4179,12 @@ class LibvirtDriver(driver.ComputeDriver):
++         if virt_type == "xen":
++             guest.os_cmdline = "ro root=%s" % root_device_name
++         else:
+++            guestarch = libvirt_utils.get_arch(image_meta)
++             guest.os_cmdline = ("root=%s %s" % (root_device_name, CONSOLE))
+++            if guestarch in (fields.Architecture.ARMV7,
+++                             fields.Architecture.AARCH64):
+++                # NOTE(armband): ARM v7/v8 use PL011 drv, add ttyAMA0 console
+++                guest.os_cmdline += " console=ttyAMA0"
++             if virt_type == "qemu":
++                 guest.os_cmdline += " no_timer_check"
++         if instance.ramdisk_id:
++--
++
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Thu, 24 Aug 2017 10:57:28 +0200
++Subject: [PATCH] libvirt: AArch64: ACPI depends on AAVMF
++
++On AArch64, ACPI should be added to domain XML only if guest UEFI
++(AAVMF) is also used.
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Signed-off-by: Ciprian Barbu <ciprian.barbu@enea.com>
++
++---
++
++diff --git a/nova/virt/libvirt/driver.py b/nova/virt/libvirt/driver.py
++--- a/nova/virt/libvirt/driver.py
+++++ b/nova/virt/libvirt/driver.py
++@@ -4255,7 +4255,7 @@
++             tmhyperv.present = True
++             clk.add_timer(tmhyperv)
++
++-    def _set_features(self, guest, os_type, caps, virt_type):
+++    def _set_features(self, guest, os_type, image_meta, caps, virt_type):
++         if virt_type == "xen":
++             # PAE only makes sense in X86
++             if caps.host.cpu.arch in (fields.Architecture.I686,
++@@ -4264,7 +4264,10 @@
++
++         if (virt_type not in ("lxc", "uml", "parallels", "xen") or
++                 (virt_type == "xen" and guest.os_type == fields.VMMode.HVM)):
++-            guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
+++            guestarch = libvirt_utils.get_arch(image_meta)
+++            if (guestarch not in (fields.Architecture.ARMV7, fields.Architecture.AARCH64) or
+++                image_meta.properties.get('hw_firmware_type') == 'uefi'):
+++                    guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
++             guest.features.append(vconfig.LibvirtConfigGuestFeatureAPIC())
++
++         if (virt_type in ("qemu", "kvm") and
++@@ -4799,7 +4802,7 @@
++             self._conf_non_lxc_uml(virt_type, guest, root_device_name, rescue,
++                     instance, inst_path, image_meta, disk_info)
++
++-        self._set_features(guest, instance.os_type, caps, virt_type)
+++        self._set_features(guest, instance.os_type, image_meta, caps, virt_type)
++         self._set_clock(guest, instance.os_type, image_meta, virt_type)
++
++         storage_configs = self._get_guest_storage_config(
++--
++
++From f0f09530ee9169eb29bc28d4f118676d7dc6640e Mon Sep 17 00:00:00 2001
++From: Kevin Zhao <kevin.zhao@arm.com>
++Date: Tue, 15 Aug 2017 09:52:09 +0000
++Subject: [PATCH] Add video type virtio for AArch64
++
++Currently only "virtio" type is supported on AArch64, and the
++other "virrus", "qxl" and "vga" don't work on AArch64 according to
++libvirt upstream:
++https://www.redhat.com/archives/libvir-list/2016-September/msg00546.html
++Then this patch adds the virtio for AArch64 and tweaks the related test cases.
++
++Closes-bug: #1710766
++
++[ Alexandru.Avadanii@enea.com ]
++Dropped test changes so it applies cleanly on Newton without more backports.
++
++Change-Id: Iba8a1e671f2b5759b3d9178aa1871d0cf888b26b
++Signed-off-by: Kevin Zhao <kevin.zhao@arm.com>
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++
++--- a/nova/virt/libvirt/driver.py
+++++ b/nova/virt/libvirt/driver.py
++@@ -4342,7 +4342,8 @@ def _check_number_of_serial_console(self, num_ports):
++                 allowed=ALLOWED_QEMU_SERIAL_PORTS, virt_type=virt_type)
++
++     def _add_video_driver(self, guest, image_meta, flavor):
++-        VALID_VIDEO_DEVICES = ("vga", "cirrus", "vmvga", "xen", "qxl")
+++        VALID_VIDEO_DEVICES = ("vga", "cirrus", "vmvga",
+++                               "xen", "qxl", "virtio")
++         video = vconfig.LibvirtConfigGuestVideo()
++         # NOTE(ldbragst): The following logic sets the video.type
++         # depending on supported defaults given the architecture,
++@@ -4360,6 +4361,10 @@ def _add_video_driver(self, guest, image_meta, flavor):
++             # NOTE(ldbragst): PowerKVM doesn't support 'cirrus' be default
++             # so use 'vga' instead when running on Power hardware.
++             video.type = 'vga'
+++        elif guestarch in (fields.Architecture.AARCH64):
+++            # NOTE(kevinz): Only virtio device type is supported by AARCH64
+++            # so use 'virtio' instead when running on AArch64 hardware.
+++            video.type = 'virtio'
++         elif CONF.spice.enabled:
++             video.type = 'qxl'
++         if image_meta.properties.get('hw_video_model'):
+diff --git a/mcp/salt-formulas/armband/init.sls b/mcp/salt-formulas/armband/init.sls
+new file mode 100644
+index 0000000..8a8cf2a
+--- /dev/null
++++ b/mcp/salt-formulas/armband/init.sls
+@@ -0,0 +1,7 @@
++include:
++ - armband.qemu_efi
++ - armband.vgabios
++ {%- if salt['pkg.version']('python-nova') %}
++ - armband.nova_libvirt
++ - armband.nova_config
++ {%- endif %}
+diff --git a/mcp/salt-formulas/armband/nova_config.sls b/mcp/salt-formulas/armband/nova_config.sls
+new file mode 100644
+index 0000000..674f371
+--- /dev/null
++++ b/mcp/salt-formulas/armband/nova_config.sls
+@@ -0,0 +1,30 @@
++{% if grains['virtual'] == 'kvm' %}
++nova_virt_type:
++  file.replace:
++    - name: "/etc/nova/nova.conf"
++    - pattern: '^virt_type\s*=.*$'
++    - repl: "virt_type = qemu"
++{% endif %}
++nova_pointer_model:
++  file.replace:
++    - name: "/etc/nova/nova.conf"
++    - pattern: '^#pointer_model\s*=.*$'
++    - repl: "pointer_model = ps2mouse"
++nova_cpu_mode:
++  file.replace:
++    - name: "/etc/nova/nova.conf"
++    - pattern:  '^cpu_mode\s*=\s*host-passthrough'
++    - repl: "cpu_mode = custom"
++nova_cpu_model:
++  file.replace:
++    - name: "/etc/nova/nova.conf"
++    - pattern: '^#cpu_model\s*=.*$'
++    {% if grains['virtual'] == 'kvm' %}
++    - repl: "cpu_model = cortex-a57"
++    {% else %}
++    - repl: "cpu_model = host"
++    {% endif %}
++restart_nova-compute:
++  cmd:
++    - run
++    - name: "service nova-compute restart"
+diff --git a/mcp/salt-formulas/armband/nova_libvirt.sls b/mcp/salt-formulas/armband/nova_libvirt.sls
+new file mode 100644
+index 0000000..bc2cbda
+--- /dev/null
++++ b/mcp/salt-formulas/armband/nova_libvirt.sls
+@@ -0,0 +1,7 @@
++nova-libvirt-aarch64-rollup:
++  file.patch:
++  - name: /usr/lib/python2.7/dist-packages
++  - source: salt://armband/files/nova-libvirt-aarch64-rollup.diff
++  - hash: False
++  - options: '-p1'
++  - unless: 'test -f /var/cache/salt/minion/files/base/armband/files/nova-libvirt-aarch64-rollup.diff && cd /usr/lib/python2.7/dist-packages && patch -p1 -R --dry-run /var/cache/salt/minion/files/base/armband/files/nova-libvirt-aarch64-rollup.diff'
+diff --git a/mcp/salt-formulas/armband/qemu_efi.sls b/mcp/salt-formulas/armband/qemu_efi.sls
+new file mode 100644
+index 0000000..c697dae
+--- /dev/null
++++ b/mcp/salt-formulas/armband/qemu_efi.sls
+@@ -0,0 +1,2 @@
++qemu-efi:
++  pkg.installed
+diff --git a/mcp/salt-formulas/armband/vgabios.sls b/mcp/salt-formulas/armband/vgabios.sls
+new file mode 100644
+index 0000000..500c2bc
+--- /dev/null
++++ b/mcp/salt-formulas/armband/vgabios.sls
+@@ -0,0 +1,7 @@
++vgabios:
++  pkg.installed
++/usr/share/qemu:
++  file.directory
++/usr/share/qemu/vgabios-stdvga.bin:
++  file.symlink:
++    - target: "/usr/share/vgabios/vgabios.bin"
