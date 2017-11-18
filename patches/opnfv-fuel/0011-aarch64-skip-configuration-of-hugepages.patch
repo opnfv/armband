@@ -20,7 +20,7 @@ Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
-index 30dda2f..653a9d7 100644
+index a78850f..ce67588 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
 @@ -12,8 +12,8 @@ classes:
