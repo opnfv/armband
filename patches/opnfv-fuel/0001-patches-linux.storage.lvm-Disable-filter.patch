@@ -1,0 +1,64 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 18 Nov 2017 20:34:46 +0100
+Subject: [PATCH] patches: linux.storage.lvm: Disable filter
+
+JIRA: FUEL-304
+
+Change-Id: I52ae89f933f976b678b27f79e2ad67c3699ef8ec
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../0012-linux.storage.lvm-Disable-filter.patch    | 35 ++++++++++++++++++++++
+ mcp/patches/patches.list                           |  1 +
+ 2 files changed, 36 insertions(+)
+ create mode 100644 mcp/patches/0012-linux.storage.lvm-Disable-filter.patch
+
+diff --git a/mcp/patches/0012-linux.storage.lvm-Disable-filter.patch b/mcp/patches/0012-linux.storage.lvm-Disable-filter.patch
+new file mode 100644
+index 0000000..de74fad
+--- /dev/null
++++ b/mcp/patches/0012-linux.storage.lvm-Disable-filter.patch
+@@ -0,0 +1,35 @@
++::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
++: Copyright (c) 2017 Mirantis Inc., Enea AB and others.
++:
++: All rights reserved. This program and the accompanying materials
++: are made available under the terms of the Apache License, Version 2.0
++: which accompanies this distribution, and is available at
++: http://www.apache.org/licenses/LICENSE-2.0
++::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Sat, 18 Nov 2017 22:03:01 +0200
++Subject: [PATCH] linux.storage.lvm: Disable filter
++
++Due to upstream bug [1], mixing OS-managed LVM volumes with Cinder
++LVM volumes leads to a broken filter value in lvm.conf.
++Temporarily disable the filter (whitelisting all devices, similar
++to no-Cinder use-cases) until upstream bug is fixed.
++
++[1] https://github.com/salt-formulas/salt-formula-linux/issues/127
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++
++diff --git a/linux/files/lvm.conf b/linux/files/lvm.conf
++--- a/linux/files/lvm.conf
+++++ b/linux/files/lvm.conf
++@@ -129,7 +129,8 @@
++         # Example
++         # Accept every block device:
++
++-        filter = [ {%- for vgname, vg in storage.lvm.iteritems() %}{%- if vg.get('enabled', True) %}{%- for dev in vg.devices %}"a|{{ dev }}*|"{%- if not loop.last %},{%- endif %}{%- endfor %}{%- endif %}{%- endfor %}, "r|.*|" ]
+++        # NOTE(opnfv): https://github.com/salt-formulas/salt-formula-linux/issues/127
+++        # filter = [ {%- for vgname, vg in storage.lvm.iteritems() %}{%- if vg.get('enabled', True) %}{%- for dev in vg.devices %}"a|{{ dev }}*|"{%- if not loop.last %},{%- endif %}{%- endfor %}{%- endif %}{%- endfor %}, "r|.*|" ]
++
++         # filter = [ "a|.*/|" ]
++         # Reject the cdrom drive:
+diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
+index fb5a14c..d0bb7c4 100644
+--- a/mcp/patches/patches.list
++++ b/mcp/patches/patches.list
+@@ -16,3 +16,4 @@
+ /usr/share/salt-formulas/env: 0009-seedng-module-Sync-salt-version.patch
+ /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
+ /usr/share/salt-formulas/reclass: 0011-service.horizon.server.cluster-Default-to-v2-API.patch
++/usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
