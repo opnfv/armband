@@ -1,0 +1,307 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 18 Nov 2017 20:46:05 +0100
+Subject: [PATCH] ci/deploy.sh: Add new `-E` arg for env erase
+
+NOTE: In order to undefine VCP VMs with NVRAM (e.g. AArch64 VMs
+using AAVMF), an additional parameter should be passed to libvirt
+by Salt virt core module (equivalent to `virsh undefine --nvram`).
+
+While at it, pass CI_DEBUG, ERASE_ENV enviroment variables to
+state execution, and stop force-applying patches.
+
+Also refactor the rsync between foundation node and Salt master,
+so the whole git repo is copied as </root/opnfv>, and <root/fuel>
+becomes a link to it; useful for Armband, where 'fuel' is a git
+submodule. Fix .git paths after rsync, so git submodules work as
+expected in cfg01 repos.
+
+JIRA: FUEL-307
+
+Change-Id: Ic62f03e786581c019168c50ccc50107238021d7f
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .gitignore                              | 18 ++++++------
+ ci/deploy.sh                            | 18 +++++++++---
+ mcp/config/states/maas                  | 12 ++++++++
+ mcp/config/states/virtual_control_plane | 15 ++++++++++
+ mcp/patches/patch.sh                    |  2 +-
+ mcp/scripts/salt.sh                     | 50 +++++++++++++++++++++++++--------
+ 6 files changed, 89 insertions(+), 26 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index c8064d4..4e90f32 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -2,14 +2,14 @@
+ .cache*
+ .project
+ .pydevproject
+-ci/config/
+-deploy/autodeploy.log
++**/ci/config/
++**/deploy/autodeploy.log
+ *~
+ .*.sw?
+-/docs_build/
+-/docs_output/
+-/releng/
+-mcp/deploy/images/
+-mcp/scripts/mcp.rsa*
+-mcp/scripts/user-data.sh
+-mcp/scripts/net_mcpcontrol.xml
++**/docs_build/
++**/docs_output/
++**/releng/
++**/mcp/deploy/images/
++**/mcp/scripts/mcp.rsa*
++**/mcp/scripts/user-data.sh
++**/mcp/scripts/net_mcpcontrol.xml
+diff --git a/ci/deploy.sh b/ci/deploy.sh
+index e980505..b13e18e 100755
+--- a/ci/deploy.sh
++++ b/ci/deploy.sh
+@@ -38,7 +38,7 @@ $(notify "USAGE:" 2)
+   $(basename "$0") -b base-uri -l lab-name -p pod-name -s deploy-scenario \\
+     [-B PXE Bridge [-B Mgmt Bridge [-B Internal Bridge [-B Public Bridge]]]] \\
+     [-S storage-dir] [-L /path/to/log/file.tar.gz] \\
+-    [-f [-f]] [-F] [-e] [-d] [-D]
++    [-f[f]] [-F] [-e | -E[E]] [-d] [-D]
+
+ $(notify "OPTIONS:" 2)
+   -b  Base-uri for the stack-configuration structure
+@@ -46,6 +46,7 @@ $(notify "OPTIONS:" 2)
+   -d  Dry-run
+   -D  Debug logging
+   -e  Do not launch environment deployment
++  -E  Remove existing VCP VMs (use twice to redeploy baremetal nodes)
+   -f  Deploy on existing Salt master (use twice to also skip config sync)
+   -F  Do only create a Salt master
+   -h  Print this message and exit
+@@ -82,6 +83,10 @@ $(notify "Input parameters to the build script are:" 2)
+ -d Dry-run - Produce deploy config files, but do not execute deploy
+ -D Debug logging - Enable extra logging in sh deploy scripts (set -x)
+ -e Do not launch environment deployment
++-E Remove existing VCP VMs. It will destroy and undefine all VCP VMs
++   currently defined on cluster KVM nodes. If specified twice (e.g. -E -E),
++   baremetal nodes (VCP too, implicitly) will be removed, then reprovisioned.
++   Only applicable for baremetal deploys.
+ -f Deploy on existing Salt master. It will skip infrastructure VM creation,
+    but it will still sync reclass configuration from current repo to Salt
+    Master node. If specified twice (e.g. -f -f), config sync will also be
+@@ -150,6 +155,7 @@ DRY_RUN=${DRY_RUN:-0}
+ USE_EXISTING_INFRA=${USE_EXISTING_INFRA:-0}
+ INFRA_CREATION_ONLY=${INFRA_CREATION_ONLY:-0}
+ NO_DEPLOY_ENVIRONMENT=${NO_DEPLOY_ENVIRONMENT:-0}
++ERASE_ENV=${ERASE_ENV:-0}
+
+ source "${DEPLOY_DIR}/globals.sh"
+
+@@ -162,7 +168,7 @@ source "${DEPLOY_DIR}/globals.sh"
+ #
+ set +x
+ OPNFV_BRIDGE_IDX=0
+-while getopts "b:B:dDfFl:L:p:s:S:he" OPTION
++while getopts "b:B:dDfEFl:L:p:s:S:he" OPTION
+ do
+     case $OPTION in
+         b)
+@@ -200,6 +206,9 @@ do
+         e)
+             NO_DEPLOY_ENVIRONMENT=1
+             ;;
++        E)
++            ((ERASE_ENV+=1))
++            ;;
+         l)
+             TARGET_LAB=${OPTARG}
+             ;;
+@@ -423,8 +432,9 @@ else
+     for state in "${cluster_states[@]}"; do
+         notify "[STATE] Applying state: ${state}\n" 2
+         # shellcheck disable=SC2086,2029
+-        wait_for 5 "ssh ${SSH_OPTS} ${SSH_SALT} \
+-            sudo /root/fuel/mcp/config/states/${state}"
++        wait_for 5 "ssh ${SSH_OPTS} ${SSH_SALT} sudo \
++            CI_DEBUG=$CI_DEBUG ERASE_ENV=$ERASE_ENV \
++            /root/fuel/mcp/config/states/${state}"
+     done
+ fi
+
+diff --git a/mcp/config/states/maas b/mcp/config/states/maas
+index eea3e0e..7ccf018 100755
+--- a/mcp/config/states/maas
++++ b/mcp/config/states/maas
+@@ -8,6 +8,7 @@
+ ##############################################################################
+
+ CI_DEBUG=${CI_DEBUG:-0}; [[ "${CI_DEBUG}" =~ (false|0) ]] || set -x
++ERASE_ENV=${ERASE_ENV:-0}
+
+ # shellcheck disable=SC1090
+ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
+@@ -52,6 +53,17 @@ function maas_fixup() {
+   return 0
+ }
+
++# Optionally destroy MaaS machines from a previous run
++if [ "${ERASE_ENV}" -gt 1 ]; then
++  dnodes=$(salt 'mas01*' --out yaml state.apply maas.machines.status | \
++    grep -Pzo '\s+system_id: \K.+\n')
++  for node_system_id in ${dnodes}; do
++    salt -C 'mas01*' state.apply maas.machines.delete \
++      pillar="{'system_id': '${node_system_id}'}"
++    sleep 30
++  done
++fi
++
+ # MaaS rack/region controller, node commissioning
+ salt -C 'mas01*' cmd.run "add-apt-repository ppa:maas/stable"
+
+diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
+index cfd5e42..c355126 100755
+--- a/mcp/config/states/virtual_control_plane
++++ b/mcp/config/states/virtual_control_plane
+@@ -8,10 +8,25 @@
+ ##############################################################################
+
+ CI_DEBUG=${CI_DEBUG:-0}; [[ "${CI_DEBUG}" =~ (false|0) ]] || set -x
++ERASE_ENV=${ERASE_ENV:-0}
+
+ # shellcheck disable=SC1090
+ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
+
++# Optionally destroy VCP VMs from a previous run
++if [ "${ERASE_ENV}" -eq 1 ]; then
++    kvm_vms=$(salt --out yaml 'kvm*' virt.list_domains | \
++              sed -e 's/- //g' -e 's/:.*$//g')
++    for line in ${kvm_vms}; do
++        if [[ "${line}" =~ ^kvm ]]; then
++            kvm_node=${line}
++        elif [ -n "${kvm_node}" ]; then
++            salt "${kvm_node}" virt.purge dirs=True "${line}" || true
++        fi
++    done
++fi
++
++# KVM, compute node prereqs (libvirt first), VCP deployment
+ # patch the networking module for Debian based distros
+ debian_ip_source=/usr/lib/python2.7/dist-packages/salt/modules/debian_ip.py
+ salt -C 'kvm* or cmp*' file.line $debian_ip_source \
+diff --git a/mcp/patches/patch.sh b/mcp/patches/patch.sh
+index ca5c141..1da3bc5 100755
+--- a/mcp/patches/patch.sh
++++ b/mcp/patches/patch.sh
+@@ -14,7 +14,7 @@ if [ -r "$1" ]; then
+     if [[ ! "${p_dest}" =~ '^#' ]] && [[ "${p_dest}" =~ $2 ]] && \
+       ! patch --dry-run -Rd "${p_dest}" -r - -s -p1 < \
+         "/root/fuel/mcp/patches/${p_file}" > /dev/null; then
+-          patch -fd "${p_dest}" -p1 < "/root/fuel/mcp/patches/${p_file}"
++          patch -d "${p_dest}" -p1 < "/root/fuel/mcp/patches/${p_file}"
+     fi
+   done < "$1"
+ fi
+diff --git a/mcp/scripts/salt.sh b/mcp/scripts/salt.sh
+index a03d25f..631cc4a 100755
+--- a/mcp/scripts/salt.sh
++++ b/mcp/scripts/salt.sh
+@@ -12,19 +12,27 @@
+
+ CI_DEBUG=${CI_DEBUG:-0}; [[ "${CI_DEBUG}" =~ (false|0) ]] || set -x
+ F_GIT_ROOT=$(git rev-parse --show-toplevel)
+-OPNFV_TMP_DIR="/home/${SALT_MASTER_USER}/fuel"
++F_GIT_DIR=$(git -C "${F_GIT_ROOT}/mcp" rev-parse --git-dir)
++F_GIT_SUBD=${F_GIT_ROOT#${F_GIT_DIR%%/.git*}}
++OPNFV_TMP_DIR="/home/${SALT_MASTER_USER}/opnfv"
++OPNFV_GIT_DIR="/root/opnfv"
+ OPNFV_FUEL_DIR="/root/fuel"
+ OPNFV_RDIR="reclass/classes/cluster/all-mcp-ocata-common"
++LOCAL_GIT_DIR="${F_GIT_ROOT%${F_GIT_SUBD}}"
+ LOCAL_PDF_RECLASS=$1
++NODE_MASK='*'
+
+-# push to cfg01 current git repo first (including submodules), at ~ubuntu/fuel
+-# later we move it to ~root/fuel and delete the temporary clone
++[[ "${CLUSTER_DOMAIN}" =~ virtual ]] || NODE_MASK='mas01*'
++
++# push to cfg01 current git repo first (including submodules), at ~ubuntu/opnfv
++# later we move it to ~root/opnfv (and ln as ~root/fuel); delete the temp clone
++remote_tmp="${SSH_SALT}:$(basename "${OPNFV_TMP_DIR}")"
+ rsync -Erl --delete -e "ssh ${SSH_OPTS}" \
+   --exclude-from="${F_GIT_ROOT}/.gitignore" \
+-  "${F_GIT_ROOT}/" "${SSH_SALT}:$(basename "${OPNFV_TMP_DIR}")/"
++  "${LOCAL_GIT_DIR}/" "${remote_tmp}/"
+ if [ -n "${LOCAL_PDF_RECLASS}" ] && [ -f "${LOCAL_PDF_RECLASS}" ]; then
+   rsync -e "ssh ${SSH_OPTS}" "${LOCAL_PDF_RECLASS}" \
+-    "${SSH_SALT}:$(basename "${OPNFV_TMP_DIR}")/mcp/${OPNFV_RDIR}/opnfv/"
++    "${remote_tmp}${F_GIT_SUBD}/mcp/${OPNFV_RDIR}/opnfv/"
+ fi
+
+ # ssh to cfg01
+@@ -32,14 +40,19 @@ fi
+ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s -e << SALT_INSTALL_END
+   sudo -i
+   set -e
++  export CI_DEBUG=${CI_DEBUG}; [[ "${CI_DEBUG}" =~ (false|0) ]] || set -x
+
+   echo -n 'Checking out cloud-init has finished running ...'
+   while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo -n '.'; sleep 1; done
+   echo ' done'
+
+   mkdir -p /srv/salt /usr/share/salt-formulas/reclass
+-  rm -rf ${OPNFV_FUEL_DIR}
+-  mv ${OPNFV_TMP_DIR} ${OPNFV_FUEL_DIR} && chown -R root.root ${OPNFV_FUEL_DIR}
++  rm -rf ${OPNFV_GIT_DIR}
++  mv ${OPNFV_TMP_DIR} ${OPNFV_GIT_DIR} && chown -R root.root ${OPNFV_GIT_DIR}
++  find ${OPNFV_GIT_DIR} -name '.git' -type f | while read f_git; do
++    sed -i 's@${LOCAL_GIT_DIR}@${OPNFV_GIT_DIR}@g' \$f_git
++  done
++  ln -sf ${OPNFV_GIT_DIR}${F_GIT_SUBD} ${OPNFV_FUEL_DIR}
+   ln -sf ${OPNFV_FUEL_DIR}/mcp/reclass /srv/salt
+   ln -sf ${OPNFV_FUEL_DIR}/mcp/deploy/scripts /srv/salt
+   cd /srv/salt/${OPNFV_RDIR} && rm -f arch && ln -sf "\$(uname -i)" arch
+@@ -50,6 +63,7 @@ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s -e << SALT_INSTALL_END
+
+   cd /srv/salt/scripts
+   export DEBIAN_FRONTEND=noninteractive
++  OLD_DOMAIN=\$(grep -Pzo "id: cfg01\.\K(\S*)" /etc/salt/minion.d/minion.conf) || true
+   BOOTSTRAP_SALTSTACK_OPTS=" -r -dX stable 2016.11 " \
+     MASTER_HOSTNAME=cfg01.${CLUSTER_DOMAIN} DISTRIB_REVISION=nightly \
+       EXTRA_FORMULAS="nfs" \
+@@ -61,12 +75,24 @@ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s -e << SALT_INSTALL_END
+   cd ${OPNFV_FUEL_DIR}/mcp/patches && ./patch.sh patches.list reclass
+
+   salt-call state.apply salt
+-  salt '*' saltutil.sync_all
+-  salt '*' state.apply salt | grep -Fq 'No response' && salt '*' state.apply salt
++
++  # In case scenario changed (and implicitly domain name), re-register minions
++  if [ -n "\${OLD_DOMAIN}" ] && [ "\${OLD_DOMAIN}" != "${CLUSTER_DOMAIN}" ]; then
++    salt "*.\${OLD_DOMAIN}" cmd.run "grep \${OLD_DOMAIN} -Rl /etc/salt | \
++      xargs --no-run-if-empty sed -i 's/\${OLD_DOMAIN}/${CLUSTER_DOMAIN}/g'; \
++        service salt-minion restart" || true
++    salt-key -yd "*.\${OLD_DOMAIN}"
++    salt-key -Ay
++  fi
++
++  # Init specific to VMs on FN (all for virtual, cfg|mas for baremetal)
++  salt -C "${NODE_MASK} or cfg01*" saltutil.sync_all
++  salt -C "${NODE_MASK} or cfg01*" state.apply salt | \
++    grep -Fq 'No response' && salt -C "${NODE_MASK} or cfg01*" state.apply salt
+
+   salt -C 'I@salt:master' state.sls linux
+-  salt -C '* and not cfg01*' state.sls linux || true
+-  salt -C '* and not cfg01*' pkg.upgrade refresh=False
++  salt -C "${NODE_MASK} and not cfg01*" state.sls linux || true
++  salt -C "${NODE_MASK} and not cfg01*" pkg.upgrade refresh=False
+
+-  salt '*' state.sls ntp
++  salt -C "${NODE_MASK} or cfg01*" state.sls ntp
+ SALT_INSTALL_END
