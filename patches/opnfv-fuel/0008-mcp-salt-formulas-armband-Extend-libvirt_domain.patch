@@ -1,0 +1,174 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 20 Aug 2017 22:41:26 +0200
+Subject: [PATCH] mcp: salt-formulas: armband: Extend libvirt_domain
+
+Add new state in armband salt formula that:
+* extends salt's virt libvirt_domain.jinja template with support for:
+  - hw_firmware_type;
+  - virt_machine_model;
+  - cpu_model;
+  These will later be leveraged via salt virt formula with AArch64
+  specific values.
+* to ensure compatibilty of `virt.purge` with NVRAM-enabled domains
+  at undefine time, pass down the proper flag to libvirt from virt.py.
+* re-enable AArch64 bootstrap
+  Recent changes in salt bootstrap script from [1] whitelist a
+  fixed pool of known architectures. Add "arm64" to that list on the
+  fly, as part of `config.gather_bootstrap_script`.
+  NOTE: This change will be leveraged by passing a custom DEB repo to
+  the bootstrap script with `-R linux.enea.com/saltstack`.
+
+NOTE: After running this new state, salt-minion should be restarted
+to pick up the changes, so we'll run it before rebooting kvm nodes.
+
+[1] http://bootstrap.saltstack.com
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/states/virtual_control_plane            |   1 +
+ .../armband/files/salt-minion-aarch64-rollup.diff  | 101 +++++++++++++++++++++
+ mcp/salt-formulas/armband/salt_minion.sls          |   7 ++
+ 3 files changed, 109 insertions(+)
+ create mode 100644 mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
+ create mode 100644 mcp/salt-formulas/armband/salt_minion.sls
+
+diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
+index 99fb517..88a4488 100755
+--- a/mcp/config/states/virtual_control_plane
++++ b/mcp/config/states/virtual_control_plane
+@@ -40,6 +40,7 @@ salt -C 'kvm*' pkg.install bridge-utils
+ salt -C 'kvm*' state.apply linux.network
+ salt -C 'cmp*' state.apply linux.system
+ salt -C 'cmp*' state.apply linux.network || true
++salt -C 'kvm*' state.apply armband.salt_minion || true
+ salt -C 'kvm* or cmp*' system.reboot
+ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
+   "tee /dev/stderr | grep -Fq 'Not connected'"
+diff --git a/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
+new file mode 100644
+index 0000000..9e74c24
+--- /dev/null
++++ b/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
+@@ -0,0 +1,101 @@
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Sun Aug 20 18:18:53 2017 +0200
++Subject: [PATCH] cloud.py: Allow AArch64 arch in salt bootstrap
++
++Recent changes in salt bootstrap script from [1] whitelist a
++fixed pool of known architectures. Add "arm64" to that list on the
++fly, as part of `config.gather_bootstrap_script`.
++
++NOTE: This change will be leveraged by passing a custom DEB repo to
++the bootstrap script with `-R linux.enea.com/saltstack`.
++
++[1] http://bootstrap.saltstack.com
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++
++diff --git a/salt/utils/cloud.py b/salt/utils/cloud.py
++--- a/salt/utils/cloud.py
+++++ b/salt/utils/cloud.py
++@@ -2772,6 +2772,9 @@
++     if not script_content:
++         raise ValueError('No content in bootstrap script !')
++
+++    # NOTE(armband): edit bootstrap script on the fly to allow AArch64
+++    script_content = script_content.replace('"amd64")', '"amd64"|"arm64")')
+++
++     # Get the path to the built-in deploy scripts directory
++     builtin_deploy_dir = os.path.join(
++         os.path.dirname(__file__),
++--
++
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Sun Aug 20 18:18:53 2017 +0200
++Subject: [PATCH] libvirt_domain.jinja: Add AArch64 support
++
++Salt virt state relies on a Jinja template to create a libvirt
++XML definition for each new VM.
++This template needs to be extended with a few specific options
++for AArch64:
++- UEFI loader support (pflash);
++- custom machine model (e.g. 'virt-2.9'), since AArch64 defaults to
++  'integratorcp';
++- custom cpu model;
++
++Allow all these to be parametrized from the salt virt formula,
++which we will also adapt to allow the params to be passed via our
++reclass model.
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++
++diff --git a/salt/templates/virt/libvirt_domain.jinja b/salt/templates/virt/libvirt_domain.jinja
++--- a/salt/templates/virt/libvirt_domain.jinja
+++++ b/salt/templates/virt/libvirt_domain.jinja
++@@ -3,11 +3,22 @@
++         <vcpu>{{ cpu }}</vcpu>
++         <memory unit='KiB'>{{ mem }}</memory>
++         <os>
+++                {% if custom_virt_machine %}
+++                <type machine='{{ virt_machine_model }}'>hvm</type>
+++                {% else %}
++                 <type>hvm</type>
+++                {% endif %}
+++                {% if os_loader_type == 'pflash' %}
+++                <loader readonly='yes' type='{{ os_loader_type }}'>{{ os_loader }}</loader>
+++                <nvram>{{ os_loader_nvram }}</nvram>
+++                {% endif %}
++                 {% for dev in boot_dev %}
++                 <boot dev='{{ dev }}' />
++                 {% endfor %}
++         </os>
+++        {% if cpu_mode == 'custom' %}
+++        <cpu mode='{{ cpu_model }}' check='none'/>
+++        {% endif %}
++         <devices>
++                 {% for diskname, disk in disks.items() %}
++                 <disk type='file' device='disk'>
++--
++
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Sun Nov 19 02:18:53 2017 +0200
++Subject: [PATCH] virt.py: undefine: NVRAM flag support
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++
++diff --git a/salt/modules/virt.py b/salt/modules/virt.py
++--- a/salt/modules/virt.py
+++++ b/salt/modules/virt.py
++@@ -1523,7 +1523,10 @@
++         salt '*' virt.undefine <domain>
++     '''
++     dom = _get_domain(vm_)
++-    return dom.undefine() == 0
+++    try:
+++        return dom.undefineFlags(libvirt.VIR_DOMAIN_UNDEFINE_NVRAM) == 0
+++    except libvirt.libvirtError:
+++        return dom.undefine() == 0
++
++
++ def purge(vm_, dirs=False):
+diff --git a/mcp/salt-formulas/armband/salt_minion.sls b/mcp/salt-formulas/armband/salt_minion.sls
+new file mode 100644
+index 0000000..9cce636
+--- /dev/null
++++ b/mcp/salt-formulas/armband/salt_minion.sls
+@@ -0,0 +1,7 @@
++salt-minion-aarch64-rollup:
++  file.patch:
++  - name: /usr/lib/python2.7/dist-packages
++  - source: salt://armband/files/salt-minion-aarch64-rollup.diff
++  - hash: False
++  - options: '-p1'
++  - unless: 'test -f /var/cache/salt/minion/files/base/armband/files/salt-minion-aarch64-rollup.diff && cd /usr/lib/python2.7/dist-packages && patch -p1 -R --dry-run /var/cache/salt/minion/files/base/armband/files/salt-minion-aarch64-rollup.diff'
