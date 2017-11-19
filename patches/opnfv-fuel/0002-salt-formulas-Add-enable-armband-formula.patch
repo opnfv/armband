@@ -68,10 +68,10 @@ index e1fdf73..e1f705c 100755
  salt -I 'mongodb:server' state.sls mongodb || true
  wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index b9db08a..c798209 100755
+index da22a17..458809d 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -32,6 +32,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
+@@ -46,6 +46,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
 
  salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
 

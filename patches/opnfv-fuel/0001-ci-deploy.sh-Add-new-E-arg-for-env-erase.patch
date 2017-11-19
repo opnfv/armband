@@ -1,0 +1,156 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 18 Nov 2017 20:46:05 +0100
+Subject: [PATCH] ci/deploy.sh: Add new `-E` arg for env erase
+
+NOTE: In order to undefine VCP VMs with NVRAM (e.g. AArch64 VMs
+using AAVMF), an additional parameter should be passed to libvirt
+by Salt virt core module (equivalent to `virsh undefine --nvram`).
+
+While at it, pass CI_DEBUG enviroment variable to state execution.
+
+JIRA: FUEL-307
+
+Change-Id: Ic62f03e786581c019168c50ccc50107238021d7f
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ci/deploy.sh                            | 16 +++++++++++++---
+ mcp/config/states/maas                  | 12 ++++++++++++
+ mcp/config/states/virtual_control_plane | 14 ++++++++++++++
+ 3 files changed, 39 insertions(+), 3 deletions(-)
+
+diff --git a/ci/deploy.sh b/ci/deploy.sh
+index e980505..89ec3ab 100755
+--- a/ci/deploy.sh
++++ b/ci/deploy.sh
+@@ -38,7 +38,7 @@ $(notify "USAGE:" 2)
+   $(basename "$0") -b base-uri -l lab-name -p pod-name -s deploy-scenario \\
+     [-B PXE Bridge [-B Mgmt Bridge [-B Internal Bridge [-B Public Bridge]]]] \\
+     [-S storage-dir] [-L /path/to/log/file.tar.gz] \\
+-    [-f [-f]] [-F] [-e] [-d] [-D]
++    [-f[f]] [-F] [-e | -E[E]] [-d] [-D]
+
+ $(notify "OPTIONS:" 2)
+   -b  Base-uri for the stack-configuration structure
+@@ -46,6 +46,7 @@ $(notify "OPTIONS:" 2)
+   -d  Dry-run
+   -D  Debug logging
+   -e  Do not launch environment deployment
++  -E  Remove existing VCP VMs (use twice to redeploy baremetal nodes)
+   -f  Deploy on existing Salt master (use twice to also skip config sync)
+   -F  Do only create a Salt master
+   -h  Print this message and exit
+@@ -82,6 +83,10 @@ $(notify "Input parameters to the build script are:" 2)
+ -d Dry-run - Produce deploy config files, but do not execute deploy
+ -D Debug logging - Enable extra logging in sh deploy scripts (set -x)
+ -e Do not launch environment deployment
++-E Remove existing VCP VMs. It will destroy and undefine all VCP VMs
++   currently defined on cluster KVM nodes. If specified twice (e.g. -E -E),
++   baremetal nodes (VCP too, implicitly) will be removed, then reprovisioned.
++   Only applicable for baremetal deploys.
+ -f Deploy on existing Salt master. It will skip infrastructure VM creation,
+    but it will still sync reclass configuration from current repo to Salt
+    Master node. If specified twice (e.g. -f -f), config sync will also be
+@@ -150,6 +155,7 @@ DRY_RUN=${DRY_RUN:-0}
+ USE_EXISTING_INFRA=${USE_EXISTING_INFRA:-0}
+ INFRA_CREATION_ONLY=${INFRA_CREATION_ONLY:-0}
+ NO_DEPLOY_ENVIRONMENT=${NO_DEPLOY_ENVIRONMENT:-0}
++ERASE_ENV=${ERASE_ENV:-0}
+
+ source "${DEPLOY_DIR}/globals.sh"
+
+@@ -162,7 +168,7 @@ source "${DEPLOY_DIR}/globals.sh"
+ #
+ set +x
+ OPNFV_BRIDGE_IDX=0
+-while getopts "b:B:dDfFl:L:p:s:S:he" OPTION
++while getopts "b:B:dDfEFl:L:p:s:S:he" OPTION
+ do
+     case $OPTION in
+         b)
+@@ -200,6 +206,9 @@ do
+         e)
+             NO_DEPLOY_ENVIRONMENT=1
+             ;;
++        E)
++            ((ERASE_ENV+=1))
++            ;;
+         l)
+             TARGET_LAB=${OPTARG}
+             ;;
+@@ -424,7 +433,8 @@ else
+         notify "[STATE] Applying state: ${state}\n" 2
+         # shellcheck disable=SC2086,2029
+         wait_for 5 "ssh ${SSH_OPTS} ${SSH_SALT} \
+-            sudo /root/fuel/mcp/config/states/${state}"
++            sudo CI_DEBUG=$CI_DEBUG ERASE_ENV=$ERASE_ENV \
++            /root/fuel/mcp/config/states/${state}"
+     done
+ fi
+
+diff --git a/mcp/config/states/maas b/mcp/config/states/maas
+index eea3e0e..7ccf018 100755
+--- a/mcp/config/states/maas
++++ b/mcp/config/states/maas
+@@ -8,6 +8,7 @@
+ ##############################################################################
+
+ CI_DEBUG=${CI_DEBUG:-0}; [[ "${CI_DEBUG}" =~ (false|0) ]] || set -x
++ERASE_ENV=${ERASE_ENV:-0}
+
+ # shellcheck disable=SC1090
+ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
+@@ -52,6 +53,17 @@ function maas_fixup() {
+   return 0
+ }
+
++# Optionally destroy MaaS machines from a previous run
++if [ "${ERASE_ENV}" -gt 1 ]; then
++  dnodes=$(salt 'mas01*' --out yaml state.apply maas.machines.status | \
++    grep -Pzo '\s+system_id: \K.+\n')
++  for node_system_id in ${dnodes}; do
++    salt -C 'mas01*' state.apply maas.machines.delete \
++      pillar="{'system_id': '${node_system_id}'}"
++    sleep 30
++  done
++fi
++
+ # MaaS rack/region controller, node commissioning
+ salt -C 'mas01*' cmd.run "add-apt-repository ppa:maas/stable"
+
+diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
+index b9db08a..da22a17 100755
+--- a/mcp/config/states/virtual_control_plane
++++ b/mcp/config/states/virtual_control_plane
+@@ -8,10 +8,24 @@
+ ##############################################################################
+
+ CI_DEBUG=${CI_DEBUG:-0}; [[ "${CI_DEBUG}" =~ (false|0) ]] || set -x
++ERASE_ENV=${ERASE_ENV:-0}
+
+ # shellcheck disable=SC1090
+ source "$(dirname "${BASH_SOURCE[0]}")/../../scripts/lib.sh"
+
++# Optionally destroy VCP VMs from a previous run
++if [ "${ERASE_ENV}" -eq 1 ]; then
++    kvm_vms=$(salt --out yaml 'kvm*' virt.list_domains | \
++              sed -e 's/- //g' -e 's/:.*$//g')
++    for line in ${kvm_vms}; do
++        if [[ "${line}" =~ ^kvm ]]; then
++            kvm_node=${line}
++        elif [ -n "${kvm_node}" ]; then
++            salt "${kvm_node}" virt.purge dirs=True "${line}"
++        fi
++    done
++fi
++
+ # KVM, compute node prereqs (libvirt first), VCP deployment
+ # patch the networking module for Debian based distros
+ debian_ip_source=/usr/lib/python2.7/dist-packages/salt/modules/debian_ip.py
