@@ -1,0 +1,57 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 21 Aug 2017 20:42:00 +0200
+Subject: [PATCH] seedng: module: Add AArch64 repo
+
+salt custom py module seedng.py should use custom repo arg
+"-R linux.enea.com/saltstack" on AArch64 nodes.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/patches/0009-seedng-module-Sync-salt-version.patch | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/mcp/patches/0009-seedng-module-Sync-salt-version.patch b/mcp/patches/0009-seedng-module-Sync-salt-version.patch
+index d116c81..20233a9 100644
+--- a/mcp/patches/0009-seedng-module-Sync-salt-version.patch
++++ b/mcp/patches/0009-seedng-module-Sync-salt-version.patch
+@@ -8,23 +8,29 @@
+ ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+ Date: Mon, 21 Aug 2017 02:03:01 +0200
+-Subject: [PATCH] seedng: module: Sync salt version
++Subject: [PATCH] seedng: module: Sync salt version, AArch64 repo
+
+ salt custom py module seedng.py should use the same Salt version
+ when preinstalling minion for salt-controlled VMs via bootstrap
+ script.
+
++While at it, add AArch64 repo. This used to be a separate patch, but
++we'll squash it in, so reverse-apply checks still work:
++- salt custom py module seedng.py should use custom repo arg
++  "-R linux.enea.com/saltstack" on AArch64 nodes.
++
+ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+ ---
+
+ diff --git a/_modules/seedng.py b/_modules/seedng.py
+ --- a/_modules/seedng.py
+ +++ b/_modules/seedng.py
+-@@ -256,8 +256,10 @@
++@@ -256,8 +256,11 @@
+      boot_, tmppath = (prep_bootstrap(mpt)
+               or salt.syspaths.BOOTSTRAP)
+      # Exec the chroot command
+-+    arg = 'stable {0}'.format('.'.join(salt.version.__version__.split('.')[:2]))
+++    arg = '-R linux.enea.com/saltstack ' if os.uname()[-1] == 'aarch64' else ''
+++    arg += 'stable {0}'.format('.'.join(salt.version.__version__.split('.')[:2]))
+      cmd = 'if type salt-minion; then exit 0; '
+ -    cmd += 'else sh {0} -c /tmp; fi'.format(os.path.join(tmppath, 'bootstrap-salt.sh'))
+ +    cmd += 'else sh {0} -c /tmp {1}; fi'.format(
