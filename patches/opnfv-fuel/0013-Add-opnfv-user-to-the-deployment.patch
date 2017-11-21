@@ -21,10 +21,10 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 8b9e3ef..34fe956 100755
+index 44d7c6d..8fc03d4 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -23,6 +23,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
+@@ -22,6 +22,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
    repl="\n        if not __salt__['pkg.version']('vlan'):\n            __salt__['pkg.install']('vlan')"
 
  salt -C 'kvm*' pkg.install bridge-utils
@@ -32,7 +32,7 @@ index 8b9e3ef..34fe956 100755
  salt -C 'kvm*' state.apply linux.network
  salt -C 'cmp*' state.apply linux.system
  salt -C 'cmp*' state.apply linux.network || true
-@@ -53,6 +54,7 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
+@@ -52,6 +53,7 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
    rc=0
    for node in $vcp_nodes; do
      salt "$node" test.ping 2>/dev/null || { rc=$?; break; };
