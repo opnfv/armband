@@ -49,10 +49,10 @@ index 0000000..d40e63b
 +     cmd += 'else sh {0} -c /tmp {1}; fi'.format(
 +         os.path.join(tmppath, 'bootstrap-salt.sh'), arg)
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 059e3ef..87336d5 100644
+index 2f12b7f..6ba59aa 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -20,3 +20,4 @@
+@@ -21,3 +21,4 @@
  /usr/share/salt-formulas/env: 0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
  /usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
  /usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
