@@ -32,10 +32,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 34fe956..b87ed69 100755
+index 8fc03d4..b79cc85 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -25,9 +25,12 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
+@@ -24,9 +24,12 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
  salt -C 'kvm*' pkg.install bridge-utils
  salt -C '*' state.apply opnfv.adduser
  salt -C 'kvm*' state.apply linux.network
@@ -49,10 +49,10 @@ index 34fe956..b87ed69 100755
  salt -C 'kvm* or cmp*' system.reboot
  wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
    "tee /dev/stderr | grep -Fq 'Not connected'"
-@@ -67,3 +70,10 @@ wait_for 10 "! salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply linux,ntp |
-
- wait_for 10 "salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' ssh.set_auth_key ${SUDO_USER} \
-   $(awk 'NR==1{print $2}' "$(eval echo "~${SUDO_USER}/.ssh/authorized_keys")")"
+@@ -70,3 +73,10 @@ wait_for 10 "salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' ssh.set_auth_key ${SUDO_US
+ # Disable proxy dhcp routes after installation
+ salt -C 'prx*' file.write /etc/dhcp/dhclient-enter-hooks.d/no-default-route \
+   args='unset new_routers'
 +
 +# NOTE(armband): Should be later moved to reclass as system.kernel.version
 +salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' pkg.install \
