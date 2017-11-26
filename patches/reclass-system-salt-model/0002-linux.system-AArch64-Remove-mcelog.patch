@@ -8,7 +8,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Fri, 14 Jul 2017 19:26:11 +0000
-Subject: [PATCH] linux/system: AArch64: Remove mcelog
+Subject: [PATCH] linux.system: AArch64: Remove mcelog
 
 mcelog is not available on AArch64 hardware, so skip trying to install
 it. This implies Ceilometer should not use mcelog on AArch64.
@@ -16,16 +16,16 @@ it. This implies Ceilometer should not use mcelog on AArch64.
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- linux/system/single.yml | 2 --
+ linux/system/single/init.yml | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/linux/system/single.yml b/linux/system/single.yml
-index ef23a39..f07fa68 100644
---- a/linux/system/single.yml
-+++ b/linux/system/single.yml
-@@ -11,8 +11,6 @@ parameters:
-           version: latest
-         cloud-init:
+diff --git a/linux/system/single/init.yml b/linux/system/single/init.yml
+index 8de2dda..c702a48 100644
+--- a/linux/system/single/init.yml
++++ b/linux/system/single/init.yml
+@@ -19,8 +19,6 @@ parameters:
+           version: purged
+         unattended-upgrades:
            version: purged
 -        mcelog:
 -          version: latest
