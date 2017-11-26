@@ -1,0 +1,49 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sun, 26 Nov 2017 17:25:08 +0100
+Subject: [PATCH] baremetal: Add Armband Openstack repos to kvm, cmp
+
+Armband provides 2 sets of APT repositories:
+- linux.system.repo.mcp.armband.openstack;
+- linux.system.repo.mcp.armband.extra (currently empty);
+
+These repos are pre-installed for all infrastructure VMs, so we only
+handle them via Salt for baremetal kvm* and cmp* nodes.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml     | 1 +
+ .../classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml     | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
+index 7138d68..9011e47 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
+@@ -7,6 +7,7 @@
+ ##############################################################################
+ ---
+ classes:
++  - system.linux.system.repo.mcp.armband.openstack
+   - system.linux.system.repo.mcp.openstack
+   - system.linux.system.repo.mcp.extra
+   - system.linux.system.repo.glusterfs
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
+index e07e611..278e55b 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
+@@ -7,6 +7,7 @@
+ ##############################################################################
+ ---
+ classes:
++  - system.linux.system.repo.mcp.armband.openstack
+   - system.linux.system.repo.mcp.extra
+   - system.linux.system.repo.glusterfs
+   - system.linux.storage.loopback

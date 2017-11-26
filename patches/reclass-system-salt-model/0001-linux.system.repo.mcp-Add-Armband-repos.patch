@@ -1,0 +1,67 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 10 Jul 2017 15:31:08 +0000
+Subject: [PATCH] linux.system.repo.mcp: Add Armband repos
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ linux/system/repo/mcp/armband/extra.yml     | 14 ++++++++++++++
+ linux/system/repo/mcp/armband/openstack.yml | 21 +++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
+ create mode 100644 linux/system/repo/mcp/armband/extra.yml
+ create mode 100644 linux/system/repo/mcp/armband/openstack.yml
+
+diff --git a/linux/system/repo/mcp/armband/extra.yml b/linux/system/repo/mcp/armband/extra.yml
+new file mode 100644
+index 0000000..5b10e19
+--- /dev/null
++++ b/linux/system/repo/mcp/armband/extra.yml
+@@ -0,0 +1,14 @@
++parameters:
++  # Armband only provides apt_mk_version=nightly for now
++  linux:
++    system:
++      repo:
++        armband_mcp_extra:
++          source: "deb [arch=arm64] http://linux.enea.com/apt-mk/${_param:linux_system_codename}/ nightly extra"
++          architectures: arm64
++          key_url: "https://linux.enea.com/apt-mk/public.gpg"
++          clean_file: true
++          pin:
++          - pin: 'release a=nightly'
++            priority: 1100
++            package: '*'
+diff --git a/linux/system/repo/mcp/armband/openstack.yml b/linux/system/repo/mcp/armband/openstack.yml
+new file mode 100644
+index 0000000..6aa4fa0
+--- /dev/null
++++ b/linux/system/repo/mcp/armband/openstack.yml
+@@ -0,0 +1,21 @@
++parameters:
++  # Armband only provides apt_mk_version=nightly for now
++  linux:
++    system:
++      repo:
++        armband_openstack:
++          source: "deb http://linux.enea.com/mcp-repos/${_param:openstack_version}/${_param:linux_system_codename} ${_param:openstack_version} main"
++          architectures: arm64
++          key_url: "https://linux.enea.com/mcp-repos/${_param:openstack_version}/${_param:linux_system_codename}/archive-mcp${_param:openstack_version}.key"
++          pin:
++          - pin: 'release a=${_param:openstack_version}'
++            priority: 1100
++            package: '*'
++        armband_mk_openstack:
++          source: "deb [arch=arm64] http://linux.enea.com/apt-mk/${_param:linux_system_codename}/ nightly ${_param:openstack_version}"
++          architectures: arm64
++          key_url: "https://linux.enea.com/apt-mk/public.gpg"
++          pin:
++          - pin: 'release a=nightly'
++            priority: 1100
++            package: '*'
