@@ -21,7 +21,7 @@ This document provides guidelines on how to install and
 configure the Euphrates release of OPNFV when using Fuel as a
 deployment tool, including required software and hardware configurations.
 
-Although the available installation options provide a high de.g.ee of
+Although the available installation options provide a high degree of
 freedom in how the system is set up, including architecture, services
 and features, etc., said permutations may not provide an OPNFV
 compliant reference architecture. This document provides a
@@ -40,7 +40,7 @@ OPNFV, using Fuel as a deployment tool, some planning must be
 done.
 
 Preparations
-==================
+============
 
 Prior to installation, a number of deployment specific parameters must be collected, those are:
 
@@ -65,7 +65,7 @@ This information will be needed for the configuration procedures
 provided in this document.
 
 =========================================
-Hardware requirements for virtual deploys
+Hardware Requirements for Virtual Deploys
 =========================================
 
 The following minimum hardware requirements must be met for the virtual
@@ -76,7 +76,7 @@ installation of Euphrates using Fuel:
 |                            |                                                        |
 +============================+========================================================+
 | **1 Jumpserver**           | A physical node (also called Foundation Node) that     |
-|                            | hosts a Salt Master VM and each of the VM nodes in     |
+|                            | will host a Salt Master VM and each of the VM nodes in |
 |                            | the virtual deploy                                     |
 +----------------------------+--------------------------------------------------------+
 | **CPU**                    | Minimum 1 socket with Virtualization support           |
@@ -88,7 +88,7 @@ installation of Euphrates using Fuel:
 
 
 ===========================================
-Hardware requirements for baremetal deploys
+Hardware Requirements for Baremetal Deploys
 ===========================================
 
 The following minimum hardware requirements must be met for the baremetal
@@ -153,7 +153,7 @@ environment, you should think about:
 - Networking -- Depends on the Choose Network Topology, the network bandwidth per virtual machine, and network storage.
 
 ================================================
-Top of the rack (TOR) Configuration requirements
+Top of the Rack (TOR) Configuration Requirements
 ================================================
 
 The switching infrastructure provides connectivity for the OPNFV
@@ -177,8 +177,27 @@ Manual configuration of the Euphrates hardware platform should
 be carried out according to the `OPNFV Pharos Specification
 <https://wiki.opnfv.org/display/pharos/Pharos+Specification>`_.
 
+============================
+OPNFV Software Prerequisites
+============================
+
+The Jumpserver node should be pre-provisioned with an operating system,
+according to the Pharos specification. Relevant network bridges should
+also be pre-configured (e.g. admin, management, public).
+
+Fuel@OPNFV has been validated by CI using the following distributions
+installed on the Jumpserver:
+
+   - CentOS 7 (recommended by Pharos specification);
+   - Ubuntu Xenial;
+
+**NOTE:** The install script expects 'libvirt' to be installed and running
+on the Jumpserver. In case the packages are missing, the script will install
+them; but depending on the OS distribution, the user might have to start the
+'libvirtd' service manually.
+
 ==========================================
-OPNFV Software installation and deployment
+OPNFV Software Installation and Deployment
 ==========================================
 
 This section describes the process of installing all the components needed to
@@ -205,6 +224,33 @@ For virtual deploys all the targets are VMs on the Jumpserver. The deploy script
    - Install Openstack on the targets
       - Leverage Salt to install & configure Openstack services
 
+.. figure:: img/fuel_virtual.png
+   :align: center
+   :alt: Fuel@OPNFV Virtual POD Network Layout Examples
+
+   Fuel@OPNFV Virtual POD Network Layout Examples
+
+   +-----------------------+------------------------------------------------------------------------+
+   | cfg01                 | Salt Master VM                                                         |
+   +-----------------------+------------------------------------------------------------------------+
+   | ctl01                 | Controller VM                                                          |
+   +-----------------------+------------------------------------------------------------------------+
+   | cmp01/cmp02           | Compute VMs                                                            |
+   +-----------------------+------------------------------------------------------------------------+
+   | gtw01                 | Gateway VM with neutron services (dhcp agent, L3 agent, metadata, etc) |
+   +-----------------------+------------------------------------------------------------------------+
+   | odl01                 | VM on which ODL runs (for scenarios deployed with ODL)                 |
+   +-----------------------+------------------------------------------------------------------------+
+
+
+In this figure there are examples of two virtual deploys:
+   - Jumphost 1 has only virsh bridges, created by the deploy script
+   - Jumphost 2 has a mix of linux and virsh briges; when linux bridge exist for a specified network,
+     the deploy script will skip creating a virsh bridge for it
+
+**Note**: A virtual network "mcpcontrol" is always created. For virtual deploys, "mcpcontrol" is also used
+for Admin, leaving the PXE/Admin bridge unused.
+
 
 Automatic Installation of a Baremetal POD
 =========================================
@@ -223,8 +269,42 @@ The installation is done automatically with the deploy script, which will:
       - Leverage Salt to configure the operatign system on the baremetal nodes
       - Leverage Salt to install & configure Openstack services
 
+.. figure:: img/fuel_baremetal.png
+   :align: center
+   :alt: Fuel@OPNFV Baremetal POD Network Layout Example
 
-Steps to start the automatic deploy
+   Fuel@OPNFV Baremetal POD Network Layout Example
+
+   +-----------------------+---------------------------------------------------------+
+   | cfg01                 | Salt Master VM                                          |
+   +-----------------------+---------------------------------------------------------+
+   | mas01                 | MaaS Node VM                                            |
+   +-----------------------+---------------------------------------------------------+
+   | kvm01..03             | Baremetals which hold the VMs with controller functions |
+   +-----------------------+---------------------------------------------------------+
+   | cmp001/cmp002         | Baremetal compute nodes                                 |
+   +-----------------------+---------------------------------------------------------+
+   | prx01/prx02           | Proxy VMs for Nginx                                     |
+   +-----------------------+---------------------------------------------------------+
+   | msg01..03             | RabbitMQ Service VMs                                    |
+   +-----------------------+---------------------------------------------------------+
+   | dbs01..03             | MySQL service VMs                                       |
+   +-----------------------+---------------------------------------------------------+
+   | mdb01..03             | Telemetry VMs                                           |
+   +-----------------------+---------------------------------------------------------+
+   | odl01                 | VM on which ODL runs (for scenarios deployed with ODL)  |
+   +-----------------------+---------------------------------------------------------+
+   | Tenant VM             | VM running in the cloud                                 |
+   +-----------------------+---------------------------------------------------------+
+
+In the baremetal deploy all bridges but "mcpcontrol" are linux bridges. For the Jumpserver, if they are already created
+they will be used; otherwise they will be created. For the targets, the bridges are created by the deploy script.
+
+**Note**: A virtual network "mcpcontrol" is always created. For baremetal deploys, PXE bridge is used for
+baremetal node provisioning, while "mcpcontrol" is used to provision the infrastructure VMs only.
+
+
+Steps to Start the Automatic Deploy
 ===================================
 
 These steps are common both for virtual and baremetal deploys.
@@ -249,7 +329,7 @@ These steps are common both for virtual and baremetal deploys.
 
    .. code-block:: bash
 
-       $ git checkout 5.0.2
+       $ git checkout opnfv-5.0.2
 
 #. Start the deploy script
 
@@ -257,42 +337,115 @@ These steps are common both for virtual and baremetal deploys.
 
        $ ci/deploy.sh -l <lab_name> \
                       -p <pod_name> \
-                      -b <URI to the PDF file> \
+                      -b <URI to configuration repo containing the PDF file> \
                       -s <scenario> \
-                      -B <list of admin, public and management bridges>
+                      -B <list of admin, management, private and public bridges>
 
 Examples
 --------
 #. Virtual deploy
 
-   .. code-block:: bash
+   To start a virtual deployment, it is required to have the `virtual` keyword
+   while specifying the pod name to the installer script.
 
-      $ ci/deploy.sh -b file:///home/jenkins/tmpdir/securedlab \
-                     -l ericsson \
-                     -p virtual_kvm \
-                     -s os-nosdn-nofeature-noha
+   It will create the required bridges and networks, configure Salt Master and
+   install OpenStack.
+
+      .. code-block:: bash
+
+         $ ci/deploy.sh -b file:///home/jenkins/tmpdir/securedlab \
+                        -l ericsson \
+                        -p virtual_kvm \
+                        -s os-nosdn-nofeature-noha
+
+   Once the deployment is complete, the OpenStack Dashboard, Horizon is
+   available at http://<controller VIP>:8078, e.g. http://10.16.0.101:8078.
+   The administrator credentials are **admin** / **opnfv_secret**.
 
 #. Baremetal deploy
 
-A x86 deploy on pod1 from Ericsson lab
+   A x86 deploy on pod2 from Linux Foundation lab
 
-   .. code-block:: bash
+      .. code-block:: bash
 
-      $ ci/deploy.sh -b file:///home/jenkins/tmpdir/securedlab \
-                     -l ericsson \
-                     -p pod1 \
-                     -s os-nosdn-nofeature-ha \
-                     -B pxebr
+          $ ci/deploy.sh -b file:///home/jenkins/tmpdir/securedlab \
+                         -l lf \
+                         -p pod2 \
+                         -s os-nosdn-nofeature-ha \
+                         -B pxebr,br-ctl
 
-An aarch64 deploy on pod5 from Arm lab
+      .. figure:: img/lf_pod2.png
+         :align: center
+         :alt: Fuel@OPNFV LF POD2 Network Layout
 
-   .. code-block:: bash
+         Fuel@OPNFV LF POD2 Network Layout
 
-      $ ci/deploy.sh -b file:///home/jenkins/tmpdir/securedlab \
-                     -l arm \
-                     -p pod5 \
-                     -s os-nosdn-nofeature-ha \
-                     -B pxebr
+   Once the deployment is complete, the SaltStack Deployment Documentation is
+   available at http://<Proxy VIP>:8090, e.g. http://172.30.10.103:8090.
+
+   An aarch64 deploy on pod5 from Arm lab
+
+      .. code-block:: bash
+
+         $ ci/deploy.sh -b file:///home/jenkins/tmpdir/securedlab \
+                        -l arm \
+                        -p pod5 \
+                        -s os-nosdn-nofeature-ha \
+                        -B admin7_br0,mgmt7_br0,,public7_br0
+
+      .. figure:: img/arm_pod5.png
+         :align: center
+         :alt: Fuel@OPNFV ARM POD5 Network Layout
+
+         Fuel@OPNFV ARM POD5 Network Layout
+
+   Once the deployment is complete, the SaltStack Deployment Documentation is
+   available at http://<Proxy VIP>:8090, e.g. http://10.0.8.103:8090.
+
+
+Pod Descriptor Files
+====================
+
+Descriptor files provide the installer with an abstraction of the target pod
+with all its hardware characteristics and required parameters. This information
+is split into two different files:
+Pod Descriptor File (PDF) and Installer Descriptor File (IDF).
+
+
+The Pod Descriptor File is a hardware and network description of the pod
+infrastructure. The information is modeled under a yaml structure.
+A reference file with the expected yaml structure is available at
+*mcp/config/labs/local/pod1.yaml*
+
+A common network section describes all the internal and provider networks
+assigned to the pod. Each network is expected to have a vlan tag, IP subnet and
+attached interface on the boards. Untagged vlans shall be defined as "native".
+
+The hardware description is arranged into a main "jumphost" node and a "nodes"
+set for all target boards. For each node the following characteristics
+are defined:
+
+- Node parameters including CPU features and total memory.
+- A list of available disks.
+- Remote management parameters.
+- Network interfaces list including mac address, speed and advanced features.
+- IP list of fixed IPs for the node
+
+**Note**: the fixed IPs are ignored by the MCP installer script and it will instead
+assign based on the network ranges defined under the pod network configuration.
+
+
+The Installer Descriptor File extends the PDF with pod related parameters
+required by the installer. This information may differ per each installer type
+and it is not considered part of the pod infrastructure. Fuel installer relies
+on the IDF model to map the networks to the bridges on the foundation node and
+to setup all node NICs by defining the expected OS device name and bus address.
+
+
+The file follows a yaml structure and a "fuel" section is expected. Contents and
+references must be aligned with the PDF file. The IDF file must be named after
+the PDF with the prefix "idf-". A reference file with the expected structure
+is available at *mcp/config/labs/local/idf-pod1.yaml*
 
 
 =============

@@ -160,10 +160,10 @@ index 688a9af..e618d57 100644
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
-index 7f2f572..9698875 100644
+index 9011e47..d759675 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
-@@ -46,21 +46,33 @@ parameters:
+@@ -49,21 +49,33 @@ parameters:
          openstack.control:
            cpu: 4
            ram: 12288
@@ -197,7 +197,7 @@ index 7f2f572..9698875 100644
            disk_profile: xxlarge
            net_profile: default
          # stacklight.log:
-@@ -81,6 +93,9 @@ parameters:
+@@ -84,6 +96,9 @@ parameters:
          openstack.proxy:
            cpu: 2
            ram: 2048
