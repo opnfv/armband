@@ -56,7 +56,7 @@ index 369e165..d2a0b63 100755
 +
 +salt -I 'nova:compute' state.sls armband || true
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index e1fdf73..e1f705c 100755
+index fbddc6e..6bad8da 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
