@@ -24,7 +24,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 2 insertions(+)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
-index 7138d68..9011e47 100644
+index ce7fc85..6491798 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
 @@ -7,6 +7,7 @@
