@@ -21,7 +21,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 88a4488..298a9de 100755
+index d8d2d02..f326f4c 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -37,6 +37,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \

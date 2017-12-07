@@ -49,7 +49,7 @@ index 4e90f32..38b4440 100644
  **/mcp/scripts/net_mcpcontrol.xml
 +**/mcp/scripts/*.img
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index b13e18e..427850f 100755
+index 0f42396..b88d2ba 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -15,6 +15,7 @@

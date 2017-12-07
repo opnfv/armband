@@ -56,11 +56,11 @@ index 369e165..d2a0b63 100755
 +
 +salt -I 'nova:compute' state.sls armband || true
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index fbddc6e..6bad8da 100755
+index 1bd1a9d..f51e301 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
-@@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
- salt -I 'neutron:gateway' state.sls neutron.gateway
+@@ -53,6 +53,7 @@ salt -I 'neutron:gateway' state.sls neutron.gateway
+ salt -I 'neutron:gateway' service.restart networking
 
  salt -I 'nova:compute' state.sls nova
 +salt -I 'nova:compute' state.sls armband || true
@@ -68,7 +68,7 @@ index fbddc6e..6bad8da 100755
  salt -I 'mongodb:server' state.sls mongodb || true
  wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index c355126..99fb517 100755
+index b08a31c..5b519be 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -46,6 +46,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
