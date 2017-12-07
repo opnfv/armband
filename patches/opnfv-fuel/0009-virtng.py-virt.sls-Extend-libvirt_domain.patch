@@ -26,7 +26,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  .../0103-virtng-module-Extend-libvirt_domain.patch | 54 ++++++++++++++++++++++
  ...4-salt-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++++
  mcp/patches/patches.list                           |  2 +
- .../baremetal-mcp-ocata-common/infra/kvm.yml       | 15 ++++++
+ .../baremetal-mcp-ocata-common-ha/infra/kvm.yml    | 15 ++++++
  .../baremetal-mcp-ocata-odl-ha/infra/kvm.yml       |  3 ++
  5 files changed, 125 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
@@ -150,19 +150,19 @@ index 0000000..a9fe11b
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 218ed51..2f12b7f 100644
+index 456a3e6..2ba0d9f 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -19,3 +19,5 @@
+@@ -18,3 +18,5 @@
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
  /usr/share/salt-formulas/env: 0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
-index 6491798..bf58f74 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/kvm.yml
+index 9d5a5fb..e5cec49 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/kvm.yml
 @@ -49,21 +49,33 @@ parameters:
          openstack.control:
            cpu: 4
@@ -208,7 +208,7 @@ index 6491798..bf58f74 100644
            net_profile: default_ext
        cluster:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
-index d7bbadd..f8b9662 100644
+index 01e4a6b..3003a95 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/infra/kvm.yml
 @@ -17,6 +17,9 @@ parameters:

@@ -28,8 +28,8 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/openstack                        |   2 +
  mcp/config/states/openstack_ha                     |   1 +
+ mcp/config/states/openstack_noha                   |   2 +
  mcp/config/states/virtual_control_plane            |   1 +
  .../armband/files/nova-libvirt-aarch64-rollup.diff | 317 +++++++++++++++++++++
  mcp/salt-formulas/armband/init.sls                 |   7 +
@@ -45,40 +45,40 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/qemu_efi.sls
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
-diff --git a/mcp/config/states/openstack b/mcp/config/states/openstack
-index 369e165..d2a0b63 100755
---- a/mcp/config/states/openstack
-+++ b/mcp/config/states/openstack
-@@ -47,3 +47,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
- salt -I 'ceilometer:agent' state.sls ceilometer
-
- salt -I 'horizon:server' state.sls horizon
-+
-+salt -I 'nova:compute' state.sls armband || true
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 1bd1a9d..f51e301 100755
+index fbddc6e..6bad8da 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
-@@ -53,6 +53,7 @@ salt -I 'neutron:gateway' state.sls neutron.gateway
- salt -I 'neutron:gateway' service.restart networking
+@@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
+ salt -I 'neutron:gateway' state.sls neutron.gateway
 
  salt -I 'nova:compute' state.sls nova
 +salt -I 'nova:compute' state.sls armband || true
 
  salt -I 'mongodb:server' state.sls mongodb || true
  wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
+diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
+index 1578dcf..6dc27cd 100755
+--- a/mcp/config/states/openstack_noha
++++ b/mcp/config/states/openstack_noha
+@@ -49,3 +49,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
+ salt -I 'ceilometer:agent' state.sls ceilometer
+
+ salt -I 'horizon:server' state.sls horizon
++
++salt -I 'nova:compute' state.sls armband || true
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index b08a31c..5b519be 100755
+index 5de4673..cf848c6 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -46,6 +46,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
+@@ -27,6 +27,7 @@ if [ "${ERASE_ENV}" -eq 1 ]; then
+ fi
 
- salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
-
+ # KVM libvirt first, VCP deployment
 +salt -C 'kvm*' state.sls armband || true
  wait_for 5 "salt -C 'kvm*' state.sls libvirt"
 
- salt -C '* and not cfg01* and not mas01*' state.apply salt
+ salt -C 'kvm* or cmp*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
 new file mode 100644
 index 0000000..4d7f04c

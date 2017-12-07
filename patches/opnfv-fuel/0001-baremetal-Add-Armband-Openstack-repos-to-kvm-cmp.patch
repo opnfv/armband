@@ -19,14 +19,14 @@ handle them via Salt for baremetal kvm* and cmp* nodes.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml     | 1 +
- .../classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml     | 1 +
+ mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/kvm.yml  | 1 +
+ .../classes/cluster/baremetal-mcp-ocata-common-ha/openstack_compute.yml  | 1 +
  2 files changed, 2 insertions(+)
 
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
-index ce7fc85..6491798 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/kvm.yml
+index 035129d..9d5a5fb 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/kvm.yml
 @@ -7,6 +7,7 @@
  ##############################################################################
  ---
@@ -35,10 +35,10 @@ index ce7fc85..6491798 100644
    - system.linux.system.repo.mcp.openstack
    - system.linux.system.repo.mcp.extra
    - system.linux.system.repo.glusterfs
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
-index e07e611..278e55b 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/openstack_compute.yml
+index ee36ece..f42d583 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/openstack_compute.yml
 @@ -7,6 +7,7 @@
  ##############################################################################
  ---

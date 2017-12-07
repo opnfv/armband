@@ -16,7 +16,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  ...-Add-curtin_userdata_arm64_generic_xenial.patch | 35 ++++++++++++++++++
  mcp/patches/patches.list                           |  1 +
- .../baremetal-mcp-ocata-common/infra/maas.yml      | 26 +++++++++++++
+ .../baremetal-mcp-ocata-common-ha/infra/maas.yml   | 26 +++++++++++++
  .../files/curtin_userdata_arm64_generic_xenial     | 43 ++++++++++++++++++++++
  4 files changed, 105 insertions(+)
  create mode 100644 mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
@@ -64,18 +64,18 @@ index 0000000..0368937
 +   file.managed:
 +   - source: salt://maas/files/pgpass
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index d0bb7c4..7c5bf15 100644
+index fcbd3ae..c303a96 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -17,3 +17,4 @@
+@@ -16,3 +16,4 @@
  /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/reclass: 0011-service.horizon.server.cluster-Default-to-v2-API.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/maas.yml
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
 index e8c2965..b15f9cb 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/maas.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/maas.yml
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
 @@ -110,6 +110,32 @@ parameters:
            architecture: ${_param:opnfv_maas_node05_architecture}
            distro_series: xenial
