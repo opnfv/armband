@@ -14,25 +14,30 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 ---
- mcp/config/states/virtual_control_plane                         | 2 ++
- mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml | 4 ++++
- mcp/salt-formulas/opnfv/adduser.sls                             | 7 +++++++
- 3 files changed, 13 insertions(+)
+ mcp/config/states/baremetal_init                         | 1 +
+ mcp/config/states/virtual_control_plane                  | 1 +
+ mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml | 4 ++++
+ mcp/salt-formulas/opnfv/adduser.sls                      | 7 +++++++
+ 4 files changed, 13 insertions(+)
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
-diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index d8d2d02..f326f4c 100755
---- a/mcp/config/states/virtual_control_plane
-+++ b/mcp/config/states/virtual_control_plane
-@@ -37,6 +37,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
+diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
+index 67022b0..5943e03 100755
+--- a/mcp/config/states/baremetal_init
++++ b/mcp/config/states/baremetal_init
+@@ -23,6 +23,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
    repl="\n        if not __salt__['pkg.version']('vlan'):\n            __salt__['pkg.install']('vlan')"
 
  salt -C 'kvm*' pkg.install bridge-utils
-+salt -C '*' state.apply opnfv.adduser
++salt -C 'kvm* or cmp*' state.apply opnfv.adduser
  salt -C 'kvm*' state.apply linux.network
  salt -C 'cmp*' state.apply linux.system
  salt -C 'cmp*' state.apply linux.network || true
-@@ -66,6 +67,7 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
+diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
+index 8c02d68..f32ebec 100755
+--- a/mcp/config/states/virtual_control_plane
++++ b/mcp/config/states/virtual_control_plane
+@@ -45,6 +45,7 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
    rc=0
    for node in $vcp_nodes; do
      salt "$node" test.ping 2>/dev/null || { rc=$?; break; };
@@ -40,14 +45,14 @@ index d8d2d02..f326f4c 100755
    done
    sleep 5
    ((attempt+=1))
-diff --git a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
-index aa780e6..e4069c0 100644
---- a/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
-+++ b/mcp/reclass/classes/cluster/all-mcp-ocata-common/opnfv/init.yml
+diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
+index f09ee5d..39d550a 100644
+--- a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
++++ b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
 @@ -9,3 +9,7 @@
  classes:
-   - cluster.all-mcp-ocata-common.opnfv.runtime
-   - cluster.all-mcp-ocata-common.opnfv.pod_config
+   - cluster.all-mcp-arch-common.arch
+   - cluster.all-mcp-arch-common.opnfv
 +parameters:
 +  _param:
 +    opnfv_user_username: opnfv

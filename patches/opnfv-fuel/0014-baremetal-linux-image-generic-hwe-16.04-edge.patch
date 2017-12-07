@@ -27,19 +27,15 @@ JIRA: ARMBAND-280
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/virtual_control_plane | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ mcp/config/states/baremetal_init | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index f326f4c..347b2b5 100755
---- a/mcp/config/states/virtual_control_plane
-+++ b/mcp/config/states/virtual_control_plane
-@@ -39,9 +39,12 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
- salt -C 'kvm*' pkg.install bridge-utils
- salt -C '*' state.apply opnfv.adduser
- salt -C 'kvm*' state.apply linux.network
--salt -C 'cmp*' state.apply linux.system
-+salt -C 'kvm* or cmp*' state.apply linux.system
+diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
+index 5943e03..6fa1f47 100755
+--- a/mcp/config/states/baremetal_init
++++ b/mcp/config/states/baremetal_init
+@@ -28,6 +28,9 @@ salt -C 'kvm*' state.apply linux.network
+ salt -C 'cmp*' state.apply linux.system
  salt -C 'cmp*' state.apply linux.network || true
  salt -C 'kvm*' state.apply armband.salt_minion || true
 +# NOTE(armband): Should be later moved to reclass as system.kernel.version
