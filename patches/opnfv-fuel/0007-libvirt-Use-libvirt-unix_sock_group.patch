@@ -48,10 +48,10 @@ index 0000000..003b249
 + # Set the UNIX socket permissions for the R/O socket. This is used
 + # for monitoring VM status only
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 7c5bf15..218ed51 100644
+index c303a96..456a3e6 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -18,3 +18,4 @@
+@@ -17,3 +17,4 @@
  /usr/share/salt-formulas/reclass: 0011-service.horizon.server.cluster-Default-to-v2-API.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
