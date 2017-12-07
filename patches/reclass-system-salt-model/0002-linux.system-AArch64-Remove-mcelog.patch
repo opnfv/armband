@@ -20,7 +20,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 2 deletions(-)
 
 diff --git a/linux/system/single/init.yml b/linux/system/single/init.yml
-index 8de2dda..c702a48 100644
+index c7c583b..764dfe3 100644
 --- a/linux/system/single/init.yml
 +++ b/linux/system/single/init.yml
 @@ -19,8 +19,6 @@ parameters:
@@ -29,6 +29,6 @@ index 8de2dda..c702a48 100644
            version: purged
 -        mcelog:
 -          version: latest
-       kernel:
-         modules:
-           - nf_conntrack
+       apt:
+         config:
+           compression-workaround:
