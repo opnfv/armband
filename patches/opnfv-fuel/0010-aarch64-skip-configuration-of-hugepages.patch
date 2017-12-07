@@ -16,14 +16,14 @@ Those instructions need to be overwritten for ARM.
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
 ---
- .../classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml  | 4 ++--
+ .../cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml        | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
-index 278e55b..ff57ad3 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
-@@ -13,8 +13,8 @@ classes:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
+index ac56a12..9cd873a 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
+@@ -11,8 +11,8 @@ classes:
    - system.linux.storage.loopback
    - system.glusterfs.client.cluster
    - system.nova.compute.cluster

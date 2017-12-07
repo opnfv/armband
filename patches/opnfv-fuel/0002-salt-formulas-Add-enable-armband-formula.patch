@@ -28,16 +28,16 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/openstack                        |   2 +
  mcp/config/states/openstack_ha                     |   1 +
+ mcp/config/states/openstack_noha                   |   2 +
  mcp/config/states/virtual_control_plane            |   1 +
- .../armband/files/nova-libvirt-aarch64-rollup.diff | 317 +++++++++++++++++++++
+ .../armband/files/nova-libvirt-aarch64-rollup.diff | 270 +++++++++++++++++++++
  mcp/salt-formulas/armband/init.sls                 |   7 +
- mcp/salt-formulas/armband/nova_config.sls          |  30 ++
+ mcp/salt-formulas/armband/nova_config.sls          |  30 +++
  mcp/salt-formulas/armband/nova_libvirt.sls         |   7 +
  mcp/salt-formulas/armband/qemu_efi.sls             |   2 +
  mcp/salt-formulas/armband/vgabios.sls              |   7 +
- 9 files changed, 374 insertions(+)
+ 9 files changed, 327 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/nova_config.sls
@@ -45,46 +45,46 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/qemu_efi.sls
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
-diff --git a/mcp/config/states/openstack b/mcp/config/states/openstack
-index 369e165..d2a0b63 100755
---- a/mcp/config/states/openstack
-+++ b/mcp/config/states/openstack
-@@ -47,3 +47,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
- salt -I 'ceilometer:agent' state.sls ceilometer
-
- salt -I 'horizon:server' state.sls horizon
-+
-+salt -I 'nova:compute' state.sls armband || true
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 1bd1a9d..f51e301 100755
+index 62a9654..bf17e20 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
-@@ -53,6 +53,7 @@ salt -I 'neutron:gateway' state.sls neutron.gateway
- salt -I 'neutron:gateway' service.restart networking
+@@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
+ salt -I 'neutron:gateway' state.sls neutron.gateway
 
  salt -I 'nova:compute' state.sls nova
 +salt -I 'nova:compute' state.sls armband || true
 
  salt -I 'mongodb:server' state.sls mongodb || true
  wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
+diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
+index 1578dcf..6dc27cd 100755
+--- a/mcp/config/states/openstack_noha
++++ b/mcp/config/states/openstack_noha
+@@ -49,3 +49,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
+ salt -I 'ceilometer:agent' state.sls ceilometer
+
+ salt -I 'horizon:server' state.sls horizon
++
++salt -I 'nova:compute' state.sls armband || true
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index b08a31c..5b519be 100755
+index d92e992..1cfcacd 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -46,6 +46,7 @@ wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
-
- salt -C '* and not cfg01* and not mas01*' state.apply linux,ntp
-
+@@ -29,6 +29,7 @@ fi
+ # KVM libvirt first, VCP deployment
+ #FIXME Should be removed once upstream patch get merged
+ salt -C 'kvm*' group.add libvirtd
 +salt -C 'kvm*' state.sls armband || true
  wait_for 5 "salt -C 'kvm*' state.sls libvirt"
 
- salt -C '* and not cfg01* and not mas01*' state.apply salt
+ salt -C 'kvm* or cmp*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
 new file mode 100644
-index 0000000..4d7f04c
+index 0000000..75fb07d
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
-@@ -0,0 +1,317 @@
+@@ -0,0 +1,270 @@
 +From 807579755c4a116309eca5b2bcdbab9d1f393bab Mon Sep 17 00:00:00 2001
 +From: Matt Riedemann <mriedem.os@gmail.com>
 +Date: Wed, 20 Sep 2017 10:44:11 -0400
@@ -125,7 +125,7 @@ index 0000000..4d7f04c
 +index f0e6953b965..9b9ea9507e8 100644
 +--- a/nova/test.py
 ++++ b/nova/test.py
-+@@ -61,6 +61,7 @@
++@@ -60,6 +60,7 @@
 + from nova.tests.unit import policy_fixture
 + from nova.tests import uuidsentinel as uuids
 + from nova import utils
@@ -133,20 +133,20 @@ index 0000000..4d7f04c
 +
 +
 + CONF = cfg.CONF
-+@@ -303,6 +304,8 @@ def setUp(self):
++@@ -299,6 +300,8 @@ def setUp(self):
 +         # nova.utils._IS_NEUTRON.  We set it to None to avoid any
 +         # caching of that value.
 +         utils._IS_NEUTRON = None
 ++        # Reset the global QEMU version flag.
 ++        images.QEMU_VERSION = None
 +
-+         mox_fixture = self.useFixture(moxstubout.MoxStubout())
-+         self.mox = mox_fixture.mox
++         # Reset the traits sync flag
++         objects.resource_provider._TRAITS_SYNCED = False
 +diff --git a/nova/tests/unit/virt/libvirt/test_driver.py b/nova/tests/unit/virt/libvirt/test_driver.py
 +index fe54dc75e7f..4e9f2bd250e 100644
 +--- a/nova/tests/unit/virt/libvirt/test_driver.py
 ++++ b/nova/tests/unit/virt/libvirt/test_driver.py
-+@@ -986,6 +986,23 @@ def test_next_min_qemu_version_ok(self, mock_warning, mock_get_libversion):
++@@ -985,6 +985,23 @@ def test_next_min_qemu_version_ok(self, mock_warning, mock_get_libversion):
 +                 break
 +         self.assertFalse(version_arg_found)
 +
@@ -170,7 +170,7 @@ index 0000000..4d7f04c
 +     @mock.patch.object(fakelibvirt.Connection, 'getLibVersion',
 +                        return_value=versionutils.convert_version_to_int(
 +                            libvirt_driver.MIN_LIBVIRT_OTHER_ARCH.get(
-+@@ -11605,9 +11622,8 @@ def test_command_with_broken_connection(self):
++@@ -11636,9 +11653,8 @@ def test_command_with_broken_connection(self):
 +                               return_value=service_mock),
 +             mock.patch.object(host.Host, "get_capabilities")):
 +
@@ -230,7 +230,7 @@ index 0000000..4d7f04c
 +
 + from oslo_concurrency import processutils
 +@@ -42,6 +43,11 @@
-+     cpu_time=8,
++     cpu_time=30,
 +     address_space=1 * units.Gi)
 +
 ++# This is set by the libvirt driver on startup. The version is used to
@@ -241,8 +241,8 @@ index 0000000..4d7f04c
 +
 + def qemu_img_info(path, format=None):
 +     """Return an object containing the parsed output from qemu-img info."""
-+@@ -60,6 +66,10 @@ def qemu_img_info(path, format=None):
-+         cmd = ('env', 'LC_ALL=C', 'LANG=C', 'qemu-img', 'info', path)
++@@ -61,6 +67,10 @@ def qemu_img_info(path, format=None):
++                'qemu-img', 'info', '--force-share', path)
 +         if format is not None:
 +             cmd = cmd + ('-f', format)
 ++        # Check to see if the qemu version is >= 2.10 because if so, we need
@@ -256,7 +256,7 @@ index 0000000..4d7f04c
 +index 82dc2b99f6a..8d4eb90ecf5 100644
 +--- a/nova/virt/libvirt/driver.py
 ++++ b/nova/virt/libvirt/driver.py
-+@@ -481,11 +481,15 @@ def init_host(self, host):
++@@ -477,11 +477,15 @@ def init_host(self, host):
 +                 _('Nova requires libvirt version %s or greater.') %
 +                 self._version_to_string(MIN_LIBVIRT_VERSION))
 +
@@ -279,44 +279,15 @@ index 0000000..4d7f04c
 +             if not self._host.has_min_version(hv_ver=MIN_VIRTUOZZO_VERSION):
 +--
 +
-+From: Stanislaw Kardach <stanislaw.kardach@cavium.com>
-+Date: Tue, 22 Mar 2016 12:05:09 +0100
-+Subject: [PATCH] nova: Update console defaults for armv7, aarch64
-+
-+Nova hardcodes default options for serial console.
-+For armv7 and aarch64 direct kernel boot, adding console=ttyAMA0 is
-+a nice UX addition.
-+
-+Signed-off-by: Stanislaw Kardach <stanislaw.kardach@cavium.com>
-+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
-+Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
-+
-+---
-+
-+diff --git a/nova/virt/libvirt/driver.py b/nova/virt/libvirt/driver.py
-+--- a/nova/virt/libvirt/driver.py
-++++ b/nova/virt/libvirt/driver.py
-+@@ -4179,7 +4179,12 @@ class LibvirtDriver(driver.ComputeDriver):
-+         if virt_type == "xen":
-+             guest.os_cmdline = "ro root=%s" % root_device_name
-+         else:
-++            guestarch = libvirt_utils.get_arch(image_meta)
-+             guest.os_cmdline = ("root=%s %s" % (root_device_name, CONSOLE))
-++            if guestarch in (fields.Architecture.ARMV7,
-++                             fields.Architecture.AARCH64):
-++                # NOTE(armband): ARM v7/v8 use PL011 drv, add ttyAMA0 console
-++                guest.os_cmdline += " console=ttyAMA0"
-+             if virt_type == "qemu":
-+                 guest.os_cmdline += " no_timer_check"
-+         if instance.ramdisk_id:
-+--
-+
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Thu, 24 Aug 2017 10:57:28 +0200
 +Subject: [PATCH] libvirt: AArch64: ACPI depends on AAVMF
 +
 +On AArch64, ACPI should be added to domain XML only if guest UEFI
 +(AAVMF) is also used.
++
++[ Alexandru.Avadanii@enea.com ]
++- pike rebase: minor context adj
 +
 +Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Signed-off-by: Ciprian Barbu <ciprian.barbu@enea.com>
@@ -326,16 +297,7 @@ index 0000000..4d7f04c
 +diff --git a/nova/virt/libvirt/driver.py b/nova/virt/libvirt/driver.py
 +--- a/nova/virt/libvirt/driver.py
 ++++ b/nova/virt/libvirt/driver.py
-+@@ -4255,7 +4255,7 @@
-+             tmhyperv.present = True
-+             clk.add_timer(tmhyperv)
-+
-+-    def _set_features(self, guest, os_type, caps, virt_type):
-++    def _set_features(self, guest, os_type, image_meta, caps, virt_type):
-+         if virt_type == "xen":
-+             # PAE only makes sense in X86
-+             if caps.host.cpu.arch in (fields.Architecture.I686,
-+@@ -4264,7 +4264,10 @@
++@@ -4314,7 +4314,10 @@
 +
 +         if (virt_type not in ("lxc", "uml", "parallels", "xen") or
 +                 (virt_type == "xen" and guest.os_type == fields.VMMode.HVM)):
@@ -347,15 +309,6 @@ index 0000000..4d7f04c
 +             guest.features.append(vconfig.LibvirtConfigGuestFeatureAPIC())
 +
 +         if (virt_type in ("qemu", "kvm") and
-+@@ -4799,7 +4802,7 @@
-+             self._conf_non_lxc_uml(virt_type, guest, root_device_name, rescue,
-+                     instance, inst_path, image_meta, disk_info)
-+
-+-        self._set_features(guest, instance.os_type, caps, virt_type)
-++        self._set_features(guest, instance.os_type, image_meta, caps, virt_type)
-+         self._set_clock(guest, instance.os_type, image_meta, virt_type)
-+
-+         storage_configs = self._get_guest_storage_config(
 +--
 +
 +From f0f09530ee9169eb29bc28d4f118676d7dc6640e Mon Sep 17 00:00:00 2001

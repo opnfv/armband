@@ -27,16 +27,16 @@ JIRA: ARMBAND-280
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/virtual_control_plane | 5 ++++-
+ mcp/config/states/baremetal_init | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index f326f4c..347b2b5 100755
---- a/mcp/config/states/virtual_control_plane
-+++ b/mcp/config/states/virtual_control_plane
-@@ -39,9 +39,12 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
+diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
+index 5943e03..0e6fd29 100755
+--- a/mcp/config/states/baremetal_init
++++ b/mcp/config/states/baremetal_init
+@@ -25,9 +25,12 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
  salt -C 'kvm*' pkg.install bridge-utils
- salt -C '*' state.apply opnfv.adduser
+ salt -C 'kvm* or cmp*' state.apply opnfv.adduser
  salt -C 'kvm*' state.apply linux.network
 -salt -C 'cmp*' state.apply linux.system
 +salt -C 'kvm* or cmp*' state.apply linux.system
