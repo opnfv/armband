@@ -68,13 +68,13 @@ index 1578dcf..6dc27cd 100755
 +
 +salt -I 'nova:compute' state.sls armband || true
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index d92e992..1cfcacd 100755
+index 3856bef..8c02d68 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -29,6 +29,7 @@ fi
+@@ -27,6 +27,7 @@ if [ "${ERASE_ENV}" -eq 1 ]; then
+ fi
+
  # KVM libvirt first, VCP deployment
- #FIXME Should be removed once upstream patch get merged
- salt -C 'kvm*' group.add libvirtd
 +salt -C 'kvm*' state.sls armband || true
  wait_for 5 "salt -C 'kvm*' state.sls libvirt"
 
