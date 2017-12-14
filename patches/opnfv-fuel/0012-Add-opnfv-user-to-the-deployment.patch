@@ -15,10 +15,10 @@ Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 ---
  mcp/config/states/baremetal_init                         | 1 +
- mcp/config/states/virtual_control_plane                  | 1 +
+ mcp/config/states/virtual_control_plane                  | 2 ++
  mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml | 4 ++++
  mcp/salt-formulas/opnfv/adduser.sls                      | 7 +++++++
- 4 files changed, 13 insertions(+)
+ 4 files changed, 14 insertions(+)
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
@@ -34,17 +34,18 @@ index 7c30515..ea4d23c 100755
  salt -C 'cmp*' state.apply linux.system
  salt -C 'cmp*' state.apply linux.network || true
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 8c02d68..f32ebec 100755
+index 8c02d68..7feb541 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -45,6 +45,7 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
-   rc=0
-   for node in $vcp_nodes; do
-     salt "$node" test.ping 2>/dev/null || { rc=$?; break; };
-+    salt -C "$node" state.apply opnfv.adduser
-   done
-   sleep 5
+@@ -50,6 +50,8 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
    ((attempt+=1))
+ done
+
++wait_for 5 "! salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply opnfv.adduser | " \
++  "tee /dev/stderr | grep -Fq 'Not connected'"
+ wait_for 10 "salt -C '* and not cfg01* and not mas01*' saltutil.sync_all"
+ wait_for 10 "salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply salt"
+ wait_for 10 "! salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply linux,ntp | " \
 diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
 index f09ee5d..39d550a 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
