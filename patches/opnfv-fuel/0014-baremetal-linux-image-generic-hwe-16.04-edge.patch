@@ -31,7 +31,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 298a9de..f569ba2 100755
+index f326f4c..347b2b5 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -39,9 +39,12 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \

@@ -23,7 +23,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  4 files changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index 427850f..e2e4a1c 100755
+index 2c4b7fa..92319ad 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -272,10 +272,10 @@ pushd "${DEPLOY_DIR}" > /dev/null
@@ -60,7 +60,7 @@ index d989819..edcd8d9 100644
      pkg:
        install:
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index 654f45e..8dd92e1 100644
+index 6a9be97..5a69609 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -51,11 +51,15 @@ function mount_image {
