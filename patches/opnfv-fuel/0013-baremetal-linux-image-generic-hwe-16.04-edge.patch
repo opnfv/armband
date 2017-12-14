@@ -31,7 +31,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index 5943e03..0e6fd29 100755
+index ea4d23c..ed3f287 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -25,9 +25,12 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
