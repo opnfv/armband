@@ -49,7 +49,7 @@ index 4e90f32..38b4440 100644
  **/mcp/scripts/net_mcpcontrol.xml
 +**/mcp/scripts/*.img
 diff --git a/ci/deploy.sh b/ci/deploy.sh
-index b13e18e..427850f 100755
+index fe2eb14..2c4b7fa 100755
 --- a/ci/deploy.sh
 +++ b/ci/deploy.sh
 @@ -15,6 +15,7 @@
@@ -76,7 +76,7 @@ index b13e18e..427850f 100755
  eval "$(parse_yaml "${SCENARIO_DIR}/defaults-$(uname -i).yaml")"
  eval "$(parse_yaml "${SCENARIO_DIR}/${DEPLOY_TYPE}/${DEPLOY_SCENARIO}.yaml")"
  eval "$(parse_yaml "${LOCAL_PDF_RECLASS}")"
-@@ -358,6 +359,23 @@ for node in "${virtual_nodes[@]}"; do
+@@ -362,6 +363,23 @@ for node in "${virtual_nodes[@]}"; do
  done
  virtual_nodes_data=${virtual_nodes_data%|}
 
@@ -100,7 +100,7 @@ index b13e18e..427850f 100755
  # Expand reclass and virsh network templates
  for tp in "${RECLASS_CLUSTER_DIR}/all-mcp-ocata-common/opnfv/"*.template \
      net_*.template; do
-@@ -413,7 +431,8 @@ elif [ ${USE_EXISTING_INFRA} -gt 0 ]; then
+@@ -417,7 +435,8 @@ elif [ ${USE_EXISTING_INFRA} -gt 0 ]; then
      check_connection
  else
      generate_ssh_key
@@ -150,7 +150,7 @@ index b5b78ec..0350afa 100644
      # VMs spawned on Foundation Node / Jump Host net ifaces (max 4)
      opnfv_fn_vm_primary_interface: enp1s0
 diff --git a/mcp/scripts/lib.sh b/mcp/scripts/lib.sh
-index c6d5d26..654f45e 100644
+index 93ee59d..6a9be97 100644
 --- a/mcp/scripts/lib.sh
 +++ b/mcp/scripts/lib.sh
 @@ -1,4 +1,5 @@
@@ -344,7 +344,7 @@ index c6d5d26..654f45e 100644
 -  # shellcheck disable=SC2155
    local amac=$(virsh domiflist mas01 2>&1| awk '/mcpcontrol/ {print $5; exit}')
    virsh net-update "mcpcontrol" add ip-dhcp-host \
-     "<host mac='${cmac}' name='cfg01' ip='${SALT_MASTER}'/>" --live
+     "<host mac='${cmac}' name='cfg01' ip='${SALT_MASTER}'/>" --live --config
 diff --git a/mcp/scripts/salt.sh b/mcp/scripts/salt.sh
 index ab096f3..b719aa8 100755
 --- a/mcp/scripts/salt.sh
