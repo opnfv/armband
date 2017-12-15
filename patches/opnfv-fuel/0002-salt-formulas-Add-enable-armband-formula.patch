@@ -1,11 +1,3 @@
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-: Copyright (c) 2017 Enea AB and others.
-:
-: All rights reserved. This program and the accompanying materials
-: are made available under the terms of the Apache License, Version 2.0
-: which accompanies this distribution, and is available at
-: http://www.apache.org/licenses/LICENSE-2.0
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 From: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Date: Tue, 25 Jul 2017 00:58:32 +0200
 Subject: [PATCH] salt-formulas: Add & enable armband formula
@@ -19,6 +11,7 @@ Subject: [PATCH] salt-formulas: Add & enable armband formula
 - nova patch: libvirt driver: AArch64: ACPI depends on AAVMF;
 - nova conf: cpu_model=cortex-a57 (only for virtual deploys);
 - nova conf: virt_type=qemu (only for virtual deploys);
+- nova compute conf: virt_type=qemu (only for virtual deploys);
 - nova conf: pointer_model=ps2mouse since AArch64 has no USB tablet;
 
 [1] https://github.com/openstack/nova/commit/8075797
@@ -33,11 +26,11 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  mcp/config/states/virtual_control_plane            |   1 +
  .../armband/files/nova-libvirt-aarch64-rollup.diff | 270 +++++++++++++++++++++
  mcp/salt-formulas/armband/init.sls                 |   7 +
- mcp/salt-formulas/armband/nova_config.sls          |  30 +++
+ mcp/salt-formulas/armband/nova_config.sls          |  34 +++
  mcp/salt-formulas/armband/nova_libvirt.sls         |   7 +
  mcp/salt-formulas/armband/qemu_efi.sls             |   2 +
  mcp/salt-formulas/armband/vgabios.sls              |   7 +
- 9 files changed, 327 insertions(+)
+ 9 files changed, 331 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/nova_config.sls
@@ -370,14 +363,18 @@ index 0000000..8a8cf2a
 + {%- endif %}
 diff --git a/mcp/salt-formulas/armband/nova_config.sls b/mcp/salt-formulas/armband/nova_config.sls
 new file mode 100644
-index 0000000..674f371
+index 0000000..8f19eda
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/nova_config.sls
-@@ -0,0 +1,30 @@
+@@ -0,0 +1,34 @@
 +{% if grains['virtual'] == 'kvm' %}
 +nova_virt_type:
 +  file.replace:
 +    - name: "/etc/nova/nova.conf"
++    - pattern: '^virt_type\s*=.*$'
++    - repl: "virt_type = qemu"
++  file.replace:
++    - name: "/etc/nova/nova-compute.conf"
 +    - pattern: '^virt_type\s*=.*$'
 +    - repl: "virt_type = qemu"
 +{% endif %}
