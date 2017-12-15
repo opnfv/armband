@@ -1,0 +1,61 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 15 Dec 2017 19:57:46 +0100
+Subject: [PATCH] glusterfs: Use 3.12 for AArch64
+
+Currently, the glusterfs PPA for 3.13 does not have arm64 binaries,
+so stick to 3.12 for now.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml  | 2 +-
+ .../classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml  | 2 +-
+ .../classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
+index b28f479..c01143e 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
+@@ -26,7 +26,7 @@ classes:
+ parameters:
+   _param:
+     linux_system_codename: xenial
+-    glusterfs_version: '3.13'
++    glusterfs_version: '3.12'
+     cluster_vip_address: ${_param:infra_kvm_address}
+     cluster_node01_address: ${_param:infra_kvm_node01_address}
+     cluster_node02_address: ${_param:infra_kvm_node02_address}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
+index df23754..e3db1b0 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
+@@ -35,7 +35,7 @@ parameters:
+     keepalived_vip_virtual_router_id: 69
+     loopback_device_size: 20
+     linux_system_codename: xenial
+-    glusterfs_version: '3.13'
++    glusterfs_version: '3.12'
+   glusterfs:
+     client:
+       volumes:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml
+index c332542..7a2288f 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml
+@@ -38,7 +38,7 @@ parameters:
+     cluster_node03_hostname: ${_param:openstack_control_node03_hostname}
+     cluster_node03_address: ${_param:openstack_control_node03_address}
+     nova_vncproxy_url: https://${_param:cluster_public_host}:6080
+-    glusterfs_version: '3.13'
++    glusterfs_version: '3.12'
+   nova:
+     controller:
+       pkgs:

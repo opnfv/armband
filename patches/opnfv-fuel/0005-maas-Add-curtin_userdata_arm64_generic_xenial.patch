@@ -73,10 +73,10 @@ index a87a935..fe3ff14 100644
  /usr/share/salt-formulas/env: 0013-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-index 93db0ed..bffab44 100644
+index 56cd96b..141f363 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-@@ -110,6 +110,32 @@ parameters:
+@@ -107,6 +107,32 @@ parameters:
            architecture: ${_param:opnfv_maas_node05_architecture}
            distro_series: xenial
            hwe_kernel: hwe-16.04
