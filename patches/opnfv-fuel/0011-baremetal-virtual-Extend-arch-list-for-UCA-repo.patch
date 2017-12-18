@@ -19,10 +19,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_init.yml
-index fe4be9d..664b9d5 100644
+index 0d4c666..57af635 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_init.yml
-@@ -199,7 +199,7 @@ parameters:
+@@ -189,7 +189,7 @@ parameters:
        repo:
          uca:
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/${_param:openstack_version} main"

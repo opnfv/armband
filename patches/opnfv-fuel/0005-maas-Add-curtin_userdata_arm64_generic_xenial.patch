@@ -64,22 +64,22 @@ index 0000000..0368937
 +   file.managed:
 +   - source: salt://maas/files/pgpass
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index a87a935..fe3ff14 100644
+index d16e3c2..0e1b7f6 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -15,3 +15,4 @@
- /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
+@@ -16,3 +16,4 @@
+ /usr/share/salt-formulas/env: 0011-maas-region-interface-default-mode-DHCP.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
  /usr/share/salt-formulas/env: 0013-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-index 56cd96b..141f363 100644
+index 6332776..7292ebb 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-@@ -107,6 +107,32 @@ parameters:
+@@ -108,6 +108,32 @@ parameters:
            architecture: ${_param:opnfv_maas_node05_architecture}
            distro_series: xenial
-           hwe_kernel: hwe-16.04
+           hwe_kernel: ${_param:hwe_kernel}
 +    cluster:
 +      enabled: true
 +      region:
