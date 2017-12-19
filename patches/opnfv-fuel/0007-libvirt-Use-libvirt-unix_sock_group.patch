@@ -22,7 +22,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 
 diff --git a/mcp/patches/0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch b/mcp/patches/0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
 new file mode 100644
-index 0000000..003b249
+index 0000000..34d7cb4
 --- /dev/null
 +++ b/mcp/patches/0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
 @@ -0,0 +1,21 @@
@@ -42,17 +42,17 @@ index 0000000..003b249
 + # without becoming root.
 + #
 + # This is restricted to 'root' by default.
-+-unix_sock_group = "libvirtd"
-++unix_sock_group = "libvirt"
++-unix_sock_group = "{{ server.get('unix_sock_group', 'libvirtd') }}"
+++unix_sock_group = "{{ server.get('unix_sock_group', 'libvirt') }}"
 +
 + # Set the UNIX socket permissions for the R/O socket. This is used
 + # for monitoring VM status only
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 3aa6308..7110078 100644
+index a2f6a19..36e7f73 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -16,3 +16,4 @@
- /usr/share/salt-formulas/reclass: 0011-service.horizon.server.cluster-Default-to-v2-API.patch
+@@ -17,3 +17,4 @@
+ /usr/share/salt-formulas/env: 0011-maas-region-interface-default-mode-DHCP.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 +/usr/share/salt-formulas/env: 0102-libvirt-unix_sock_group-s-libvirtd-libvirt.patch
