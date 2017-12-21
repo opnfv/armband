@@ -16,7 +16,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/patches/0003-maas-region-force-artifact-download.patch b/mcp/patches/0003-maas-region-force-artifact-download.patch
-index ecda80a..a8d27d7 100644
+index 56e3bd5..6b94be0 100644
 --- a/mcp/patches/0003-maas-region-force-artifact-download.patch
 +++ b/mcp/patches/0003-maas-region-force-artifact-download.patch
 @@ -50,7 +50,7 @@ diff --git a/maas/files/maas-artifact-sync.sh b/maas/files/maas-artifact-sync.sh
