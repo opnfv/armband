@@ -1,0 +1,134 @@
+From: Delia Popescu <delia.popescu@enea.com>
+Date: Thu, 21 Dec 2017 11:52:27 +0200
+Subject: [PATCH] WIP StackLight part 03
+
+Signed-off-by: Delia Popescu <delia.popescu@enea.com>
+---
+ .../scenario/baremetal/os-nosdn-nofeature-ha.yaml  |  1 +
+ mcp/config/scenario/baremetal/os-nosdn-ovs-ha.yaml |  1 +
+ .../scenario/baremetal/os-odl-nofeature-ha.yaml    |  1 +
+ mcp/config/states/stacklight                       | 79 ++++++++++++++++++++++
+ 4 files changed, 82 insertions(+)
+ create mode 100755 mcp/config/states/stacklight
+
+diff --git a/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml b/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml
+index e135b76..3382f28 100644
+--- a/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml
++++ b/mcp/config/scenario/baremetal/os-nosdn-nofeature-ha.yaml
+@@ -13,6 +13,7 @@ cluster:
+     - virtual_control_plane
+     - openstack_ha
+     - networks
++    - stacklight
+ virtual:
+   nodes:
+     - cfg01
+diff --git a/mcp/config/scenario/baremetal/os-nosdn-ovs-ha.yaml b/mcp/config/scenario/baremetal/os-nosdn-ovs-ha.yaml
+index ee5ed4e..9fb7073 100644
+--- a/mcp/config/scenario/baremetal/os-nosdn-ovs-ha.yaml
++++ b/mcp/config/scenario/baremetal/os-nosdn-ovs-ha.yaml
+@@ -15,6 +15,7 @@ cluster:
+     - openstack_ha
+     - networks
+     - networking_gw
++    - stacklight
+ virtual:
+   nodes:
+     - cfg01
+diff --git a/mcp/config/scenario/baremetal/os-odl-nofeature-ha.yaml b/mcp/config/scenario/baremetal/os-odl-nofeature-ha.yaml
+index 52a422b..065249f 100644
+--- a/mcp/config/scenario/baremetal/os-odl-nofeature-ha.yaml
++++ b/mcp/config/scenario/baremetal/os-odl-nofeature-ha.yaml
+@@ -14,6 +14,7 @@ cluster:
+     - opendaylight
+     - openstack_ha
+     - networks
++    - stacklight
+ virtual:
+   nodes:
+     - cfg01
+diff --git a/mcp/config/states/stacklight b/mcp/config/states/stacklight
+new file mode 100755
+index 0000000..bb0c5b1
+--- /dev/null
++++ b/mcp/config/states/stacklight
+@@ -0,0 +1,79 @@
++#!/bin/bash -e
++##############################################################################
++# Copyright (c) 2017 Mirantis Inc., Enea AB and others.
++# All rights reserved. This program and the accompanying materials
++# are made available under the terms of the Apache License, Version 2.0
++# which accompanies this distribution, and is available at
++# http://www.apache.org/licenses/LICENSE-2.0
++##############################################################################
++
++
++CI_DEBUG=${CI_DEBUG:-0}; [[ "${CI_DEBUG}" =~ (false|0) ]] || set -x
++
++
++# Install the StackLight backends
++#deploy elasticsearch
++salt -C 'I@elasticsearch:server' state.sls elasticsearch.server -b 1
++#deploy influxdb
++salt -C 'I@influxdb:server' state.sls influxdb -b 1
++
++salt -C 'I@kibana:server' state.sls kibana.server -b 1
++#deploy grafana server
++salt -C 'I@grafana:server' state.sls grafana.server -b 1
++#run grafana collector:
++salt -C 'I@grafana:collector' state.sls grafana.collector
++salt -C 'I@grafana:collector' state.sls salt.minion.grains
++salt -C 'I@grafana:collector' saltutil.refresh_modules
++salt -C 'I@grafana:collector' mine.update
++#perform grafana client config:
++salt -C 'I@grafana:client' state.sls grafana.client
++#deploy sensu
++salt -C 'I@nagios:server' state.sls nagios.server
++salt -C 'I@sensu:server and I@rabbitmq:server' state.sls rabbitmq
++salt -C 'I@sensu:server and I@rabbitmq:server' cmd.run "rabbitmqctl cluster_status"
++salt -C 'I@redis:cluster:role:master' state.sls redis
++salt -C 'I@redis:server' state.sls redis
++salt -C 'I@sensu:server' state.sls sensu -b 1
++salt -C 'I@sensu:client' state.sls sensu
++#Configure the client to communicate with the server:
++salt -C 'I@elasticsearch:client' state.sls elasticsearch.client.service
++salt -C 'I@kibana:client' state.sls kibana.client.service
++#restart minions on the nodes where clients are running
++salt -C 'I@kibana:client or I@elasticsearch:client' --async service.restart salt-minion
++sleep 10
++#configure server:
++salt -C 'I@elasticsearch:client' state.sls elasticsearch.client
++salt -C 'I@kibana:client' state.sls kibana.client
++
++#StackLight SOIP (StackLight operational insights pipeline)
++#restart minions
++salt '*' --async service.restart salt-minion
++#clean salt mine
++salt "*" mine.flush
++#clean grains files
++salt "*" file.remove /etc/salt/grains.d/collectd
++salt "*" file.remove /etc/salt/grains.d/grafana
++salt "*" file.remove /etc/salt/grains.d/heka
++salt "*" file.remove /etc/salt/grains.d/sensu
++salt "*" file.remove /etc/salt/grains
++#install collectd and heka
++salt "*" state.sls collectd
++salt "*" state.sls heka
++#update salt mine
++salt "*" state.sls salt.minion.grains
++salt "*" saltutil.refresh_modules
++salt "*" mine.update
++#update heka
++salt -C 'I@heka:aggregator:enabled:True or \
++I@heka:remote_collector:enabled:True' state.sls heka
++#update collectd
++salt -C 'I@collectd:remote_client:enabled:True' state.sls collectd
++#update sensu
++salt -C 'I@sensu:server' state.sls sensu
++#retrieve StackLight monitoring VIP:
++vip=$(salt-call pillar.data _param:stacklight_monitor_address --out key| tail -n 1 |awk -F ' ' '{print $2}')
++#restart services bounding to monitoring VIP
++export vip=$vip
++salt -G "ipv4:$vip" service.restart remote_collectd
++salt -G "ipv4:$vip" service.restart remote_collector
++salt -G "ipv4:$vip" service.restart aggregator

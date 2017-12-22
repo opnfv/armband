@@ -1,0 +1,143 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Delia Popescu <delia.popescu@enea.com>
+Date: Mon, 11 Dec 2017 14:46:42 +0200
+Subject: [PATCH] WIP StackLight part 01
+
+Signed-off-by: Delia Popescu <delia.popescu@enea.com>
+---
+ .../baremetal-mcp-ocata-common/infra/config.yml    | 20 +++++-----
+ .../baremetal-mcp-ocata-common/infra/init.yml      |  6 +--
+ .../baremetal-mcp-ocata-common/infra/kvm.yml       | 45 +++++++++++++---------
+ 3 files changed, 40 insertions(+), 31 deletions(-)
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/config.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/config.yml
+index e0f9a2a..6620e95 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/config.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/config.yml
+@@ -21,9 +21,9 @@ classes:
+   - system.reclass.storage.system.openstack_database_cluster
+   - system.reclass.storage.system.openstack_message_queue_cluster
+   - system.reclass.storage.system.openstack_telemetry_cluster
+-  # - system.reclass.storage.system.stacklight_log_cluster
+-  # - system.reclass.storage.system.stacklight_monitor_cluster
+-  # - system.reclass.storage.system.stacklight_telemetry_cluster
++  - system.reclass.storage.system.stacklight_log_cluster
++  - system.reclass.storage.system.stacklight_monitor_cluster
++  - system.reclass.storage.system.stacklight_telemetry_cluster
+   - system.reclass.storage.system.infra_maas_single
+ parameters:
+   _param:
+@@ -88,13 +88,13 @@ parameters:
+         openstack_proxy_node02:
+           params:
+             linux_system_codename: xenial
+-        # stacklight_log_node01:
+-        #   classes:
+-        #     - system.elasticsearch.client.single
+-        # stacklight_monitor_node01:
+-        #   classes:
+-        #     - system.grafana.client.single
+-        #     - system.kibana.client.single
++        stacklight_log_node01:
++          classes:
++            - system.elasticsearch.client.single
++        stacklight_monitor_node01:
++          classes:
++            - system.grafana.client.single
++            - system.kibana.client.single
+         openstack_control_node01:
+           classes:
+             - cluster.baremetal-mcp-ocata-common.openstack_control_init
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/init.yml
+index a5e621b..9617ce9 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/init.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/init.yml
+@@ -9,15 +9,15 @@
+ classes:
+   - system.linux.system.single
+   - cluster.all-mcp-ocata-common
+-  # - cluster.baremetal-mcp-ocata-common.stacklight
+-  # - cluster.baremetal-mcp-ocata-common.stacklight.client
++  - cluster.baremetal-mcp-ocata-common.stacklight
++  - cluster.baremetal-mcp-ocata-common.stacklight.client
+ parameters:
+   _param:
+     apt_mk_version: nightly
+     mcp_repo_version: 1.1
+     salt_version: 2016.11
+     cluster_domain: ${_param:cluster_name}.local
+-    # stacklight_environment: ${_param:cluster_domain}
++    stacklight_environment: ${_param:cluster_domain}
+     reclass_data_revision: master
+     cluster_public_host: ${_param:openstack_proxy_address}
+     infra_config_hostname: cfg01
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
+index bf58f74..f48ec6b 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/kvm.yml
+@@ -21,9 +21,9 @@ classes:
+   - system.salt.control.cluster.openstack_database_cluster
+   - system.salt.control.cluster.openstack_message_queue_cluster
+   - system.salt.control.cluster.openstack_telemetry_cluster
+-  # - system.salt.control.cluster.stacklight_server_cluster
+-  # - system.salt.control.cluster.stacklight_log_cluster
+-  # - system.salt.control.cluster.stacklight_telemetry_cluster
++  - system.salt.control.cluster.stacklight_server_cluster
++  - system.salt.control.cluster.stacklight_log_cluster
++  - system.salt.control.cluster.stacklight_telemetry_cluster
+   - cluster.baremetal-mcp-ocata-common.infra.kvm_init
+ parameters:
+   _param:
+@@ -78,21 +78,30 @@ parameters:
+           cpu_model: host-passthrough
+           disk_profile: xxlarge
+           net_profile: default
+-        # stacklight.log:
+-        #   cpu: 2
+-        #   ram: 4096
+-        #   disk_profile: xxlarge
+-        #   net_profile: default
+-        # stacklight.server:
+-        #   cpu: 2
+-        #   ram: 4096
+-        #   disk_profile: small
+-        #   net_profile: default
+-        # stacklight.telemetry:
+-        #   cpu: 2
+-        #   ram: 4096
+-        #   disk_profile: xxlarge
+-        #   net_profile: default
++        stacklight.log:
++          cpu: 2
++          ram: 4096
++          hw_firmware_type: uefi
++          virt_machine_model: virt
++          cpu_model: host-passthrough
++          disk_profile: xxlarge
++          net_profile: default
++        stacklight.server:
++          cpu: 2
++          ram: 4096
++          hw_firmware_type: uefi
++          virt_machine_model: virt
++          cpu_model: host-passthrough
++          disk_profile: small
++          net_profile: default
++        stacklight.telemetry:
++          cpu: 2
++          ram: 4096
++          hw_firmware_type: uefi
++          virt_machine_model: virt
++          cpu_model: host-passthrough
++          disk_profile: xxlarge
++          net_profile: default
+         openstack.proxy:
+           cpu: 2
+           ram: 2048

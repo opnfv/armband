@@ -1,0 +1,1716 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Delia Popescu <delia.popescu@enea.com>
+Date: Thu, 21 Dec 2017 11:36:36 +0200
+Subject: [PATCH] WIP StackLight part 03
+
+Signed-off-by: Delia Popescu <delia.popescu@enea.com>
+---
+ .../stacklight/client.yml                          |   5 +
+ .../baremetal-mcp-ocata-common/stacklight/init.yml | 190 +++++++++++++++++++++
+ .../baremetal-mcp-ocata-common/stacklight/log.yml  |  32 ++++
+ .../stacklight/log_curator.yml                     |   2 +
+ .../stacklight/monitor.yml                         |  84 +++++++++
+ .../stacklight/proxy.yml                           |  20 +++
+ .../stacklight/telemetry.yml                       |  34 ++++
+ .../stacklight/client.yml                          |   5 +
+ .../baremetal-mcp-ocata-odl-ha/stacklight/init.yml | 190 +++++++++++++++++++++
+ .../baremetal-mcp-ocata-odl-ha/stacklight/log.yml  |  32 ++++
+ .../stacklight/log_curator.yml                     |   2 +
+ .../stacklight/monitor.yml                         |  84 +++++++++
+ .../stacklight/proxy.yml                           |  20 +++
+ .../stacklight/telemetry.yml                       |  34 ++++
+ .../stacklight/client.yml                          |   5 +
+ .../stacklight/init.yml                            | 190 +++++++++++++++++++++
+ .../stacklight/log.yml                             |  32 ++++
+ .../stacklight/log_curator.yml                     |   2 +
+ .../stacklight/monitor.yml                         |  84 +++++++++
+ .../stacklight/proxy.yml                           |  20 +++
+ .../stacklight/telemetry.yml                       |  34 ++++
+ .../stacklight/client.yml                          |   5 +
+ .../baremetal-mcp-ocata-ovs-ha/stacklight/init.yml | 190 +++++++++++++++++++++
+ .../baremetal-mcp-ocata-ovs-ha/stacklight/log.yml  |  32 ++++
+ .../stacklight/log_curator.yml                     |   2 +
+ .../stacklight/monitor.yml                         |  84 +++++++++
+ .../stacklight/proxy.yml                           |  20 +++
+ .../stacklight/telemetry.yml                       |  34 ++++
+ 28 files changed, 1468 insertions(+)
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/client.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/init.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/log.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/log_curator.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/monitor.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/proxy.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/telemetry.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/client.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/init.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/log.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/log_curator.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/monitor.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/proxy.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/telemetry.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/client.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/init.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/log.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/log_curator.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/monitor.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/proxy.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/telemetry.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/client.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/init.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/log.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/log_curator.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/monitor.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/proxy.yml
+ create mode 100644 mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/telemetry.yml
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/client.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/client.yml
+new file mode 100644
+index 0000000..d36978a
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/client.yml
+@@ -0,0 +1,5 @@
++classes:
++- system.collectd.client.output.heka
++- system.heka.log_collector.single
++- system.heka.metric_collector.single
++- service.grafana.collector
+\ No newline at end of file
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/init.yml
+new file mode 100644
+index 0000000..ace4167
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/init.yml
+@@ -0,0 +1,190 @@
++
++parameters:
++  _param:
++    # Stacklight Monitor
++    stacklight_monitor_address: 172.16.10.70
++    stacklight_monitor_node01_address: 172.16.10.71
++    stacklight_monitor_node02_address: 172.16.10.72
++    stacklight_monitor_node03_address: 172.16.10.73
++    stacklight_log_address: 172.16.10.60
++    stacklight_log_node01_address: 172.16.10.61
++    stacklight_log_node02_address: 172.16.10.62
++    stacklight_log_node03_address: 172.16.10.63
++    stacklight_telemetry_address: 172.16.10.85
++    stacklight_telemetry_node01_address: 172.16.10.86
++    stacklight_telemetry_node02_address: 172.16.10.87
++    stacklight_telemetry_node03_address: 172.16.10.88
++
++    # stacklight service hostnames
++    stacklight_monitor_hostname: mon
++    stacklight_monitor_node01_hostname: mon01
++    stacklight_monitor_node02_hostname: mon02
++    stacklight_monitor_node03_hostname: mon03
++    stacklight_log_hostname: log
++    stacklight_log_node01_hostname: log01
++    stacklight_log_node02_hostname: log02
++    stacklight_log_node03_hostname: log03
++    stacklight_telemetry_hostname: mtr
++    stacklight_telemetry_node01_hostname: mtr01
++    stacklight_telemetry_node02_hostname: mtr02
++    stacklight_telemetry_node03_hostname: mtr03
++
++    kibana_elasticsearch_host: ${_param:stacklight_log_address}
++    heka_elasticsearch_host: ${_param:stacklight_log_address}
++    heka_influxdb_host: ${_param:stacklight_telemetry_address}
++    heka_aggregator_host: ${_param:stacklight_monitor_address}
++    aggregator_port: 5565
++    grafana_user: admin
++    cluster_elasticsearch_port: 9200
++    cluster_kibana_port: 5601
++    cluster_grafana_port: 3000
++    rabbitmq_monitor_password: 'password'
++    rabbitmq_monitor_port: 5672
++    mysql_grafana_password: password
++    grafana_influxdb_host: ${_param:stacklight_telemetry_address}
++    elasticsearch_port: 9200
++    influxdb_stacklight_password: password
++    influxdb_admin_password: password
++    influxdb_port: 8086
++    influxdb_database: lma
++    influxdb_user: lma
++    influxdb_password: password
++    nagios_host: ${_param:stacklight_monitor_address}
++    nagios_status_port: 8001
++    nagios_username: nagiosadmin
++    nagios_password: password
++    nagios_notification_smtp_server: 127.0.0.1
++    nagios_notification_from: 'nagios@localhost'
++    nagios_notification_email: 'root@localhost'
++    stacklight_log_keepalived_password: password
++    stacklight_monitor_keepalived_password: password
++    stacklight_telemetry_keepalived_password: password
++    ##Billing
++    #collectd_backend_carbon_host: ${_param:openstack_billing_address}
++    #collectd_backend_carbon_port: 2023
++  linux:
++    _support:
++      sensu:
++        enabled: false
++    network:
++      host:
++        mon01:
++          address: ${_param:stacklight_monitor_node01_address}
++          names:
++          - ${_param:stacklight_monitor_node01_hostname}
++          - ${_param:stacklight_monitor_node01_hostname}.${_param:cluster_domain}
++        mon02:
++          address: ${_param:stacklight_monitor_node02_address}
++          names:
++          - ${_param:stacklight_monitor_node02_hostname}
++          - ${_param:stacklight_monitor_node02_hostname}.${_param:cluster_domain}
++        mon03:
++          address: ${_param:stacklight_monitor_node03_address}
++          names:
++          - ${_param:stacklight_monitor_node03_hostname}
++          - ${_param:stacklight_monitor_node03_hostname}.${_param:cluster_domain}
++        mon:
++          address: ${_param:stacklight_monitor_address}
++          names:
++          - ${_param:stacklight_monitor_hostname}
++          - ${_param:stacklight_monitor_hostname}.${_param:cluster_domain}
++        log01:
++          address: ${_param:stacklight_log_node01_address}
++          names:
++          - ${_param:stacklight_log_node01_hostname}
++          - ${_param:stacklight_log_node01_hostname}.${_param:cluster_domain}
++        log02:
++          address: ${_param:stacklight_log_node02_address}
++          names:
++          - ${_param:stacklight_log_node02_hostname}
++          - ${_param:stacklight_log_node02_hostname}.${_param:cluster_domain}
++        log03:
++          address: ${_param:stacklight_log_node03_address}
++          names:
++          - ${_param:stacklight_log_node03_hostname}
++          - ${_param:stacklight_log_node03_hostname}.${_param:cluster_domain}
++        log:
++          address: ${_param:stacklight_log_address}
++          names:
++          - ${_param:stacklight_log_hostname}
++          - ${_param:stacklight_log_hostname}.${_param:cluster_domain}
++        mtr01:
++          address: ${_param:stacklight_telemetry_node01_address}
++          names:
++          - ${_param:stacklight_telemetry_node01_hostname}
++          - ${_param:stacklight_telemetry_node01_hostname}.${_param:cluster_domain}
++        mtr02:
++          address: ${_param:stacklight_telemetry_node02_address}
++          names:
++          - ${_param:stacklight_telemetry_node02_hostname}
++          - ${_param:stacklight_telemetry_node02_hostname}.${_param:cluster_domain}
++        mtr03:
++          address: ${_param:stacklight_telemetry_node03_address}
++          names:
++          - ${_param:stacklight_telemetry_node03_hostname}
++          - ${_param:stacklight_telemetry_node03_hostname}.${_param:cluster_domain}
++        mtr:
++          address: ${_param:stacklight_telemetry_address}
++          names:
++          - ${_param:stacklight_telemetry_hostname}
++          - ${_param:stacklight_telemetry_hostname}.${_param:cluster_domain}
++  heka:
++    server:
++      extra_fields:
++        region: ${_param:openstack_region}
++  apache:
++    _support:
++      sensu:
++        enabled: false
++  cinder:
++    _support:
++      sensu:
++        enabled: false
++  glance:
++    _support:
++      sensu:
++        enabled: false
++  glusterfs:
++    _support:
++      sensu:
++        enabled: false
++  haproxy:
++    _support:
++      sensu:
++        enabled: false
++  heat:
++    _support:
++      sensu:
++        enabled: false
++  keepalived:
++    _support:
++      sensu:
++        enabled: false
++  keystone:
++    _support:
++      sensu:
++        enabled: false
++  neutron:
++    _support:
++      sensu:
++        enabled: false
++  nginx:
++    _support:
++      sensu:
++        enabled: false
++  nova:
++    _support:
++      sensu:
++        enabled: false
++  ntp:
++    _support:
++      sensu:
++        enabled: false
++  opencontrail:
++    _support:
++      sensu:
++        enabled: false
++  rabbitmq:
++    _support:
++      sensu:
++        enabled: false
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/log.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/log.yml
+new file mode 100644
+index 0000000..3b23734
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/log.yml
+@@ -0,0 +1,32 @@
++classes:
++- system.linux.system.repo.elasticsearch
++- system.linux.system.repo.saltstack.xenial
++- system.elasticsearch.server.cluster
++- system.haproxy.proxy.listen.elasticsearch
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_log_vip
++- cluster.baremetal-mcp-ocata-common.infra
++parameters:
++  _param:
++    keepalived_stacklight_log_vip_address: ${_param:stacklight_log_address}
++    keepalived_stacklight_log_vip_password: ${_param:stacklight_log_keepalived_password}
++    keepalived_stacklight_log_vip_interface: ens3
++    cluster_vip_address: ${_param:stacklight_log_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: log01
++    cluster_node01_address: ${_param:stacklight_log_node01_address}
++    cluster_node02_hostname: log02
++    cluster_node02_address: ${_param:stacklight_log_node02_address}
++    cluster_node03_hostname: log03
++    cluster_node03_address: ${_param:stacklight_log_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++  elasticsearch:
++    server:
++      master: true
++      data: true
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/log_curator.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/log_curator.yml
+new file mode 100644
+index 0000000..d26cc60
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/log_curator.yml
+@@ -0,0 +1,2 @@
++classes:
++- system.elasticsearch.server.curator
+\ No newline at end of file
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/monitor.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/monitor.yml
+new file mode 100644
+index 0000000..00bb540
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/monitor.yml
+@@ -0,0 +1,84 @@
++classes:
++- system.linux.system.repo.elasticsearch
++- system.linux.system.repo.grafana
++- system.linux.system.repo.saltstack.xenial
++- system.collectd.remote_client.cluster
++- system.heka.remote_collector.cluster
++- system.heka.aggregator.cluster
++- system.kibana.server.single
++- system.grafana.server.single
++- system.grafana.client.single
++- system.nagios.server.cluster
++- system.sensu.server.cluster
++- system.sensu.client.unsubscribe.collectd
++- system.haproxy.proxy.listen.stacklight.elasticsearch
++- system.haproxy.proxy.listen.stacklight.kibana
++- system.haproxy.proxy.listen.stacklight.grafana
++- system.haproxy.proxy.listen.stacklight.sensu
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_monitor_vip
++- cluster.baremetal-mcp-ocata-common.infra
++parameters:
++  _param:
++    collectd_remote_collector_host: ${_param:stacklight_monitor_address}
++    keepalived_stacklight_monitor_vip_address: ${_param:stacklight_monitor_address}
++    keepalived_stacklight_monitor_vip_password: ${_param:stacklight_monitor_keepalived_password}
++    keepalived_stacklight_monitor_vip_interface: ens3
++    cluster_redis_port: 6379
++    cluster_sensu_port: 4567
++    sensu_dashboard_password: 'password'
++    cluster_uchiwa_port: 3001
++    cluster_vip_address: ${_param:stacklight_monitor_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: mon01
++    cluster_node01_address: ${_param:stacklight_monitor_node01_address}
++    cluster_node02_hostname: mon02
++    cluster_node02_address: ${_param:stacklight_monitor_node02_address}
++    cluster_node03_hostname: mon03
++    cluster_node03_address: ${_param:stacklight_monitor_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++  sensu:
++    server:
++      enabled: true
++      database:
++        engine: redis
++        host: ${_param:stacklight_monitor_address}
++        port: ${_param:cluster_redis_port}
++      message_queue:
++        engine: rabbitmq
++        host: ${_param:stacklight_monitor_address}
++        port: ${_param:rabbitmq_monitor_port}
++        user: monitor
++        password: ${_param:rabbitmq_monitor_password}
++        virtual_host: '/monitor'
++      bind:
++        address: ${_param:single_address}
++        port: ${_param:cluster_sensu_port}
++      handler:
++        default:
++          enabled: true
++          set:
++          - pipe
++        pipe:
++          enabled: true
++          command: 'cat /dev/null'
++        stdout:
++          enabled: true
++    dashboard:
++      enabled: true
++      backend:
++        sensu:
++          host: ${_param:single_address}
++          port: ${_param:cluster_sensu_port}
++      bind:
++        address: ${_param:single_address}
++        port: ${_param:cluster_uchiwa_port}
++      admin:
++        username: admin
++        password: ${_param:sensu_dashboard_password}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/proxy.yml
+new file mode 100644
+index 0000000..4cc71da
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/proxy.yml
+@@ -0,0 +1,20 @@
++classes:
++- system.nginx.server.proxy.grafana_web
++- system.nginx.server.proxy.kibana_web
++- system.nginx.server.proxy.nagios_web
++- system.salt.minion.cert.proxy
++- cluster.baremetal-mcp-ocata-common.infra
++parameters:
++  # _param:
++  #   nginx_proxy_ssl:
++  #     enabled: true
++  #     authority: mk_lab_ca
++  #     engine: salt
++  #     mode: secure
++  dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++  single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/telemetry.yml
+new file mode 100644
+index 0000000..662514f
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/stacklight/telemetry.yml
+@@ -0,0 +1,34 @@
++classes:
++- system.linux.system.repo.influxdb
++- system.linux.system.repo.saltstack.xenial
++- system.influxdb.server.single
++- system.influxdb.database.ceilometer
++- system.influxdb.database.stacklight
++- system.haproxy.proxy.listen.stacklight.influxdb
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_telemetry_vip
++- cluster.baremetal-mcp-ocata-common.infra
++parameters:
++  _param:
++    keepalived_stacklight_telemetry_vip_address: ${_param:stacklight_telemetry_address}
++    keepalived_stacklight_telemetry_vip_password: ${_param:stacklight_telemetry_keepalived_password}
++    keepalived_stacklight_telemetry_vip_interface: ens3
++    cluster_vip_address: ${_param:stacklight_telemetry_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: mtr01
++    cluster_node01_address: ${_param:stacklight_telemetry_node01_address}
++    cluster_node02_hostname: mtr02
++    cluster_node02_address: ${_param:stacklight_telemetry_node02_address}
++    cluster_node03_hostname: mtr03
++    cluster_node03_address: ${_param:stacklight_telemetry_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++    system:
++      package:
++        apt-transport-https:
++          version: latest
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/client.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/client.yml
+new file mode 100644
+index 0000000..d36978a
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/client.yml
+@@ -0,0 +1,5 @@
++classes:
++- system.collectd.client.output.heka
++- system.heka.log_collector.single
++- system.heka.metric_collector.single
++- service.grafana.collector
+\ No newline at end of file
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/init.yml
+new file mode 100644
+index 0000000..ace4167
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/init.yml
+@@ -0,0 +1,190 @@
++
++parameters:
++  _param:
++    # Stacklight Monitor
++    stacklight_monitor_address: 172.16.10.70
++    stacklight_monitor_node01_address: 172.16.10.71
++    stacklight_monitor_node02_address: 172.16.10.72
++    stacklight_monitor_node03_address: 172.16.10.73
++    stacklight_log_address: 172.16.10.60
++    stacklight_log_node01_address: 172.16.10.61
++    stacklight_log_node02_address: 172.16.10.62
++    stacklight_log_node03_address: 172.16.10.63
++    stacklight_telemetry_address: 172.16.10.85
++    stacklight_telemetry_node01_address: 172.16.10.86
++    stacklight_telemetry_node02_address: 172.16.10.87
++    stacklight_telemetry_node03_address: 172.16.10.88
++
++    # stacklight service hostnames
++    stacklight_monitor_hostname: mon
++    stacklight_monitor_node01_hostname: mon01
++    stacklight_monitor_node02_hostname: mon02
++    stacklight_monitor_node03_hostname: mon03
++    stacklight_log_hostname: log
++    stacklight_log_node01_hostname: log01
++    stacklight_log_node02_hostname: log02
++    stacklight_log_node03_hostname: log03
++    stacklight_telemetry_hostname: mtr
++    stacklight_telemetry_node01_hostname: mtr01
++    stacklight_telemetry_node02_hostname: mtr02
++    stacklight_telemetry_node03_hostname: mtr03
++
++    kibana_elasticsearch_host: ${_param:stacklight_log_address}
++    heka_elasticsearch_host: ${_param:stacklight_log_address}
++    heka_influxdb_host: ${_param:stacklight_telemetry_address}
++    heka_aggregator_host: ${_param:stacklight_monitor_address}
++    aggregator_port: 5565
++    grafana_user: admin
++    cluster_elasticsearch_port: 9200
++    cluster_kibana_port: 5601
++    cluster_grafana_port: 3000
++    rabbitmq_monitor_password: 'password'
++    rabbitmq_monitor_port: 5672
++    mysql_grafana_password: password
++    grafana_influxdb_host: ${_param:stacklight_telemetry_address}
++    elasticsearch_port: 9200
++    influxdb_stacklight_password: password
++    influxdb_admin_password: password
++    influxdb_port: 8086
++    influxdb_database: lma
++    influxdb_user: lma
++    influxdb_password: password
++    nagios_host: ${_param:stacklight_monitor_address}
++    nagios_status_port: 8001
++    nagios_username: nagiosadmin
++    nagios_password: password
++    nagios_notification_smtp_server: 127.0.0.1
++    nagios_notification_from: 'nagios@localhost'
++    nagios_notification_email: 'root@localhost'
++    stacklight_log_keepalived_password: password
++    stacklight_monitor_keepalived_password: password
++    stacklight_telemetry_keepalived_password: password
++    ##Billing
++    #collectd_backend_carbon_host: ${_param:openstack_billing_address}
++    #collectd_backend_carbon_port: 2023
++  linux:
++    _support:
++      sensu:
++        enabled: false
++    network:
++      host:
++        mon01:
++          address: ${_param:stacklight_monitor_node01_address}
++          names:
++          - ${_param:stacklight_monitor_node01_hostname}
++          - ${_param:stacklight_monitor_node01_hostname}.${_param:cluster_domain}
++        mon02:
++          address: ${_param:stacklight_monitor_node02_address}
++          names:
++          - ${_param:stacklight_monitor_node02_hostname}
++          - ${_param:stacklight_monitor_node02_hostname}.${_param:cluster_domain}
++        mon03:
++          address: ${_param:stacklight_monitor_node03_address}
++          names:
++          - ${_param:stacklight_monitor_node03_hostname}
++          - ${_param:stacklight_monitor_node03_hostname}.${_param:cluster_domain}
++        mon:
++          address: ${_param:stacklight_monitor_address}
++          names:
++          - ${_param:stacklight_monitor_hostname}
++          - ${_param:stacklight_monitor_hostname}.${_param:cluster_domain}
++        log01:
++          address: ${_param:stacklight_log_node01_address}
++          names:
++          - ${_param:stacklight_log_node01_hostname}
++          - ${_param:stacklight_log_node01_hostname}.${_param:cluster_domain}
++        log02:
++          address: ${_param:stacklight_log_node02_address}
++          names:
++          - ${_param:stacklight_log_node02_hostname}
++          - ${_param:stacklight_log_node02_hostname}.${_param:cluster_domain}
++        log03:
++          address: ${_param:stacklight_log_node03_address}
++          names:
++          - ${_param:stacklight_log_node03_hostname}
++          - ${_param:stacklight_log_node03_hostname}.${_param:cluster_domain}
++        log:
++          address: ${_param:stacklight_log_address}
++          names:
++          - ${_param:stacklight_log_hostname}
++          - ${_param:stacklight_log_hostname}.${_param:cluster_domain}
++        mtr01:
++          address: ${_param:stacklight_telemetry_node01_address}
++          names:
++          - ${_param:stacklight_telemetry_node01_hostname}
++          - ${_param:stacklight_telemetry_node01_hostname}.${_param:cluster_domain}
++        mtr02:
++          address: ${_param:stacklight_telemetry_node02_address}
++          names:
++          - ${_param:stacklight_telemetry_node02_hostname}
++          - ${_param:stacklight_telemetry_node02_hostname}.${_param:cluster_domain}
++        mtr03:
++          address: ${_param:stacklight_telemetry_node03_address}
++          names:
++          - ${_param:stacklight_telemetry_node03_hostname}
++          - ${_param:stacklight_telemetry_node03_hostname}.${_param:cluster_domain}
++        mtr:
++          address: ${_param:stacklight_telemetry_address}
++          names:
++          - ${_param:stacklight_telemetry_hostname}
++          - ${_param:stacklight_telemetry_hostname}.${_param:cluster_domain}
++  heka:
++    server:
++      extra_fields:
++        region: ${_param:openstack_region}
++  apache:
++    _support:
++      sensu:
++        enabled: false
++  cinder:
++    _support:
++      sensu:
++        enabled: false
++  glance:
++    _support:
++      sensu:
++        enabled: false
++  glusterfs:
++    _support:
++      sensu:
++        enabled: false
++  haproxy:
++    _support:
++      sensu:
++        enabled: false
++  heat:
++    _support:
++      sensu:
++        enabled: false
++  keepalived:
++    _support:
++      sensu:
++        enabled: false
++  keystone:
++    _support:
++      sensu:
++        enabled: false
++  neutron:
++    _support:
++      sensu:
++        enabled: false
++  nginx:
++    _support:
++      sensu:
++        enabled: false
++  nova:
++    _support:
++      sensu:
++        enabled: false
++  ntp:
++    _support:
++      sensu:
++        enabled: false
++  opencontrail:
++    _support:
++      sensu:
++        enabled: false
++  rabbitmq:
++    _support:
++      sensu:
++        enabled: false
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/log.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/log.yml
+new file mode 100644
+index 0000000..f8b3b29
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/log.yml
+@@ -0,0 +1,32 @@
++classes:
++- system.linux.system.repo.elasticsearch
++- system.linux.system.repo.saltstack.xenial
++- system.elasticsearch.server.cluster
++- system.haproxy.proxy.listen.elasticsearch
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_log_vip
++- cluster.baremetal-mcp-ocata-odl-ha.infra
++parameters:
++  _param:
++    keepalived_stacklight_log_vip_address: ${_param:stacklight_log_address}
++    keepalived_stacklight_log_vip_password: ${_param:stacklight_log_keepalived_password}
++    keepalived_stacklight_log_vip_interface: ens3
++    cluster_vip_address: ${_param:stacklight_log_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: log01
++    cluster_node01_address: ${_param:stacklight_log_node01_address}
++    cluster_node02_hostname: log02
++    cluster_node02_address: ${_param:stacklight_log_node02_address}
++    cluster_node03_hostname: log03
++    cluster_node03_address: ${_param:stacklight_log_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++  elasticsearch:
++    server:
++      master: true
++      data: true
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/log_curator.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/log_curator.yml
+new file mode 100644
+index 0000000..d26cc60
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/log_curator.yml
+@@ -0,0 +1,2 @@
++classes:
++- system.elasticsearch.server.curator
+\ No newline at end of file
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/monitor.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/monitor.yml
+new file mode 100644
+index 0000000..c857647
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/monitor.yml
+@@ -0,0 +1,84 @@
++classes:
++- system.linux.system.repo.elasticsearch
++- system.linux.system.repo.grafana
++- system.linux.system.repo.saltstack.xenial
++- system.collectd.remote_client.cluster
++- system.heka.remote_collector.cluster
++- system.heka.aggregator.cluster
++- system.kibana.server.single
++- system.grafana.server.single
++- system.grafana.client.single
++- system.nagios.server.cluster
++- system.sensu.server.cluster
++- system.sensu.client.unsubscribe.collectd
++- system.haproxy.proxy.listen.stacklight.elasticsearch
++- system.haproxy.proxy.listen.stacklight.kibana
++- system.haproxy.proxy.listen.stacklight.grafana
++- system.haproxy.proxy.listen.stacklight.sensu
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_monitor_vip
++- cluster.baremetal-mcp-ocata-odl-ha.infra
++parameters:
++  _param:
++    collectd_remote_collector_host: ${_param:stacklight_monitor_address}
++    keepalived_stacklight_monitor_vip_address: ${_param:stacklight_monitor_address}
++    keepalived_stacklight_monitor_vip_password: ${_param:stacklight_monitor_keepalived_password}
++    keepalived_stacklight_monitor_vip_interface: ens3
++    cluster_redis_port: 6379
++    cluster_sensu_port: 4567
++    sensu_dashboard_password: 'password'
++    cluster_uchiwa_port: 3001
++    cluster_vip_address: ${_param:stacklight_monitor_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: mon01
++    cluster_node01_address: ${_param:stacklight_monitor_node01_address}
++    cluster_node02_hostname: mon02
++    cluster_node02_address: ${_param:stacklight_monitor_node02_address}
++    cluster_node03_hostname: mon03
++    cluster_node03_address: ${_param:stacklight_monitor_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++  sensu:
++    server:
++      enabled: true
++      database:
++        engine: redis
++        host: ${_param:stacklight_monitor_address}
++        port: ${_param:cluster_redis_port}
++      message_queue:
++        engine: rabbitmq
++        host: ${_param:stacklight_monitor_address}
++        port: ${_param:rabbitmq_monitor_port}
++        user: monitor
++        password: ${_param:rabbitmq_monitor_password}
++        virtual_host: '/monitor'
++      bind:
++        address: ${_param:single_address}
++        port: ${_param:cluster_sensu_port}
++      handler:
++        default:
++          enabled: true
++          set:
++          - pipe
++        pipe:
++          enabled: true
++          command: 'cat /dev/null'
++        stdout:
++          enabled: true
++    dashboard:
++      enabled: true
++      backend:
++        sensu:
++          host: ${_param:single_address}
++          port: ${_param:cluster_sensu_port}
++      bind:
++        address: ${_param:single_address}
++        port: ${_param:cluster_uchiwa_port}
++      admin:
++        username: admin
++        password: ${_param:sensu_dashboard_password}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/proxy.yml
+new file mode 100644
+index 0000000..3271742
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/proxy.yml
+@@ -0,0 +1,20 @@
++classes:
++- system.nginx.server.proxy.grafana_web
++- system.nginx.server.proxy.kibana_web
++- system.nginx.server.proxy.nagios_web
++- system.salt.minion.cert.proxy
++- cluster.baremetal-mcp-ocata-odl-ha.infra
++parameters:
++  # _param:
++  #   nginx_proxy_ssl:
++  #     enabled: true
++  #     authority: mk_lab_ca
++  #     engine: salt
++  #     mode: secure
++  dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++  single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/telemetry.yml
+new file mode 100644
+index 0000000..7e61780
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/stacklight/telemetry.yml
+@@ -0,0 +1,34 @@
++classes:
++- system.linux.system.repo.influxdb
++- system.linux.system.repo.saltstack.xenial
++- system.influxdb.server.single
++- system.influxdb.database.ceilometer
++- system.influxdb.database.stacklight
++- system.haproxy.proxy.listen.stacklight.influxdb
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_telemetry_vip
++- cluster.baremetal-mcp-ocata-odl-ha.infra
++parameters:
++  _param:
++    keepalived_stacklight_telemetry_vip_address: ${_param:stacklight_telemetry_address}
++    keepalived_stacklight_telemetry_vip_password: ${_param:stacklight_telemetry_keepalived_password}
++    keepalived_stacklight_telemetry_vip_interface: ens3
++    cluster_vip_address: ${_param:stacklight_telemetry_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: mtr01
++    cluster_node01_address: ${_param:stacklight_telemetry_node01_address}
++    cluster_node02_hostname: mtr02
++    cluster_node02_address: ${_param:stacklight_telemetry_node02_address}
++    cluster_node03_hostname: mtr03
++    cluster_node03_address: ${_param:stacklight_telemetry_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++    system:
++      package:
++        apt-transport-https:
++          version: latest
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/client.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/client.yml
+new file mode 100644
+index 0000000..d36978a
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/client.yml
+@@ -0,0 +1,5 @@
++classes:
++- system.collectd.client.output.heka
++- system.heka.log_collector.single
++- system.heka.metric_collector.single
++- service.grafana.collector
+\ No newline at end of file
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/init.yml
+new file mode 100644
+index 0000000..ace4167
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/init.yml
+@@ -0,0 +1,190 @@
++
++parameters:
++  _param:
++    # Stacklight Monitor
++    stacklight_monitor_address: 172.16.10.70
++    stacklight_monitor_node01_address: 172.16.10.71
++    stacklight_monitor_node02_address: 172.16.10.72
++    stacklight_monitor_node03_address: 172.16.10.73
++    stacklight_log_address: 172.16.10.60
++    stacklight_log_node01_address: 172.16.10.61
++    stacklight_log_node02_address: 172.16.10.62
++    stacklight_log_node03_address: 172.16.10.63
++    stacklight_telemetry_address: 172.16.10.85
++    stacklight_telemetry_node01_address: 172.16.10.86
++    stacklight_telemetry_node02_address: 172.16.10.87
++    stacklight_telemetry_node03_address: 172.16.10.88
++
++    # stacklight service hostnames
++    stacklight_monitor_hostname: mon
++    stacklight_monitor_node01_hostname: mon01
++    stacklight_monitor_node02_hostname: mon02
++    stacklight_monitor_node03_hostname: mon03
++    stacklight_log_hostname: log
++    stacklight_log_node01_hostname: log01
++    stacklight_log_node02_hostname: log02
++    stacklight_log_node03_hostname: log03
++    stacklight_telemetry_hostname: mtr
++    stacklight_telemetry_node01_hostname: mtr01
++    stacklight_telemetry_node02_hostname: mtr02
++    stacklight_telemetry_node03_hostname: mtr03
++
++    kibana_elasticsearch_host: ${_param:stacklight_log_address}
++    heka_elasticsearch_host: ${_param:stacklight_log_address}
++    heka_influxdb_host: ${_param:stacklight_telemetry_address}
++    heka_aggregator_host: ${_param:stacklight_monitor_address}
++    aggregator_port: 5565
++    grafana_user: admin
++    cluster_elasticsearch_port: 9200
++    cluster_kibana_port: 5601
++    cluster_grafana_port: 3000
++    rabbitmq_monitor_password: 'password'
++    rabbitmq_monitor_port: 5672
++    mysql_grafana_password: password
++    grafana_influxdb_host: ${_param:stacklight_telemetry_address}
++    elasticsearch_port: 9200
++    influxdb_stacklight_password: password
++    influxdb_admin_password: password
++    influxdb_port: 8086
++    influxdb_database: lma
++    influxdb_user: lma
++    influxdb_password: password
++    nagios_host: ${_param:stacklight_monitor_address}
++    nagios_status_port: 8001
++    nagios_username: nagiosadmin
++    nagios_password: password
++    nagios_notification_smtp_server: 127.0.0.1
++    nagios_notification_from: 'nagios@localhost'
++    nagios_notification_email: 'root@localhost'
++    stacklight_log_keepalived_password: password
++    stacklight_monitor_keepalived_password: password
++    stacklight_telemetry_keepalived_password: password
++    ##Billing
++    #collectd_backend_carbon_host: ${_param:openstack_billing_address}
++    #collectd_backend_carbon_port: 2023
++  linux:
++    _support:
++      sensu:
++        enabled: false
++    network:
++      host:
++        mon01:
++          address: ${_param:stacklight_monitor_node01_address}
++          names:
++          - ${_param:stacklight_monitor_node01_hostname}
++          - ${_param:stacklight_monitor_node01_hostname}.${_param:cluster_domain}
++        mon02:
++          address: ${_param:stacklight_monitor_node02_address}
++          names:
++          - ${_param:stacklight_monitor_node02_hostname}
++          - ${_param:stacklight_monitor_node02_hostname}.${_param:cluster_domain}
++        mon03:
++          address: ${_param:stacklight_monitor_node03_address}
++          names:
++          - ${_param:stacklight_monitor_node03_hostname}
++          - ${_param:stacklight_monitor_node03_hostname}.${_param:cluster_domain}
++        mon:
++          address: ${_param:stacklight_monitor_address}
++          names:
++          - ${_param:stacklight_monitor_hostname}
++          - ${_param:stacklight_monitor_hostname}.${_param:cluster_domain}
++        log01:
++          address: ${_param:stacklight_log_node01_address}
++          names:
++          - ${_param:stacklight_log_node01_hostname}
++          - ${_param:stacklight_log_node01_hostname}.${_param:cluster_domain}
++        log02:
++          address: ${_param:stacklight_log_node02_address}
++          names:
++          - ${_param:stacklight_log_node02_hostname}
++          - ${_param:stacklight_log_node02_hostname}.${_param:cluster_domain}
++        log03:
++          address: ${_param:stacklight_log_node03_address}
++          names:
++          - ${_param:stacklight_log_node03_hostname}
++          - ${_param:stacklight_log_node03_hostname}.${_param:cluster_domain}
++        log:
++          address: ${_param:stacklight_log_address}
++          names:
++          - ${_param:stacklight_log_hostname}
++          - ${_param:stacklight_log_hostname}.${_param:cluster_domain}
++        mtr01:
++          address: ${_param:stacklight_telemetry_node01_address}
++          names:
++          - ${_param:stacklight_telemetry_node01_hostname}
++          - ${_param:stacklight_telemetry_node01_hostname}.${_param:cluster_domain}
++        mtr02:
++          address: ${_param:stacklight_telemetry_node02_address}
++          names:
++          - ${_param:stacklight_telemetry_node02_hostname}
++          - ${_param:stacklight_telemetry_node02_hostname}.${_param:cluster_domain}
++        mtr03:
++          address: ${_param:stacklight_telemetry_node03_address}
++          names:
++          - ${_param:stacklight_telemetry_node03_hostname}
++          - ${_param:stacklight_telemetry_node03_hostname}.${_param:cluster_domain}
++        mtr:
++          address: ${_param:stacklight_telemetry_address}
++          names:
++          - ${_param:stacklight_telemetry_hostname}
++          - ${_param:stacklight_telemetry_hostname}.${_param:cluster_domain}
++  heka:
++    server:
++      extra_fields:
++        region: ${_param:openstack_region}
++  apache:
++    _support:
++      sensu:
++        enabled: false
++  cinder:
++    _support:
++      sensu:
++        enabled: false
++  glance:
++    _support:
++      sensu:
++        enabled: false
++  glusterfs:
++    _support:
++      sensu:
++        enabled: false
++  haproxy:
++    _support:
++      sensu:
++        enabled: false
++  heat:
++    _support:
++      sensu:
++        enabled: false
++  keepalived:
++    _support:
++      sensu:
++        enabled: false
++  keystone:
++    _support:
++      sensu:
++        enabled: false
++  neutron:
++    _support:
++      sensu:
++        enabled: false
++  nginx:
++    _support:
++      sensu:
++        enabled: false
++  nova:
++    _support:
++      sensu:
++        enabled: false
++  ntp:
++    _support:
++      sensu:
++        enabled: false
++  opencontrail:
++    _support:
++      sensu:
++        enabled: false
++  rabbitmq:
++    _support:
++      sensu:
++        enabled: false
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/log.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/log.yml
+new file mode 100644
+index 0000000..200d1b2
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/log.yml
+@@ -0,0 +1,32 @@
++classes:
++- system.linux.system.repo.elasticsearch
++- system.linux.system.repo.saltstack.xenial
++- system.elasticsearch.server.cluster
++- system.haproxy.proxy.listen.elasticsearch
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_log_vip
++- cluster.baremetal-mcp-ocata-ovs-dpdk-ha.infra
++parameters:
++  _param:
++    keepalived_stacklight_log_vip_address: ${_param:stacklight_log_address}
++    keepalived_stacklight_log_vip_password: ${_param:stacklight_log_keepalived_password}
++    keepalived_stacklight_log_vip_interface: ens3
++    cluster_vip_address: ${_param:stacklight_log_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: log01
++    cluster_node01_address: ${_param:stacklight_log_node01_address}
++    cluster_node02_hostname: log02
++    cluster_node02_address: ${_param:stacklight_log_node02_address}
++    cluster_node03_hostname: log03
++    cluster_node03_address: ${_param:stacklight_log_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++  elasticsearch:
++    server:
++      master: true
++      data: true
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/log_curator.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/log_curator.yml
+new file mode 100644
+index 0000000..d26cc60
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/log_curator.yml
+@@ -0,0 +1,2 @@
++classes:
++- system.elasticsearch.server.curator
+\ No newline at end of file
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/monitor.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/monitor.yml
+new file mode 100644
+index 0000000..a4df587
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/monitor.yml
+@@ -0,0 +1,84 @@
++classes:
++- system.linux.system.repo.elasticsearch
++- system.linux.system.repo.grafana
++- system.linux.system.repo.saltstack.xenial
++- system.collectd.remote_client.cluster
++- system.heka.remote_collector.cluster
++- system.heka.aggregator.cluster
++- system.kibana.server.single
++- system.grafana.server.single
++- system.grafana.client.single
++- system.nagios.server.cluster
++- system.sensu.server.cluster
++- system.sensu.client.unsubscribe.collectd
++- system.haproxy.proxy.listen.stacklight.elasticsearch
++- system.haproxy.proxy.listen.stacklight.kibana
++- system.haproxy.proxy.listen.stacklight.grafana
++- system.haproxy.proxy.listen.stacklight.sensu
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_monitor_vip
++- cluster.baremetal-mcp-ocata-ovs-dpdk-ha.infra
++parameters:
++  _param:
++    collectd_remote_collector_host: ${_param:stacklight_monitor_address}
++    keepalived_stacklight_monitor_vip_address: ${_param:stacklight_monitor_address}
++    keepalived_stacklight_monitor_vip_password: ${_param:stacklight_monitor_keepalived_password}
++    keepalived_stacklight_monitor_vip_interface: ens3
++    cluster_redis_port: 6379
++    cluster_sensu_port: 4567
++    sensu_dashboard_password: 'password'
++    cluster_uchiwa_port: 3001
++    cluster_vip_address: ${_param:stacklight_monitor_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: mon01
++    cluster_node01_address: ${_param:stacklight_monitor_node01_address}
++    cluster_node02_hostname: mon02
++    cluster_node02_address: ${_param:stacklight_monitor_node02_address}
++    cluster_node03_hostname: mon03
++    cluster_node03_address: ${_param:stacklight_monitor_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++  sensu:
++    server:
++      enabled: true
++      database:
++        engine: redis
++        host: ${_param:stacklight_monitor_address}
++        port: ${_param:cluster_redis_port}
++      message_queue:
++        engine: rabbitmq
++        host: ${_param:stacklight_monitor_address}
++        port: ${_param:rabbitmq_monitor_port}
++        user: monitor
++        password: ${_param:rabbitmq_monitor_password}
++        virtual_host: '/monitor'
++      bind:
++        address: ${_param:single_address}
++        port: ${_param:cluster_sensu_port}
++      handler:
++        default:
++          enabled: true
++          set:
++          - pipe
++        pipe:
++          enabled: true
++          command: 'cat /dev/null'
++        stdout:
++          enabled: true
++    dashboard:
++      enabled: true
++      backend:
++        sensu:
++          host: ${_param:single_address}
++          port: ${_param:cluster_sensu_port}
++      bind:
++        address: ${_param:single_address}
++        port: ${_param:cluster_uchiwa_port}
++      admin:
++        username: admin
++        password: ${_param:sensu_dashboard_password}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/proxy.yml
+new file mode 100644
+index 0000000..dcd2a2f
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/proxy.yml
+@@ -0,0 +1,20 @@
++classes:
++- system.nginx.server.proxy.grafana_web
++- system.nginx.server.proxy.kibana_web
++- system.nginx.server.proxy.nagios_web
++- system.salt.minion.cert.proxy
++- cluster.baremetal-mcp-ocata-ovs-dpdk-ha.infra
++parameters:
++  # _param:
++  #   nginx_proxy_ssl:
++  #     enabled: true
++  #     authority: mk_lab_ca
++  #     engine: salt
++  #     mode: secure
++  dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++  single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/telemetry.yml
+new file mode 100644
+index 0000000..e7b5fd6
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/stacklight/telemetry.yml
+@@ -0,0 +1,34 @@
++classes:
++- system.linux.system.repo.influxdb
++- system.linux.system.repo.saltstack.xenial
++- system.influxdb.server.single
++- system.influxdb.database.ceilometer
++- system.influxdb.database.stacklight
++- system.haproxy.proxy.listen.stacklight.influxdb
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_telemetry_vip
++- cluster.baremetal-mcp-ocata-ovs-dpdk-ha.infra
++parameters:
++  _param:
++    keepalived_stacklight_telemetry_vip_address: ${_param:stacklight_telemetry_address}
++    keepalived_stacklight_telemetry_vip_password: ${_param:stacklight_telemetry_keepalived_password}
++    keepalived_stacklight_telemetry_vip_interface: ens3
++    cluster_vip_address: ${_param:stacklight_telemetry_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: mtr01
++    cluster_node01_address: ${_param:stacklight_telemetry_node01_address}
++    cluster_node02_hostname: mtr02
++    cluster_node02_address: ${_param:stacklight_telemetry_node02_address}
++    cluster_node03_hostname: mtr03
++    cluster_node03_address: ${_param:stacklight_telemetry_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++    system:
++      package:
++        apt-transport-https:
++          version: latest
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/client.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/client.yml
+new file mode 100644
+index 0000000..d36978a
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/client.yml
+@@ -0,0 +1,5 @@
++classes:
++- system.collectd.client.output.heka
++- system.heka.log_collector.single
++- system.heka.metric_collector.single
++- service.grafana.collector
+\ No newline at end of file
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/init.yml
+new file mode 100644
+index 0000000..ace4167
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/init.yml
+@@ -0,0 +1,190 @@
++
++parameters:
++  _param:
++    # Stacklight Monitor
++    stacklight_monitor_address: 172.16.10.70
++    stacklight_monitor_node01_address: 172.16.10.71
++    stacklight_monitor_node02_address: 172.16.10.72
++    stacklight_monitor_node03_address: 172.16.10.73
++    stacklight_log_address: 172.16.10.60
++    stacklight_log_node01_address: 172.16.10.61
++    stacklight_log_node02_address: 172.16.10.62
++    stacklight_log_node03_address: 172.16.10.63
++    stacklight_telemetry_address: 172.16.10.85
++    stacklight_telemetry_node01_address: 172.16.10.86
++    stacklight_telemetry_node02_address: 172.16.10.87
++    stacklight_telemetry_node03_address: 172.16.10.88
++
++    # stacklight service hostnames
++    stacklight_monitor_hostname: mon
++    stacklight_monitor_node01_hostname: mon01
++    stacklight_monitor_node02_hostname: mon02
++    stacklight_monitor_node03_hostname: mon03
++    stacklight_log_hostname: log
++    stacklight_log_node01_hostname: log01
++    stacklight_log_node02_hostname: log02
++    stacklight_log_node03_hostname: log03
++    stacklight_telemetry_hostname: mtr
++    stacklight_telemetry_node01_hostname: mtr01
++    stacklight_telemetry_node02_hostname: mtr02
++    stacklight_telemetry_node03_hostname: mtr03
++
++    kibana_elasticsearch_host: ${_param:stacklight_log_address}
++    heka_elasticsearch_host: ${_param:stacklight_log_address}
++    heka_influxdb_host: ${_param:stacklight_telemetry_address}
++    heka_aggregator_host: ${_param:stacklight_monitor_address}
++    aggregator_port: 5565
++    grafana_user: admin
++    cluster_elasticsearch_port: 9200
++    cluster_kibana_port: 5601
++    cluster_grafana_port: 3000
++    rabbitmq_monitor_password: 'password'
++    rabbitmq_monitor_port: 5672
++    mysql_grafana_password: password
++    grafana_influxdb_host: ${_param:stacklight_telemetry_address}
++    elasticsearch_port: 9200
++    influxdb_stacklight_password: password
++    influxdb_admin_password: password
++    influxdb_port: 8086
++    influxdb_database: lma
++    influxdb_user: lma
++    influxdb_password: password
++    nagios_host: ${_param:stacklight_monitor_address}
++    nagios_status_port: 8001
++    nagios_username: nagiosadmin
++    nagios_password: password
++    nagios_notification_smtp_server: 127.0.0.1
++    nagios_notification_from: 'nagios@localhost'
++    nagios_notification_email: 'root@localhost'
++    stacklight_log_keepalived_password: password
++    stacklight_monitor_keepalived_password: password
++    stacklight_telemetry_keepalived_password: password
++    ##Billing
++    #collectd_backend_carbon_host: ${_param:openstack_billing_address}
++    #collectd_backend_carbon_port: 2023
++  linux:
++    _support:
++      sensu:
++        enabled: false
++    network:
++      host:
++        mon01:
++          address: ${_param:stacklight_monitor_node01_address}
++          names:
++          - ${_param:stacklight_monitor_node01_hostname}
++          - ${_param:stacklight_monitor_node01_hostname}.${_param:cluster_domain}
++        mon02:
++          address: ${_param:stacklight_monitor_node02_address}
++          names:
++          - ${_param:stacklight_monitor_node02_hostname}
++          - ${_param:stacklight_monitor_node02_hostname}.${_param:cluster_domain}
++        mon03:
++          address: ${_param:stacklight_monitor_node03_address}
++          names:
++          - ${_param:stacklight_monitor_node03_hostname}
++          - ${_param:stacklight_monitor_node03_hostname}.${_param:cluster_domain}
++        mon:
++          address: ${_param:stacklight_monitor_address}
++          names:
++          - ${_param:stacklight_monitor_hostname}
++          - ${_param:stacklight_monitor_hostname}.${_param:cluster_domain}
++        log01:
++          address: ${_param:stacklight_log_node01_address}
++          names:
++          - ${_param:stacklight_log_node01_hostname}
++          - ${_param:stacklight_log_node01_hostname}.${_param:cluster_domain}
++        log02:
++          address: ${_param:stacklight_log_node02_address}
++          names:
++          - ${_param:stacklight_log_node02_hostname}
++          - ${_param:stacklight_log_node02_hostname}.${_param:cluster_domain}
++        log03:
++          address: ${_param:stacklight_log_node03_address}
++          names:
++          - ${_param:stacklight_log_node03_hostname}
++          - ${_param:stacklight_log_node03_hostname}.${_param:cluster_domain}
++        log:
++          address: ${_param:stacklight_log_address}
++          names:
++          - ${_param:stacklight_log_hostname}
++          - ${_param:stacklight_log_hostname}.${_param:cluster_domain}
++        mtr01:
++          address: ${_param:stacklight_telemetry_node01_address}
++          names:
++          - ${_param:stacklight_telemetry_node01_hostname}
++          - ${_param:stacklight_telemetry_node01_hostname}.${_param:cluster_domain}
++        mtr02:
++          address: ${_param:stacklight_telemetry_node02_address}
++          names:
++          - ${_param:stacklight_telemetry_node02_hostname}
++          - ${_param:stacklight_telemetry_node02_hostname}.${_param:cluster_domain}
++        mtr03:
++          address: ${_param:stacklight_telemetry_node03_address}
++          names:
++          - ${_param:stacklight_telemetry_node03_hostname}
++          - ${_param:stacklight_telemetry_node03_hostname}.${_param:cluster_domain}
++        mtr:
++          address: ${_param:stacklight_telemetry_address}
++          names:
++          - ${_param:stacklight_telemetry_hostname}
++          - ${_param:stacklight_telemetry_hostname}.${_param:cluster_domain}
++  heka:
++    server:
++      extra_fields:
++        region: ${_param:openstack_region}
++  apache:
++    _support:
++      sensu:
++        enabled: false
++  cinder:
++    _support:
++      sensu:
++        enabled: false
++  glance:
++    _support:
++      sensu:
++        enabled: false
++  glusterfs:
++    _support:
++      sensu:
++        enabled: false
++  haproxy:
++    _support:
++      sensu:
++        enabled: false
++  heat:
++    _support:
++      sensu:
++        enabled: false
++  keepalived:
++    _support:
++      sensu:
++        enabled: false
++  keystone:
++    _support:
++      sensu:
++        enabled: false
++  neutron:
++    _support:
++      sensu:
++        enabled: false
++  nginx:
++    _support:
++      sensu:
++        enabled: false
++  nova:
++    _support:
++      sensu:
++        enabled: false
++  ntp:
++    _support:
++      sensu:
++        enabled: false
++  opencontrail:
++    _support:
++      sensu:
++        enabled: false
++  rabbitmq:
++    _support:
++      sensu:
++        enabled: false
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/log.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/log.yml
+new file mode 100644
+index 0000000..4e6825f
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/log.yml
+@@ -0,0 +1,32 @@
++classes:
++- system.linux.system.repo.elasticsearch
++- system.linux.system.repo.saltstack.xenial
++- system.elasticsearch.server.cluster
++- system.haproxy.proxy.listen.elasticsearch
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_log_vip
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    keepalived_stacklight_log_vip_address: ${_param:stacklight_log_address}
++    keepalived_stacklight_log_vip_password: ${_param:stacklight_log_keepalived_password}
++    keepalived_stacklight_log_vip_interface: ens3
++    cluster_vip_address: ${_param:stacklight_log_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: log01
++    cluster_node01_address: ${_param:stacklight_log_node01_address}
++    cluster_node02_hostname: log02
++    cluster_node02_address: ${_param:stacklight_log_node02_address}
++    cluster_node03_hostname: log03
++    cluster_node03_address: ${_param:stacklight_log_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++  elasticsearch:
++    server:
++      master: true
++      data: true
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/log_curator.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/log_curator.yml
+new file mode 100644
+index 0000000..d26cc60
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/log_curator.yml
+@@ -0,0 +1,2 @@
++classes:
++- system.elasticsearch.server.curator
+\ No newline at end of file
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/monitor.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/monitor.yml
+new file mode 100644
+index 0000000..ec1b2f7
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/monitor.yml
+@@ -0,0 +1,84 @@
++classes:
++- system.linux.system.repo.elasticsearch
++- system.linux.system.repo.grafana
++- system.linux.system.repo.saltstack.xenial
++- system.collectd.remote_client.cluster
++- system.heka.remote_collector.cluster
++- system.heka.aggregator.cluster
++- system.kibana.server.single
++- system.grafana.server.single
++- system.grafana.client.single
++- system.nagios.server.cluster
++- system.sensu.server.cluster
++- system.sensu.client.unsubscribe.collectd
++- system.haproxy.proxy.listen.stacklight.elasticsearch
++- system.haproxy.proxy.listen.stacklight.kibana
++- system.haproxy.proxy.listen.stacklight.grafana
++- system.haproxy.proxy.listen.stacklight.sensu
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_monitor_vip
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    collectd_remote_collector_host: ${_param:stacklight_monitor_address}
++    keepalived_stacklight_monitor_vip_address: ${_param:stacklight_monitor_address}
++    keepalived_stacklight_monitor_vip_password: ${_param:stacklight_monitor_keepalived_password}
++    keepalived_stacklight_monitor_vip_interface: ens3
++    cluster_redis_port: 6379
++    cluster_sensu_port: 4567
++    sensu_dashboard_password: 'password'
++    cluster_uchiwa_port: 3001
++    cluster_vip_address: ${_param:stacklight_monitor_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: mon01
++    cluster_node01_address: ${_param:stacklight_monitor_node01_address}
++    cluster_node02_hostname: mon02
++    cluster_node02_address: ${_param:stacklight_monitor_node02_address}
++    cluster_node03_hostname: mon03
++    cluster_node03_address: ${_param:stacklight_monitor_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++  sensu:
++    server:
++      enabled: true
++      database:
++        engine: redis
++        host: ${_param:stacklight_monitor_address}
++        port: ${_param:cluster_redis_port}
++      message_queue:
++        engine: rabbitmq
++        host: ${_param:stacklight_monitor_address}
++        port: ${_param:rabbitmq_monitor_port}
++        user: monitor
++        password: ${_param:rabbitmq_monitor_password}
++        virtual_host: '/monitor'
++      bind:
++        address: ${_param:single_address}
++        port: ${_param:cluster_sensu_port}
++      handler:
++        default:
++          enabled: true
++          set:
++          - pipe
++        pipe:
++          enabled: true
++          command: 'cat /dev/null'
++        stdout:
++          enabled: true
++    dashboard:
++      enabled: true
++      backend:
++        sensu:
++          host: ${_param:single_address}
++          port: ${_param:cluster_sensu_port}
++      bind:
++        address: ${_param:single_address}
++        port: ${_param:cluster_uchiwa_port}
++      admin:
++        username: admin
++        password: ${_param:sensu_dashboard_password}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/proxy.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/proxy.yml
+new file mode 100644
+index 0000000..81faee6
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/proxy.yml
+@@ -0,0 +1,20 @@
++classes:
++- system.nginx.server.proxy.grafana_web
++- system.nginx.server.proxy.kibana_web
++- system.nginx.server.proxy.nagios_web
++- system.salt.minion.cert.proxy
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  # _param:
++  #   nginx_proxy_ssl:
++  #     enabled: true
++  #     authority: mk_lab_ca
++  #     engine: salt
++  #     mode: secure
++  dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++  single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/telemetry.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/telemetry.yml
+new file mode 100644
+index 0000000..38da758
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/stacklight/telemetry.yml
+@@ -0,0 +1,34 @@
++classes:
++- system.linux.system.repo.influxdb
++- system.linux.system.repo.saltstack.xenial
++- system.influxdb.server.single
++- system.influxdb.database.ceilometer
++- system.influxdb.database.stacklight
++- system.haproxy.proxy.listen.stacklight.influxdb
++- service.haproxy.proxy.single
++- system.keepalived.cluster.instance.stacklight_telemetry_vip
++- cluster.baremetal-mcp-ocata-ovs-ha.infra
++parameters:
++  _param:
++    keepalived_stacklight_telemetry_vip_address: ${_param:stacklight_telemetry_address}
++    keepalived_stacklight_telemetry_vip_password: ${_param:stacklight_telemetry_keepalived_password}
++    keepalived_stacklight_telemetry_vip_interface: ens3
++    cluster_vip_address: ${_param:stacklight_telemetry_address}
++    cluster_local_address: ${_param:single_address}
++    cluster_node01_hostname: mtr01
++    cluster_node01_address: ${_param:stacklight_telemetry_node01_address}
++    cluster_node02_hostname: mtr02
++    cluster_node02_address: ${_param:stacklight_telemetry_node02_address}
++    cluster_node03_hostname: mtr03
++    cluster_node03_address: ${_param:stacklight_telemetry_node03_address}
++    dhcp_nic: ${_param:opnfv_vcp_vm_primary_interface}
++    single_nic: ${_param:opnfv_vcp_vm_secondary_interface}
++  linux:
++    network:
++      interface:
++        dhcp: ${_param:linux_dhcp_interface}
++        single: ${_param:linux_single_interface}
++    system:
++      package:
++        apt-transport-https:
++          version: latest
