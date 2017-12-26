@@ -34,7 +34,7 @@ index 7c30515..ea4d23c 100755
  salt -C 'cmp*' state.apply linux.system
  salt -C 'cmp*' state.apply linux.network || true
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 8c02d68..7feb541 100755
+index 967fed6..3e58448 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -50,6 +50,8 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do

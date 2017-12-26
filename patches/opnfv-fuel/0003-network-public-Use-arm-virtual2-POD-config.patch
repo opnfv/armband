@@ -35,10 +35,13 @@ range for the public network to not include that address.
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  mcp/config/states/networks                                          | 6 +++---
- .../classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml   | 6 +++---
+ .../classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml   | 4 ++--
  .../classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml | 2 +-
+ .../classes/cluster/virtual-mcp-pike-odl-noha/infra/config.yml      | 2 +-
+ .../classes/cluster/virtual-mcp-pike-ovs-dpdk-noha/infra/config.yml | 2 +-
+ .../classes/cluster/virtual-mcp-pike-ovs-noha/infra/config.yml      | 2 +-
  mcp/scripts/net_public.xml                                          | 2 +-
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ 7 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/mcp/config/states/networks b/mcp/config/states/networks
 index 5beabdb..ca59ee3 100755
@@ -63,10 +66,10 @@ index 5beabdb..ca59ee3 100755
 +    --allocation-pool start=${PUBLIC_NET%.*}.130,end=${PUBLIC_NET%.*}.200 \
      --network floating_net --subnet-range ${PUBLIC_NET} floating_subnet"
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml
-index ada2c25..0faf478 100644
+index 7e3a494..3a240b0 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml
-@@ -62,13 +62,13 @@ parameters:
+@@ -61,9 +61,9 @@ parameters:
            params:
              single_address: 172.16.10.105
              tenant_address: 10.1.0.105
@@ -78,11 +81,6 @@ index ada2c25..0faf478 100644
              tenant_address: 10.1.0.106
 -            external_address: 10.16.0.106
 +            external_address: 10.0.9.106
-         openstack_gateway_node01:
-           params:
-             tenant_address: 10.1.0.110
--            external_address: 10.16.0.110
-+            external_address: 10.0.9.110
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
 index 89b06fb..0086470 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
@@ -96,6 +94,36 @@ index 89b06fb..0086470 100644
      neutron_public_protocol: http
      neutron_control_dvr: 'False'
      neutron_l3_ha: 'False'
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-odl-noha/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-odl-noha/infra/config.yml
+index 8e38ff8..d7bf017 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-pike-odl-noha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-pike-odl-noha/infra/config.yml
+@@ -24,4 +24,4 @@ parameters:
+         openstack_gateway_node01:
+           params:
+             tenant_address: 10.1.0.110
+-            external_address: 10.16.0.110
++            external_address: 10.0.9.110
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-dpdk-noha/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-dpdk-noha/infra/config.yml
+index e80c442..1df99b4 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-dpdk-noha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-dpdk-noha/infra/config.yml
+@@ -25,4 +25,4 @@ parameters:
+         openstack_gateway_node01:
+           params:
+             tenant_address: 10.1.0.110
+-            external_address: 10.16.0.110
++            external_address: 10.0.9.110
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-noha/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-noha/infra/config.yml
+index 66c2468..7326295 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-noha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-noha/infra/config.yml
+@@ -17,4 +17,4 @@ parameters:
+         openstack_gateway_node01:
+           params:
+             tenant_address: 10.1.0.110
+-            external_address: 10.16.0.110
++            external_address: 10.0.9.110
 diff --git a/mcp/scripts/net_public.xml b/mcp/scripts/net_public.xml
 index d6df4aa..87f3146 100644
 --- a/mcp/scripts/net_public.xml
