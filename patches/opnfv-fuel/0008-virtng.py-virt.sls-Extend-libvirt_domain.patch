@@ -150,11 +150,11 @@ index 0000000..a9fe11b
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index ab9676d..5b06356 100644
+index fc2ddea..fdd3872 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -16,3 +16,5 @@
- /usr/share/salt-formulas/env: 0011-maas-region-interface-default-mode-DHCP.patch
+@@ -15,3 +15,5 @@
+ /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
