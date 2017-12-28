@@ -11,14 +11,17 @@ Date: Mon, 7 Aug 2017 19:45:01 +0200
 Subject: [PATCH] maas: Add curtin_userdata_arm64_generic_xenial
 
 Add AArch64 specific configuration.
+While at it, preseed Armband common repo-comp for Pike, so we get
+the updated kernel & other packages from the start. Assume Armband
+repo uses the same GPG key as Salt repo; hard set prio to 1100.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ...-Add-curtin_userdata_arm64_generic_xenial.patch | 35 ++++++++++++++++++
+ ...-Add-curtin_userdata_arm64_generic_xenial.patch | 35 ++++++++++++++++
  mcp/patches/patches.list                           |  1 +
- .../baremetal-mcp-pike-common-ha/infra/maas.yml    | 26 +++++++++++++
- .../files/curtin_userdata_arm64_generic_xenial     | 43 ++++++++++++++++++++++
- 4 files changed, 105 insertions(+)
+ .../baremetal-mcp-pike-common-ha/infra/maas.yml    | 28 +++++++++++++
+ .../files/curtin_userdata_arm64_generic_xenial     | 46 ++++++++++++++++++++++
+ 4 files changed, 110 insertions(+)
  create mode 100644 mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
  create mode 100644 mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial
 
@@ -73,10 +76,10 @@ index cd32378..fc2ddea 100644
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-index 6332776..7292ebb 100644
+index 6332776..7e48d52 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-@@ -108,6 +108,32 @@ parameters:
+@@ -108,6 +108,34 @@ parameters:
            architecture: ${_param:opnfv_maas_node05_architecture}
            distro_series: xenial
            hwe_kernel: ${_param:hwe_kernel}
@@ -106,15 +109,17 @@ index 6332776..7292ebb 100644
 +        =7p60
 +        -----END PGP PUBLIC KEY BLOCK-----
 +      saltstack_repo_xenial_arm64: "http://linux.enea.com/saltstack/apt/ubuntu/16.04/arm64/2016.11 xenial main"
++      # NOTE: Uses same GPG key as Salt repo, prio is hard set to 1100
++      saltstack_armband_repo_xenial_arm64: "http://linux.enea.com/mcp-repos/pike/xenial pike-armband main"
    linux:
      network:
        interface:
 diff --git a/mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial b/mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial
 new file mode 100644
-index 0000000..96fd76f
+index 0000000..d55e1e9
 --- /dev/null
 +++ b/mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial
-@@ -0,0 +1,43 @@
+@@ -0,0 +1,46 @@
 +{%- from "maas/map.jinja" import cluster with context %}
 +{% raw %}
 +#cloud-config
@@ -139,9 +144,12 @@ index 0000000..96fd76f
 +{% set salt_repo_key = salt['hashutil.base64_b64encode'](cluster.saltstack_repo_key_arm64) %}
 +  apt_00_set_gpg: ["curtin", "in-target", "--", "sh", "-c", "echo '{{salt_repo_key}}' | base64 -d | apt-key add -"]
 +{%- endif %}
++{% set armband_repo_comp = cluster.saltstack_armband_repo_xenial_arm64.split(' ')[-2] %}
 +  apt_01_set_repo: ["curtin", "in-target", "--", "sh", "-c", "echo 'deb [arch=arm64] {{ cluster.saltstack_repo_xenial_arm64 }}' >> /etc/apt/sources.list"]
++  apt_02_set_armband_repo: ["curtin", "in-target", "--", "sh", "-c", "echo 'deb [arch=arm64] {{ cluster.saltstack_armband_repo_xenial_arm64 }}' > /etc/apt/sources.list.d/armband.list"]
++  apt_03_set_armband_prio: ["curtin", "in-target", "--", "sh", "-c", "echo '\nPackage: *\nPin: release a={{ armband_repo_comp }}\nPin-Priority: 1100\n' > /etc/apt/preferences.d/armband"]
 +{% raw %}
-+  apt_03_update: ["curtin", "in-target", "--", "apt-get", "update"]
++  apt_04_update: ["curtin", "in-target", "--", "apt-get", "update"]
 +  salt_01_install: ["curtin", "in-target", "--", "apt-get", "-y", "install", "salt-minion"]
 +{% endraw %}
 +  salt_02_hostname_set: ["curtin", "in-target", "--", "echo", "{% raw %}{{node.hostname}}{% endraw %}.{{pillar.linux.system.domain}}"]
