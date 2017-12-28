@@ -20,10 +20,10 @@ Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
-index 278e55b..ff57ad3 100644
+index e07e611..f9d2896 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/openstack_compute.yml
-@@ -13,8 +13,8 @@ classes:
+@@ -12,8 +12,8 @@ classes:
    - system.linux.storage.loopback
    - system.glusterfs.client.cluster
    - system.nova.compute.cluster
