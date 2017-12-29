@@ -30,7 +30,14 @@ export REVSTATE
 
 include armband-fuel-config.mk
 
-all: release
+all: upgrade
+
+# Ignore release tag and upgrade Armband to latest change on <branch>/HEAD
+.PHONY: upgrade
+upgrade:
+	@git checkout ${A_BRANCH}
+	@git pull origin ${A_BRANCH}
+	@$(MAKE) -e submodules-clean patches-import
 
 # Fetch & update git submodules, checkout remote HEAD
 .PHONY: submodules-init
@@ -46,7 +53,7 @@ submodules-init: .submodules-init
 
 # Clean any changes made to submodules, checkout Armband root commit
 .PHONY: submodules-clean
-submodules-clean: .submodules-init
+submodules-clean:
 	@git submodule -q foreach ' \
 		git am -q --abort 2>/dev/null; \
 		git checkout -q -f ${A_OPNFV_TAG}-root 2>/dev/null; \
@@ -54,7 +61,8 @@ submodules-clean: .submodules-init
 		git tag | grep ${A_OPNFV_TAG} | xargs git tag -d > /dev/null 2>&1; \
 		git reset -q --hard HEAD; \
 		git clean -xdff'
-	@rm -f .submodules-patched
+	@rm -f .submodules-*
+	@$(MAKE) -e submodules-init
 
 # Generate patches from submodules
 .PHONY: patches-export
