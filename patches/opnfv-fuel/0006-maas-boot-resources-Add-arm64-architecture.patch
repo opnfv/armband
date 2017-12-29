@@ -12,28 +12,29 @@ Subject: [PATCH] maas: boot-resources: Add arm64 architecture
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/patches/0003-maas-region-force-artifact-download.patch | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ mcp/patches/0003-maas-region-force-artifact-download.patch | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/patches/0003-maas-region-force-artifact-download.patch b/mcp/patches/0003-maas-region-force-artifact-download.patch
-index 56e3bd5..6b94be0 100644
+index 6e6c18f..541ad0c 100644
 --- a/mcp/patches/0003-maas-region-force-artifact-download.patch
 +++ b/mcp/patches/0003-maas-region-force-artifact-download.patch
 @@ -50,7 +50,7 @@ diff --git a/maas/files/maas-artifact-sync.sh b/maas/files/maas-artifact-sync.sh
  new file mode 100644
  --- /dev/null
  +++ b/maas/files/maas-artifact-sync.sh
--@@ -0,0 +1,21 @@
-+@@ -0,0 +1,26 @@
+-@@ -0,0 +1,20 @@
++@@ -0,0 +1,22 @@
  +{%- from "maas/map.jinja" import region with context %}
  +#!/bin/bash
  +function wait_for {
-@@ -72,3 +72,8 @@ new file mode 100644
+@@ -67,7 +67,9 @@ new file mode 100644
+ +  http://{{ region.bind.host }}:5240/MAAS/api/2.0 - < \
+ +  /var/lib/maas/.maas_credentials || exit 1
+ +# wait max 5 min for service up, 15 min image download, 5 min region to rack sync
+++wait_for 30 "maas opnfv boot-source-selection update 1 1 arches='amd64' arches='arm64'"
+ +wait_for 30 "maas opnfv boot-resources import"
  +wait_for 90 "! maas opnfv boot-resources is-importing | grep -q 'true'"
  +maas opnfv rack-controllers import-boot-images || exit 3
  +wait_for 30 "test -d /var/lib/maas/boot-resources/current/ubuntu/amd64"
-++maas opnfv boot-source-selection update 1 1 arches='amd64' arches='arm64' || exit 4
-++maas opnfv boot-resources import || exit 2
-++wait_for 90 "! maas opnfv boot-resources is-importing | grep -q 'true'"
-++maas opnfv rack-controllers import-boot-images || exit 3
 ++wait_for 30 "test -d /var/lib/maas/boot-resources/current/ubuntu/arm64"
