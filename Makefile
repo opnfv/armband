@@ -35,7 +35,7 @@ all: upgrade
 # Ignore release tag and upgrade Armband to latest change on <branch>/HEAD
 .PHONY: upgrade
 upgrade:
-	@git fetch origin ${A_BRANCH}:${A_BRANCH}
+	@git fetch -u origin ${A_BRANCH}:${A_BRANCH}
 	@git checkout ${A_BRANCH}
 	@$(MAKE) -e submodules-clean patches-import
 
