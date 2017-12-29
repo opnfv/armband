@@ -16,19 +16,19 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/mcp/patches/0003-maas-region-force-artifact-download.patch b/mcp/patches/0003-maas-region-force-artifact-download.patch
-index 56e3bd5..6b94be0 100644
+index 6e6c18f..e75fcaa 100644
 --- a/mcp/patches/0003-maas-region-force-artifact-download.patch
 +++ b/mcp/patches/0003-maas-region-force-artifact-download.patch
 @@ -50,7 +50,7 @@ diff --git a/maas/files/maas-artifact-sync.sh b/maas/files/maas-artifact-sync.sh
  new file mode 100644
  --- /dev/null
  +++ b/maas/files/maas-artifact-sync.sh
--@@ -0,0 +1,21 @@
-+@@ -0,0 +1,26 @@
+-@@ -0,0 +1,20 @@
++@@ -0,0 +1,25 @@
  +{%- from "maas/map.jinja" import region with context %}
  +#!/bin/bash
  +function wait_for {
-@@ -72,3 +72,8 @@ new file mode 100644
+@@ -71,3 +71,8 @@ new file mode 100644
  +wait_for 90 "! maas opnfv boot-resources is-importing | grep -q 'true'"
  +maas opnfv rack-controllers import-boot-images || exit 3
  +wait_for 30 "test -d /var/lib/maas/boot-resources/current/ubuntu/amd64"
