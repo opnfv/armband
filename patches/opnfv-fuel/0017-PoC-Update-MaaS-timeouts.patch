@@ -1,0 +1,28 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Sat, 30 Dec 2017 17:29:07 +0100
+Subject: [PATCH] PoC: Update MaaS timeouts
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/reclass/classes/cluster/all-mcp-ocata-common/aarch64/init.yml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/mcp/reclass/classes/cluster/all-mcp-ocata-common/aarch64/init.yml b/mcp/reclass/classes/cluster/all-mcp-ocata-common/aarch64/init.yml
+index 0350afa..66d61c5 100644
+--- a/mcp/reclass/classes/cluster/all-mcp-ocata-common/aarch64/init.yml
++++ b/mcp/reclass/classes/cluster/all-mcp-ocata-common/aarch64/init.yml
+@@ -21,3 +21,6 @@ parameters:
+     opnfv_vcp_vm_primary_interface: ${_param:opnfv_fn_vm_primary_interface}
+     opnfv_vcp_vm_secondary_interface: ${_param:opnfv_fn_vm_secondary_interface}
+     opnfv_vcp_vm_tertiary_interface: ${_param:opnfv_fn_vm_tertiary_interface}
++
++    opnfv_maas_timeout_comissioning: 20
++    opnfv_maas_timeout_deploying: 40
