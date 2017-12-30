@@ -346,7 +346,7 @@ index 93ee59d..6a9be97 100644
    virsh net-update "mcpcontrol" add ip-dhcp-host \
      "<host mac='${cmac}' name='cfg01' ip='${SALT_MASTER}'/>" --live --config
 diff --git a/mcp/scripts/salt.sh b/mcp/scripts/salt.sh
-index ab096f3..b719aa8 100755
+index f785fc7..d53f454 100755
 --- a/mcp/scripts/salt.sh
 +++ b/mcp/scripts/salt.sh
 @@ -18,6 +18,8 @@ OPNFV_TMP_DIR="/home/${SALT_MASTER_USER}/opnfv"
