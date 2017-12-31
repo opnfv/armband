@@ -41,14 +41,14 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/salt_minion.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index a8bb3b9..7c30515 100755
+index a8bb3b9..2554c5d 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -26,6 +26,7 @@ salt -C 'kvm*' pkg.install bridge-utils
  salt -C 'kvm*' state.apply linux.network
  salt -C 'cmp*' state.apply linux.system
  salt -C 'cmp*' state.apply linux.network || true
-+salt -C 'kvm*' state.apply armband.salt_minion || true
++salt -C 'kvm*' state.apply armband.salt_minion
  salt -C 'kvm* or cmp*' system.reboot
  wait_for 90 "! salt -C 'kvm* or cmp*' test.ping | " \
    "tee /dev/stderr | grep -Fq 'Not connected'"
