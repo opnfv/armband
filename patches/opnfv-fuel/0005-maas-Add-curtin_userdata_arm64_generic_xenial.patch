@@ -66,19 +66,19 @@ index 0000000..0368937
 +   file.managed:
 +   - source: salt://maas/files/pgpass
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index cd32378..fc2ddea 100644
+index cc17666..00a4828 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -14,3 +14,4 @@
+@@ -15,3 +15,4 @@
  /usr/share/salt-formulas/env: 0008-Handle-file_recv-option.patch
  /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-index 6332776..d263b19 100644
+index 7a37fe7..3de9d49 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-@@ -38,6 +38,42 @@ parameters:
+@@ -39,6 +39,42 @@ parameters:
          enable_third_party_drivers: true
          network_discovery: 'enabled'
          default_min_hwe_kernel: ${_param:hwe_kernel}

@@ -20,7 +20,7 @@ Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-index 78c4a0a..df23754 100644
+index a2c6fa0..9e8ad09 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
 @@ -12,8 +12,8 @@ classes:

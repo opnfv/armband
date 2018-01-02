@@ -33,11 +33,11 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  mcp/config/states/virtual_control_plane            |   2 +
  .../armband/files/nova-libvirt-aarch64-rollup.diff | 270 +++++++++++++++++++++
  mcp/salt-formulas/armband/init.sls                 |   7 +
- mcp/salt-formulas/armband/nova_config.sls          |  34 +++
+ mcp/salt-formulas/armband/nova_config.sls          |  35 +++
  mcp/salt-formulas/armband/nova_libvirt.sls         |   7 +
  mcp/salt-formulas/armband/qemu_efi.sls             |   2 +
  mcp/salt-formulas/armband/vgabios.sls              |   7 +
- 9 files changed, 333 insertions(+)
+ 9 files changed, 334 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/nova_config.sls
@@ -69,7 +69,7 @@ index 0a27876..aa369e8 100755
 +
 +salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index cabe44a..0672bb5 100755
+index c7768f7..5565fe5 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -27,6 +27,8 @@ if [ "${ERASE_ENV}" -eq 1 ]; then
@@ -372,16 +372,17 @@ index 0000000..8a8cf2a
 + {%- endif %}
 diff --git a/mcp/salt-formulas/armband/nova_config.sls b/mcp/salt-formulas/armband/nova_config.sls
 new file mode 100644
-index 0000000..8f19eda
+index 0000000..31fa031
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/nova_config.sls
-@@ -0,0 +1,34 @@
+@@ -0,0 +1,35 @@
 +{% if grains['virtual'] == 'kvm' %}
 +nova_virt_type:
 +  file.replace:
 +    - name: "/etc/nova/nova.conf"
 +    - pattern: '^virt_type\s*=.*$'
 +    - repl: "virt_type = qemu"
++nova_compute_virt_type:
 +  file.replace:
 +    - name: "/etc/nova/nova-compute.conf"
 +    - pattern: '^virt_type\s*=.*$'
