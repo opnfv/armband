@@ -47,7 +47,7 @@ index 9e8ad09..ddff3db 100644
      client:
        volumes:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml
-index c332542..7a2288f 100644
+index cf09a41..0b6256f 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml
 @@ -38,7 +38,7 @@ parameters:
@@ -56,6 +56,6 @@ index c332542..7a2288f 100644
      nova_vncproxy_url: https://${_param:cluster_public_host}:6080
 -    glusterfs_version: '3.13'
 +    glusterfs_version: '3.12'
-   nova:
-     controller:
-       pkgs:
+   heat:
+     server:
+       metadata:
