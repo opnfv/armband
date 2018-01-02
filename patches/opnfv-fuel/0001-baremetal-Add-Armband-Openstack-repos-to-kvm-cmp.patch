@@ -25,7 +25,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 2 insertions(+)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
-index c3d9b14..35157e4 100644
+index dcd78a2..a604d0a 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
 @@ -7,6 +7,7 @@
@@ -37,7 +37,7 @@ index c3d9b14..35157e4 100644
    - service.keepalived.cluster.single
    - system.glusterfs.server.volume.glance
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-index 5c077d5..78c4a0a 100644
+index 60a01a8..a2c6fa0 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
 @@ -7,6 +7,7 @@

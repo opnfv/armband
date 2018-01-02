@@ -21,10 +21,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
-index 8c0fd73..24d5723 100644
+index 166b368..0c7f0c3 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
-@@ -26,7 +26,7 @@ classes:
+@@ -27,7 +27,7 @@ classes:
  parameters:
    _param:
      linux_system_codename: xenial
@@ -34,10 +34,10 @@ index 8c0fd73..24d5723 100644
      cluster_node01_address: ${_param:infra_kvm_node01_address}
      cluster_node02_address: ${_param:infra_kvm_node02_address}
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-index df23754..e3db1b0 100644
+index 9e8ad09..ddff3db 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-@@ -35,7 +35,7 @@ parameters:
+@@ -36,7 +36,7 @@ parameters:
      keepalived_vip_virtual_router_id: 69
      loopback_device_size: 20
      linux_system_codename: xenial
