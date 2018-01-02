@@ -69,7 +69,7 @@ index 0a27876..aa369e8 100755
 +
 +salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index cabe44a..0672bb5 100755
+index c7768f7..5565fe5 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -27,6 +27,8 @@ if [ "${ERASE_ENV}" -eq 1 ]; then

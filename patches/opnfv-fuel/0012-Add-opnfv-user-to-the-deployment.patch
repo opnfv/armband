@@ -22,7 +22,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index 2554c5d..fecdb47 100755
+index 2b6666d..85e2237 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -23,6 +23,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
@@ -31,10 +31,10 @@ index 2554c5d..fecdb47 100755
  salt -C 'kvm*' pkg.install bridge-utils
 +salt -C 'kvm* or cmp*' state.apply opnfv.adduser
  salt -C 'kvm*' state.apply linux.network
- salt -C 'cmp*' state.apply linux.system
- salt -C 'cmp*' state.apply linux.network || true
+ salt -C 'kvm* or cmp*' state.apply salt.minion
+ salt -C 'kvm* or cmp*' service.force_reload salt-minion
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 0672bb5..99bb83d 100755
+index 5565fe5..349ac27 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -51,6 +51,8 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
@@ -44,8 +44,8 @@ index 0672bb5..99bb83d 100755
 +wait_for 5 "! salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply opnfv.adduser | " \
 +  "tee /dev/stderr | grep -Fq 'Not connected'"
  wait_for 10 "salt -C '* and not cfg01* and not mas01*' saltutil.sync_all"
- wait_for 10 "salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply salt"
- wait_for 10 "! salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply linux,ntp | " \
+
+ # Propagate APT proxy config created by curtin on baremetal nodes to VCP VMs
 diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
 index f09ee5d..39d550a 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
