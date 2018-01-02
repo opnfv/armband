@@ -150,10 +150,10 @@ index 0000000..a9fe11b
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 00a4828..c69567b 100644
+index 533500d..6b202e7 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -16,3 +16,5 @@
+@@ -17,3 +17,5 @@
  /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
