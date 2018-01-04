@@ -75,7 +75,7 @@ index 284f1bc..533500d 100644
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-index 7a37fe7..3de9d49 100644
+index 04ffdb4..9cad061 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 @@ -39,6 +39,42 @@ parameters:
