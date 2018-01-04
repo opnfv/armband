@@ -18,12 +18,12 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  .../cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml       | 2 +-
  .../classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml  | 2 +-
  .../classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml    | 2 +-
- .../classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml      | 2 +-
- .../classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml     | 2 +-
+ .../classes/cluster/virtual-mcp-ocata-common-noha/openstack_compute.yml | 2 +-
+ .../cluster/virtual-mcp-ocata-odl-router-noha/openstack/init.yml        | 2 +-
  6 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
-index 9a04c84..80e5bb7 100644
+index fa1ed10..3557ad1 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-odl-ha/openstack/init.yml
 @@ -27,7 +27,7 @@ parameters:
@@ -36,7 +36,7 @@ index 9a04c84..80e5bb7 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
-index e610dc9..47f4b09 100644
+index 98b182c..a85fca8 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/compute.yml
 @@ -26,7 +26,7 @@ parameters:
@@ -49,7 +49,7 @@ index e610dc9..47f4b09 100644
            key_server: keyserver.ubuntu.com
      network:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml
-index 5e855ac..2392cf0 100644
+index 4ef7ffc..253ae1d 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-dpdk-ha/openstack/init.yml
 @@ -27,7 +27,7 @@ parameters:
@@ -62,7 +62,7 @@ index 5e855ac..2392cf0 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
-index 9ed3a80..e865d5c 100644
+index 9973075..f5a8d9b 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-ovs-ha/openstack/compute.yml
 @@ -20,6 +20,6 @@ parameters:
@@ -73,10 +73,10 @@ index 9ed3a80..e865d5c 100644
 +          architectures: amd64,arm64
            key_id: EC4926EA
            key_server: keyserver.ubuntu.com
-diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common-noha/openstack_compute.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common-noha/openstack_compute.yml
 index ad06754..d4e1c40 100644
---- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
-+++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common/openstack_compute.yml
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-common-noha/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-common-noha/openstack_compute.yml
 @@ -65,7 +65,7 @@ parameters:
        repo:
          uca:
@@ -86,10 +86,10 @@ index ad06754..d4e1c40 100644
            key_id: EC4926EA
            key_server: keyserver.ubuntu.com
        kernel:
-diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml
-index 5be63e5..1cfd5a3 100644
---- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml
-+++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router/openstack/init.yml
+diff --git a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router-noha/openstack/init.yml b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router-noha/openstack/init.yml
+index f4b78c3..42bb9d4 100644
+--- a/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router-noha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/virtual-mcp-ocata-odl-router-noha/openstack/init.yml
 @@ -17,7 +17,7 @@ parameters:
        repo:
          uca:

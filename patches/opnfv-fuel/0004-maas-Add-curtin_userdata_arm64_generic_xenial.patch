@@ -18,7 +18,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
  ...-Add-curtin_userdata_arm64_generic_xenial.patch | 35 +++++++++++++++++
  mcp/patches/patches.list                           |  1 +
- .../baremetal-mcp-ocata-common/infra/maas.yml      | 44 ++++++++++++++++++++++
+ .../baremetal-mcp-ocata-common-ha/infra/maas.yml   | 44 ++++++++++++++++++++++
  .../files/curtin_userdata_arm64_generic_xenial     | 35 +++++++++++++++++
  4 files changed, 115 insertions(+)
  create mode 100644 mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
@@ -66,22 +66,22 @@ index 0000000..0368937
 +   file.managed:
 +   - source: salt://maas/files/pgpass
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index f2549d7..a2f6a19 100644
+index 4c55223..9757875 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
 @@ -16,3 +16,4 @@
+ /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/reclass: 0011-service.horizon.server.cluster-Default-to-v2-API.patch
- /usr/share/salt-formulas/env: 0011-maas-region-interface-default-mode-DHCP.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/maas.yml
-index e8c2965..e972df3 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/maas.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common/infra/maas.yml
-@@ -40,6 +40,50 @@ parameters:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
+index 04ffdb4..82017b0 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
+@@ -39,6 +39,50 @@ parameters:
          enable_third_party_drivers: true
          network_discovery: 'enabled'
-         default_min_hwe_kernel: 'hwe-16.04'
+         default_min_hwe_kernel: ${_param:hwe_kernel}
 +      package_repositories:
 +        armband_openstack:
 +          name: armband_openstack
@@ -128,7 +128,7 @@ index e8c2965..e972df3 100644
 +          key: *armband_key
        subnets:
          opnfv_maas_pxe:
-           name: ${_param:opnfv_maas_pxe_network_address}/24
+           name: ${_param:opnfv_infra_maas_pxe_network_address}/24
 diff --git a/mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial b/mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial
 new file mode 100644
 index 0000000..15d10a4
