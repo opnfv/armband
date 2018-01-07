@@ -208,7 +208,7 @@ index a604d0a..166b368 100644
            net_profile: default_ext
        cluster:
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-odl-ha/infra/kvm.yml
-index 6bcc72d..53a1ddd 100644
+index bbc80e2..8efebc7 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-odl-ha/infra/kvm.yml
 @@ -17,6 +17,9 @@ parameters:

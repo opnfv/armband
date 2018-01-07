@@ -15,14 +15,14 @@ Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 ---
  mcp/config/states/baremetal_init                         | 1 +
- mcp/config/states/virtual_control_plane                  | 2 ++
+ mcp/config/states/virtual_control_plane                  | 1 +
  mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml | 4 ++++
  mcp/salt-formulas/opnfv/adduser.sls                      | 7 +++++++
- 4 files changed, 14 insertions(+)
+ 4 files changed, 13 insertions(+)
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index 2b6666d..85e2237 100755
+index 771182c..82f783d 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -23,6 +23,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
@@ -34,16 +34,15 @@ index 2b6666d..85e2237 100755
  salt -C 'kvm* or cmp*' state.apply salt.minion
  salt -C 'kvm* or cmp*' service.force_reload salt-minion
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 5565fe5..349ac27 100755
+index ab026ef..4212b8e 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -51,6 +51,8 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
+@@ -49,6 +49,7 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
    ((attempt+=1))
  done
 
-+wait_for 5 "! salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply opnfv.adduser | " \
-+  "tee /dev/stderr | grep -Fq 'Not connected'"
- wait_for 10 "salt -C '* and not cfg01* and not mas01*' saltutil.sync_all"
++wait_for 5.0 "salt -C 'E@^(?!cfg01|mas01|kvm|cmp00).*' state.apply opnfv.adduser"
+ wait_for 10.0 "salt -C '* and not cfg01* and not mas01*' saltutil.sync_all"
 
  # Propagate APT proxy config created by curtin on baremetal nodes to VCP VMs
 diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml

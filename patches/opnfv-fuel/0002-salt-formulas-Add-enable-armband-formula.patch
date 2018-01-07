@@ -26,16 +26,16 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/openstack_ha                     |  2 +
+ mcp/config/states/openstack_ha                     |  1 +
  mcp/config/states/openstack_noha                   |  2 +
- mcp/config/states/virtual_control_plane            |  2 +
+ mcp/config/states/virtual_control_plane            |  1 +
  .../armband/files/nova-libvirt-aarch64-rollup.diff | 76 ++++++++++++++++++++++
  mcp/salt-formulas/armband/init.sls                 |  7 ++
  mcp/salt-formulas/armband/nova_config.sls          | 35 ++++++++++
  mcp/salt-formulas/armband/nova_libvirt.sls         |  7 ++
  mcp/salt-formulas/armband/qemu_efi.sls             |  2 +
  mcp/salt-formulas/armband/vgabios.sls              |  7 ++
- 9 files changed, 140 insertions(+)
+ 9 files changed, 138 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/nova_config.sls
@@ -44,15 +44,14 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 62a9654..cb7a9c4 100755
+index 62a9654..9b88964 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
-@@ -52,6 +52,8 @@ salt -I 'neutron:server' state.sls neutron -b 1
+@@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
  salt -I 'neutron:gateway' state.sls neutron.gateway
 
  salt -I 'nova:compute' state.sls nova
-+wait_for 10 "! salt -I 'nova:compute' state.sls armband | " \
-+  "tee /dev/stderr | grep -Eq '(Not connected|No response)'"
++wait_for 5.0 "salt -I 'nova:compute' state.sls armband"
 
  salt -I 'mongodb:server' state.sls mongodb || true
  wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
@@ -67,16 +66,15 @@ index 0a27876..aa369e8 100755
 +
 +salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index c7768f7..5565fe5 100755
+index 0607b31..ab026ef 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
-@@ -27,6 +27,8 @@ if [ "${ERASE_ENV}" -eq 1 ]; then
+@@ -27,6 +27,7 @@ if [ "${ERASE_ENV}" -eq 1 ]; then
  fi
 
  # KVM libvirt first, VCP deployment
-+wait_for 10 "! salt -C 'kvm*' state.sls armband | " \
-+  "tee /dev/stderr | grep -Eq '(Not connected|No response)'"
- wait_for 5 "salt -C 'kvm*' state.sls libvirt"
++wait_for 5.0 "salt -C 'kvm*' state.sls armband"
+ wait_for 5.0 "salt -C 'kvm*' state.sls libvirt"
 
  salt -C 'kvm* or cmp*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
