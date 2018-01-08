@@ -183,7 +183,27 @@ OPNFV Software Prerequisites
 
 The Jumpserver node should be pre-provisioned with an operating system,
 according to the Pharos specification. Relevant network bridges should
-also be pre-configured (e.g. admin, management, public).
+also be pre-configured (e.g. admin_br, mgmt_br, public_br).
+
+The admin bridge(admin_br) is mandatory for the baremetal nodes PXE booting.
+The management bridge(mgmt_br) is required later for functest/yardstick, it is nice to preconfig it on installer.
+The public bridge(public_br) is also nice to have, but not mandatory.
+
+The user running deploy script on the Jumpserver should belong to group root and libvirt, and have passwordless sudo access.
+
+The Jumpserver should also have libvirt version >= 3.x, preferably 3.5 or 3.6.
+To be able to obtain a newer libvirt package, the "linux.enea.com" repo needs to be added into Jumpserver repository list.
+
+For example, in Ubuntu OS, create a file "enea.list" under /etc/apt/sources.list.d/ and updates the list of available package
+
+.. code-block:: bash
+
+    $ cat /etc/apt/sources.list.d/enea.list
+    deb http://linux.enea.com/mcp-repos/ocata/xenial ocata main
+    deb http://linux.enea.com/apt-mk/xenial nightly ocata
+    deb http://linux.enea.com/apt-mk/xenial nightly extra
+    $ apt-get update
+
 
 Fuel@OPNFV has been validated by CI using the following distributions
 installed on the Jumpserver:
@@ -209,9 +229,9 @@ automatic based on deployment scenario.
 The reclass model covers:
 
    - Infrastucture node definition: Salt Master node (cfg01) and MaaS node (mas01)
-   - Openstack node defition: Controler nodes (ctl01, ctl02, ctl03) and Compute nodes (cmp001, cmp002)
+   - OpenStack node defition: Controler nodes (ctl01, ctl02, ctl03) and Compute nodes (cmp001, cmp002)
    - Infrastructure components to install (software packages, services etc.)
-   - Openstack components and services (rabbitmq, galera etc.), as well as all configuration for them
+   - OpenStack components and services (rabbitmq, galera etc.), as well as all configuration for them
 
 
 Automatic Installation of a Virtual POD
@@ -220,9 +240,9 @@ Automatic Installation of a Virtual POD
 For virtual deploys all the targets are VMs on the Jumpserver. The deploy script will:
 
    - Create a Salt Master VM on the Jumpserver which will drive the installation
-   - Create the bridges for networking with virsh (only if a real bridge does not already exists for a given network)
-   - Install Openstack on the targets
-      - Leverage Salt to install & configure Openstack services
+   - Create the bridges for networking with virsh (only if a real bridge does not already exist for a given network)
+   - Install OpenStack on the targets
+      - Leverage Salt to install & configure OpenStack services
 
 .. figure:: img/fuel_virtual.png
    :align: center
@@ -245,7 +265,7 @@ For virtual deploys all the targets are VMs on the Jumpserver. The deploy script
 
 In this figure there are examples of two virtual deploys:
    - Jumphost 1 has only virsh bridges, created by the deploy script
-   - Jumphost 2 has a mix of linux and virsh briges; when linux bridge exist for a specified network,
+   - Jumphost 2 has a mix of linux and virsh bridges; when linux bridge exists for a specified network,
      the deploy script will skip creating a virsh bridge for it
 
 **Note**: A virtual network "mcpcontrol" is always created. For virtual deploys, "mcpcontrol" is also used
@@ -256,7 +276,7 @@ Automatic Installation of a Baremetal POD
 =========================================
 
 The baremetal installation process can be done by editing the information about
-hardware and enviroment in the reclass files, or by using a Pod Descriptor File (PDF).
+hardware and environment in the reclass files, or by using a Pod Descriptor File (PDF).
 This file contains all the information about the hardware and network of the deployment
 the will be fed to the reclass model during deployment.
 
@@ -264,10 +284,10 @@ The installation is done automatically with the deploy script, which will:
 
    - Create a Salt Master VM on the Jumpserver which will drive the installation
    - Create a MaaS Node VM on the Jumpserver which will provision the targets
-   - Install Openstack on the targets
+   - Install OpenStack on the targets
       - Leverage MaaS to provision baremetal nodes with the operating system
-      - Leverage Salt to configure the operatign system on the baremetal nodes
-      - Leverage Salt to install & configure Openstack services
+      - Leverage Salt to configure the operating system on the baremetal nodes
+      - Leverage Salt to install & configure OpenStack services
 
 .. figure:: img/fuel_baremetal.png
    :align: center
@@ -297,8 +317,9 @@ The installation is done automatically with the deploy script, which will:
    | Tenant VM             | VM running in the cloud                                 |
    +-----------------------+---------------------------------------------------------+
 
-In the baremetal deploy all bridges but "mcpcontrol" are linux bridges. For the Jumpserver, if they are already created
-they will be used; otherwise they will be created. For the targets, the bridges are created by the deploy script.
+In the baremetal deploy all bridges but "mcpcontrol" are Linux bridges. For the Jumpserver, it is requried
+to pre-config at least admin_br bridge for the pxe/admin.
+For the targets, the bridges are created by the deploy script.
 
 **Note**: A virtual network "mcpcontrol" is always created. For baremetal deploys, PXE bridge is used for
 baremetal node provisioning, while "mcpcontrol" is used to provision the infrastructure VMs only.
@@ -325,11 +346,13 @@ These steps are common both for virtual and baremetal deploys.
        $ git clone https://git.opnfv.org/armband
        $ cd armband
 
-#. Checkout the Euphrates release
+#. Checkout the Euphrates release and import armband patch
 
    .. code-block:: bash
 
        $ git checkout opnfv-5.0.2
+       $ make submodules-init
+       $ make patches-import
 
 #. Start the deploy script
 
@@ -391,7 +414,22 @@ Examples
                         -l arm \
                         -p pod5 \
                         -s os-nosdn-nofeature-ha \
-                        -B admin7_br0,mgmt7_br0,,public7_br0
+
+    In practical:
+   - use -S option to point to a tmp dir where save the build images. The images can be re-used between deploys
+   - use -D option to enable the debug info
+   - use |& tee to save the deploy log to a file
+
+      .. code-block:: bash
+
+        $ mkdir /home/jenkins/tmp
+        $ chmod 777  /home/jenkins/tmp
+        $ ci/deploy.sh -b file:///home/jenkins/tmpdir/securedlab \
+                   -l arm \
+                   -p pod5 \
+                   -s os-nosdn-nofeature-ha \
+                   -S /home/jenkins/tmp
+                   -D |& tee deploy.log
 
       .. figure:: img/arm_pod5.png
          :align: center
@@ -399,8 +437,15 @@ Examples
 
          Fuel@OPNFV ARM POD5 Network Layout
 
-   Once the deployment is complete, the SaltStack Deployment Documentation is
-   available at http://<Proxy VIP>:8090, e.g. http://10.0.8.103:8090.
+
+
+   Once the deployment is complete:
+
+   - The MAAS Dashboard is available at http://<maas_node IP>/MAAS
+   e.g. http://172.16.10.3/MAAS with user/pwd opnfv/opnfv_secret
+
+   - The OpenStack Dashboard is available at https://<proxy VIP>
+   e.g https://10.0.8.103 with user/pwd admin/opnfv_secret
 
 
 Pod Descriptor Files
@@ -466,8 +511,8 @@ OPNFV
 
 OpenStack
 
-4) `OpenStack Ocata Release Artifacts <http://www.openstack.org/software/ocata>`_
-5) `OpenStack Documentation <http://docs.openstack.org>`_
+4) `OpenStack Ocata Release Artifacts <http://www.OpenStack.org/software/ocata>`_
+5) `OpenStack Documentation <http://docs.OpenStack.org>`_
 
 OpenDaylight
 
