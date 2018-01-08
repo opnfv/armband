@@ -183,8 +183,28 @@ OPNFV Software Prerequisites
 
 The Jumpserver node should be pre-provisioned with an operating system,
 according to the Pharos specification. Relevant network bridges should
-also be pre-configured (e.g. admin, management, public).
+also be pre-configured (e.g. admin_br, mgmt_br, public_br).
 
+admin bridge(admin_br) is mandatory for the baremetal nodes PXE booting. 
+management bridge(mgmt_br) is required later for functest/yardstick. It is nice to preconfig it on installer
+public bridge(public_br) is also nice to have, but not mandatory
+
+The user to run deploy script on Jumpserver should belong to group root and libvirt, and has passwordless sudo access
+
+Jumpserver should also have libvirt version >= 3.x, preferably 3.5 or 3.6. 
+To be able to obtain a newer libvirt package, the "linux.enea.com" repo need to be added into Jumpserver repository list. 
+
+For example, in Ubuntu OS, create a file "enea.list" under /etc/apt/sources.list.d/ and updates the list of available package
+
+.. code-block:: bash
+
+	$ cat /etc/apt/sources.list.d/enea.list
+	deb http://linux.enea.com/mcp-repos/ocata/xenial ocata main
+	deb http://linux.enea.com/apt-mk/xenial nightly ocata
+	deb http://linux.enea.com/apt-mk/xenial nightly extra
+	$ apt-get update
+
+	
 Fuel@OPNFV has been validated by CI using the following distributions
 installed on the Jumpserver:
 
@@ -325,11 +345,13 @@ These steps are common both for virtual and baremetal deploys.
        $ git clone https://git.opnfv.org/armband
        $ cd armband
 
-#. Checkout the Euphrates release
+#. Checkout the Euphrates release and import armband patch
 
    .. code-block:: bash
 
        $ git checkout opnfv-5.0.2
+	   $ make submodules-init
+       $ make patches-import
 
 #. Start the deploy script
 
@@ -391,7 +413,22 @@ Examples
                         -l arm \
                         -p pod5 \
                         -s os-nosdn-nofeature-ha \
-                        -B admin7_br0,mgmt7_br0,,public7_br0
+						
+	In practical:
+	use -S option to point to a tmp dir where save the build images. The images can be re-used between deploys
+	use -D option to enable the debug info
+	use |& tee to save the deploy log to a file 
+   
+	  .. code-block:: bash
+	  
+		$ mkdir /home/jenkins/tmp
+		$ chmod 777  /home/jenkins/tmp      
+		$ ci/deploy.sh -b file:///home/jenkins/tmpdir/securedlab \
+					   -l arm \
+				       -p pod5 \
+				       -s os-nosdn-nofeature-ha \
+				       -S /home/jenkins/tmp
+				       -D |& tee deploy.log					
 
       .. figure:: img/arm_pod5.png
          :align: center
@@ -399,8 +436,11 @@ Examples
 
          Fuel@OPNFV ARM POD5 Network Layout
 
-   Once the deployment is complete, the SaltStack Deployment Documentation is
-   available at http://<Proxy VIP>:8090, e.g. http://10.0.8.103:8090.
+   
+ 
+   Once the deployment is complete: 
+   The MAAS Dashboard is available at http://<maas_node IP>/MAAS, e.g. http://172.16.10.3/MAAS with user/pwd opnfv/opnfv_secret
+   The OpenStack Dashboard Horizon is available at https://<proxy VIP>, e.g https://10.0.8.103 with user/pwd admin/opnfv_secret
 
 
 Pod Descriptor Files
