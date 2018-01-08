@@ -76,6 +76,52 @@
     },
     {
       "key": {
+        "uuid": "9a3d3df0_a080d4f7",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-01-08T13:00:38Z",
+      "side": 1,
+      "message": "packages",
+      "range": {
+        "startLine": 197,
+        "startChar": 118,
+        "endLine": 197,
+        "endChar": 125
+      },
+      "revId": "1dcdce7425146db6513721c89df0499aa294ce65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_408f482a",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-01-08T13:00:38Z",
+      "side": 1,
+      "message": "The changes to documentation should be both in armband and fuel repos. Is this example relevant for both? If it\u0027s only for aarch64 it should be signaled as such.",
+      "range": {
+        "startLine": 197,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 17
+      },
+      "revId": "1dcdce7425146db6513721c89df0499aa294ce65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a3d3df0_e0c5bc8e",
         "filename": "docs/release/installation/installation.instruction.rst",
         "patchSetId": 2
