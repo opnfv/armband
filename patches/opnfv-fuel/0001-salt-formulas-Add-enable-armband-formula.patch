@@ -15,7 +15,6 @@ Subject: [PATCH] salt-formulas: Add & enable armband formula
 - prereq: fix missing link for vgabios binary blob;
 - nova patch: Support qemu >= 2.10 (backport from [1]);
 - nova patch: Add video type virtio for AArch64 (backport from [2]);
-- nova patch: libvirt driver: Add ttyAMA0 by default on AArch64;
 - nova patch: libvirt driver: AArch64: ACPI depends on AAVMF;
 - nova conf: cpu_model=cortex-a57 (only for virtual deploys);
 - nova conf: virt_type=qemu (only for virtual deploys);
@@ -46,19 +45,19 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index fbddc6e..6bad8da 100755
+index fbddc6e..4f5e327 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
  salt -I 'neutron:gateway' state.sls neutron.gateway
 
  salt -I 'nova:compute' state.sls nova
-+salt -I 'nova:compute' state.sls armband || true
++wait_for 5.0 "salt -I 'nova:compute' state.sls armband"
 
  salt -I 'mongodb:server' state.sls mongodb || true
  wait_for 90 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
-index 369e165..d2a0b63 100755
+index 369e165..2eb6811 100755
 --- a/mcp/config/states/openstack_noha
 +++ b/mcp/config/states/openstack_noha
 @@ -47,3 +47,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
@@ -66,17 +65,17 @@ index 369e165..d2a0b63 100755
 
  salt -I 'horizon:server' state.sls horizon
 +
-+salt -I 'nova:compute' state.sls armband || true
++salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 039673c..9240f76 100755
+index 33cc9dc..d717f39 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -27,6 +27,7 @@ if [ "${ERASE_ENV}" -eq 1 ]; then
  fi
 
  # KVM libvirt first, VCP deployment
-+salt -C 'kvm*' state.sls armband || true
- wait_for 5 "salt -C 'kvm*' state.sls libvirt"
++wait_for 5.0 "salt -C 'kvm*' state.sls armband"
+ wait_for 5.0 "salt -C 'kvm*' state.sls libvirt"
 
  salt -C 'kvm* or cmp*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
