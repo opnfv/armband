@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_40ce282f",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "so it is better to preconfigure it during the installation. (perhaps is clearer)",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_80d4b0bd",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "the deploy script... belong to the root and libvirt groups",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_e0dc9ce6",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "the Jumpserver\u0027s",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_c0d998f4",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "update.. packages",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_20e324a5",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "Controller",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_60f08c67",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "When the linux bridge..",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_40f58855",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "required",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_a0e614ae",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "the admin_br",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_80eb1077",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "In practice (perhaps rephrase this)",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_e003fc3f",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-01-08T15:00:22Z",
+      "side": 1,
+      "message": "where the build images are saved",
+      "revId": "248cfa835759a32e5962007018c7397ac85c91fa",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
