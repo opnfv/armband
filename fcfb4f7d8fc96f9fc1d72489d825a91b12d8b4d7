@@ -1,0 +1,515 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_0853a2e2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "How about something more precise and a prefix, e.g.:\ndocs: AArch64: Jumpserver min libvirt, qemu",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 31
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_e84f5e32",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "let\u0027s also explain why/when each of these are needed:\n- admin bridge: required by Fuel installer, mandatory;\n- management bridge: required by testing suites (Functest, Yardstick etc.), not mandatory for deploy stage, yet nice to have for debugging purposes;\n- public bridge: not required by Fuel or testing suites, still nice to have for debugging purposes;\nEDIT: Sorry, I read this top-down, I just noticed you added exactly this below, but I\u0027m leaving it here since I already wrote it :)\nThe only observation would be to use a list for the 3 paragraphs below, it makes it stand out a bit.",
+      "range": {
+        "startLine": 186,
+        "startChar": 23,
+        "endLine": 186,
+        "endChar": 58
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_48600aa5",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "missing space before (\nNote about the rest of the change - although the current file does not respect this rule, it would be nice to wrap lines at 80 or 120 columns where possible.\nI personally prefer 80 columns, as that\u0027s easy to read in most if not all terminals, but 120 columns is also ok.",
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_c8737a7e",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "let\u0027s add a .. code section with the changes required for this (in `sudo visudo` if I remember right).",
+      "range": {
+        "startLine": 192,
+        "startChar": 91,
+        "endLine": 192,
+        "endChar": 124
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_2865c6b4",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "you probably meant sudo here\nlet\u0027s add some emphasis (**sudo** and **libvirt**) or use a list for making this stand out.",
+      "range": {
+        "startLine": 192,
+        "startChar": 66,
+        "endLine": 192,
+        "endChar": 70
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_885692cc",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "I\u0027m not sure about this, but I think the group for libvirt is called libvirtd on some distros.",
+      "range": {
+        "startLine": 192,
+        "startChar": 75,
+        "endLine": 192,
+        "endChar": 82
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_a870b672",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "In the future, we will support mixed architecture deployments, so let\u0027s clarify this:\n\"For an AArch64 Jumpserver, the **libvirt** minimum required version is 3.x, 3.5 or newer highly recommended.\nWhile not mandatory, upgrading the kernel and QEMU on the Jumpserver is also highly recommended (especially on AArch64 Jumpservers).\"",
+      "range": {
+        "startLine": 194,
+        "startChar": 0,
+        "endLine": 194,
+        "endChar": 64
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_c821ba4e",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "For CentOS 7.4 (AArch64), distro provided packages are already new enough.\nFor Ubuntu 16.04 (arm64), distro packages are too old and 3rd party repositories should be used. For convenience, Armband provides a DEB repository holding all the required packages.\n**NOTE**: Newer Ubuntu releases might already ship with new enough virtualization packages. However, only 16.04 is CI-tested.\n**NOTE**: Instead of using the Armband repository, Ubuntu Cloud Archive **might** also work (not tested).",
+      "range": {
+        "startLine": 195,
+        "startChar": 0,
+        "endLine": 195,
+        "endChar": 124
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_c8e89ae4",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "How about:\n\"To add and enable the Armband repository on an Ubuntu 16.04 system, create a new sources list file `/apt/sources.list.d/armband.list` with the following contents:\"",
+      "range": {
+        "startLine": 197,
+        "startChar": 0,
+        "endLine": 197,
+        "endChar": 125
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_a8e5560a",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "armband",
+      "range": {
+        "startLine": 201,
+        "startChar": 34,
+        "endLine": 201,
+        "endChar": 38
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_e8ebded9",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "These are correct for OPNFV E release / Openstack Ocata.\nFor Pike (master branch), we reorganized the repos a bit, and only this is needed:\ndeb http://linux.enea.com/mcp-repos/pike/xenial pike-armband main",
+      "range": {
+        "startLine": 202,
+        "startChar": 0,
+        "endLine": 203,
+        "endChar": 57
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_08ef22ea",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "let\u0027s remove this one, it has always been empty",
+      "range": {
+        "startLine": 204,
+        "startChar": 0,
+        "endLine": 204,
+        "endChar": 57
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_68b7cef5",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "//Let\u0027s install libvirt-bin explicitly (deploy.sh would require an extra run otherwise) and the kernel, which is not automatically installed by deploy.sh:\n$ apt-get linux-image-generic-hwe-16.04-edge libvirt-bin",
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_48bc8adc",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "**NOTE**: Installing the rest of the packages manually is not mandatory, as `ci/deploy.sh` script will install and/or upgrade them automatically.",
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_08c60268",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "this is not needed, ci/deploy.sh does this automatically",
+      "range": {
+        "startLine": 349,
+        "startChar": 33,
+        "endLine": 349,
+        "endChar": 58
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_e8c2be51",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 354,
+        "startChar": 0,
+        "endLine": 355,
+        "endChar": 28
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_c896da4b",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "I think this should be shifted one space to the right for the code block to be displayed properly in all parsers.",
+      "range": {
+        "startLine": 413,
+        "startChar": 0,
+        "endLine": 416,
+        "endChar": 50
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_48a3eab1",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "Not aligned with above paragraph",
+      "range": {
+        "startLine": 418,
+        "startChar": 3,
+        "endLine": 418,
+        "endChar": 16
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_68aeae99",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "`-S` or **-S**",
+      "range": {
+        "startLine": 419,
+        "startChar": 9,
+        "endLine": 419,
+        "endChar": 11
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_88a97292",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "will",
+      "range": {
+        "startLine": 419,
+        "startChar": 86,
+        "endLine": 419,
+        "endChar": 89
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_28a8268c",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "disk",
+      "range": {
+        "startLine": 419,
+        "startChar": 51,
+        "endLine": 419,
+        "endChar": 56
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_a8939659",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "- should be shifted a few spaces to the right\n- chmod 777 tmp should not be needed, BUT I\u0027m not sure\n- let\u0027s rename tmp to tmpdir, to align with the path to securedlab\n- let\u0027s move this whole section to the beggining of the chapter\n- this is not exactly related to the scope of the current change, either add a few lines in the commit message about it, or factor out into a separate gerrit change;",
+      "range": {
+        "startLine": 425,
+        "startChar": 0,
+        "endLine": 432,
+        "endChar": 39
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_089d6266",
+        "filename": "docs/release/installation/installation.instruction.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-01-09T23:42:27Z",
+      "side": 1,
+      "message": "let\u0027s remove this for now - info about dashboard should already be in the user guide - as for MaaS, I\u0027d like to handle it in a separate patch and also add info about logging in to MaaS CLI.",
+      "range": {
+        "startLine": 440,
+        "startChar": 0,
+        "endLine": 448,
+        "endChar": 58
+      },
+      "revId": "fcfb4f7d8fc96f9fc1d72489d825a91b12d8b4d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
