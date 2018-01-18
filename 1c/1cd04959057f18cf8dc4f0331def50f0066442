@@ -1,0 +1,7 @@
+Verified+1: jenkins-ci <jenkins-opnfv-ci@opnfv.org>
+Code-Review+2: Cristina Pauna <cristina.pauna@enea.com>
+Submitted-by: Cristina Pauna <cristina.pauna@enea.com>
+Submitted-at: Thu, 18 Jan 2018 12:06:53 +0000
+Reviewed-on: https://gerrit.opnfv.org/gerrit/50761
+Project: armband
+Branch: refs/heads/stable/euphrates
