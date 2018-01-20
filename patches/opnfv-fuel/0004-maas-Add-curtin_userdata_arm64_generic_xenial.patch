@@ -75,7 +75,7 @@ index 4c55223..9757875 100644
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
-index 04ffdb4..82017b0 100644
+index 04ffdb4..817902e 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
 @@ -39,6 +39,50 @@ parameters:
@@ -92,7 +92,7 @@ index 04ffdb4..82017b0 100644
 +          arches: 'arm64'
 +          key: &armband_key |
 +            -----BEGIN PGP PUBLIC KEY BLOCK-----
-+            Version: GnuPG v1
++            Version: GnuPG v2.0.14 (GNU/Linux)
 +
 +            mQENBFagAroBCADWboNIjuF6lB1mWv2+EbvqY3lKl5mLKhr2DnSUkKeHUPBv8gNM
 +            qK8Q00AMIyPiyEhgjA+dWizZ+5aBgxoiY7oMeLJ2Xym36U/8SYq2BWd3SGCbMNoz
@@ -100,15 +100,15 @@ index 04ffdb4..82017b0 100644
 +            mnGi3COM/+9PShrEKeVOx5W2vRJywUFuq8EDvQnRoJ0GvM28JiJIanw17YwIPxhg
 +            BKZVpZjan5X+ihVMXwA2h/G/FS5Omhd50RqV6LWSYs94VJJgYqHx8UMm7izcxI+P
 +            ct3IcbD195bPbJ+SbuiFe45ZLsdY1MyGiU2BABEBAAG0K0VuZWEgQXJtYmFuZCBE
-+            ZXZvcHMgVGVhbSA8YXJtYmFuZEBlbmVhLmNvbT6JAT4EEwECACgFAlagAroCGwMF
-+            CQPCZwAGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEN6rkLp5irHRsG8H/2P2
-+            hO6jFHPRD1u8j9ufO9AxoInaEG9GeRjuvMc1tCUzovXvTs106TZ0as6MbAJ1S6u5
-+            E8UyQ1+VGepvdIJPXx3PCxLmUt6WIqmdOdqFrxIclohig/kardi3NfX1MBvlEV/c
-+            7Q51H43hrlMqMpqgY1Bm+53PLC4ujjlDJBtJOEU9dki319bUmng+gO9BAljDJFXv
-+            JqY6+P/er7IgCbRXUXYfyJzgjx9JwlKbmdQ8QnCrZjF/VHIW40/mu5IIJuFvuCti
-+            tcog+SNSlDmCOS+wE8CCojeuJqupIOcz9zypVGzeus/N5Q5EEFe7GYWYS/5NKUkE
-+            1TuuFeZKu5NJC5rkwIU=
-+            =7p60
++            ZXZvcHMgVGVhbSA8YXJtYmFuZEBlbmVhLmNvbT6JATgEEwECACICGwMGCwkIBwMC
++            BhUIAgkKCwQWAgMBAh4BAheABQJaY3bYAAoJEN6rkLp5irHRoQMH/0PYl0A/6eWw
++            nQ/szhEFrr76Ln6wA4vEO+PiuWj9kTkZM2NaCnkisrIuHSPIVvOLfFmztbE6sKGe
++            t+a2b7Jqw48DZ/gq508aZE4Q307ookxdCOrzIu/796hFO34yXg3sqZoJh3VmKIjY
++            4DL8yG1iAiQ5vOw3IFWQnATwIZUgaCcjmE7HGap+9ePuJfFuQ8mIG5cy28t8qocx
++            AB/B2tucfBMwomYxKqgbLI5AG7iSt58ajvrrNa9f8IX7Ihj/jiuXhUwX+geEp98K
++            IWVI1ftEthZvfBpZW4BS98J4z//dEPi31L4jb9RQXq3afF2RpXchDeUN85bW45nu
++            W/9PMAlgE/U=
++            =m+zE
 +            -----END PGP PUBLIC KEY BLOCK-----
 +        armband_mk_openstack:
 +          name: armband_mk_openstack
