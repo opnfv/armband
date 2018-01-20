@@ -14,7 +14,7 @@ export ARMBAND_BASE
 export CI_DEBUG
 
 cd "${WORKSPACE:-${ARMBAND_BASE}}"
-make patches-import
+make fuel-patches-import
 
 cd upstream/fuel/ci
 ./deploy.sh "$@"
