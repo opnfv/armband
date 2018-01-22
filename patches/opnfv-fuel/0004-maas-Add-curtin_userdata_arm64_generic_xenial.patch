@@ -66,19 +66,19 @@ index 0000000..0368937
 +   file.managed:
 +   - source: salt://maas/files/pgpass
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 4c55223..9757875 100644
+index 2030133..dec9adf 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -16,3 +16,4 @@
- /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
+@@ -17,3 +17,4 @@
  /usr/share/salt-formulas/reclass: 0011-service.horizon.server.cluster-Default-to-v2-API.patch
+ /usr/share/salt-formulas/env: 0011-system.repo-Debian-Add-keyserver-proxy-support.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
-index 04ffdb4..817902e 100644
+index 1136908..7fd1623 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-ocata-common-ha/infra/maas.yml
-@@ -39,6 +39,50 @@ parameters:
+@@ -40,6 +40,50 @@ parameters:
          enable_third_party_drivers: true
          network_discovery: 'enabled'
          default_min_hwe_kernel: ${_param:hwe_kernel}

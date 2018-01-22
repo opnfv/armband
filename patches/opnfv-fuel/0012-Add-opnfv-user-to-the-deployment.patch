@@ -22,7 +22,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index 838a2b3..653d6d0 100755
+index 15fc572..7c86513 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -23,6 +23,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
@@ -32,9 +32,9 @@ index 838a2b3..653d6d0 100755
 +salt -C 'kvm* or cmp*' state.apply opnfv.adduser
  salt -C 'kvm*' state.apply linux.network
  salt -C 'kvm* or cmp*' state.apply salt.minion
- salt -C 'kvm* or cmp*' service.force_reload salt-minion
+ salt -C 'cmp*' state.apply linux.system
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index d717f39..7ef4e15 100755
+index a3fcb02..c4bd3dd 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -49,6 +49,7 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
