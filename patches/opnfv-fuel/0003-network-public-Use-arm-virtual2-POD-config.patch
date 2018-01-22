@@ -82,7 +82,7 @@ index 7e3a494..3a240b0 100644
 -            external_address: 10.16.0.106
 +            external_address: 10.0.9.106
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
-index 89b06fb..0086470 100644
+index d5606b5..508d5e1 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
 @@ -14,7 +14,7 @@ parameters:

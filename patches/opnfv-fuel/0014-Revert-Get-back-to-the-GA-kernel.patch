@@ -1,0 +1,30 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2017 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 22 Jan 2018 19:41:37 +0100
+Subject: [PATCH] Revert "Get back to the GA kernel"
+
+This reverts commit d06bcfb72c44b507c3efee4de00f415869f48450.
+---
+ mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
+index 65e6557..8794b85 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
+@@ -24,7 +24,7 @@ parameters:
+     maas_db_password: opnfv_secret
+     dns_server01: ${_param:opnfv_dns_server01}
+     single_address: ${_param:infra_maas_node01_deploy_address}
+-    hwe_kernel: 'ga-16.04'
++    hwe_kernel: 'hwe-16.04-edge'
+   maas:
+     region:
+       salt_master_ip: ${_param:reclass_config_master}

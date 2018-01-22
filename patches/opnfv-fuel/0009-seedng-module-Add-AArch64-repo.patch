@@ -49,10 +49,10 @@ index 0000000..d40e63b
 +     cmd += 'else sh {0} -c /tmp {1}; fi'.format(
 +         os.path.join(tmppath, 'bootstrap-salt.sh'), arg)
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 6b202e7..3a1d815 100644
+index 7bb4321..f533061 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -19,3 +19,4 @@
+@@ -20,3 +20,4 @@
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
  /usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
  /usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch

@@ -32,7 +32,7 @@ index 8f4edef..6a75099 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
-index 0086470..cf88e3d 100644
+index 508d5e1..0ef0d4b 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
 @@ -98,7 +98,7 @@ parameters:
