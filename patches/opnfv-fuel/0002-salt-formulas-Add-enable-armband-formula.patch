@@ -44,7 +44,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 4948a50..93c73e7 100755
+index 0bbf7cd..c49b27d 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -56,15 +56,18 @@ index 4948a50..93c73e7 100755
  salt -C 'I@mongodb:server and *01*' state.sls mongodb || true
  wait_for 10 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
-index bcb7807..09b84b9 100755
+index 9fc30bb..998fc6b 100755
 --- a/mcp/config/states/openstack_noha
 +++ b/mcp/config/states/openstack_noha
-@@ -51,3 +51,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
- salt -I 'ceilometer:agent' state.sls ceilometer
+@@ -52,6 +52,8 @@ salt -I 'ceilometer:agent' state.sls ceilometer
 
  salt -I 'horizon:server' state.sls horizon
-+
+
 +salt -I 'nova:compute' state.sls armband
++
+ # workaround for the pike horizon is missing css, FUEL-324
+ salt -I 'horizon:server' file.symlink \
+   /var/lib/openstack-dashboard/static \
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
 index 75347d9..8b162d5 100755
 --- a/mcp/config/states/virtual_control_plane
