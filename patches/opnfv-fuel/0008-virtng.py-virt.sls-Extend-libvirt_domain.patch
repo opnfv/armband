@@ -1,5 +1,5 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-: Copyright (c) 2017 Enea AB and others.
+: Copyright (c) 2018 Enea AB and others.
 :
 : All rights reserved. This program and the accompanying materials
 : are made available under the terms of the Apache License, Version 2.0
@@ -94,7 +94,7 @@ index 0000000..706b67d
 +         for dev in kwargs['boot_dev'].split():
 diff --git a/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch b/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 new file mode 100644
-index 0000000..a9fe11b
+index 0000000..78eb0bf
 --- /dev/null
 +++ b/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 @@ -0,0 +1,51 @@
@@ -133,9 +133,9 @@ index 0000000..a9fe11b
 +--- a/salt/control/virt.sls
 ++++ b/salt/control/virt.sls
 +@@ -44,6 +44,16 @@
-+       seed: True
-+       serial_type: pty
-+       console: True
++       {%- if node.img_dest is defined %}
++       img_dest: {{ node.img_dest }}
++       {%- endif %}
 ++      # FIXME(armband): Move these 3 params to different section
 ++      {%- if size.hw_firmware_type is defined %}
 ++      hw_firmware_type: {{ size.hw_firmware_type }}
@@ -150,12 +150,12 @@ index 0000000..a9fe11b
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index c460abb..7bb4321 100644
+index 01e3224..e17a329 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -18,3 +18,5 @@
- /usr/share/salt-formulas/env: 0011-system.repo-Debian-Add-keyserver-proxy-support.patch
+@@ -19,3 +19,5 @@
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
+ /usr/share/salt-formulas/env: 0013-dpdk-Support-ovs-bridge-tagging.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
