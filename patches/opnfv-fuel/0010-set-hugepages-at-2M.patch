@@ -1,0 +1,42 @@
+From: Cristina Pauna <cristina.pauna@enea.com>
+Date: Mon, 29 Jan 2018 13:40:36 +0200
+Subject: [PATCH] set hugepages at 2M
+
+Signed-off-by: Cristina Pauna <cristina.pauna@enea.com>
+---
+ .../classes/cluster/baremetal-mcp-pike-odl-ha/openstack/init.yml    | 6 +++---
+ .../classes/cluster/baremetal-mcp-pike-ovs-ha/openstack/init.yml    | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-odl-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-odl-ha/openstack/init.yml
+index 0859dc9..17cb4d0 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-odl-ha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-odl-ha/openstack/init.yml
+@@ -18,9 +18,9 @@ parameters:
+ 
+     neutron_tenant_network_types: "flat,vxlan"
+     nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
+-    compute_hugepages_size: 1G
+-    compute_hugepages_count: 16
+-    compute_hugepages_mount: /mnt/hugepages_1G
++    compute_hugepages_size: 2M
++    compute_hugepages_count: 8192
++    compute_hugepages_mount: /mnt/hugepages_2M
+     compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
+   linux:
+     network:
+diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-ovs-ha/openstack/init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-ovs-ha/openstack/init.yml
+index f1c8b93..0cd6f6d 100644
+--- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-ovs-ha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-ovs-ha/openstack/init.yml
+@@ -12,7 +12,7 @@ parameters:
+   _param:
+     neutron_tenant_network_types: "flat,vxlan"
+     nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
+-    compute_hugepages_size: 1G
+-    compute_hugepages_count: 16
+-    compute_hugepages_mount: /mnt/hugepages_1G
++    compute_hugepages_size: 2M
++    compute_hugepages_count: 8192
++    compute_hugepages_mount: /mnt/hugepages_2M
+     compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
