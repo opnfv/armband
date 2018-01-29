@@ -16,7 +16,7 @@ This reverts commit d06bcfb72c44b507c3efee4de00f415869f48450.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-index 65e6557..8794b85 100644
+index 4954559..d5528e3 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 @@ -24,7 +24,7 @@ parameters:

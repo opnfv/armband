@@ -75,7 +75,7 @@ index 34d913a..01e3224 100644
  /usr/share/salt-formulas/env: 0013-dpdk-Support-ovs-bridge-tagging.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-index da28abf..65e6557 100644
+index 3bf87dc..4954559 100644
 --- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
 @@ -40,6 +40,42 @@ parameters:

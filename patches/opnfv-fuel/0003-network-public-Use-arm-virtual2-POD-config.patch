@@ -60,7 +60,7 @@ index 222a072..9bbc0ce 100755
  # Print openstack status and setup network
  salt -C 'I@nova:controller and *01*' cmd.run ". /root/keystonercv3; \
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml
-index 7e3a494..3a240b0 100644
+index 576925e..8530b10 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/infra/config.yml
 @@ -61,9 +61,9 @@ parameters:
@@ -99,7 +99,7 @@ index 8e38ff8..d7bf017 100644
 -            external_address: 10.16.0.110
 +            external_address: 10.0.9.110
 diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-dpdk-noha/infra/config.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-dpdk-noha/infra/config.yml
-index e80c442..1df99b4 100644
+index abe13ef..ba3a6fc 100644
 --- a/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-dpdk-noha/infra/config.yml
 +++ b/mcp/reclass/classes/cluster/virtual-mcp-pike-ovs-dpdk-noha/infra/config.yml
 @@ -25,4 +25,4 @@ parameters:
