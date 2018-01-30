@@ -1,0 +1,44 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2018 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Charalampos Kominos <Charalampos.Kominos@enea.com>
+Date: Tue, 30 Jan 2018 14:04:57 +0100
+Subject: [PATCH] MaaS force ip block size
+
+---
+ mcp/config/states/maas | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/mcp/config/states/maas b/mcp/config/states/maas
+index 8f7a866..c095b9d 100755
+--- a/mcp/config/states/maas
++++ b/mcp/config/states/maas
+@@ -66,10 +66,22 @@ if [ "${ERASE_ENV}" -gt 1 ]; then
+   done
+ fi
+
+-# MaaS rack/region controller, node commissioning
++# Packages for MaaS rack/region controller
+ salt -C 'mas01*' state.apply linux,salt,openssh,ntp
+ salt -C 'mas01*' state.apply maas.cluster
+
++
++# Force maas-tftp to use the maximum block size during deployment
++
++sudo salt -C 'mas01*' file.replace \
++"/usr/lib/python3/dist-packages/tftp/bootstrap.py" \
++pattern="int\_blksize \= min\(\(int\_blksize, MAX\_BLOCK\_SIZE\)\)"  \
++repl="int_blksize=1464" count="1"
++
++sudo salt -C 'mas01*' service.restart "maas-rackd"
++
++# Commisioning
++
+ wait_for 10 "salt -C 'mas01*' state.apply maas.region"
+
+ salt -C 'mas01*' state.apply maas.machines
