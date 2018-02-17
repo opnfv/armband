@@ -20,14 +20,14 @@ handle it via Salt for baremetal kvm* and cmp* nodes.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml   | 1 +
- .../classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml   | 1 +
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml         | 1 +
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml | 1 +
  2 files changed, 2 insertions(+)
 
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
-index dcd78a2..a604d0a 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
+index 9f85366..3a6eb84 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 @@ -7,6 +7,7 @@
  ##############################################################################
  ---
@@ -36,10 +36,10 @@ index dcd78a2..a604d0a 100644
    - system.linux.system.repo.glusterfs
    - service.keepalived.cluster.single
    - system.glusterfs.server.volume.glance
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-index 60a01a8..a2c6fa0 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
+index 2e79f80..8fe5c37 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 @@ -7,6 +7,7 @@
  ##############################################################################
  ---

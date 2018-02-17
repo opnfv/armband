@@ -12,18 +12,18 @@ Subject: [PATCH] Revert "Get back to the GA kernel"
 
 This reverts commit d06bcfb72c44b507c3efee4de00f415869f48450.
 ---
- mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml | 2 +-
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-index 4954559..d5528e3 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/maas.yml
-@@ -24,7 +24,7 @@ parameters:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
+index 956ab4b..d0e5961 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
+@@ -25,7 +25,7 @@ parameters:
      maas_db_password: opnfv_secret
      dns_server01: ${_param:opnfv_dns_server01}
      single_address: ${_param:infra_maas_node01_deploy_address}
--    hwe_kernel: 'ga-16.04'
+-    hwe_kernel: 'hwe-16.04'
 +    hwe_kernel: 'hwe-16.04-edge'
    maas:
      region:

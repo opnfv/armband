@@ -16,13 +16,13 @@ Those instructions need to be overwritten for ARM.
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
 ---
- .../cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml        | 4 ++--
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-index a2c6fa0..9e8ad09 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
+index 8fe5c37..36d6b05 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 @@ -12,8 +12,8 @@ classes:
    - system.linux.storage.loopback
    - system.glusterfs.client.cluster

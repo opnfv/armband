@@ -44,7 +44,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 0bbf7cd..c49b27d 100755
+index 302de87..4a0c81c 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -69,7 +69,7 @@ index 9fc30bb..998fc6b 100755
  salt -I 'horizon:server' file.symlink \
    /var/lib/openstack-dashboard/static \
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 338c447..009eeba 100755
+index 48e45d4..afdfb4f 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -27,6 +27,7 @@ if [ "${ERASE_ENV}" -eq 1 ]; then

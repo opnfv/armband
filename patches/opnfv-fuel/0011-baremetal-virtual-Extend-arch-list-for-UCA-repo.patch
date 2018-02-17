@@ -14,14 +14,14 @@ JIRA: https://jira.opnfv.org/browse/ARMBAND-304
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../classes/cluster/baremetal-mcp-pike-common-ha/openstack_init.yml     | 2 +-
- .../classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml     | 2 +-
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml   | 2 +-
+ mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_init.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_init.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml
 index 8f4edef..6a75099 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_init.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_init.yml
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml
 @@ -190,7 +190,7 @@ parameters:
        repo:
          uca:
@@ -31,11 +31,11 @@ index 8f4edef..6a75099 100644
            key_id: EC4926EA
            key_server: keyserver.ubuntu.com
        kernel:
-diff --git a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
-index 508d5e1..0ef0d4b 100644
---- a/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
-+++ b/mcp/reclass/classes/cluster/virtual-mcp-pike-common-noha/openstack_init.yml
-@@ -98,7 +98,7 @@ parameters:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
+index d6ec205..c01ccfb 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
+@@ -96,7 +96,7 @@ parameters:
        repo:
          uca:
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/${_param:openstack_version} main"

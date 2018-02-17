@@ -15,15 +15,15 @@ so stick to 3.12 for now.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml  | 2 +-
- .../classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml  | 2 +-
- .../classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml  | 2 +-
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml         | 2 +-
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml | 2 +-
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
-index 166b368..0c7f0c3 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/infra/kvm.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
+index 382b7a2..af9afb6 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 @@ -27,7 +27,7 @@ classes:
  parameters:
    _param:
@@ -33,10 +33,10 @@ index 166b368..0c7f0c3 100644
      cluster_vip_address: ${_param:infra_kvm_address}
      cluster_node01_address: ${_param:infra_kvm_node01_address}
      cluster_node02_address: ${_param:infra_kvm_node02_address}
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-index 9e8ad09..ddff3db 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_compute.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
+index 36d6b05..482566b 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 @@ -36,7 +36,7 @@ parameters:
      keepalived_vip_virtual_router_id: 69
      loopback_device_size: 20
@@ -46,10 +46,10 @@ index 9e8ad09..ddff3db 100644
    glusterfs:
      client:
        volumes:
-diff --git a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml
 index cf09a41..0b6256f 100644
---- a/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml
-+++ b/mcp/reclass/classes/cluster/baremetal-mcp-pike-common-ha/openstack_control.yml
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml
 @@ -38,7 +38,7 @@ parameters:
      cluster_node03_hostname: ${_param:openstack_control_node03_hostname}
      cluster_node03_address: ${_param:openstack_control_node03_address}
