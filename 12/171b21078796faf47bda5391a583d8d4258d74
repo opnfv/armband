@@ -1,0 +1,7 @@
+Verified+1: jenkins-ci <jenkins-opnfv-ci@opnfv.org>
+Code-Review+2: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Submitted-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Submitted-at: Sat, 17 Feb 2018 19:17:11 +0000
+Reviewed-on: https://gerrit.opnfv.org/gerrit/52275
+Project: armband
+Branch: refs/heads/stable/euphrates
