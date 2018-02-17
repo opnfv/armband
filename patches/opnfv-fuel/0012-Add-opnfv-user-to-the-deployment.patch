@@ -34,7 +34,7 @@ index 15fc572..7c86513 100755
  salt -C 'kvm* or cmp*' state.apply salt.minion
  salt -C 'cmp*' state.apply linux.system
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index a3fcb02..c4bd3dd 100755
+index f0da66f..b9c252b 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -49,6 +49,7 @@ while [ $rc -ne 0 ] && [ ${attempt} -lt ${total_attempts} ]; do
