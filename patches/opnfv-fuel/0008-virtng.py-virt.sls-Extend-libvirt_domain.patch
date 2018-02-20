@@ -150,20 +150,20 @@ index 0000000..78eb0bf
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index e7c6456..f68cf70 100644
+index 9ec2dbd..84756cd 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -20,3 +20,5 @@
+@@ -19,3 +19,5 @@
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
  /usr/share/salt-formulas/env: 0013-dpdk-Support-ovs-bridge-tagging.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-index 3a6eb84..382b7a2 100644
+index 5bbe0fe..84b392e 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-@@ -52,21 +52,33 @@ parameters:
+@@ -53,21 +53,33 @@ parameters:
          openstack.control:
            cpu: 4
            ram: 12288
@@ -197,7 +197,7 @@ index 3a6eb84..382b7a2 100644
            disk_profile: xxlarge
            net_profile: default
          # stacklight.log:
-@@ -87,6 +99,9 @@ parameters:
+@@ -88,6 +100,9 @@ parameters:
          openstack.proxy:
            cpu: 2
            ram: 2048
@@ -208,7 +208,7 @@ index 3a6eb84..382b7a2 100644
            net_profile: default_ext
        cluster:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml
-index 536963c..8c61538 100644
+index e2b18e4..e807209 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml
 @@ -17,6 +17,9 @@ parameters:

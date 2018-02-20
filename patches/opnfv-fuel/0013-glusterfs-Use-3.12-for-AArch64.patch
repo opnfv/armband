@@ -21,10 +21,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-index 382b7a2..af9afb6 100644
+index 84b392e..1209f31 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-@@ -27,7 +27,7 @@ classes:
+@@ -28,7 +28,7 @@ classes:
  parameters:
    _param:
      linux_system_codename: xenial
@@ -34,10 +34,10 @@ index 382b7a2..af9afb6 100644
      cluster_node01_address: ${_param:infra_kvm_node01_address}
      cluster_node02_address: ${_param:infra_kvm_node02_address}
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-index 36d6b05..482566b 100644
+index 786ac4c..379c1d0 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-@@ -36,7 +36,7 @@ parameters:
+@@ -37,7 +37,7 @@ parameters:
      keepalived_vip_virtual_router_id: 69
      loopback_device_size: 20
      linux_system_codename: xenial
@@ -47,7 +47,7 @@ index 36d6b05..482566b 100644
      client:
        volumes:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml
-index cf09a41..0b6256f 100644
+index b08f3c2..84d35be 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml
 @@ -38,7 +38,7 @@ parameters:

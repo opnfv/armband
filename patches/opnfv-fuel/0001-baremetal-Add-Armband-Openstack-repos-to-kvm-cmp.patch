@@ -25,7 +25,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 2 insertions(+)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-index 9f85366..3a6eb84 100644
+index df23045..5bbe0fe 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 @@ -7,6 +7,7 @@
@@ -37,7 +37,7 @@ index 9f85366..3a6eb84 100644
    - service.keepalived.cluster.single
    - system.glusterfs.server.volume.glance
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-index 2e79f80..8fe5c37 100644
+index cb10bbb..6277c97 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 @@ -7,6 +7,7 @@

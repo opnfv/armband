@@ -46,7 +46,7 @@ index afdfb4f..0c0d69c 100755
 
  # Propagate APT proxy config created by curtin on baremetal nodes to VCP VMs
 diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
-index f09ee5d..39d550a 100644
+index f9aeb71..21a5de4 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
 +++ b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
 @@ -9,3 +9,7 @@

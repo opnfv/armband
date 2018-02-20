@@ -66,16 +66,16 @@ index 0000000..0368937
 +   file.managed:
 +   - source: salt://maas/files/pgpass
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 703bd05..e7c6456 100644
+index 1b50025..9ec2dbd 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -19,3 +19,4 @@
+@@ -18,3 +18,4 @@
  /usr/share/salt-formulas/env: 0011-routes-Skip-network-restart-on-noifupdown.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
  /usr/share/salt-formulas/env: 0013-dpdk-Support-ovs-bridge-tagging.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
-index 3dc9998..956ab4b 100644
+index e83de35..226a4f6 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
 @@ -41,6 +41,42 @@ parameters:

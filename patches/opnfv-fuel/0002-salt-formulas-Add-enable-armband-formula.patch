@@ -44,7 +44,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 302de87..4a0c81c 100755
+index 4f3760f..115a56c 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1

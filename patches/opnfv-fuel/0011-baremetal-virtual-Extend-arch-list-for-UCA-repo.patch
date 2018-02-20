@@ -19,7 +19,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml
-index 8f4edef..6a75099 100644
+index d2d611c..0a3fc6f 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml
 @@ -190,7 +190,7 @@ parameters:
@@ -32,7 +32,7 @@ index 8f4edef..6a75099 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
-index d6ec205..c01ccfb 100644
+index 46d7af4..076f38a 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
 @@ -96,7 +96,7 @@ parameters:
