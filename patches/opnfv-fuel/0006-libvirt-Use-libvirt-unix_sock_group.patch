@@ -48,10 +48,10 @@ index 0000000..34d7cb4
 + # Set the UNIX socket permissions for the R/O socket. This is used
 + # for monitoring VM status only
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index dec9adf..2eaa791 100644
+index b7a8953..9cc1c7b 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -18,3 +18,4 @@
+@@ -19,3 +19,4 @@
  /usr/share/salt-formulas/env: 0011-system.repo-Debian-Add-keyserver-proxy-support.patch
  /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
