@@ -34,12 +34,12 @@ index 84b392e..1209f31 100644
      cluster_node01_address: ${_param:infra_kvm_node01_address}
      cluster_node02_address: ${_param:infra_kvm_node02_address}
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-index 786ac4c..379c1d0 100644
+index 407751f..b0e23d0 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-@@ -37,7 +37,7 @@ parameters:
+@@ -35,7 +35,7 @@ parameters:
+     keepalived_vip_interface: br-ctl
      keepalived_vip_virtual_router_id: 69
-     loopback_device_size: 20
      linux_system_codename: xenial
 -    glusterfs_version: '3.13'
 +    glusterfs_version: '3.12'

@@ -37,7 +37,7 @@ index df23045..5bbe0fe 100644
    - service.keepalived.cluster.single
    - system.glusterfs.server.volume.glance
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-index cb10bbb..6277c97 100644
+index cb7b32f..dd610ea 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 @@ -7,6 +7,7 @@
@@ -46,5 +46,5 @@ index cb10bbb..6277c97 100644
  classes:
 +  - system.linux.system.repo.mcp.armband
    - system.linux.system.repo.glusterfs
-   - system.linux.storage.loopback
    - system.glusterfs.client.cluster
+   - system.nova.compute.cluster

@@ -20,11 +20,11 @@ Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-index 6277c97..786ac4c 100644
+index dd610ea..407751f 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-@@ -12,8 +12,8 @@ classes:
-   - system.linux.storage.loopback
+@@ -11,8 +11,8 @@ classes:
+   - system.linux.system.repo.glusterfs
    - system.glusterfs.client.cluster
    - system.nova.compute.cluster
 -  - system.nova.compute.nfv.hugepages
