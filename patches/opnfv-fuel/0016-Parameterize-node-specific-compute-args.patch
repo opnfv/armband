@@ -1,0 +1,327 @@
+From: Cristina Pauna <cristina.pauna@enea.com>
+Date: Wed, 21 Feb 2018 16:50:12 +0200
+Subject: [PATCH] Parameterize node-specific compute args
+
+- node-specific parameters (nova pinning, hugepages, dpdk) should be
+  configurable via IDF, on a per-node basis;
+- keep default settings for lf-pod2, with and without DPDK,
+  override them for virtual deploys via local-virtual1 IDF;
+- leave neutron_tenant_* vars hardcoded for now, as they are required
+  on both ctl and cmp nodes - this way we'll deal stricly with
+  cmp params, so we can nicely pass them via config.yml to reclass
+  per-node (and not per-role), allowing mixed computes later;
+- add compute params for ovs/odl-noha, preparing them for
+  deployment on baremetal later.
+
+JIRA: ARMBAND-343
+
+Change-Id: I89a58b9565679ab3882d85f07ae817690ae85c67
+Signed-off-by: Cristina Pauna <cristina.pauna@enea.com>
+---
+ mcp/config/labs/local/idf-virtual1.yaml            | 18 +++++++++++
+ .../infra/config_dpdk_pdf.yml.j2                   | 30 ++++++++++++++++---
+ .../all-mcp-arch-common/infra/config_pdf.yml.j2    | 35 ++++++++++++++++++++++
+ .../cluster/mcp-pike-odl-ha/infra/config.yml       |  1 +
+ .../cluster/mcp-pike-odl-ha/openstack/init.yml     |  5 ----
+ .../cluster/mcp-pike-odl-noha/infra/config.yml     |  1 +
+ .../openstack/compute_pdf.yml.j2                   |  4 +--
+ .../mcp-pike-ovs-dpdk-ha/openstack/init.yml        | 10 -------
+ .../mcp-pike-ovs-dpdk-noha/openstack/compute.yml   |  4 +--
+ .../mcp-pike-ovs-dpdk-noha/openstack/init.yml      |  8 -----
+ .../cluster/mcp-pike-ovs-ha/infra/config.yml       |  1 +
+ .../cluster/mcp-pike-ovs-ha/openstack/init.yml     |  5 ----
+ .../cluster/mcp-pike-ovs-noha/infra/config.yml     |  1 +
+ .../cluster/mcp-pike-ovs-novcp-ha/infra/config.yml |  1 +
+ .../mcp-pike-ovs-novcp-ha/openstack/init.yml       |  5 ----
+ mcp/scripts/pharos                                 |  2 +-
+ 16 files changed, 89 insertions(+), 42 deletions(-)
+ create mode 100644 mcp/reclass/classes/cluster/all-mcp-arch-common/infra/config_pdf.yml.j2
+
+diff --git a/mcp/config/labs/local/idf-virtual1.yaml b/mcp/config/labs/local/idf-virtual1.yaml
+index 31eaef7..415f63c 100644
+--- a/mcp/config/labs/local/idf-virtual1.yaml
++++ b/mcp/config/labs/local/idf-virtual1.yaml
+@@ -77,3 +77,21 @@ idf:
+           busaddr: *busaddr
+         - interfaces: *interfaces
+           busaddr: *busaddr
++    reclass:
++      node:
++        - compute_params: &compute_params
++            dpdk:
++              compute_hugepages_size: 2M
++              compute_hugepages_count: 2048
++              compute_hugepages_mount: /mnt/hugepages_2M
++              compute_dpdk_driver: uio
++              compute_ovs_pmd_cpu_mask: "0x6"
++              compute_ovs_dpdk_socket_mem: "1024"
++              compute_ovs_dpdk_lcore_mask: "0x8"
++              compute_ovs_memory_channels: "2"
++              dpdk0_driver: igb_uio
++              dpdk0_n_rxq: 2
++        - compute_params: *compute_params
++        - compute_params: *compute_params
++        - compute_params: *compute_params
++        - compute_params: *compute_params
+diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/infra/config_dpdk_pdf.yml.j2 b/mcp/reclass/classes/cluster/all-mcp-arch-common/infra/config_dpdk_pdf.yml.j2
+index 54b2b55..6cf04b3 100644
+--- a/mcp/reclass/classes/cluster/all-mcp-arch-common/infra/config_dpdk_pdf.yml.j2
++++ b/mcp/reclass/classes/cluster/all-mcp-arch-common/infra/config_dpdk_pdf.yml.j2
+@@ -11,11 +11,33 @@ parameters:
+   reclass:
+     storage:
+       node:
+-        openstack_compute_node01:
++        # NOTE: Until SDF is in place, assume all computes are identical
++        openstack_compute_node01: &openstack_compute_node01
+           params:
++{#- No partial defaults, all or nothing. Defaults tuned for lf-pod2. #}
++{%- if conf.idf.fuel.reclass is defined %}
++{%- if conf.idf.fuel.reclass.node[nm.cmp001.idx].compute_params.dpdk is defined %}
++{#- Can't dump json here due to dpdk0_* below, explicitly create yaml #}
++{%- set _dpdk = conf.idf.fuel.reclass.node[nm.cmp001.idx].compute_params.dpdk %}
++{%- for _i in _dpdk %}
++            {{ _i }}: '"{{ _dpdk[_i] }}"'
++{%- endfor %}
++{%- endif %}
++{%- else %}
++            nova_cpu_pinning: '"5-7,13-15"'
++            compute_hugepages_size: 2M
++            compute_hugepages_count: 8192
++            compute_hugepages_mount: /mnt/hugepages_2M
++            compute_kernel_isolcpu: 2,3,5,6,7,10,11,13,14,15
++            compute_dpdk_driver: uio
++            compute_ovs_pmd_cpu_mask: '"0xc04"'
++            compute_ovs_dpdk_socket_mem: '"2048,2048"'
++            compute_ovs_dpdk_lcore_mask: '"0x8"'
++            compute_ovs_memory_channels: '"2"'
++            dpdk0_driver: igb_uio
++            dpdk0_n_rxq: 2
++{%- endif %}
+             dpdk0_name: {{ nm.cmp001.nic_private }}
+             dpdk0_pci: '"{{ nm.cmp001.bus_private }}"'
+         openstack_compute_node02:
+-          params:
+-            dpdk0_name: {{ nm.cmp001.nic_private }}
+-            dpdk0_pci: '"{{ nm.cmp001.bus_private }}"'
++          <<: *openstack_compute_node01
+diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/infra/config_pdf.yml.j2 b/mcp/reclass/classes/cluster/all-mcp-arch-common/infra/config_pdf.yml.j2
+new file mode 100644
+index 0000000..677f0c9
+--- /dev/null
++++ b/mcp/reclass/classes/cluster/all-mcp-arch-common/infra/config_pdf.yml.j2
+@@ -0,0 +1,35 @@
++##############################################################################
++# Copyright (c) 2018 Mirantis Inc., Enea AB and others.
++# All rights reserved. This program and the accompanying materials
++# are made available under the terms of the Apache License, Version 2.0
++# which accompanies this distribution, and is available at
++# http://www.apache.org/licenses/LICENSE-2.0
++##############################################################################
++{%- import 'net_map.j2' as nm with context %}
++---
++parameters:
++  reclass:
++    storage:
++      node:
++        # NOTE: Until SDF is in place, assume all computes are identical
++        openstack_compute_node01: &openstack_compute_node01
++          params:
++{#- No partial defaults, all or nothing. Defaults tuned for lf-pod2. #}
++{%- if conf.idf.fuel.reclass is defined %}
++{%- if conf.idf.fuel.reclass.node[nm.cmp001.idx].compute_params.common is defined %}
++{%- set _common = conf.idf.fuel.reclass.node[nm.cmp001.idx].compute_params.common %}
++{%- for _i in _common %}
++            {{ _i }}: '"{{ _common[_i] }}"'
++{%- endfor %}
++{%- else %}
++            dummy_value: ~
++{%- endif %}
++{%- else %}
++            nova_cpu_pinning: '"1,2,3,4,5,7,8,9,10,11"'
++            compute_hugepages_size: 1G
++            compute_hugepages_count: 16
++            compute_hugepages_mount: /mnt/hugepages_1G
++            compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
++{%- endif %}
++        openstack_compute_node02:
++          <<: *openstack_compute_node01
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/config.yml b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/config.yml
+index 998a734..b812dea 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/config.yml
+@@ -10,6 +10,7 @@ classes:
+   - system.reclass.storage.system.opendaylight_control_single
+   - cluster.mcp-pike-common-ha.infra.config
+   - cluster.mcp-pike-odl-ha.infra
++  - cluster.all-mcp-arch-common.infra.config_pdf
+ parameters:
+   reclass:
+     storage:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/openstack/init.yml b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/openstack/init.yml
+index acf6c11..af4d930 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/openstack/init.yml
+@@ -17,11 +17,6 @@ parameters:
+     opendaylight_router: odl-router_v2
+
+     neutron_tenant_network_types: "flat,vxlan"
+-    nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
+-    compute_hugepages_size: 1G
+-    compute_hugepages_count: 16
+-    compute_hugepages_mount: /mnt/hugepages_1G
+-    compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
+   linux:
+     network:
+       host:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/config.yml b/mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/config.yml
+index 421ed18..b63ac68 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/config.yml
+@@ -11,6 +11,7 @@ classes:
+   - system.reclass.storage.system.openstack_gateway_single
+   - cluster.mcp-pike-common-noha.infra.config
+   - cluster.mcp-pike-odl-noha
++  - cluster.all-mcp-arch-common.infra.config_pdf
+ parameters:
+   reclass:
+     storage:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-ha/openstack/compute_pdf.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-ha/openstack/compute_pdf.yml.j2
+index 475f3a0..925f895 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-ha/openstack/compute_pdf.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-ha/openstack/compute_pdf.yml.j2
+@@ -14,11 +14,11 @@ parameters:
+         dpdk0:
+           name: ${_param:dpdk0_name}
+           pci: ${_param:dpdk0_pci}
+-          driver: igb_uio
++          driver: ${_param:dpdk0_driver}
+           enabled: true
+           bridge: br-prv
+           type: dpdk_ovs_port
+-          n_rxq: 2
++          n_rxq: ${_param:dpdk0_n_rxq}
+         br-prv:
+           enabled: true
+           type: dpdk_ovs_bridge
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-ha/openstack/init.yml b/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-ha/openstack/init.yml
+index 4d3e9cf..1800a58 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-ha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-ha/openstack/init.yml
+@@ -12,13 +12,3 @@ parameters:
+   _param:
+     neutron_tenant_network_types: "flat,vxlan"
+     neutron_tenant_vlan_range: "1000:1030"
+-    nova_cpu_pinning: "5-7,13-15"
+-    compute_hugepages_size: 2M
+-    compute_hugepages_count: 8192
+-    compute_hugepages_mount: /mnt/hugepages_2M
+-    compute_kernel_isolcpu: 2,3,5,6,7,10,11,13,14,15
+-    compute_dpdk_driver: uio
+-    compute_ovs_pmd_cpu_mask: "0xc04"
+-    compute_ovs_dpdk_socket_mem: "2048,2048"
+-    compute_ovs_dpdk_lcore_mask: "0x8"
+-    compute_ovs_memory_channels: "2"
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/compute.yml b/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/compute.yml
+index b89a7bb..405af78 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/compute.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/compute.yml
+@@ -23,11 +23,11 @@ parameters:
+         dpdk0:
+           name: ${_param:dpdk0_name}
+           pci: ${_param:dpdk0_pci}
+-          driver: igb_uio
++          driver: ${_param:dpdk0_driver}
+           enabled: true
+           bridge: br-prv
+           type: dpdk_ovs_port
+-          n_rxq: 2
++          n_rxq: ${_param:dpdk0_n_rxq}
+         br-prv:
+           enabled: true
+           type: dpdk_ovs_bridge
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/init.yml b/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/init.yml
+index a99d83e..9ef4b1b 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/init.yml
+@@ -11,11 +11,3 @@ classes:
+ parameters:
+   _param:
+     neutron_tenant_network_types: "flat,vlan"
+-    compute_hugepages_size: 2M
+-    compute_hugepages_count: 2048
+-    compute_hugepages_mount: /mnt/hugepages_2M
+-    compute_dpdk_driver: uio
+-    compute_ovs_pmd_cpu_mask: "0x6"
+-    compute_ovs_dpdk_socket_mem: "1024"
+-    compute_ovs_dpdk_lcore_mask: "0x8"
+-    compute_ovs_memory_channels: "2"
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-ha/infra/config.yml b/mcp/reclass/classes/cluster/mcp-pike-ovs-ha/infra/config.yml
+index 39b645d..cab196d 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-ha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-ovs-ha/infra/config.yml
+@@ -9,3 +9,4 @@
+ classes:
+   - cluster.mcp-pike-common-ha.infra.config
+   - cluster.mcp-pike-ovs-ha.infra
++  - cluster.all-mcp-arch-common.infra.config_pdf
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-ha/openstack/init.yml b/mcp/reclass/classes/cluster/mcp-pike-ovs-ha/openstack/init.yml
+index 20eb82c..02cd14a 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-ha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-ovs-ha/openstack/init.yml
+@@ -11,8 +11,3 @@ classes:
+ parameters:
+   _param:
+     neutron_tenant_network_types: "flat,vxlan"
+-    nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
+-    compute_hugepages_size: 1G
+-    compute_hugepages_count: 16
+-    compute_hugepages_mount: /mnt/hugepages_1G
+-    compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/config.yml b/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/config.yml
+index d47e3e8..4f74282 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/config.yml
+@@ -10,6 +10,7 @@ classes:
+   - system.reclass.storage.system.openstack_gateway_single
+   - cluster.mcp-pike-common-noha.infra.config
+   - cluster.mcp-pike-ovs-noha
++  - cluster.all-mcp-arch-common.infra.config_pdf
+ parameters:
+   reclass:
+     storage:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-novcp-ha/infra/config.yml b/mcp/reclass/classes/cluster/mcp-pike-ovs-novcp-ha/infra/config.yml
+index 5681e5a..9fe92d6 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-novcp-ha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-ovs-novcp-ha/infra/config.yml
+@@ -9,6 +9,7 @@
+ classes:
+   - cluster.mcp-pike-common-ha.infra.config
+   - cluster.mcp-pike-ovs-novcp-ha.infra
++  - cluster.all-mcp-arch-common.infra.config_pdf
+ parameters:
+   reclass:
+     storage:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-novcp-ha/openstack/init.yml b/mcp/reclass/classes/cluster/mcp-pike-ovs-novcp-ha/openstack/init.yml
+index 7540c00..2bacdfc 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-novcp-ha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-ovs-novcp-ha/openstack/init.yml
+@@ -11,11 +11,6 @@ classes:
+ parameters:
+   _param:
+     neutron_tenant_network_types: "flat,vxlan"
+-    nova_cpu_pinning: "1,2,3,4,5,7,8,9,10,11"
+-    compute_hugepages_size: 1G
+-    compute_hugepages_count: 16
+-    compute_hugepages_mount: /mnt/hugepages_1G
+-    compute_kernel_isolcpu: ${_param:nova_cpu_pinning}
+   apache:
+     server:
+       # NOTE(armband): override these to ~ first, so we can later drop ssl/443
+diff --git a/mcp/scripts/pharos b/mcp/scripts/pharos
+index ffc6971..63e122a 160000
+--- a/mcp/scripts/pharos
++++ b/mcp/scripts/pharos
+@@ -1 +1 @@
+-Subproject commit ffc697113c99fa1e955bdce068d67ca153898566
++Subproject commit 63e122a1d0e7e4ca402353d331f44eda63d966c3
