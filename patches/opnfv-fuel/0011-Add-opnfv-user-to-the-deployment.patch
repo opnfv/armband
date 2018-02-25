@@ -22,7 +22,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index 6d7c0b4..a7043d9 100755
+index 9bfe535..82649df 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -23,6 +23,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \

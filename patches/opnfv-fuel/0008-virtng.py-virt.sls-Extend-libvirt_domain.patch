@@ -150,11 +150,11 @@ index 0000000..78eb0bf
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 9ec2dbd..84756cd 100644
+index 1229fc5..3af44ef 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
 @@ -19,3 +19,5 @@
- /usr/share/salt-formulas/env: 0012-linux.storage.lvm-Disable-filter.patch
+ /usr/share/salt-formulas/env: 0012-routes-Skip-network-restart-on-noifupdown.patch
  /usr/share/salt-formulas/env: 0013-dpdk-Support-ovs-bridge-tagging.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch

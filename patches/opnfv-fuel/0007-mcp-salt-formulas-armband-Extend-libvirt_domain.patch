@@ -41,10 +41,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/salt_minion.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index c147728..6d7c0b4 100755
+index d3a255d..9bfe535 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
-@@ -32,6 +32,7 @@ salt -C 'cmp*' state.apply linux.network || true
+@@ -35,6 +35,7 @@ wait_for 30.0 "salt -C 'kvm* or cmp*' test.ping"
  salt -C 'cmp*' file.write /etc/dhcp/dhclient-enter-hooks.d/no-default-route \
    args='unset new_routers'
 

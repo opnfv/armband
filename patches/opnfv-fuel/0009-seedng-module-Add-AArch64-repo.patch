@@ -49,7 +49,7 @@ index 0000000..d40e63b
 +     cmd += 'else sh {0} -c /tmp {1}; fi'.format(
 +         os.path.join(tmppath, 'bootstrap-salt.sh'), arg)
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 84756cd..9396093 100644
+index 3af44ef..3f2e99a 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
 @@ -21,3 +21,4 @@

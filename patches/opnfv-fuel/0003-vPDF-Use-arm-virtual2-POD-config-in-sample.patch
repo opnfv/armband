@@ -23,7 +23,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/mcp/config/labs/local/idf-virtual1.yaml b/mcp/config/labs/local/idf-virtual1.yaml
-index 88437cd..31eaef7 100644
+index 2142baf..415f63c 100644
 --- a/mcp/config/labs/local/idf-virtual1.yaml
 +++ b/mcp/config/labs/local/idf-virtual1.yaml
 @@ -41,9 +41,9 @@ idf:
