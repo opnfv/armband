@@ -1,0 +1,171 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 23 Feb 2018 22:10:33 +0100
+Subject: [PATCH] Add opnfv.route_wrapper sls
+
+- fix `route-br-ex` if-up.d script failing when route already exists
+  by adding a wrapper around distro's '/sbin/route' binary in
+  '/usr/local/sbin/route', exploiting default order in Ubuntu PATH;
+- fix 'br-prv' duplicate entry in 'interfaces.d/ifcfg-br-prv' and
+  'interfaces' caused by upstream bug [1];
+
+With the above in place, networking service should no longer fail
+to start on cmp nodes w/ DPDK.
+
+[1] https://github.com/saltstack/salt/issues/40262
+
+Change-Id: I6d4895376ce323c14c997e6c9af2ea3eeeee0184
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/scenario/os-nosdn-ovs-ha.yaml           |  3 +-
+ mcp/config/states/baremetal_init                   |  4 ++-
+ mcp/config/states/networking_gw                    | 12 --------
+ ...rk.dpdk-Move-ifcfg-br-prv-to-interfaces.u.patch | 33 ++++++++++++++++++++++
+ mcp/patches/patches.list                           |  1 +
+ mcp/salt-formulas/opnfv/route_wrapper.sls          | 27 ++++++++++++++++++
+ 6 files changed, 65 insertions(+), 15 deletions(-)
+ delete mode 100755 mcp/config/states/networking_gw
+ create mode 100644 mcp/patches/0004-network.dpdk-Move-ifcfg-br-prv-to-interfaces.u.patch
+ create mode 100644 mcp/salt-formulas/opnfv/route_wrapper.sls
+
+diff --git a/mcp/config/scenario/os-nosdn-ovs-ha.yaml b/mcp/config/scenario/os-nosdn-ovs-ha.yaml
+index a7ecba7..4962626 100644
+--- a/mcp/config/scenario/os-nosdn-ovs-ha.yaml
++++ b/mcp/config/scenario/os-nosdn-ovs-ha.yaml
+@@ -1,5 +1,5 @@
+ ##############################################################################
+-# Copyright (c) 2017 Mirantis Inc., Enea AB and others.
++# Copyright (c) 2018 Mirantis Inc., Enea AB and others.
+ # All rights reserved. This program and the accompanying materials
+ # are made available under the terms of the Apache License, Version 2.0
+ # which accompanies this distribution, and is available at
+@@ -15,7 +15,6 @@ cluster:
+     - dpdk
+     - openstack_ha
+     - networks
+-    - networking_gw
+ virtual:
+   nodes:
+     - cfg01
+diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
+index a7043d9..558ddab 100755
+--- a/mcp/config/states/baremetal_init
++++ b/mcp/config/states/baremetal_init
+@@ -1,6 +1,6 @@
+ #!/bin/bash -e
+ ##############################################################################
+-# Copyright (c) 2017 Mirantis Inc., Enea AB and others.
++# Copyright (c) 2018 Mirantis Inc., Enea AB and others.
+ # All rights reserved. This program and the accompanying materials
+ # are made available under the terms of the Apache License, Version 2.0
+ # which accompanies this distribution, and is available at
+@@ -27,6 +27,8 @@ salt -C 'kvm* or cmp*' state.apply opnfv.adduser
+ salt -C 'kvm*' state.apply linux.network,linux.system.kernel
+ salt -C 'kvm* or cmp*' state.apply salt.minion
+ salt -C 'cmp*' state.apply linux.system
++# wrap distro `route` binary to silence errors when route already exists
++salt -C 'cmp*' state.apply opnfv.route_wrapper
+ salt -C 'cmp*' state.apply linux.network || true
+
+ # disable dhcp offered routes on compute nodes
+diff --git a/mcp/config/states/networking_gw b/mcp/config/states/networking_gw
+deleted file mode 100755
+index ea7c87b..0000000
+--- a/mcp/config/states/networking_gw
++++ /dev/null
+@@ -1,12 +0,0 @@
+-#!/bin/bash -e
+-##############################################################################
+-# Copyright (c) 2018 Mirantis Inc., Enea AB and others.
+-# All rights reserved. This program and the accompanying materials
+-# are made available under the terms of the Apache License, Version 2.0
+-# which accompanies this distribution, and is available at
+-# http://www.apache.org/licenses/LICENSE-2.0
+-##############################################################################
+-
+-CI_DEBUG=${CI_DEBUG:-0}; [[ "${CI_DEBUG}" =~ (false|0) ]] || set -x
+-
+-salt -I 'neutron:gateway' cmd.run 'ifup --force --ignore-errors br-ex'
+diff --git a/mcp/patches/0004-network.dpdk-Move-ifcfg-br-prv-to-interfaces.u.patch b/mcp/patches/0004-network.dpdk-Move-ifcfg-br-prv-to-interfaces.u.patch
+new file mode 100644
+index 0000000..182c7af
+--- /dev/null
++++ b/mcp/patches/0004-network.dpdk-Move-ifcfg-br-prv-to-interfaces.u.patch
+@@ -0,0 +1,33 @@
++::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
++: Copyright (c) 2018 Mirantis Inc., Enea AB and others.
++:
++: All rights reserved. This program and the accompanying materials
++: are made available under the terms of the Apache License, Version 2.0
++: which accompanies this distribution, and is available at
++: http://www.apache.org/licenses/LICENSE-2.0
++::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Sun, 25 Feb 2018 03:43:49 +0100
++Subject: [PATCH] network.dpdk: Move ifcfg-br-prv to interfaces.u
++
++Workaround for Upstream-Bug:
++https://github.com/saltstack/salt/issues/40262
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ linux/network/dpdk.sls | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/linux/network/dpdk.sls b/linux/network/dpdk.sls
++index 05fe05f..420b038 100644
++--- a/linux/network/dpdk.sls
+++++ b/linux/network/dpdk.sls
++@@ -128,7 +128,7 @@ linux_network_dpdk_bridge_interface_{{ interface_name }}:
++         After=openvswitch-switch.service
++
++ {# enforce ip address and mtu for ovs dpdk br-prv #}
++-/etc/network/interfaces.d/ifcfg-{{ interface_name }}:
+++/etc/network/interfaces.u/ifcfg-{{ interface_name }}:
++   file.managed:
++     - contents: |
++         auto {{ interface_name }}
+diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
+index 9396093..39ccc1e 100644
+--- a/mcp/patches/patches.list
++++ b/mcp/patches/patches.list
+@@ -8,6 +8,7 @@
+ /usr/share/salt-formulas/env: 0001-opendaylight-formula-neutron.patch
+ /usr/share/salt-formulas/env: 0002-maas-region-skip-credentials-update.patch
+ /usr/share/salt-formulas/env: 0003-maas-region-force-artifact-download.patch
++/usr/share/salt-formulas/env: 0004-network.dpdk-Move-ifcfg-br-prv-to-interfaces.u.patch
+ /usr/share/salt-formulas/env: 0005-maas-module-Obtain-fabric-ID-from-CIDR.patch
+ /usr/share/salt-formulas/env: 0006-maas-module-Add-VLAN-DHCP-enable-support.patch
+ /usr/share/salt-formulas/env: 0007-network.interface-Fix-ifup-OVS-port-with-route.patch
+diff --git a/mcp/salt-formulas/opnfv/route_wrapper.sls b/mcp/salt-formulas/opnfv/route_wrapper.sls
+new file mode 100644
+index 0000000..6132f31
+--- /dev/null
++++ b/mcp/salt-formulas/opnfv/route_wrapper.sls
+@@ -0,0 +1,27 @@
++##############################################################################
++# Copyright (c) 2018 Mirantis Inc., Enea AB and others.
++# All rights reserved. This program and the accompanying materials
++# are made available under the terms of the Apache License, Version 2.0
++# which accompanies this distribution, and is available at
++# http://www.apache.org/licenses/LICENSE-2.0
++##############################################################################
++/usr/local/sbin/route:
++  file.managed:
++    - contents: |
++        #!/bin/sh
++
++        # Workaround salt-managed routes breaking ifup when route already exists
++        route_binary='/sbin/route'
++        route_output=$("${route_binary}" "$@" 2>&1)
++        route_return=$?
++
++        if [ -n "${route_output}" ]; then
++            if echo "${route_output}" | grep -q 'SIOCADDRT: File exists'; then
++                exit 0
++            fi
++            echo "${route_output}"
++        fi
++        exit "${route_return}"
++    - user: root
++    - group: root
++    - mode: 755
