@@ -1,5 +1,5 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-: Copyright (c) 2017 Enea AB and others.
+: Copyright (c) 2018 Enea AB and others.
 :
 : All rights reserved. This program and the accompanying materials
 : are made available under the terms of the Apache License, Version 2.0
@@ -16,19 +16,19 @@ it. This implies Ceilometer should not use mcelog on AArch64.
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- linux/system/single/init.yml | 2 --
+ linux/system/single/debian.yml | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/linux/system/single/init.yml b/linux/system/single/init.yml
-index c7c583b..764dfe3 100644
---- a/linux/system/single/init.yml
-+++ b/linux/system/single/init.yml
-@@ -19,8 +19,6 @@ parameters:
-           version: purged
-         unattended-upgrades:
+diff --git a/linux/system/single/debian.yml b/linux/system/single/debian.yml
+index b4d08c9..ef8266a 100644
+--- a/linux/system/single/debian.yml
++++ b/linux/system/single/debian.yml
+@@ -10,8 +10,6 @@ parameters:
+           version: latest
+         cloud-init:
            version: purged
 -        mcelog:
 -          version: latest
-       apt:
-         config:
-           compression-workaround:
+         python-msgpack:
+           version: latest
+         unattended-upgrades:
