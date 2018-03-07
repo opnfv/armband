@@ -27,14 +27,14 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  ...4-salt-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++++
  mcp/patches/patches.list                           |  2 +
  .../cluster/mcp-pike-common-ha/infra/kvm.yml       | 15 ++++++
- .../classes/cluster/mcp-pike-odl-ha/infra/kvm.yml  |  3 ++
+ .../cluster/mcp-pike-odl-ha/infra/kvm.yml.j2       |  3 ++
  5 files changed, 125 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
  create mode 100644 mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 
 diff --git a/mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch b/mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
 new file mode 100644
-index 0000000..706b67d
+index 00000000..706b67da
 --- /dev/null
 +++ b/mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
 @@ -0,0 +1,54 @@
@@ -94,7 +94,7 @@ index 0000000..706b67d
 +         for dev in kwargs['boot_dev'].split():
 diff --git a/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch b/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 new file mode 100644
-index 0000000..78eb0bf
+index 00000000..78eb0bff
 --- /dev/null
 +++ b/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 @@ -0,0 +1,51 @@
@@ -150,17 +150,17 @@ index 0000000..78eb0bf
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 59b617d..520a275 100644
+index 76d782e1..0b6bf960 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -17,3 +17,5 @@
+@@ -18,3 +18,5 @@
  /usr/share/salt-formulas/env: 0012-routes-Skip-network-restart-on-noifupdown.patch
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-index 5bbe0fe..84b392e 100644
+index 5bbe0fe4..84b392e6 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 @@ -53,21 +53,33 @@ parameters:
@@ -207,11 +207,11 @@ index 5bbe0fe..84b392e 100644
            disk_profile: small
            net_profile: default_ext
        cluster:
-diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml
-index e2b18e4..e807209 100644
---- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml
-+++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml
-@@ -17,6 +17,9 @@ parameters:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
+index 81135d6a..36908b18 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
+@@ -19,6 +19,9 @@ parameters:
          opendaylight.server:
            cpu: 4
            ram: 6144

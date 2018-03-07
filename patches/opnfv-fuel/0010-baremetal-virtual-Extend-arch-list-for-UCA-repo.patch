@@ -14,15 +14,15 @@ JIRA: https://jira.opnfv.org/browse/ARMBAND-304
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml   | 2 +-
- mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml | 2 +-
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2 | 2 +-
+ mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml  | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml
-index d2d611c..0a3fc6f 100644
---- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml
-+++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml
-@@ -190,7 +190,7 @@ parameters:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2
+index 3b890da0..5b9d24e7 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2
+@@ -251,7 +251,7 @@ parameters:
        repo:
          uca:
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/${_param:openstack_version} main"
@@ -32,7 +32,7 @@ index d2d611c..0a3fc6f 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
-index 46d7af4..076f38a 100644
+index 46d7af4a..076f38a9 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
 @@ -96,7 +96,7 @@ parameters:

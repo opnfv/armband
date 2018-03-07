@@ -22,7 +22,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index 9bfe535..82649df 100755
+index 0c41557d..799a9419 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -23,6 +23,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
@@ -34,7 +34,7 @@ index 9bfe535..82649df 100755
  salt -C 'kvm* or cmp*' state.apply salt.minion
  salt -C 'cmp*' state.apply linux.system
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index afdfb4f..0c0d69c 100755
+index 144245f9..8ea75f17 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -39,6 +39,7 @@ vcp_nodes=$(salt --out yaml 'kvm01*' pillar.get salt:control:cluster:internal:no
@@ -46,7 +46,7 @@ index afdfb4f..0c0d69c 100755
 
  # Propagate APT proxy config created by curtin on baremetal nodes to VCP VMs
 diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
-index f9aeb71..21a5de4 100644
+index f9aeb71a..21a5de4e 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
 +++ b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml
 @@ -9,3 +9,7 @@
@@ -59,7 +59,7 @@ index f9aeb71..21a5de4 100644
 +    opnfv_user_password: $1$5/pIEHT1$XFBhNWW4Q8gYd19hczgPF1
 diff --git a/mcp/salt-formulas/opnfv/adduser.sls b/mcp/salt-formulas/opnfv/adduser.sls
 new file mode 100644
-index 0000000..78ef993
+index 00000000..78ef993d
 --- /dev/null
 +++ b/mcp/salt-formulas/opnfv/adduser.sls
 @@ -0,0 +1,7 @@

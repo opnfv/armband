@@ -19,26 +19,28 @@ virtual POD with the Enea lab configuration specific to arm-virtual2
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/labs/local/idf-virtual1.yaml | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ mcp/config/labs/local/idf-virtual1.yaml | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/mcp/config/labs/local/idf-virtual1.yaml b/mcp/config/labs/local/idf-virtual1.yaml
-index 2142baf..415f63c 100644
+index f7302494..ab376ab7 100644
 --- a/mcp/config/labs/local/idf-virtual1.yaml
 +++ b/mcp/config/labs/local/idf-virtual1.yaml
-@@ -41,9 +41,9 @@ idf:
+@@ -42,10 +42,10 @@ idf:
      public:
        interface: 3  # when used, will be fourth vnet interface, untagged
        vlan: native
 -      network: 10.16.0.0
+-      ip-range: 10.16.0.10-10.16.0.254  # Some IPs are in use by lab infra
 +      network: 10.0.9.0
++      ip-range: 10.0.9.10-10.0.9.253  # Some IPs are in use by lab infra
        mask: 24
 -      gateway: 10.16.0.1
 +      gateway: 10.0.9.254
        dns:
          - 8.8.8.8
          - 8.8.4.4
-@@ -59,16 +59,16 @@ idf:
+@@ -61,16 +61,16 @@ idf:
          # Ordered-list, index should be in sync with node index in PDF
          - interfaces: &interfaces
              # Ordered-list, index should be in sync with interface index in PDF
