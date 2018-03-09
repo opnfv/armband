@@ -34,7 +34,7 @@ index 84b392e6..1209f312 100644
      cluster_node01_address: ${_param:infra_kvm_node01_address}
      cluster_node02_address: ${_param:infra_kvm_node02_address}
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-index a6c3d9ed..d730c935 100644
+index 5c08d6d2..e6e5ebf3 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 @@ -34,7 +34,7 @@ parameters:

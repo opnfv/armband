@@ -37,7 +37,7 @@ index df230452..5bbe0fe4 100644
    - service.keepalived.cluster.single
    - system.glusterfs.server.volume.glance
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
-index bae1c1c6..a6c3d9ed 100644
+index 741f9d35..5c08d6d2 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml
 @@ -7,6 +7,7 @@

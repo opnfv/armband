@@ -66,10 +66,10 @@ index 00000000..0368937d
 +   file.managed:
 +   - source: salt://maas/files/pgpass
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index efe38218..76d782e1 100644
+index e0ad1f70..59b617dd 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -17,3 +17,4 @@
+@@ -16,3 +16,4 @@
  /usr/share/salt-formulas/env: 0011-system.repo-Debian-Add-keyserver-proxy-support.patch
  /usr/share/salt-formulas/env: 0012-routes-Skip-network-restart-on-noifupdown.patch
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
