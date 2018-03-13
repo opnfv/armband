@@ -162,6 +162,34 @@ index 00000000..36ddf72b
 +         elif CONF.spice.enabled:
 +             video.type = 'qxl'
 +         if image_meta.properties.get('hw_video_model'):
++From ac6d3cd85ffe94115f15134406ba0d366e938764 Mon Sep 17 00:00:00 2001
++From: Charalampos Kominos <Charalampos.Kominos@enea.com>
++Date: Tue, 13 Mar 2018 17:02:56 +0100
++Subject: [PATCH] WIP: [p/nova] Force nova to create a pty device for aarch64VM
++
++Armband uses openstack packages from canonical. Those packages
++are configured to work with other packages from UCI repos. Since
++ARMband uses newer versions of certain packages than those in UCI
++(libvirt) we can force different config without breaking anything.
++JIRA: ARMBAND-352
++
++Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
++---
++
++--- a/nova/virt/libvirt/driver.py
+++++ b/nova/virt/libvirt/driver.py
++@@ -4678,8 +4678,9 @@
++         else:
++             # NOTE(jamespage): Force creation of file device for compatibility
++             #                  with aarch64 + libvirt 2.5.0
++-            self._create_file_device(guest_cfg, instance, char_dev_cls,
++-                                     force=True)
+++            # NOTE(armband): ARMband does not use libvirt 2.5.0 so we can just
+++            #                ask for a pty device instead of a file
+++            self._create_pty_device(guest_cfg, char_dev_cls, log_path=log_path)
++         # NOTE(jamespage): Skip creation of pty devices; they only work with
++         #                  the virtio driver which does not capture early
++         #                  boot on aarch64
 diff --git a/mcp/salt-formulas/armband/init.sls b/mcp/salt-formulas/armband/init.sls
 new file mode 100644
 index 00000000..8a8cf2ab
