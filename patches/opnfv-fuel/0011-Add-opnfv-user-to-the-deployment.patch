@@ -34,7 +34,7 @@ index 0c41557d..799a9419 100755
  salt -C 'kvm* or cmp*' state.apply salt.minion
  salt -C 'cmp*' state.apply linux.system
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 144245f9..8ea75f17 100755
+index 02a813c9..a179b22c 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -39,6 +39,7 @@ vcp_nodes=$(salt --out yaml 'kvm01*' pillar.get salt:control:cluster:internal:no

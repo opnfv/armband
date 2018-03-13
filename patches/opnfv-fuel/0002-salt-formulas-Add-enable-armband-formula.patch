@@ -56,10 +56,10 @@ index 4f3760f6..115a56c1 100755
  salt -C 'I@mongodb:server and *01*' state.sls mongodb || true
  wait_for 10 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
-index 9fc30bbf..998fc6b4 100755
+index 4c8cbcf8..1cf54240 100755
 --- a/mcp/config/states/openstack_noha
 +++ b/mcp/config/states/openstack_noha
-@@ -52,6 +52,8 @@ salt -I 'ceilometer:agent' state.sls ceilometer
+@@ -53,6 +53,8 @@ salt -I 'ceilometer:agent' state.sls ceilometer
 
  salt -I 'horizon:server' state.sls horizon
 
@@ -69,7 +69,7 @@ index 9fc30bbf..998fc6b4 100755
  salt -I 'horizon:server' file.symlink \
    /var/lib/openstack-dashboard/static \
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 80c0c87e..144245f9 100755
+index c391cfe6..02a813c9 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -27,6 +27,7 @@ if [ "${ERASE_ENV}" -eq 1 ]; then

@@ -47,7 +47,7 @@ index 5c08d6d2..e6e5ebf3 100644
      client:
        volumes:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml.j2
-index c487e342..62c1ab28 100644
+index 6f7b33e3..795c0383 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml.j2
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml.j2
 @@ -66,7 +66,7 @@ parameters:
