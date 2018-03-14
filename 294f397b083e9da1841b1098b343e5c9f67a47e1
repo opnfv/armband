@@ -48,6 +48,54 @@
     },
     {
       "key": {
+        "uuid": "5a3f45e8_0f731181",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-03-14T10:21:19Z",
+      "side": 1,
+      "message": "I know. But we are actually patching nova. I could not thing of anything else to name it",
+      "parentUuid": "5a3f45e8_a9a93de1",
+      "range": {
+        "startLine": 7,
+        "startChar": 6,
+        "endLine": 7,
+        "endChar": 22
+      },
+      "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_4f6d1998",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-03-14T10:21:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a3f45e8_09b03142",
+      "range": {
+        "startLine": 7,
+        "startChar": 24,
+        "endLine": 7,
+        "endChar": 29
+      },
+      "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a3f45e8_e9aa25d1",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -59,6 +107,30 @@
       "writtenOn": "2018-03-13T17:58:54Z",
       "side": 1,
       "message": "Ubuntu + custom Armband package (e.g. libvirt), usually newer or improved/extended compared to the Ubuntu equivalents.\nThis is a temporary situation - probably will be true for 6.0, but will change in 6.1 when we\u0027ll switch to MCP repos.\nAlso, on some nodes, we do use MCP packages too, so it\u0027s hard to keep track of all this ...",
+      "range": {
+        "startLine": 9,
+        "startChar": 37,
+        "endLine": 9,
+        "endChar": 46
+      },
+      "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_af5c9dee",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-03-14T10:21:19Z",
+      "side": 1,
+      "message": "I know. I dont want to add all that info though. Just kept it simple in the commit msg",
+      "parentUuid": "5a3f45e8_e9aa25d1",
       "range": {
         "startLine": 9,
         "startChar": 37,
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "5a3f45e8_8f5f21e5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-03-14T10:21:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a3f45e8_49ba3924",
+      "range": {
+        "startLine": 10,
+        "startChar": 48,
+        "endLine": 10,
+        "endChar": 51
+      },
+      "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a3f45e8_29b52d31",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -105,6 +201,30 @@
       "writtenOn": "2018-03-13T17:58:54Z",
       "side": 1,
       "message": "UCA",
+      "range": {
+        "startLine": 11,
+        "startChar": 62,
+        "endLine": 11,
+        "endChar": 65
+      },
+      "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_6f6295ae",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-03-14T10:21:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a3f45e8_29b52d31",
       "range": {
         "startLine": 11,
         "startChar": 62,
@@ -157,6 +277,30 @@
     },
     {
       "key": {
+        "uuid": "5a3f45e8_8f0601cd",
+        "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-03-14T10:21:19Z",
+      "side": 1,
+      "message": "This is the comment from jamespage and there is not point in changing that.\nHe actually is forcing the creation of a file.",
+      "parentUuid": "5a3f45e8_69861567",
+      "range": {
+        "startLine": 184,
+        "startChar": 33,
+        "endLine": 184,
+        "endChar": 38
+      },
+      "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a3f45e8_e991859b",
         "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
         "patchSetId": 2
@@ -168,6 +312,24 @@
       "writtenOn": "2018-03-13T17:58:54Z",
       "side": 1,
       "message": "The biggest problem here is that this patch should be idempotent for all nova packages we use, i.e. including the upstream nova or MCP build of it.\nTo achieve that, we should use here the exact diff for reverting jamespage\u0027s patch [1] in Ubuntu (you can ommit the tests changes).\n[1] https://git.launchpad.net/~ubuntu-server-dev/ubuntu/+source/nova/tree/debian/patches/aarch64-libvirt-compat.patch?h\u003dstable/pike\u0026id\u003d456d706442666de4db9d2d695657a18473cfe854",
+      "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_6f09f5dc",
+        "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-03-14T10:21:19Z",
+      "side": 1,
+      "message": "This is true. Although my patch does exactly the same. I guess both version would work. I ll think about this",
+      "parentUuid": "5a3f45e8_e991859b",
       "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
