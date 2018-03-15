@@ -333,6 +333,24 @@
       "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_54fdad39",
+        "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
+        "patchSetId": 2
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-03-15T14:30:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a3f45e8_6f09f5dc",
+      "revId": "294f397b083e9da1841b1098b343e5c9f67a47e1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
