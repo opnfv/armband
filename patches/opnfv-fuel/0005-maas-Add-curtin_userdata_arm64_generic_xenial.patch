@@ -66,7 +66,7 @@ index 00000000..0368937d
 +   file.managed:
 +   - source: salt://maas/files/pgpass
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 711b0f3a..dc1118d6 100644
+index b650ec87..4d19dfe7 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
 @@ -17,3 +17,4 @@

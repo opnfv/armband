@@ -150,7 +150,7 @@ index 00000000..78eb0bff
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index dc1118d6..6541cbba 100644
+index 4d19dfe7..cd7a1d5a 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
 @@ -18,3 +18,5 @@
