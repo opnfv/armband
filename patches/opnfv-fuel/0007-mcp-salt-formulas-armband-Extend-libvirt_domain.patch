@@ -41,7 +41,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/salt_minion.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index a7941e00..0c41557d 100755
+index a7941e0..0c41557 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -35,6 +35,7 @@ wait_for 30.0 "salt -C 'kvm* or cmp*' test.ping"
@@ -54,7 +54,7 @@ index a7941e00..0c41557d 100755
 
 diff --git a/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
 new file mode 100644
-index 00000000..9e74c240
+index 0000000..9e74c24
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
 @@ -0,0 +1,101 @@
@@ -161,7 +161,7 @@ index 00000000..9e74c240
 + def purge(vm_, dirs=False):
 diff --git a/mcp/salt-formulas/armband/salt_minion.sls b/mcp/salt-formulas/armband/salt_minion.sls
 new file mode 100644
-index 00000000..9cce6367
+index 0000000..9cce636
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/salt_minion.sls
 @@ -0,0 +1,7 @@

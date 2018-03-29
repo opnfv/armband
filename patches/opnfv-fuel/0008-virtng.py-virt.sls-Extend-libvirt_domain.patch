@@ -34,7 +34,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 
 diff --git a/mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch b/mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
 new file mode 100644
-index 00000000..706b67da
+index 0000000..706b67d
 --- /dev/null
 +++ b/mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
 @@ -0,0 +1,54 @@
@@ -94,7 +94,7 @@ index 00000000..706b67da
 +         for dev in kwargs['boot_dev'].split():
 diff --git a/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch b/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 new file mode 100644
-index 00000000..78eb0bff
+index 0000000..78eb0bf
 --- /dev/null
 +++ b/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 @@ -0,0 +1,51 @@
@@ -150,7 +150,7 @@ index 00000000..78eb0bff
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index dc1118d6..6541cbba 100644
+index 4d19dfe..cd7a1d5 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
 @@ -18,3 +18,5 @@
@@ -160,7 +160,7 @@ index dc1118d6..6541cbba 100644
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-index 5bbe0fe4..84b392e6 100644
+index 5bbe0fe..84b392e 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 @@ -53,21 +53,33 @@ parameters:
@@ -208,7 +208,7 @@ index 5bbe0fe4..84b392e6 100644
            net_profile: default_ext
        cluster:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
-index 81135d6a..36908b18 100644
+index 81135d6..36908b1 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
 +++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
 @@ -19,6 +19,9 @@ parameters:
