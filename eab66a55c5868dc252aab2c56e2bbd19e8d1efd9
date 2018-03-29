@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_6e2277a5",
+        "filename": "patches/opnfv-fuel/0001-baremetal-Add-Armband-Openstack-repos-to-kvm-cmp.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-03-29T20:32:10Z",
+      "side": 1,
+      "message": ":) the reason you got different sized hashes here (and in all other patch files in Armband) is that git 2.x (or newer, I don\u0027t recall from the top of my head) extended the short SHA string from 7 chars to 8 chars.\nTo prevent this, you should upgrade your git package on the machine used for `make patches-export` (I used a PPA on Ubuntu to do that, as the one in their main repos is too old).",
+      "range": {
+        "startLine": 28,
+        "startChar": 6,
+        "endLine": 28,
+        "endChar": 22
+      },
+      "revId": "eab66a55c5868dc252aab2c56e2bbd19e8d1efd9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
