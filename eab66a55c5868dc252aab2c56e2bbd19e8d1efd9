@@ -22,6 +22,30 @@
       "revId": "eab66a55c5868dc252aab2c56e2bbd19e8d1efd9",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_0ec133e4",
+        "filename": "patches/opnfv-fuel/0001-baremetal-Add-Armband-Openstack-repos-to-kvm-cmp.patch",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-03-30T10:09:18Z",
+      "side": 1,
+      "message": "I did not only get different hash sizes. I got different patches. I dont get wtf happened since tha patches seemed to apply cleanly. If everybody must switch git versions we should know",
+      "parentUuid": "5a3f45e8_6e2277a5",
+      "range": {
+        "startLine": 28,
+        "startChar": 6,
+        "endLine": 28,
+        "endChar": 22
+      },
+      "revId": "eab66a55c5868dc252aab2c56e2bbd19e8d1efd9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
