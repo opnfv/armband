@@ -10,20 +10,28 @@ From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Wed, 30 Aug 2017 22:15:07 +0200
 Subject: [PATCH] baremetal, virtual: Extend arch list for UCA repo
 
+While at it, handle pike-staging PPA too.
+
 JIRA: https://jira.opnfv.org/browse/ARMBAND-304
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2 | 2 +-
- mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2 | 4 ++--
+ mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml  | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2
-index 3b890da0..5b9d24e7 100644
+index 9db8f35d..026096b9 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_init.yml.j2
-@@ -251,7 +251,7 @@ parameters:
+@@ -251,12 +251,12 @@ parameters:
        repo:
+         uca-staging:
+           source: "deb http://ppa.launchpad.net/ubuntu-cloud-archive/${_param:openstack_version}-staging/ubuntu xenial main"
+-          architectures: amd64
++          architectures: amd64,arm64
+           key_id: 9F68104E
+           key_server: keyserver.ubuntu.com
          uca:
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/${_param:openstack_version} main"
 -          architectures: amd64
@@ -32,11 +40,18 @@ index 3b890da0..5b9d24e7 100644
            key_server: keyserver.ubuntu.com
        kernel:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
-index 46d7af4a..076f38a9 100644
+index cef0b531..c3642b50 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
-@@ -96,7 +96,7 @@ parameters:
-       repo:
+@@ -97,13 +97,13 @@ parameters:
+         uca-staging:
+           # yamllint disable rule:line-length
+           source: "deb http://ppa.launchpad.net/ubuntu-cloud-archive/${_param:openstack_version}-staging/ubuntu xenial main"
+-          architectures: amd64
++          architectures: amd64,arm64
+           key_id: 9F68104E
+           key_server: keyserver.ubuntu.com
+           # yamllint enable rule:line-length
          uca:
            source: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/${_param:openstack_version} main"
 -          architectures: amd64
