@@ -208,13 +208,13 @@ index 5bbe0fe4..84b392e6 100644
            net_profile: default_ext
        cluster:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
-index 81135d6a..36908b18 100644
+index 5fc4776d..b19789e3 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
 +++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
 @@ -19,6 +19,9 @@ parameters:
          opendaylight.server:
            cpu: 4
-           ram: 6144
+           ram: 8192
 +          hw_firmware_type: uefi
 +          virt_machine_model: virt
 +          cpu_model: host-passthrough
