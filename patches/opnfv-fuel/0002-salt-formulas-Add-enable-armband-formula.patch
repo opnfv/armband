@@ -44,7 +44,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 4f3760f6..115a56c1 100755
+index 4f3760f..115a56c 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -56,7 +56,7 @@ index 4f3760f6..115a56c1 100755
  salt -C 'I@mongodb:server and *01*' state.sls mongodb || true
  wait_for 10 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
-index 4c8cbcf8..1cf54240 100755
+index 4c8cbcf..1cf5424 100755
 --- a/mcp/config/states/openstack_noha
 +++ b/mcp/config/states/openstack_noha
 @@ -53,6 +53,8 @@ salt -I 'ceilometer:agent' state.sls ceilometer
@@ -69,7 +69,7 @@ index 4c8cbcf8..1cf54240 100755
  salt -I 'horizon:server' file.symlink \
    /var/lib/openstack-dashboard/static \
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index c391cfe6..02a813c9 100755
+index c391cfe..02a813c 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -27,6 +27,7 @@ if [ "${ERASE_ENV}" -eq 1 ]; then
@@ -82,7 +82,7 @@ index c391cfe6..02a813c9 100755
  salt -C 'kvm* or cmp*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
 new file mode 100644
-index 00000000..36ddf72b
+index 0000000..36ddf72
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
 @@ -0,0 +1,76 @@
@@ -164,7 +164,7 @@ index 00000000..36ddf72b
 +         if image_meta.properties.get('hw_video_model'):
 diff --git a/mcp/salt-formulas/armband/init.sls b/mcp/salt-formulas/armband/init.sls
 new file mode 100644
-index 00000000..8a8cf2ab
+index 0000000..8a8cf2a
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/init.sls
 @@ -0,0 +1,7 @@
@@ -177,7 +177,7 @@ index 00000000..8a8cf2ab
 + {%- endif %}
 diff --git a/mcp/salt-formulas/armband/nova_config.sls b/mcp/salt-formulas/armband/nova_config.sls
 new file mode 100644
-index 00000000..31fa031a
+index 0000000..31fa031
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/nova_config.sls
 @@ -0,0 +1,35 @@
@@ -218,7 +218,7 @@ index 00000000..31fa031a
 +    - name: "service nova-compute restart"
 diff --git a/mcp/salt-formulas/armband/nova_libvirt.sls b/mcp/salt-formulas/armband/nova_libvirt.sls
 new file mode 100644
-index 00000000..bc2cbda9
+index 0000000..bc2cbda
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/nova_libvirt.sls
 @@ -0,0 +1,7 @@
@@ -231,7 +231,7 @@ index 00000000..bc2cbda9
 +  - unless: 'test -f /var/cache/salt/minion/files/base/armband/files/nova-libvirt-aarch64-rollup.diff && cd /usr/lib/python2.7/dist-packages && patch -p1 -R --dry-run /var/cache/salt/minion/files/base/armband/files/nova-libvirt-aarch64-rollup.diff'
 diff --git a/mcp/salt-formulas/armband/qemu_efi.sls b/mcp/salt-formulas/armband/qemu_efi.sls
 new file mode 100644
-index 00000000..c697dae9
+index 0000000..c697dae
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/qemu_efi.sls
 @@ -0,0 +1,2 @@
@@ -239,7 +239,7 @@ index 00000000..c697dae9
 +  pkg.installed
 diff --git a/mcp/salt-formulas/armband/vgabios.sls b/mcp/salt-formulas/armband/vgabios.sls
 new file mode 100644
-index 00000000..500c2bcf
+index 0000000..500c2bc
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/vgabios.sls
 @@ -0,0 +1,7 @@

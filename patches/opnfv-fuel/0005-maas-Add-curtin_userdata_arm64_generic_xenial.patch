@@ -26,7 +26,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 
 diff --git a/mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch b/mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 new file mode 100644
-index 00000000..0368937d
+index 0000000..0368937
 --- /dev/null
 +++ b/mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 @@ -0,0 +1,35 @@
@@ -66,16 +66,16 @@ index 00000000..0368937d
 +   file.managed:
 +   - source: salt://maas/files/pgpass
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index b650ec87..4d19dfe7 100644
+index dfb0df7..9602515 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -17,3 +17,4 @@
+@@ -16,3 +16,4 @@
  /usr/share/salt-formulas/env: 0011-system.repo-Debian-Add-keyserver-proxy-support.patch
  /usr/share/salt-formulas/env: 0012-routes-Skip-network-restart-on-noifupdown.patch
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
 +/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
-index e83de35c..226a4f66 100644
+index e83de35..226a4f6 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
 @@ -41,6 +41,42 @@ parameters:
@@ -123,7 +123,7 @@ index e83de35c..226a4f66 100644
            name: ${_param:opnfv_infra_maas_pxe_network_address}/24
 diff --git a/mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial b/mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial
 new file mode 100644
-index 00000000..15d10a48
+index 0000000..15d10a4
 --- /dev/null
 +++ b/mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial
 @@ -0,0 +1,35 @@
