@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5a3f45e8_30b5407e",
+        "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-04-20T09:54:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a3f45e8_9ef70b59",
+      "revId": "db2bf059c1164197d4e42d597e0723fcf0ce9a37",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a3f45e8_159d9659",
         "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
         "patchSetId": 5
@@ -48,6 +66,24 @@
       "writtenOn": "2018-04-19T23:32:07Z",
       "side": 1,
       "message": "Subject should be before empty line, not after.",
+      "revId": "db2bf059c1164197d4e42d597e0723fcf0ce9a37",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_70b22895",
+        "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-04-20T09:54:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a3f45e8_159d9659",
       "revId": "db2bf059c1164197d4e42d597e0723fcf0ce9a37",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -77,6 +113,30 @@
     },
     {
       "key": {
+        "uuid": "5a3f45e8_50af2c2a",
+        "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-04-20T09:54:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a3f45e8_75a5faa0",
+      "range": {
+        "startLine": 172,
+        "startChar": 18,
+        "endLine": 172,
+        "endChar": 33
+      },
+      "revId": "db2bf059c1164197d4e42d597e0723fcf0ce9a37",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a3f45e8_35aff27e",
         "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
         "patchSetId": 5
@@ -88,6 +148,30 @@
       "writtenOn": "2018-04-19T23:32:07Z",
       "side": 1,
       "message": "This does not describe the issue.\nHow about:\n\u0027Armband relies on Ubuntu Xenial and UCA Pike packages. The Nova package in UCA explicitly disables AArch64 serial console access (by removing the second pty device altogether) due to libvirt/QEMU limitations in the Xenial release / UCA Pike.\nSince Armband currently provides newer versions for the core virtualization packages, we can safely bring back the serial console (second tty) in Nova.\u0027",
+      "range": {
+        "startLine": 173,
+        "startChar": 0,
+        "endLine": 174,
+        "endChar": 59
+      },
+      "revId": "db2bf059c1164197d4e42d597e0723fcf0ce9a37",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_500bac29",
+        "filename": "patches/opnfv-fuel/0002-salt-formulas-Add-enable-armband-formula.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-04-20T09:54:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a3f45e8_35aff27e",
       "range": {
         "startLine": 173,
         "startChar": 0,
