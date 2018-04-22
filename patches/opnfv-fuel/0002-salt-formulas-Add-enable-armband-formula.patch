@@ -36,7 +36,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  mcp/salt-formulas/armband/nova_libvirt.sls         |   7 +
  mcp/salt-formulas/armband/qemu_efi.sls             |   2 +
  mcp/salt-formulas/armband/vgabios.sls              |   7 +
- 9 files changed, 226 insertions(+)
+ 9 files changed, 227 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/nova_config.sls
@@ -83,7 +83,7 @@ index c391cfe6..02a813c9 100755
  salt -C 'kvm* or cmp*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
 new file mode 100644
-index 00000000..a480a20c
+index 00000000..299148e3
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
 @@ -0,0 +1,165 @@
