@@ -22,7 +22,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 
 diff --git a/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch b/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
 new file mode 100644
-index 00000000..d40e63b2
+index 0000000..d40e63b
 --- /dev/null
 +++ b/mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
 @@ -0,0 +1,22 @@
@@ -49,7 +49,7 @@ index 00000000..d40e63b2
 +     cmd += 'else sh {0} -c /tmp {1}; fi'.format(
 +         os.path.join(tmppath, 'bootstrap-salt.sh'), arg)
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 9ce1cc9c..efcf3662 100644
+index 9ce1cc9..efcf366 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
 @@ -19,3 +19,4 @@
