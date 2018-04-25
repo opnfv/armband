@@ -161,7 +161,7 @@ index 00000000..9e74c240
 + def purge(vm_, dirs=False):
 diff --git a/mcp/salt-formulas/armband/salt_minion.sls b/mcp/salt-formulas/armband/salt_minion.sls
 new file mode 100644
-index 00000000..9cce6367
+index 00000000..cc5c9242
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/salt_minion.sls
 @@ -0,0 +1,7 @@
@@ -171,4 +171,4 @@ index 00000000..9cce6367
 +  - source: salt://armband/files/salt-minion-aarch64-rollup.diff
 +  - hash: False
 +  - options: '-p1'
-+  - unless: 'test -f /var/cache/salt/minion/files/base/armband/files/salt-minion-aarch64-rollup.diff && cd /usr/lib/python2.7/dist-packages && patch -p1 -R --dry-run /var/cache/salt/minion/files/base/armband/files/salt-minion-aarch64-rollup.diff'
++  - unless: 'test -f /var/cache/salt/minion/files/base/armband/files/salt-minion-aarch64-rollup.diff && cd /usr/lib/python2.7/dist-packages && patch -p1 -R --dry-run -r - < /var/cache/salt/minion/files/base/armband/files/salt-minion-aarch64-rollup.diff'
