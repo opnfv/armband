@@ -15,7 +15,6 @@ Subject: [PATCH] salt-formulas: Add & enable armband formula
 - prereq: fix missing link for vgabios binary blob;
 - nova patch: Add video type virtio for AArch64 (backport from [1]);
 - nova patch: libvirt driver: AArch64: ACPI depends on AAVMF;
-- nova patch: force creation of pty device;
 - nova conf: cpu_model=cortex-a57 (only for virtual deploys);
 - nova conf: virt_type=qemu (only for virtual deploys);
 - nova compute conf: virt_type=qemu (only for virtual deploys);
@@ -27,16 +26,16 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/openstack_ha                     |   1 +
- mcp/config/states/openstack_noha                   |   2 +
- mcp/config/states/virtual_control_plane            |   1 +
- .../armband/files/nova-libvirt-aarch64-rollup.diff | 165 +++++++++++++++++++++
- mcp/salt-formulas/armband/init.sls                 |   7 +
- mcp/salt-formulas/armband/nova_config.sls          |  35 +++++
- mcp/salt-formulas/armband/nova_libvirt.sls         |   7 +
- mcp/salt-formulas/armband/qemu_efi.sls             |   2 +
- mcp/salt-formulas/armband/vgabios.sls              |   7 +
- 9 files changed, 227 insertions(+)
+ mcp/config/states/openstack_ha                     |  1 +
+ mcp/config/states/openstack_noha                   |  2 +
+ mcp/config/states/virtual_control_plane            |  1 +
+ .../armband/files/nova-libvirt-aarch64-rollup.diff | 76 ++++++++++++++++++++++
+ mcp/salt-formulas/armband/init.sls                 |  7 ++
+ mcp/salt-formulas/armband/nova_config.sls          | 35 ++++++++++
+ mcp/salt-formulas/armband/nova_libvirt.sls         |  7 ++
+ mcp/salt-formulas/armband/qemu_efi.sls             |  2 +
+ mcp/salt-formulas/armband/vgabios.sls              |  7 ++
+ 9 files changed, 138 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/nova_config.sls
@@ -83,10 +82,10 @@ index c391cfe6..02a813c9 100755
  salt -C 'kvm* or cmp*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
 new file mode 100644
-index 00000000..299148e3
+index 00000000..36ddf72b
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
-@@ -0,0 +1,165 @@
+@@ -0,0 +1,76 @@
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Thu, 24 Aug 2017 10:57:28 +0200
 +Subject: [PATCH] libvirt: AArch64: ACPI depends on AAVMF
@@ -163,95 +162,6 @@ index 00000000..299148e3
 +         elif CONF.spice.enabled:
 +             video.type = 'qxl'
 +         if image_meta.properties.get('hw_video_model'):
-+---
-+
-+From ac6d3cd85ffe94115f15134406ba0d366e938764 Mon Sep 17 00:00:00 2001
-+From: Charalampos Kominos <Charalampos.Kominos@enea.com>
-+Date: Tue, 13 Mar 2018 17:02:56 +0100
-+Subject: [PATCH] Allow nova to create a pty device for aarch64VM
-+
-+Armband relies on Ubuntu Xenial and UCA Pike packages. The Nova package in UCA
-+explicitly disables AArch64 serial console access by removing the second pty
-+device due to libvirt/QEMU limitations in the Xenial release / UCA Pike.
-+Since Armband provides newer versions for the core virtualization packages,
-+we can safely bring back the serial console in Nova.
-+
-+JIRA: ARMBAND-352
-+
-+Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
-+---
-+
-+--- a/nova/virt/libvirt/driver.py
-++++ b/nova/virt/libvirt/driver.py
-+@@ -4666,13 +4666,11 @@
-+                   self._is_s390x_guest(image_meta)):
-+             self._create_consoles_s390x(guest_cfg, instance,
-+                                         flavor, image_meta)
-+-        elif (virt_type in ("qemu", "kvm") and
-+-                  self._is_arm_guest(image_meta)):
-+-            # NOTE(jamespage): libvirt 2.5.0 as shipped in Ubuntu zesty
-+-            #                  and the Pike UCA needs to be configured
-+-            #                  for compatibility on arm64.
-+-            self._create_consoles_arm(guest_cfg, instance,
-+-                                      flavor, image_meta)
-++
-++        #ARMband: Canonical applies a patch to align with libvirt 2.5.0 in UCA repos
-++        #         which removes the console on aarch64. Since ARMband uses a newer
-++        #         libvirt version we can safely revert that change.
-++
-+         elif virt_type in ("qemu", "kvm"):
-+             self._create_consoles_qemu_kvm(guest_cfg, instance,
-+                                         flavor, image_meta)
-+@@ -4681,12 +4679,6 @@
-+         s390x_archs = (fields.Architecture.S390, fields.Architecture.S390X)
-+         return libvirt_utils.get_arch(image_meta) in s390x_archs
-+
-+-    def _is_arm_guest(self, image_meta):
-+-        arm_archs = (fields.Architecture.AARCH64,
-+-                     fields.Architecture.ARMV7B,
-+-                     fields.Architecture.ARMV7)
-+-        return libvirt_utils.get_arch(image_meta) in arm_archs
-+-
-+     def _create_consoles_qemu_kvm(self, guest_cfg, instance, flavor,
-+                                   image_meta):
-+         char_dev_cls = vconfig.LibvirtConfigGuestSerial
-+@@ -4716,25 +4708,6 @@
-+                                     "sclplm")
-+        self._create_pty_device(guest_cfg, char_dev_cls, "sclp", log_path)
-+
-+-    def _create_consoles_arm(self, guest_cfg, instance, flavor, image_meta):
-+-        char_dev_cls = vconfig.LibvirtConfigGuestConsole
-+-        log_path = self._get_console_log_path(instance)
-+-        if CONF.serial_console.enabled:
-+-            if not self._serial_ports_already_defined(instance):
-+-                num_ports = hardware.get_number_of_serial_ports(flavor,
-+-                                                                image_meta)
-+-                self._check_number_of_serial_console(num_ports)
-+-                self._create_serial_consoles(guest_cfg, num_ports,
-+-                                             char_dev_cls, log_path)
-+-        else:
-+-            # NOTE(jamespage): Force creation of file device for compatibility
-+-            #                  with aarch64 + libvirt 2.5.0
-+-            self._create_file_device(guest_cfg, instance, char_dev_cls,
-+-                                     force=True)
-+-        # NOTE(jamespage): Skip creation of pty devices; they only work with
-+-        #                  the virtio driver which does not capture early
-+-        #                  boot on aarch64
-+-
-+     def _create_pty_device(self, guest_cfg, char_dev_cls, target_type=None,
-+                            log_path=None):
-+         def _create_base_dev():
-+@@ -4772,8 +4745,8 @@
-+                guest_cfg.add_device(_create_base_dev())
-+
-+     def _create_file_device(self, guest_cfg, instance, char_dev_cls,
-+-                            target_type=None, force=False):
-+-        if self._is_virtlogd_available() and not force:
-++                            target_type=None):
-++        if self._is_virtlogd_available():
-+             return
-+
-+         consolelog = char_dev_cls()
 diff --git a/mcp/salt-formulas/armband/init.sls b/mcp/salt-formulas/armband/init.sls
 new file mode 100644
 index 00000000..8a8cf2ab
@@ -308,7 +218,7 @@ index 00000000..31fa031a
 +    - name: "service nova-compute restart"
 diff --git a/mcp/salt-formulas/armband/nova_libvirt.sls b/mcp/salt-formulas/armband/nova_libvirt.sls
 new file mode 100644
-index 00000000..bc2cbda9
+index 00000000..ff93db80
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/nova_libvirt.sls
 @@ -0,0 +1,7 @@
@@ -318,7 +228,7 @@ index 00000000..bc2cbda9
 +  - source: salt://armband/files/nova-libvirt-aarch64-rollup.diff
 +  - hash: False
 +  - options: '-p1'
-+  - unless: 'test -f /var/cache/salt/minion/files/base/armband/files/nova-libvirt-aarch64-rollup.diff && cd /usr/lib/python2.7/dist-packages && patch -p1 -R --dry-run /var/cache/salt/minion/files/base/armband/files/nova-libvirt-aarch64-rollup.diff'
++  - unless: 'test -f /var/cache/salt/minion/files/base/armband/files/nova-libvirt-aarch64-rollup.diff && cd /usr/lib/python2.7/dist-packages && patch -p1 -R --dry-run -r - < /var/cache/salt/minion/files/base/armband/files/nova-libvirt-aarch64-rollup.diff'
 diff --git a/mcp/salt-formulas/armband/qemu_efi.sls b/mcp/salt-formulas/armband/qemu_efi.sls
 new file mode 100644
 index 00000000..c697dae9
