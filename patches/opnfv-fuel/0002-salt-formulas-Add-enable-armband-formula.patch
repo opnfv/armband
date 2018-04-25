@@ -45,7 +45,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 4f3760f6..115a56c1 100755
+index 07bd6b48..7b37bd97 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -55,7 +55,7 @@ index 4f3760f6..115a56c1 100755
 +wait_for 5.0 "salt -I 'nova:compute' state.sls armband"
 
  salt -C 'I@mongodb:server and *01*' state.sls mongodb || true
- wait_for 10 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
+ wait_for 10.0 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
 index 4c8cbcf8..1cf54240 100755
 --- a/mcp/config/states/openstack_noha
