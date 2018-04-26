@@ -150,12 +150,12 @@ index 00000000..78eb0bff
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 96025157..9ce1cc9c 100644
+index 3632a92b..5bbacf56 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -17,3 +17,5 @@
- /usr/share/salt-formulas/env: 0012-routes-Skip-network-restart-on-noifupdown.patch
+@@ -18,3 +18,5 @@
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
+ /usr/share/salt-formulas/env: 0016-Set-boot-source-selections.patch
  /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
