@@ -2,7 +2,7 @@
 .. http://creativecommons.org/licenses/by/4.0
 .. (c) Open Platform for NFV Project, Inc. and its contributors
 
-.. _armband-release-notes-label:
+.. _armband-releasenotes:
 
 *****************************
 Release notes for Fuel\@OPNFV
