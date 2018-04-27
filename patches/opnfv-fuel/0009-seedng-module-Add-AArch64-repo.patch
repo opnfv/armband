@@ -1,11 +1,3 @@
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-: Copyright (c) 2018 Enea AB and others.
-:
-: All rights reserved. This program and the accompanying materials
-: are made available under the terms of the Apache License, Version 2.0
-: which accompanies this distribution, and is available at
-: http://www.apache.org/licenses/LICENSE-2.0
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Mon, 21 Aug 2017 20:42:00 +0200
 Subject: [PATCH] seedng: module: Add AArch64 repo
@@ -15,8 +7,8 @@ salt custom py module seedng.py should use custom repo arg
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../0105-seedng-module-Add-AArch64-repo.patch      | 22 ++++++++++++++++++++++
- mcp/patches/patches.list                           |  1 +
+ .../0105-seedng-module-Add-AArch64-repo.patch | 22 +++++++++++++++++++
+ mcp/patches/patches.list                      |  1 +
  2 files changed, 23 insertions(+)
  create mode 100644 mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
 

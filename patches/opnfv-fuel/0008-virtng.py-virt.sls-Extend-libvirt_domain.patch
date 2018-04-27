@@ -1,11 +1,3 @@
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-: Copyright (c) 2018 Enea AB and others.
-:
-: All rights reserved. This program and the accompanying materials
-: are made available under the terms of the Apache License, Version 2.0
-: which accompanies this distribution, and is available at
-: http://www.apache.org/licenses/LICENSE-2.0
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Date: Mon, 21 Aug 2017 01:10:16 +0200
 Subject: [PATCH] virtng.py, virt.sls: Extend libvirt_domain
@@ -23,11 +15,11 @@ specific values.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../0103-virtng-module-Extend-libvirt_domain.patch | 54 ++++++++++++++++++++++
- ...4-salt-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++++
- mcp/patches/patches.list                           |  2 +
- .../cluster/mcp-pike-common-ha/infra/kvm.yml       | 15 ++++++
- .../cluster/mcp-pike-odl-ha/infra/kvm.yml.j2       |  3 ++
+ ...-virtng-module-Extend-libvirt_domain.patch | 54 +++++++++++++++++++
+ ...t-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++
+ mcp/patches/patches.list                      |  2 +
+ .../cluster/mcp-pike-common-ha/infra/kvm.yml  | 15 ++++++
+ .../cluster/mcp-pike-odl-ha/infra/kvm.yml.j2  |  3 ++
  5 files changed, 125 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
  create mode 100644 mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch

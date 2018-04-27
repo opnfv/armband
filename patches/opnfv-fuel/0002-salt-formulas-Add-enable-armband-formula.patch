@@ -1,11 +1,3 @@
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-: Copyright (c) 2018 Enea AB and others.
-:
-: All rights reserved. This program and the accompanying materials
-: are made available under the terms of the Apache License, Version 2.0
-: which accompanies this distribution, and is available at
-: http://www.apache.org/licenses/LICENSE-2.0
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 From: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Date: Tue, 25 Jul 2017 00:58:32 +0200
 Subject: [PATCH] salt-formulas: Add & enable armband formula
@@ -26,16 +18,16 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/openstack_ha                     |  1 +
- mcp/config/states/openstack_noha                   |  2 +
- mcp/config/states/virtual_control_plane            |  1 +
- .../armband/files/nova-libvirt-aarch64-rollup.diff | 76 ++++++++++++++++++++++
- mcp/salt-formulas/armband/init.sls                 |  7 ++
- mcp/salt-formulas/armband/nova_config.sls          | 35 ++++++++++
- mcp/salt-formulas/armband/nova_libvirt.sls         |  7 ++
- mcp/salt-formulas/armband/qemu_efi.sls             |  2 +
- mcp/salt-formulas/armband/vgabios.sls              |  7 ++
- 9 files changed, 138 insertions(+)
+ mcp/config/states/openstack_ha                |   1 +
+ mcp/config/states/openstack_noha              |   2 +
+ mcp/config/states/virtual_control_plane       |   1 +
+ .../files/nova-libvirt-aarch64-rollup.diff    | 106 ++++++++++++++++++
+ mcp/salt-formulas/armband/init.sls            |   7 ++
+ mcp/salt-formulas/armband/nova_config.sls     |  35 ++++++
+ mcp/salt-formulas/armband/nova_libvirt.sls    |   7 ++
+ mcp/salt-formulas/armband/qemu_efi.sls        |   2 +
+ mcp/salt-formulas/armband/vgabios.sls         |   7 ++
+ 9 files changed, 168 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/nova_config.sls
@@ -82,10 +74,10 @@ index c391cfe6..02a813c9 100755
  salt -C 'kvm* or cmp*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
 new file mode 100644
-index 00000000..36ddf72b
+index 00000000..4cc118a4
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
-@@ -0,0 +1,76 @@
+@@ -0,0 +1,106 @@
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Thu, 24 Aug 2017 10:57:28 +0200
 +Subject: [PATCH] libvirt: AArch64: ACPI depends on AAVMF
@@ -162,6 +154,36 @@ index 00000000..36ddf72b
 +         elif CONF.spice.enabled:
 +             video.type = 'qxl'
 +         if image_meta.properties.get('hw_video_model'):
++--
++
++From dbd4c20de002784a4ffc07b173e82dd84a3af01c Mon Sep 17 00:00:00 2001
++From: Charalampos Kominos <Charalampos.Kominos@enea.com>
++Date: Wed, 2 May 2018 14:20:47 +0200
++Subject: [PATCH] [PATCH] Allow libvirt to honor root device naming
++
++Current behaviour in upstream nova is for rootfs to be in /dev/vda
++which is the default behaviour when using virtio driver. However when
++other devices are requested either by glance or by CLI, nova ignores
++that naming and still tries to attach to vda which fails.
++
++Manually applied in https://review.openstack.org/#/c/214314/
++
++JIRA: ARMBAND-376
++
++Signed-off-by: Charalampos Kominos <charalampos.kominos@enea.com>
++---
++
++--- a/nova/virt/libvirt/driver.py
+++++ b/nova/virt/libvirt/driver.py
++@@ -8257,6 +8257,8 @@
++                     "Ignoring supplied device name: %(device_name)s. "
++                     "Libvirt can't honour user-supplied dev names",
++                     {'device_name': bdm.device_name}, instance=instance)
+++                if instance.root_device_name == bdm.device_name:
+++                   instance.root_device_name = None
++                 bdm.device_name = None
++         block_device_info = driver.get_block_device_info(instance,
++                                                          block_device_mapping)
 diff --git a/mcp/salt-formulas/armband/init.sls b/mcp/salt-formulas/armband/init.sls
 new file mode 100644
 index 00000000..8a8cf2ab
