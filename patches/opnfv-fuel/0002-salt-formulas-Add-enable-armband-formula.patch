@@ -26,15 +26,15 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/openstack_ha                     |  1 +
- mcp/config/states/openstack_noha                   |  2 +
- mcp/config/states/virtual_control_plane            |  1 +
- .../armband/files/nova-libvirt-aarch64-rollup.diff | 76 ++++++++++++++++++++++
- mcp/salt-formulas/armband/init.sls                 |  7 ++
- mcp/salt-formulas/armband/nova_config.sls          | 35 ++++++++++
- mcp/salt-formulas/armband/nova_libvirt.sls         |  7 ++
- mcp/salt-formulas/armband/qemu_efi.sls             |  2 +
- mcp/salt-formulas/armband/vgabios.sls              |  7 ++
+ mcp/config/states/openstack_ha                |  1 +
+ mcp/config/states/openstack_noha              |  2 +
+ mcp/config/states/virtual_control_plane       |  1 +
+ .../files/nova-libvirt-aarch64-rollup.diff    | 76 +++++++++++++++++++
+ mcp/salt-formulas/armband/init.sls            |  7 ++
+ mcp/salt-formulas/armband/nova_config.sls     | 35 +++++++++
+ mcp/salt-formulas/armband/nova_libvirt.sls    |  7 ++
+ mcp/salt-formulas/armband/qemu_efi.sls        |  2 +
+ mcp/salt-formulas/armband/vgabios.sls         |  7 ++
  9 files changed, 138 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
