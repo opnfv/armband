@@ -16,10 +16,10 @@ the updated kernel & other packages from the start.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ...-Add-curtin_userdata_arm64_generic_xenial.patch | 35 +++++++++++++++++++++
- mcp/patches/patches.list                           |  1 +
- .../cluster/mcp-pike-common-ha/infra/maas.yml      | 36 ++++++++++++++++++++++
- .../files/curtin_userdata_arm64_generic_xenial     | 35 +++++++++++++++++++++
+ ...curtin_userdata_arm64_generic_xenial.patch | 35 ++++++++++++++++++
+ mcp/patches/patches.list                      |  1 +
+ .../cluster/mcp-pike-common-ha/infra/maas.yml | 36 +++++++++++++++++++
+ .../curtin_userdata_arm64_generic_xenial      | 35 ++++++++++++++++++
  4 files changed, 107 insertions(+)
  create mode 100644 mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
  create mode 100644 mcp/salt-formulas/maas/files/curtin_userdata_arm64_generic_xenial
