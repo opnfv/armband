@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_193c91c7",
+        "filename": "patches/opnfv-fuel/0012-Set-volume-name-in-source-file-to-sdX.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2018-05-04T13:54:50Z",
+      "side": 1,
+      "message": "This file is already a j2, we could apply some checks and dynamically use \u0027vdc\u0027 for x86 and \u0027sdc\u0027 for aarch64, which would allow us to later upstream this patch to Fuel@OPNFV.",
+      "revId": "8d1e8e56a48bc56265046b6410798dec2711d6de",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
