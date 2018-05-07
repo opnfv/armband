@@ -16,6 +16,24 @@
       "revId": "8d1e8e56a48bc56265046b6410798dec2711d6de",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_680cdced",
+        "filename": "patches/opnfv-fuel/0012-Set-volume-name-in-source-file-to-sdX.patch",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2018-05-07T12:07:00Z",
+      "side": 1,
+      "message": "I was thinking on making it permanent for x86 as well at some point that is why I just wanted to keep this here just for armband for now. \nMore to the point is why the source file does not change after the patch is applied. Are we reusing the source file if it exists?",
+      "parentUuid": "5a3f45e8_193c91c7",
+      "revId": "8d1e8e56a48bc56265046b6410798dec2711d6de",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
