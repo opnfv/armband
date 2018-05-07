@@ -20,8 +20,8 @@ handle it via Salt for baremetal kvm* and cmp* nodes.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml     | 1 +
- .../classes/cluster/mcp-pike-common-ha/openstack_compute.yml     | 1 +
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml         | 1 +
+ mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_compute.yml | 1 +
  2 files changed, 2 insertions(+)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml

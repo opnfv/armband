@@ -15,8 +15,8 @@ salt custom py module seedng.py should use custom repo arg
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../0105-seedng-module-Add-AArch64-repo.patch | 22 +++++++++++++++++++
- mcp/patches/patches.list                      |  1 +
+ .../0105-seedng-module-Add-AArch64-repo.patch      | 22 ++++++++++++++++++++++
+ mcp/patches/patches.list                           |  1 +
  2 files changed, 23 insertions(+)
  create mode 100644 mcp/patches/0105-seedng-module-Add-AArch64-repo.patch
 
