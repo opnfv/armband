@@ -1,0 +1,47 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2018 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Thu, 10 May 2018 17:05:09 +0200
+Subject: [PATCH] AArch64: Switch to upstream Saltstack repo
+
+To work around the missing dependency of 'python-tornado' on
+'python-features' provided by the binary-specific DEB package
+in amd64 Saltstack repository, pre-install the req explicitly
+on FN (jumpserver) and VCP VMs via lib.sh.
+
+JIRA: ARMBAND-382
+
+Change-Id: I2dbd08a58f6cf57c2c48c2d7fc8d19ad4872e800
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/scenario/defaults.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/mcp/config/scenario/defaults.yaml b/mcp/config/scenario/defaults.yaml
+index 13f2dd52..110ffc70 100644
+--- a/mcp/config/scenario/defaults.yaml
++++ b/mcp/config/scenario/defaults.yaml
+@@ -36,14 +36,16 @@ aarch64:
+     apt:
+       keys:
+         - https://linux.enea.com/mcp-repos/pike/xenial/archive-mcppike.key
++        - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.11/SALTSTACK-GPG-KEY.pub
+       repos:
+         # <repo name> <repo prio> deb [arch=<arch>] <repo url> <repo dist> <repo comp>
+-        - saltstack 500 deb [arch=arm64] http://linux.enea.com/saltstack/apt/ubuntu/16.04/arm64/2016.11 xenial main
++        - saltstack 500 deb [arch=amd64] http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.11 xenial main
+         - armband 1100 deb [arch=arm64] http://linux.enea.com/mcp-repos/pike/xenial pike-armband main
+     pkg:
+       install:
+         - linux-image-generic-hwe-16.04-edge
+         - linux-headers-generic-hwe-16.04-edge
++        - python-futures
+         - salt-minion
+   control:
+     apt: ~
