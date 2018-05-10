@@ -150,20 +150,20 @@ index 00000000..78eb0bff
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 3632a92b..5bbacf56 100644
+index 6a6e7a36..891a3c6c 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -18,3 +18,5 @@
+@@ -17,3 +17,5 @@
+ /usr/share/salt-formulas/env: 0012-routes-Skip-network-restart-on-noifupdown.patch
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
  /usr/share/salt-formulas/env: 0016-Set-boot-source-selections.patch
- /usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-index 5bbe0fe4..84b392e6 100644
+index df230452..3548155f 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-@@ -53,21 +53,33 @@ parameters:
+@@ -52,21 +52,33 @@ parameters:
          openstack.control:
            cpu: 4
            ram: 12288
@@ -197,7 +197,7 @@ index 5bbe0fe4..84b392e6 100644
            disk_profile: xxlarge
            net_profile: default
          # stacklight.log:
-@@ -88,6 +100,9 @@ parameters:
+@@ -87,6 +99,9 @@ parameters:
          openstack.proxy:
            cpu: 2
            ram: 2048
