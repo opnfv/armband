@@ -1,0 +1,193 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Mon, 7 Aug 2017 19:45:01 +0200
+Subject: [PATCH] maas: Add curtin_userdata_arm64_generic_xenial
+
+Add AArch64 specific configuration.
+While at it, preseed Armband common repo-comp for Pike, so we get
+the updated kernel & other packages from the start.
+
+Sync with upstream PR [1] and prepare for upstreaming to Fuel@OPNFV.
+
+[1] https://github.com/salt-formulas/salt-formula-maas/pull/26
+
+Change-Id: I356adb73b80f0f2d85db4ab060e804cb9a053862
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ...-Add-curtin_userdata_arm64_generic_xenial.patch | 105 +++++++++++++++++++++
+ mcp/patches/patches.list                           |   1 +
+ .../mcp-pike-common-ha/infra/maas_pdf.yml.j2       |  36 +++++++
+ 3 files changed, 142 insertions(+)
+ create mode 100644 mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
+
+diff --git a/mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch b/mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
+new file mode 100644
+index 00000000..ba826fb2
+--- /dev/null
++++ b/mcp/patches/0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
+@@ -0,0 +1,105 @@
++::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
++: Copyright (c) 2018 Mirantis Inc., Enea AB and others.
++:
++: All rights reserved. This program and the accompanying materials
++: are made available under the terms of the Apache License, Version 2.0
++: which accompanies this distribution, and is available at
++: http://www.apache.org/licenses/LICENSE-2.0
++::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Sat, 5 Aug 2017 02:03:01 +0200
++Subject: [PATCH] curtin: Add curtin_userdata_arm64_generic_xenial
++
++Trusty has very limited support for AArch64, so it only makes
++sense to add Xenial curtin templates.
++
++NOTE: Current arm64 template will use the 'amd64' Saltstack repos,
++as most required packages are arch-independent.
++Pillar salt repo key and URL for amd64 are also used on arm64.
++This, coupled with the current state of the Ubuntu Xenial repos,
++leads to the following (AArch64 only):
++- RAET is not supported out of the box (arch-specific binaries are
++  required, yet Ubuntu lacks one or more of them);
++- python-tornado from Ubuntu does not depend on python-futures,
++  so we install it explicitly via Curtin;
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ maas/files/curtin_userdata_arm64_generic_xenial | 44 +++++++++++++++++++++++++
++ maas/region.sls                                 | 12 +++++++
++ 2 files changed, 56 insertions(+)
++ create mode 100644 maas/files/curtin_userdata_arm64_generic_xenial
++
++diff --git a/maas/files/curtin_userdata_arm64_generic_xenial b/maas/files/curtin_userdata_arm64_generic_xenial
++new file mode 100644
++index 0000000..b070aaa
++--- /dev/null
+++++ b/maas/files/curtin_userdata_arm64_generic_xenial
++@@ -0,0 +1,44 @@
+++{%- from "maas/map.jinja" import cluster with context %}
+++{% raw %}
+++#cloud-config
+++debconf_selections:
+++ maas: |
+++  {{for line in str(curtin_preseed).splitlines()}}
+++  {{line}}
+++  {{endfor}}
+++{{if third_party_drivers and driver}}
+++early_commands:
+++  {{py: key_string = ''.join(['\\x%x' % x for x in map(ord, driver['key_binary'])])}}
+++  driver_00_get_key: /bin/echo -en '{{key_string}}' > /tmp/maas-{{driver['package']}}.gpg
+++  driver_01_add_key: ["apt-key", "add", "/tmp/maas-{{driver['package']}}.gpg"]
+++  driver_02_add: ["add-apt-repository", "-y", "deb {{driver['repository']}} {{node.get_distro_series()}} main"]
+++  driver_03_update_install: ["sh", "-c", "apt-get update --quiet && apt-get --assume-yes install {{driver['package']}}"]
+++  driver_04_load: ["sh", "-c", "depmod && modprobe {{driver['module']}}"]
+++{{endif}}
+++late_commands:
+++  maas: [wget, '--no-proxy', {{node_disable_pxe_url|escape.json}}, '--post-data', {{node_disable_pxe_data|escape.json}}, '-O', '/dev/null']
+++{% endraw %}
+++{%- if not cluster.saltstack_repo_key == 'none' %}
+++{% set salt_repo_key = salt['hashutil.base64_b64encode'](cluster.saltstack_repo_key) %}
+++  apt_00_set_gpg: ["curtin", "in-target", "--", "sh", "-c", "echo '{{salt_repo_key}}' | base64 -d | apt-key add -"]
+++{%- endif %}
+++{#- NOTE: Re-use amd64 repos on arm64 since most packages are arch independent #}
+++  apt_01_set_repo: ["curtin", "in-target", "--", "sh", "-c", "echo 'deb [arch=amd64] {{ cluster.saltstack_repo_xenial }}' >> /etc/apt/sources.list"]
+++{% raw %}
+++  apt_03_update: ["curtin", "in-target", "--", "apt-get", "update"]
+++  salt_01_install: ["curtin", "in-target", "--", "apt-get", "-y", "install", "python-futures", "salt-minion"]
+++{% endraw %}
+++  salt_02_hostname_set: ["curtin", "in-target", "--", "echo", "{% raw %}{{node.hostname}}{% endraw %}.{{pillar.linux.system.domain}}"]
+++  salt_03_hostname_get: ["curtin", "in-target", "--", "sh", "-c", "echo 'id: {% raw %}{{node.hostname}}{% endraw %}.{{pillar.linux.system.domain}}' >> /etc/salt/minion"]
+++  salt_04_master: ["curtin", "in-target", "--", "sh", "-c", "echo 'master: {{ salt_master_ip }}' >> /etc/salt/minion"]
+++{% raw %}
+++{{if third_party_drivers and driver}}
+++  driver_00_key_get: curtin in-target -- sh -c "/bin/echo -en '{{key_string}}' > /tmp/maas-{{driver['package']}}.gpg"
+++  driver_02_key_add: ["curtin", "in-target", "--", "apt-key", "add", "/tmp/maas-{{driver['package']}}.gpg"]
+++  driver_03_add: ["curtin", "in-target", "--", "add-apt-repository", "-y", "deb {{driver['repository']}} {{node.get_distro_series()}} main"]
+++  driver_04_update_install: ["curtin", "in-target", "--", "apt-get", "update", "--quiet"]
+++  driver_05_install: ["curtin", "in-target", "--", "apt-get", "-y", "install", "{{driver['package']}}"]
+++  driver_06_depmod: ["curtin", "in-target", "--", "depmod"]
+++  driver_07_update_initramfs: ["curtin", "in-target", "--", "update-initramfs", "-u"]
+++{{endif}}
+++{% endraw %}
++diff --git a/maas/region.sls b/maas/region.sls
++index 47ac9d7..0f0699d 100644
++--- a/maas/region.sls
+++++ b/maas/region.sls
++@@ -97,6 +97,18 @@ maas_apache_headers:
++   - require:
++     - pkg: maas_region_packages
++
+++/etc/maas/preseeds/curtin_userdata_arm64_generic_xenial:
+++  file.managed:
+++  - source: salt://maas/files/curtin_userdata_arm64_generic_xenial
+++  - template: jinja
+++  - user: root
+++  - group: root
+++  - mode: 644
+++  - context:
+++      salt_master_ip: {{ region.salt_master_ip }}
+++  - require:
+++    - pkg: maas_region_packages
+++
++ /root/.pgpass:
++   file.managed:
++   - source: salt://maas/files/pgpass
+diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
+index 6a6e7a36..3632a92b 100644
+--- a/mcp/patches/patches.list
++++ b/mcp/patches/patches.list
+@@ -17,3 +17,4 @@
+ /usr/share/salt-formulas/env: 0012-routes-Skip-network-restart-on-noifupdown.patch
+ /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
+ /usr/share/salt-formulas/env: 0016-Set-boot-source-selections.patch
++/usr/share/salt-formulas/env: 0101-maas-Add-curtin_userdata_arm64_generic_xenial.patch
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas_pdf.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas_pdf.yml.j2
+index cff6d9b3..a344a48e 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas_pdf.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas_pdf.yml.j2
+@@ -6,11 +6,47 @@
+ # http://www.apache.org/licenses/LICENSE-2.0
+ ##############################################################################
+ ---
++{%- set cluster_arch = [] %}
++{%- for node in conf.nodes %}
++  {%- if node.node.arch not in cluster_arch %}
++    {%- do cluster_arch.append(node.node.arch) %}
++  {%- endif %}
++{%- endfor %}
+ parameters:
+   maas:
+     region:
+       sshprefs:
+         - '{{ conf.MAAS_SSH_KEY }}'
++{%- if 'aarch64' in cluster_arch %}
++      package_repositories:
++        armband:
++          name: armband
++          enabled: '1'
++          url: 'http://linux.enea.com/mcp-repos/${_param:openstack_version}/${_param:linux_system_codename}'
++          distributions: '${_param:openstack_version}-armband'
++          components: 'main'
++          arches: 'arm64'
++          key: &armband_key |
++            -----BEGIN PGP PUBLIC KEY BLOCK-----
++            Version: GnuPG v2.0.14 (GNU/Linux)
++
++            mQENBFagAroBCADWboNIjuF6lB1mWv2+EbvqY3lKl5mLKhr2DnSUkKeHUPBv8gNM
++            qK8Q00AMIyPiyEhgjA+dWizZ+5aBgxoiY7oMeLJ2Xym36U/8SYq2BWd3SGCbMNoz
++            SJDxDUSM/HFVs6atF1M3DY9oN65hSVnu4uy5Tu6asf6k4rhAyk0z4+pRcPBCu2vq
++            mnGi3COM/+9PShrEKeVOx5W2vRJywUFuq8EDvQnRoJ0GvM28JiJIanw17YwIPxhg
++            BKZVpZjan5X+ihVMXwA2h/G/FS5Omhd50RqV6LWSYs94VJJgYqHx8UMm7izcxI+P
++            ct3IcbD195bPbJ+SbuiFe45ZLsdY1MyGiU2BABEBAAG0K0VuZWEgQXJtYmFuZCBE
++            ZXZvcHMgVGVhbSA8YXJtYmFuZEBlbmVhLmNvbT6JATgEEwECACICGwMGCwkIBwMC
++            BhUIAgkKCwQWAgMBAh4BAheABQJaY3bYAAoJEN6rkLp5irHRoQMH/0PYl0A/6eWw
++            nQ/szhEFrr76Ln6wA4vEO+PiuWj9kTkZM2NaCnkisrIuHSPIVvOLfFmztbE6sKGe
++            t+a2b7Jqw48DZ/gq508aZE4Q307ookxdCOrzIu/796hFO34yXg3sqZoJh3VmKIjY
++            4DL8yG1iAiQ5vOw3IFWQnATwIZUgaCcjmE7HGap+9ePuJfFuQ8mIG5cy28t8qocx
++            AB/B2tucfBMwomYxKqgbLI5AG7iSt58ajvrrNa9f8IX7Ihj/jiuXhUwX+geEp98K
++            IWVI1ftEthZvfBpZW4BS98J4z//dEPi31L4jb9RQXq3afF2RpXchDeUN85bW45nu
++            W/9PMAlgE/U=
++            =m+zE
++            -----END PGP PUBLIC KEY BLOCK-----
++{%- endif %}
+       machines:
+       {%- set pxe_interface = conf.idf.net_config.admin.interface %}
+       {#- We only support exactly 5 nodes for now, hardcoded order #}
