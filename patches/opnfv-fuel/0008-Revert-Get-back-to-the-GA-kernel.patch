@@ -18,7 +18,7 @@ This reverts commit d06bcfb72c44b507c3efee4de00f415869f48450.
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
-index 226a4f66..a2987423 100644
+index 238ae95a..3cdb8bf0 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
 @@ -25,7 +25,7 @@ parameters:

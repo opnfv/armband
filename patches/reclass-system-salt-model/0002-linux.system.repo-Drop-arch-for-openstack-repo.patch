@@ -1,5 +1,5 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-: Copyright (c) 2018 Enea AB and others.
+: Copyright (c) 2018 Mirantis Inc., Enea AB and others.
 :
 : All rights reserved. This program and the accompanying materials
 : are made available under the terms of the Apache License, Version 2.0
@@ -27,7 +27,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 1 deletion(-)
 
 diff --git a/linux/system/repo/mcp/openstack.yml b/linux/system/repo/mcp/openstack.yml
-index 22defb75..302c7cb3 100644
+index 465b75d0..8de17774 100644
 --- a/linux/system/repo/mcp/openstack.yml
 +++ b/linux/system/repo/mcp/openstack.yml
 @@ -7,7 +7,6 @@ parameters:
