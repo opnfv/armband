@@ -56,10 +56,10 @@ index 77063d6c..e17f92a5 100755
  salt -C 'I@mongodb:server and *01*' state.sls mongodb || true
  wait_for 10.0 "salt -C 'I@mongodb:server and *01*' cmd.run 'mongo localhost:27017/admin'"
 diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
-index 4c8cbcf8..1cf54240 100755
+index a266989a..77557caa 100755
 --- a/mcp/config/states/openstack_noha
 +++ b/mcp/config/states/openstack_noha
-@@ -53,6 +53,8 @@ salt -I 'ceilometer:agent' state.sls ceilometer
+@@ -55,6 +55,8 @@ salt -I 'ceilometer:agent' state.sls ceilometer
 
  salt -I 'horizon:server' state.sls horizon
 

@@ -30,15 +30,15 @@ index 6f7b33e3..dfc212e2 100644
      server:
        control:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml
-index 01b32097..1b970412 100644
+index 29b2d627..3a994b8d 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml
-@@ -57,7 +57,7 @@ parameters:
+@@ -71,7 +71,7 @@ parameters:
      server:
        admin_email: ${_param:admin_email}
        openrc_extra:
 -        volume_device_name: vdc
 +        volume_device_name: sdc
-   glance:
-     server:
-       storage:
+       pkgs:
+         - keystone
+         - python-psycopg2
