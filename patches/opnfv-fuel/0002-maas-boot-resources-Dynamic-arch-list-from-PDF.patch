@@ -1,0 +1,72 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2018 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 11 Aug 2017 00:07:29 +0200
+Subject: [PATCH] maas: boot-resources: Dynamic arch list from PDF
+
+Instead of leaving MaaS default to 'amd64', explicitly set the list
+of architectures to support based on PDF data.
+
+Change-Id: I852a3ce156db3df0c090f10c0b45c26058dbb6c6
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ .../0003-maas-region-force-artifact-download.patch        | 2 +-
+ mcp/patches/0016-Set-boot-source-selections.patch         | 2 +-
+ .../cluster/mcp-pike-common-ha/infra/maas_pdf.yml.j2      | 8 ++++++++
+ 3 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/mcp/patches/0003-maas-region-force-artifact-download.patch b/mcp/patches/0003-maas-region-force-artifact-download.patch
+index b61a3d1b..c689881d 100644
+--- a/mcp/patches/0003-maas-region-force-artifact-download.patch
++++ b/mcp/patches/0003-maas-region-force-artifact-download.patch
+@@ -70,4 +70,4 @@ new file mode 100644
+ +wait_for 30 "maas opnfv boot-resources import"
+ +wait_for 90 "! maas opnfv boot-resources is-importing | grep -q 'true'"
+ +maas opnfv rack-controllers import-boot-images || exit 3
+-+wait_for 30 "test -d /var/lib/maas/boot-resources/current/ubuntu/amd64"
+++wait_for 30 "true {%- for arch in region.opnfv_arches %} && test -d /var/lib/maas/boot-resources/current/ubuntu/{{ arch }}{%- endfor %}"
+diff --git a/mcp/patches/0016-Set-boot-source-selections.patch b/mcp/patches/0016-Set-boot-source-selections.patch
+index ff52681d..ae7654c6 100644
+--- a/mcp/patches/0016-Set-boot-source-selections.patch
++++ b/mcp/patches/0016-Set-boot-source-selections.patch
+@@ -21,7 +21,7 @@ diff --git a/maas/region.sls b/maas/region.sls
+
+ +boot_source_selections:
+ +  cmd.run:
+-+  - name: "maas login {{ region.admin.username }} http://{{ region.bind.host }}:5240/MAAS/api/2.0 - < /var/lib/maas/.maas_credentials && maas opnfv boot-source-selection update 1 1 release='{{ region.maas_config.default_distro_series }}'"
+++  - name: "maas login {{ region.admin.username }} http://{{ region.bind.host }}:5240/MAAS/api/2.0 - < /var/lib/maas/.maas_credentials && maas opnfv boot-source-selection update 1 1 release='{{ region.maas_config.default_distro_series }}' {%- for arch in region.opnfv_arches.split(' ') %} arches='{{ arch }}' {%- endfor %}"
+ +  - require:
+ +    - cmd: maas_login_admin
+ +  - unless: "maas login {{ region.admin.username }} http://{{ region.bind.host }}:5240/MAAS/api/2.0 - < /var/lib/maas/.maas_credentials && maas opnfv boot-source-selections read 1 | grep -q {{ region.maas_config.default_distro_series }}"
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas_pdf.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas_pdf.yml.j2
+index 335b9c74..c3892403 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas_pdf.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas_pdf.yml.j2
+@@ -5,6 +5,12 @@
+ # which accompanies this distribution, and is available at
+ # http://www.apache.org/licenses/LICENSE-2.0
+ ##############################################################################
++{%- set cluster_arch = [] %}
++{%- for node in conf.nodes %}
++  {%- if node.node.arch not in cluster_arch %}
++    {%- do cluster_arch.append(node.node.arch) %}
++  {%- endif %}
++{%- endfor %}
+ ---
+ {%- set cluster_arch = [] %}
+ {%- for node in conf.nodes %}
+@@ -31,6 +37,8 @@ parameters:
+               vid: 0
+               dhcp_on: true
+               primary_rack: ${_param:infra_maas_node01_hostname}
++      # Space-separated list of dpkg architectures to be supported by MaaS
++      opnfv_arches:{%- for arch in cluster_arch %} {{ arch | dpkg_arch }}{%- endfor %}
+       sshprefs:
+         - '{{ conf.MAAS_SSH_KEY }}'
+ {%- if 'aarch64' in cluster_arch %}

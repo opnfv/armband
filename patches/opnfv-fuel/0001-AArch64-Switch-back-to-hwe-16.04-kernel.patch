@@ -1,0 +1,62 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2018 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 23 May 2018 20:49:38 +0200
+Subject: [PATCH] AArch64: Switch back to hwe-16.04 kernel
+
+Align kernel versions across architectures (where possible).
+
+Change-Id: I66a822611eb5e46f90b62f5d36df571ae75dcba3
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ mcp/config/scenario/defaults.yaml                         | 3 +--
+ .../mcp-pike-odl-ha/infra/{maas.yml => maas.yml.j2}       | 8 ++++++++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+ rename mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/{maas.yml => maas.yml.j2} (71%)
+
+diff --git a/mcp/config/scenario/defaults.yaml b/mcp/config/scenario/defaults.yaml
+index 110ffc70..6affc7da 100644
+--- a/mcp/config/scenario/defaults.yaml
++++ b/mcp/config/scenario/defaults.yaml
+@@ -43,8 +43,7 @@ aarch64:
+         - armband 1100 deb [arch=arm64] http://linux.enea.com/mcp-repos/pike/xenial pike-armband main
+     pkg:
+       install:
+-        - linux-image-generic-hwe-16.04-edge
+-        - linux-headers-generic-hwe-16.04-edge
++        - linux-generic-hwe-16.04
+         - python-futures
+         - salt-minion
+   control:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/maas.yml b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/maas.yml.j2
+similarity index 71%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/maas.yml
+rename to mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/maas.yml.j2
+index 6662f1fa..153b493c 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/maas.yml.j2
+@@ -5,10 +5,18 @@
+ # which accompanies this distribution, and is available at
+ # http://www.apache.org/licenses/LICENSE-2.0
+ ##############################################################################
++{%- set cluster_arch = [] %}
++{%- for node in conf.nodes %}
++  {%- if node.node.arch not in cluster_arch %}
++    {%- do cluster_arch.append(node.node.arch) %}
++  {%- endif %}
++{%- endfor %}
+ ---
+ classes:
+   - cluster.mcp-pike-common-ha.infra.maas
+   - cluster.mcp-pike-odl-ha.infra
++{%- if 'aarch64' not in cluster_arch %}
+ parameters:
+   _param:
+     hwe_kernel: 'ga-16.04'
++{%- endif %}
