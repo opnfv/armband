@@ -1,0 +1,56 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 23 May 2018 18:53:04 +0200
+Subject: [PATCH] curtin: arm64: Fix missing newline
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ...4-Fix-missing-newline-after-j2-parse.patch | 30 +++++++++++++++++++
+ mcp/patches/patches.list                      |  1 +
+ 2 files changed, 31 insertions(+)
+ create mode 100644 mcp/patches/0105-curtin-arm64-Fix-missing-newline-after-j2-parse.patch
+
+diff --git a/mcp/patches/0105-curtin-arm64-Fix-missing-newline-after-j2-parse.patch b/mcp/patches/0105-curtin-arm64-Fix-missing-newline-after-j2-parse.patch
+new file mode 100644
+index 00000000..f16ed9e7
+--- /dev/null
++++ b/mcp/patches/0105-curtin-arm64-Fix-missing-newline-after-j2-parse.patch
+@@ -0,0 +1,30 @@
++::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
++: Copyright (c) 2018 Mirantis Inc., Enea AB and others.
++:
++: All rights reserved. This program and the accompanying materials
++: are made available under the terms of the Apache License, Version 2.0
++: which accompanies this distribution, and is available at
++: http://www.apache.org/licenses/LICENSE-2.0
++::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
++From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++Date: Wed, 23 May 2018 05:28:00 +0200
++Subject: [PATCH] curtin: arm64: Fix missing newline after j2 parse
++
++Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
++---
++ maas/files/curtin_userdata_arm64_generic_xenial | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/maas/files/curtin_userdata_arm64_generic_xenial b/maas/files/curtin_userdata_arm64_generic_xenial
++index b070aaa..21877b2 100644
++--- a/maas/files/curtin_userdata_arm64_generic_xenial
+++++ b/maas/files/curtin_userdata_arm64_generic_xenial
++@@ -22,7 +22,7 @@ late_commands:
++ {% set salt_repo_key = salt['hashutil.base64_b64encode'](cluster.saltstack_repo_key) %}
++   apt_00_set_gpg: ["curtin", "in-target", "--", "sh", "-c", "echo '{{salt_repo_key}}' | base64 -d | apt-key add -"]
++ {%- endif %}
++-{#- NOTE: Re-use amd64 repos on arm64 since most packages are arch independent -#}
+++{#- NOTE: Re-use amd64 repos on arm64 since most packages are arch independent #}
++   apt_01_set_repo: ["curtin", "in-target", "--", "sh", "-c", "echo 'deb [arch=amd64] {{ cluster.saltstack_repo_xenial }}' >> /etc/apt/sources.list"]
++ {% raw %}
++   apt_03_update: ["curtin", "in-target", "--", "apt-get", "update"]
+diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
+index 39e737d6..b3aa013e 100644
+--- a/mcp/patches/patches.list
++++ b/mcp/patches/patches.list
+@@ -18,3 +18,4 @@
+ /usr/share/salt-formulas/env: 0016-Set-boot-source-selections.patch
+ /usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
+ /usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
++/usr/share/salt-formulas/env: 0105-curtin-arm64-Fix-missing-newline-after-j2-parse.patch
