@@ -44,7 +44,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index a30f9af6..600aa76b 100755
+index 73c44bb6..4ac5d6d5 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -56,18 +56,15 @@ index a30f9af6..600aa76b 100755
  salt -I 'redis:cluster:role:master' state.sls redis
  salt -I 'redis:server' state.sls redis
 diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
-index a266989a..77557caa 100755
+index 70db238b..52d643df 100755
 --- a/mcp/config/states/openstack_noha
 +++ b/mcp/config/states/openstack_noha
-@@ -55,6 +55,8 @@ salt -I 'ceilometer:agent' state.sls ceilometer
+@@ -54,3 +54,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
+ salt -I 'ceilometer:agent' state.sls ceilometer
 
  salt -I 'horizon:server' state.sls horizon
-
-+salt -I 'nova:compute' state.sls armband
 +
- # workaround for the pike horizon is missing css, FUEL-324
- salt -I 'horizon:server' file.symlink \
-   /var/lib/openstack-dashboard/static \
++salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
 index c391cfe6..02a813c9 100755
 --- a/mcp/config/states/virtual_control_plane
