@@ -26,8 +26,8 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  ...-virtng-module-Extend-libvirt_domain.patch | 54 +++++++++++++++++++
  ...t-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++
  mcp/patches/patches.list                      |  2 +
- .../cluster/mcp-pike-common-ha/infra/kvm.yml  | 15 ++++++
- .../cluster/mcp-pike-odl-ha/infra/kvm.yml.j2  |  3 ++
+ .../cluster/mcp-common-ha/infra/kvm.yml       | 15 ++++++
+ .../cluster/mcp-odl-ha/infra/kvm.yml.j2       |  3 ++
  5 files changed, 125 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
  create mode 100644 mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
@@ -159,10 +159,10 @@ index fbc671f3..51c9f437 100644
  /usr/share/salt-formulas/env: 0016-Set-boot-source-selections.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
-diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-index df230452..3548155f 100644
---- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-+++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
+index 868f324f..73875b87 100644
+--- a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
++++ b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
 @@ -52,21 +52,33 @@ parameters:
          openstack.control:
            cpu: 4
@@ -207,10 +207,10 @@ index df230452..3548155f 100644
            disk_profile: small
            net_profile: default_ext
        cluster:
-diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
-index 5fc4776d..b19789e3 100644
---- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
-+++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
+diff --git a/mcp/reclass/classes/cluster/mcp-odl-ha/infra/kvm.yml.j2 b/mcp/reclass/classes/cluster/mcp-odl-ha/infra/kvm.yml.j2
+index ab0da39b..f64ed46a 100644
+--- a/mcp/reclass/classes/cluster/mcp-odl-ha/infra/kvm.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-odl-ha/infra/kvm.yml.j2
 @@ -19,6 +19,9 @@ parameters:
          opendaylight.server:
            cpu: 4
