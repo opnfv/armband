@@ -1,0 +1,983 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2018 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Michael Polenchuk <mpolenchuk@mirantis.com>
+Date: Mon, 4 Jun 2018 17:55:52 +0400
+Subject: [PATCH] Update OpenStack version to Queens
+
+* make cluster names version-agnostic
+* pre-install oslo-templates formula
+* salt version update to 2017.7
+* system reclass update
+
+Change-Id: I903895f6bcd98a1062e66e3f14d23ec04dc1b869
+Signed-off-by: Michael Polenchuk <mpolenchuk@mirantis.com>
+---
+ mcp/config/scenario/defaults.yaml             | 12 +++++------
+ .../scenario/os-nosdn-nofeature-noha.yaml     |  2 +-
+ mcp/config/scenario/os-nosdn-ovs-noha.yaml    |  2 +-
+ .../scenario/os-odl-nofeature-noha.yaml       |  2 +-
+ mcp/config/scenario/os-odl-ovs-noha.yaml      |  2 +-
+ .../scenario/os-ovn-nofeature-noha.yaml       |  2 +-
+ mcp/reclass/classes/cluster/.gitignore        |  4 ++--
+ .../haproxy_openstack_api.yml                 |  0
+ .../infra/config.yml                          |  0
+ .../infra/init.yml                            |  0
+ .../init_options.yml                          |  0
+ .../openstack_compute.yml                     |  2 +-
+ .../openstack_compute_pdf.yml.j2              |  0
+ .../openstack_control.yml                     | 20 +++++++++++++++++--
+ .../openstack_control_pdf.yml.j2              |  0
+ .../openstack_gateway.yml                     |  2 +-
+ .../openstack_gateway_pdf.yml.j2              |  0
+ .../openstack_init.yml                        |  2 +-
+ .../infra/config.yml.j2                       |  4 ++--
+ .../infra/init.yml                            |  4 ++--
+ .../init.yml                                  |  6 +++---
+ .../opendaylight/control.yml                  |  4 ++--
+ .../opendaylight/control_pdf.yml.j2           |  0
+ .../openstack/compute.yml.j2                  |  4 ++--
+ .../openstack/control.yml                     |  4 ++--
+ .../openstack/gateway.yml                     |  4 ++--
+ .../openstack/init.yml                        |  2 +-
+ .../infra/config.yml                          |  4 ++--
+ .../infra/init.yml                            |  4 ++--
+ .../init.yml                                  |  6 +++---
+ .../openstack/compute.yml                     |  4 ++--
+ .../openstack/control.yml                     |  4 ++--
+ .../openstack/init.yml                        |  2 +-
+ .../infra/config.yml                          |  4 ++--
+ .../infra/init.yml                            |  4 ++--
+ .../init.yml                                  |  6 +++---
+ .../openstack/compute.yml                     |  4 ++--
+ .../openstack/control.yml                     |  4 ++--
+ .../openstack/gateway.yml                     |  4 ++--
+ .../openstack/init.yml                        |  2 +-
+ .../infra/config.yml                          |  4 ++--
+ .../infra/init.yml                            |  4 ++--
+ .../init.yml                                  |  6 +++---
+ .../openstack/compute.yml                     |  4 ++--
+ .../openstack/control.yml                     |  4 ++--
+ .../openstack/gateway.yml                     |  4 ++--
+ .../openstack/init.yml                        |  2 +-
+ .../mcp-pike-common-ha/infra/init.yml.j2      |  2 +-
+ .../cluster/mcp-pike-common-ha/infra/maas.yml |  2 +-
+ mcp/reclass/classes/system                    |  2 +-
+ ...local.yml => cfg01.mcp-odl-noha.local.yml} |  4 ++--
+ ...local.yml => cfg01.mcp-ovn-noha.local.yml} |  4 ++--
+ ....yml => cfg01.mcp-ovs-dpdk-noha.local.yml} |  4 ++--
+ ...local.yml => cfg01.mcp-ovs-noha.local.yml} |  4 ++--
+ mcp/scripts/salt.sh                           |  4 ++--
+ 55 files changed, 103 insertions(+), 87 deletions(-)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/haproxy_openstack_api.yml (100%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/infra/config.yml (100%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/infra/init.yml (100%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/init_options.yml (100%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/openstack_compute.yml (97%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/openstack_compute_pdf.yml.j2 (100%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/openstack_control.yml (89%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/openstack_control_pdf.yml.j2 (100%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/openstack_gateway.yml (93%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/openstack_gateway_pdf.yml.j2 (100%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-common-noha => mcp-common-noha}/openstack_init.yml (99%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-odl-noha => mcp-odl-noha}/infra/config.yml.j2 (94%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-noha => mcp-odl-noha}/infra/init.yml (86%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-odl-noha => mcp-odl-noha}/init.yml (83%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-odl-noha => mcp-odl-noha}/opendaylight/control.yml (91%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-odl-noha => mcp-odl-noha}/opendaylight/control_pdf.yml.j2 (100%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-odl-noha => mcp-odl-noha}/openstack/compute.yml.j2 (96%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-odl-noha => mcp-odl-noha}/openstack/control.yml (93%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-odl-noha => mcp-odl-noha}/openstack/gateway.yml (91%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-odl-noha => mcp-odl-noha}/openstack/init.yml (94%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovn-noha => mcp-ovn-noha}/infra/config.yml (86%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovn-noha => mcp-ovn-noha}/infra/init.yml (86%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovn-noha => mcp-ovn-noha}/init.yml (80%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovn-noha => mcp-ovn-noha}/openstack/compute.yml (95%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovn-noha => mcp-ovn-noha}/openstack/control.yml (86%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovn-noha => mcp-ovn-noha}/openstack/init.yml (90%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-dpdk-noha => mcp-ovs-dpdk-noha}/infra/config.yml (91%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-odl-noha => mcp-ovs-dpdk-noha}/infra/init.yml (86%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-noha => mcp-ovs-dpdk-noha}/init.yml (80%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-dpdk-noha => mcp-ovs-dpdk-noha}/openstack/compute.yml (93%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-dpdk-noha => mcp-ovs-dpdk-noha}/openstack/control.yml (87%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-dpdk-noha => mcp-ovs-dpdk-noha}/openstack/gateway.yml (90%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-dpdk-noha => mcp-ovs-dpdk-noha}/openstack/init.yml (91%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-noha => mcp-ovs-noha}/infra/config.yml (91%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-dpdk-noha => mcp-ovs-noha}/infra/init.yml (86%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-dpdk-noha => mcp-ovs-noha}/init.yml (79%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-noha => mcp-ovs-noha}/openstack/compute.yml (90%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-noha => mcp-ovs-noha}/openstack/control.yml (86%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-noha => mcp-ovs-noha}/openstack/gateway.yml (91%)
+ rename mcp/reclass/classes/cluster/{mcp-pike-ovs-noha => mcp-ovs-noha}/openstack/init.yml (91%)
+ rename mcp/reclass/nodes/{cfg01.mcp-pike-odl-noha.local.yml => cfg01.mcp-odl-noha.local.yml} (88%)
+ rename mcp/reclass/nodes/{cfg01.mcp-pike-ovn-noha.local.yml => cfg01.mcp-ovn-noha.local.yml} (88%)
+ rename mcp/reclass/nodes/{cfg01.mcp-pike-ovs-noha.local.yml => cfg01.mcp-ovs-dpdk-noha.local.yml} (88%)
+ rename mcp/reclass/nodes/{cfg01.mcp-pike-ovs-dpdk-noha.local.yml => cfg01.mcp-ovs-noha.local.yml} (86%)
+
+diff --git a/mcp/config/scenario/defaults.yaml b/mcp/config/scenario/defaults.yaml
+index 6affc7da..283ffc54 100644
+--- a/mcp/config/scenario/defaults.yaml
++++ b/mcp/config/scenario/defaults.yaml
+@@ -14,10 +14,10 @@ x86_64:
+   common:
+     apt:
+       keys:
+-        - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.11/SALTSTACK-GPG-KEY.pub
++        - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2017.7/SALTSTACK-GPG-KEY.pub
+       repos:
+         # <repo name> <repo prio> deb [arch=<arch>] <repo url> <repo dist> <repo comp>
+-        - saltstack 500 deb [arch=amd64] http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.11 xenial main
++        - saltstack 500 deb [arch=amd64] http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2017.7 xenial main
+     pkg:
+       install:
+         - linux-generic-hwe-16.04
+@@ -35,12 +35,12 @@ aarch64:
+   common:
+     apt:
+       keys:
+-        - https://linux.enea.com/mcp-repos/pike/xenial/archive-mcppike.key
+-        - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.11/SALTSTACK-GPG-KEY.pub
++        - https://linux.enea.com/mcp-repos/queens/xenial/archive-mcpqueens.key
++        - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2017.7/SALTSTACK-GPG-KEY.pub
+       repos:
+         # <repo name> <repo prio> deb [arch=<arch>] <repo url> <repo dist> <repo comp>
+-        - saltstack 500 deb [arch=amd64] http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.11 xenial main
+-        - armband 1100 deb [arch=arm64] http://linux.enea.com/mcp-repos/pike/xenial pike-armband main
++        - saltstack 500 deb [arch=amd64] http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2017.7 xenial main
++        - armband 1100 deb [arch=arm64] http://linux.enea.com/mcp-repos/queens/xenial queens-armband main
+     pkg:
+       install:
+         - linux-generic-hwe-16.04
+diff --git a/mcp/config/scenario/os-nosdn-nofeature-noha.yaml b/mcp/config/scenario/os-nosdn-nofeature-noha.yaml
+index 3a36ae29..1926d497 100644
+--- a/mcp/config/scenario/os-nosdn-nofeature-noha.yaml
++++ b/mcp/config/scenario/os-nosdn-nofeature-noha.yaml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ cluster:
+-  domain: mcp-pike-ovs-noha.local
++  domain: mcp-ovs-noha.local
+   states:
+     - openstack_noha
+     - neutron_gateway
+diff --git a/mcp/config/scenario/os-nosdn-ovs-noha.yaml b/mcp/config/scenario/os-nosdn-ovs-noha.yaml
+index eed17c1a..b44647c2 100644
+--- a/mcp/config/scenario/os-nosdn-ovs-noha.yaml
++++ b/mcp/config/scenario/os-nosdn-ovs-noha.yaml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ cluster:
+-  domain: mcp-pike-ovs-dpdk-noha.local
++  domain: mcp-ovs-dpdk-noha.local
+   states:
+     - dpdk
+     - openstack_noha
+diff --git a/mcp/config/scenario/os-odl-nofeature-noha.yaml b/mcp/config/scenario/os-odl-nofeature-noha.yaml
+index f52eaf5a..c61abd53 100644
+--- a/mcp/config/scenario/os-odl-nofeature-noha.yaml
++++ b/mcp/config/scenario/os-odl-nofeature-noha.yaml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ cluster:
+-  domain: mcp-pike-odl-noha.local
++  domain: mcp-odl-noha.local
+   states:
+     - opendaylight
+     - openstack_noha
+diff --git a/mcp/config/scenario/os-odl-ovs-noha.yaml b/mcp/config/scenario/os-odl-ovs-noha.yaml
+index c282707f..84eaf631 100644
+--- a/mcp/config/scenario/os-odl-ovs-noha.yaml
++++ b/mcp/config/scenario/os-odl-ovs-noha.yaml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ cluster:
+-  domain: mcp-pike-odl-noha.local
++  domain: mcp-odl-noha.local
+   states:
+     - dpdk
+     - opendaylight
+diff --git a/mcp/config/scenario/os-ovn-nofeature-noha.yaml b/mcp/config/scenario/os-ovn-nofeature-noha.yaml
+index 104df96d..d2015754 100644
+--- a/mcp/config/scenario/os-ovn-nofeature-noha.yaml
++++ b/mcp/config/scenario/os-ovn-nofeature-noha.yaml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ cluster:
+-  domain: mcp-pike-ovn-noha.local
++  domain: mcp-ovn-noha.local
+   states:
+     - openstack_noha
+     - networks
+diff --git a/mcp/reclass/classes/cluster/.gitignore b/mcp/reclass/classes/cluster/.gitignore
+index 7d40a2be..a37a6869 100644
+--- a/mcp/reclass/classes/cluster/.gitignore
++++ b/mcp/reclass/classes/cluster/.gitignore
+@@ -15,5 +15,5 @@ mcp-pike-ovn-ha/infra/init_vcp.yml
+ mcp-pike-ovn-ha/infra/kvm.yml
+ mcp-pike-odl-ha/opendaylight/control.yml
+ mcp-pike-odl-ha/openstack/init.yml
+-mcp-pike-odl-noha/infra/config.yml
+-mcp-pike-odl-noha/openstack/compute.yml
++mcp-odl-noha/infra/config.yml
++mcp-odl-noha/openstack/compute.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/haproxy_openstack_api.yml b/mcp/reclass/classes/cluster/mcp-common-noha/haproxy_openstack_api.yml
+similarity index 100%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/haproxy_openstack_api.yml
+rename to mcp/reclass/classes/cluster/mcp-common-noha/haproxy_openstack_api.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/infra/config.yml b/mcp/reclass/classes/cluster/mcp-common-noha/infra/config.yml
+similarity index 100%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/infra/config.yml
+rename to mcp/reclass/classes/cluster/mcp-common-noha/infra/config.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/infra/init.yml b/mcp/reclass/classes/cluster/mcp-common-noha/infra/init.yml
+similarity index 100%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/infra/init.yml
+rename to mcp/reclass/classes/cluster/mcp-common-noha/infra/init.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/init_options.yml b/mcp/reclass/classes/cluster/mcp-common-noha/init_options.yml
+similarity index 100%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/init_options.yml
+rename to mcp/reclass/classes/cluster/mcp-common-noha/init_options.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_compute.yml b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_compute.yml
+similarity index 97%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_compute.yml
+rename to mcp/reclass/classes/cluster/mcp-common-noha/openstack_compute.yml
+index 8b6a74d7..edd7f9f5 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_compute.yml
++++ b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_compute.yml
+@@ -16,7 +16,7 @@ classes:
+   - system.ceilometer.client.cinder_volume
+   - system.ceilometer.agent.polling.default
+   - system.linux.system.repo.mcp.openstack
+-  - cluster.mcp-pike-common-noha.openstack_compute_pdf
++  - cluster.mcp-common-noha.openstack_compute_pdf
+ parameters:
+   _param:
+     interface_mtu: 9000
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_compute_pdf.yml.j2 b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_compute_pdf.yml.j2
+similarity index 100%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_compute_pdf.yml.j2
+rename to mcp/reclass/classes/cluster/mcp-common-noha/openstack_compute_pdf.yml.j2
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
+similarity index 89%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml
+rename to mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
+index 29b2d627..c4915c79 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml
++++ b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
+@@ -18,6 +18,7 @@ classes:
+   - system.keystone.server.wsgi
+   - system.keystone.server.single
+   - system.keystone.client.single
++  - system.keystone.client.v3.service.keystone
+   - system.keystone.client.service.nova21
+   - system.keystone.client.service.nova-placement
+   - system.keystone.client.service.cinder3
+@@ -56,8 +57,8 @@ classes:
+   - system.apache.server.site.panko
+   - system.horizon.server.single
+   - service.haproxy.proxy.single
+-  - cluster.mcp-pike-common-noha.haproxy_openstack_api
+-  - cluster.mcp-pike-common-noha.openstack_control_pdf
++  - cluster.mcp-common-noha.haproxy_openstack_api
++  - cluster.mcp-common-noha.openstack_control_pdf
+ parameters:
+   _param:
+     linux_system_codename: xenial
+@@ -77,6 +78,21 @@ parameters:
+         - python-psycopg2
+         - python-mysqldb
+         - python-openstackclient
++        - python-tornado
++    client:
++      enabled: true
++      resources:
++        v3:
++          enabled: true
++      server:
++        identity:
++          admin:
++            api_version: 3
++        admin_identity:
++          admin:
++            api_version: ''
++            user_domain_name: 'Default'
++            project_domain_name: 'Default'
+   glance:
+     server:
+       storage:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control_pdf.yml.j2 b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control_pdf.yml.j2
+similarity index 100%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control_pdf.yml.j2
+rename to mcp/reclass/classes/cluster/mcp-common-noha/openstack_control_pdf.yml.j2
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_gateway.yml b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_gateway.yml
+similarity index 93%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_gateway.yml
+rename to mcp/reclass/classes/cluster/mcp-common-noha/openstack_gateway.yml
+index 5edf48c3..0062adf1 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_gateway.yml
++++ b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_gateway.yml
+@@ -8,7 +8,7 @@
+ ---
+ classes:
+   - system.linux.system.repo.mcp.openstack
+-  - cluster.mcp-pike-common-noha.openstack_gateway_pdf
++  - cluster.mcp-common-noha.openstack_gateway_pdf
+ parameters:
+   _param:
+     interface_mtu: 9000
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_gateway_pdf.yml.j2 b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_gateway_pdf.yml.j2
+similarity index 100%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_gateway_pdf.yml.j2
+rename to mcp/reclass/classes/cluster/mcp-common-noha/openstack_gateway_pdf.yml.j2
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_init.yml
+similarity index 99%
+rename from mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
+rename to mcp/reclass/classes/cluster/mcp-common-noha/openstack_init.yml
+index ff99b9b4..f7633337 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_init.yml
++++ b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_init.yml
+@@ -8,7 +8,7 @@
+ ---
+ parameters:
+   _param:
+-    openstack_version: pike
++    openstack_version: queens
+     apt_mk_version: nightly
+     mcp_repo_version: 1.1
+     openstack_region: RegionOne
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/config.yml.j2 b/mcp/reclass/classes/cluster/mcp-odl-noha/infra/config.yml.j2
+similarity index 94%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/config.yml.j2
+rename to mcp/reclass/classes/cluster/mcp-odl-noha/infra/config.yml.j2
+index 46e25fe9..43e8c1f3 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/config.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-odl-noha/infra/config.yml.j2
+@@ -9,8 +9,8 @@
+ classes:
+   - system.reclass.storage.system.opendaylight_control_single
+   - system.reclass.storage.system.openstack_gateway_single
+-  - cluster.mcp-pike-common-noha.infra.config
+-  - cluster.mcp-pike-odl-noha
++  - cluster.mcp-common-noha.infra.config
++  - cluster.mcp-odl-noha
+   - cluster.all-mcp-arch-common.infra.config{%- if conf.MCP_DPDK_MODE %}_dpdk{%- endif %}_pdf
+ parameters:
+   reclass:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/init.yml b/mcp/reclass/classes/cluster/mcp-odl-noha/infra/init.yml
+similarity index 86%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/init.yml
+rename to mcp/reclass/classes/cluster/mcp-odl-noha/infra/init.yml
+index 54b50d2a..a80228cc 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-odl-noha/infra/init.yml
+@@ -7,8 +7,8 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.infra
++  - cluster.mcp-common-noha.infra
+
+ parameters:
+   _param:
+-    cluster_name: mcp-pike-ovs-noha
++    cluster_name: mcp-odl-noha
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/init.yml b/mcp/reclass/classes/cluster/mcp-odl-noha/init.yml
+similarity index 83%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-noha/init.yml
+rename to mcp/reclass/classes/cluster/mcp-odl-noha/init.yml
+index d770e789..a595bf0b 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-odl-noha/init.yml
+@@ -8,9 +8,9 @@
+ ---
+ classes:
+   - system.linux.system.single
+-  - cluster.mcp-pike-common-noha.init_options
+-  - cluster.mcp-pike-odl-noha.infra
+-  - cluster.mcp-pike-odl-noha.openstack
++  - cluster.mcp-common-noha.init_options
++  - cluster.mcp-odl-noha.infra
++  - cluster.mcp-odl-noha.openstack
+
+ parameters:
+   _param:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/opendaylight/control.yml b/mcp/reclass/classes/cluster/mcp-odl-noha/opendaylight/control.yml
+similarity index 91%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-noha/opendaylight/control.yml
+rename to mcp/reclass/classes/cluster/mcp-odl-noha/opendaylight/control.yml
+index 8854fc2b..0b513f06 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/opendaylight/control.yml
++++ b/mcp/reclass/classes/cluster/mcp-odl-noha/opendaylight/control.yml
+@@ -10,8 +10,8 @@ classes:
+   - system.linux.system.repo.mcp.openstack
+   - system.linux.system.repo.mcp.extra
+   - service.opendaylight.server.single
+-  - cluster.mcp-pike-odl-noha
+-  - cluster.mcp-pike-odl-noha.opendaylight.control_pdf
++  - cluster.mcp-odl-noha
++  - cluster.mcp-odl-noha.opendaylight.control_pdf
+ parameters:
+   _param:
+     linux_system_codename: xenial
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/opendaylight/control_pdf.yml.j2 b/mcp/reclass/classes/cluster/mcp-odl-noha/opendaylight/control_pdf.yml.j2
+similarity index 100%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-noha/opendaylight/control_pdf.yml.j2
+rename to mcp/reclass/classes/cluster/mcp-odl-noha/opendaylight/control_pdf.yml.j2
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/compute.yml.j2 b/mcp/reclass/classes/cluster/mcp-odl-noha/openstack/compute.yml.j2
+similarity index 96%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/compute.yml.j2
+rename to mcp/reclass/classes/cluster/mcp-odl-noha/openstack/compute.yml.j2
+index 12dfdcaa..d0ee3a3e 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/compute.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-odl-noha/openstack/compute.yml.j2
+@@ -13,8 +13,8 @@ classes:
+   - system.nova.compute.nfv.hugepages
+   - system.neutron.compute.nfv.dpdk
+ {%- endif %}
+-  - cluster.mcp-pike-common-noha.openstack_compute
+-  - cluster.mcp-pike-odl-noha
++  - cluster.mcp-common-noha.openstack_compute
++  - cluster.mcp-odl-noha
+ parameters:
+   linux:
+     network:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/control.yml b/mcp/reclass/classes/cluster/mcp-odl-noha/openstack/control.yml
+similarity index 93%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/control.yml
+rename to mcp/reclass/classes/cluster/mcp-odl-noha/openstack/control.yml
+index 4c48d079..f5ed2dc5 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/control.yml
++++ b/mcp/reclass/classes/cluster/mcp-odl-noha/openstack/control.yml
+@@ -8,8 +8,8 @@
+ ---
+ classes:
+   - system.neutron.control.opendaylight.single
+-  - cluster.mcp-pike-common-noha.openstack_control
+-  - cluster.mcp-pike-odl-noha
++  - cluster.mcp-common-noha.openstack_control
++  - cluster.mcp-odl-noha
+ parameters:
+   haproxy:
+     proxy:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/gateway.yml b/mcp/reclass/classes/cluster/mcp-odl-noha/openstack/gateway.yml
+similarity index 91%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/gateway.yml
+rename to mcp/reclass/classes/cluster/mcp-odl-noha/openstack/gateway.yml
+index f4f64616..e554eb6b 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/gateway.yml
++++ b/mcp/reclass/classes/cluster/mcp-odl-noha/openstack/gateway.yml
+@@ -7,9 +7,9 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.openstack_gateway
++  - cluster.mcp-common-noha.openstack_gateway
+   - service.neutron.gateway.opendaylight.single
+-  - cluster.mcp-pike-odl-noha
++  - cluster.mcp-odl-noha
+ parameters:
+   linux:
+     network:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/init.yml b/mcp/reclass/classes/cluster/mcp-odl-noha/openstack/init.yml
+similarity index 94%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/init.yml
+rename to mcp/reclass/classes/cluster/mcp-odl-noha/openstack/init.yml
+index 2cd3083f..91e00266 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-odl-noha/openstack/init.yml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.openstack_init
++  - cluster.mcp-common-noha.openstack_init
+ parameters:
+   _param:
+     neutron_tenant_network_types: "flat,vxlan"
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/infra/config.yml b/mcp/reclass/classes/cluster/mcp-ovn-noha/infra/config.yml
+similarity index 86%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovn-noha/infra/config.yml
+rename to mcp/reclass/classes/cluster/mcp-ovn-noha/infra/config.yml
+index 399ffc21..05f289b3 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovn-noha/infra/config.yml
+@@ -7,5 +7,5 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.infra.config
+-  - cluster.mcp-pike-ovn-noha
++  - cluster.mcp-common-noha.infra.config
++  - cluster.mcp-ovn-noha
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/infra/init.yml b/mcp/reclass/classes/cluster/mcp-ovn-noha/infra/init.yml
+similarity index 86%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovn-noha/infra/init.yml
+rename to mcp/reclass/classes/cluster/mcp-ovn-noha/infra/init.yml
+index cf43fa8e..229ebb5e 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/infra/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovn-noha/infra/init.yml
+@@ -7,8 +7,8 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.infra
++  - cluster.mcp-common-noha.infra
+
+ parameters:
+   _param:
+-    cluster_name: mcp-pike-ovn-noha
++    cluster_name: mcp-ovn-noha
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/init.yml b/mcp/reclass/classes/cluster/mcp-ovn-noha/init.yml
+similarity index 80%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovn-noha/init.yml
+rename to mcp/reclass/classes/cluster/mcp-ovn-noha/init.yml
+index b3aa4041..d4b6d85b 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovn-noha/init.yml
+@@ -8,6 +8,6 @@
+ ---
+ classes:
+   - system.linux.system.single
+-  - cluster.mcp-pike-common-noha.init_options
+-  - cluster.mcp-pike-ovn-noha.infra
+-  - cluster.mcp-pike-ovn-noha.openstack
++  - cluster.mcp-common-noha.init_options
++  - cluster.mcp-ovn-noha.infra
++  - cluster.mcp-ovn-noha.openstack
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/openstack/compute.yml b/mcp/reclass/classes/cluster/mcp-ovn-noha/openstack/compute.yml
+similarity index 95%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovn-noha/openstack/compute.yml
+rename to mcp/reclass/classes/cluster/mcp-ovn-noha/openstack/compute.yml
+index ad865851..f8183e7f 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/openstack/compute.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovn-noha/openstack/compute.yml
+@@ -8,8 +8,8 @@
+ ---
+ classes:
+   - service.neutron.compute.ovn.single
+-  - cluster.mcp-pike-common-noha.openstack_compute
+-  - cluster.mcp-pike-ovn-noha
++  - cluster.mcp-common-noha.openstack_compute
++  - cluster.mcp-ovn-noha
+ parameters:
+   neutron:
+     compute:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/openstack/control.yml b/mcp/reclass/classes/cluster/mcp-ovn-noha/openstack/control.yml
+similarity index 86%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovn-noha/openstack/control.yml
+rename to mcp/reclass/classes/cluster/mcp-ovn-noha/openstack/control.yml
+index 3d120ca9..235beff2 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/openstack/control.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovn-noha/openstack/control.yml
+@@ -8,5 +8,5 @@
+ ---
+ classes:
+   - system.neutron.control.ovn.single
+-  - cluster.mcp-pike-common-noha.openstack_control
+-  - cluster.mcp-pike-ovn-noha
++  - cluster.mcp-common-noha.openstack_control
++  - cluster.mcp-ovn-noha
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/openstack/init.yml b/mcp/reclass/classes/cluster/mcp-ovn-noha/openstack/init.yml
+similarity index 90%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovn-noha/openstack/init.yml
+rename to mcp/reclass/classes/cluster/mcp-ovn-noha/openstack/init.yml
+index 03d46ef9..cba6b774 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovn-noha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovn-noha/openstack/init.yml
+@@ -7,4 +7,4 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.openstack_init
++  - cluster.mcp-common-noha.openstack_init
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/infra/config.yml b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/infra/config.yml
+similarity index 91%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/infra/config.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/infra/config.yml
+index baf072fd..08c23026 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/infra/config.yml
+@@ -8,8 +8,8 @@
+ ---
+ classes:
+   - system.reclass.storage.system.openstack_gateway_single
+-  - cluster.mcp-pike-common-noha.infra.config
+-  - cluster.mcp-pike-ovs-dpdk-noha
++  - cluster.mcp-common-noha.infra.config
++  - cluster.mcp-ovs-dpdk-noha
+   - cluster.all-mcp-arch-common.infra.config_dpdk_pdf
+ parameters:
+   reclass:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/init.yml b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/infra/init.yml
+similarity index 86%
+rename from mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/init.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/infra/init.yml
+index 1bdcbd22..f27c310a 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-odl-noha/infra/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/infra/init.yml
+@@ -7,8 +7,8 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.infra
++  - cluster.mcp-common-noha.infra
+
+ parameters:
+   _param:
+-    cluster_name: mcp-pike-odl-noha
++    cluster_name: mcp-ovs-dpdk-noha
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/init.yml b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/init.yml
+similarity index 80%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-noha/init.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/init.yml
+index 94267fad..96e2c942 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/init.yml
+@@ -8,6 +8,6 @@
+ ---
+ classes:
+   - system.linux.system.single
+-  - cluster.mcp-pike-common-noha.init_options
+-  - cluster.mcp-pike-ovs-noha.infra
+-  - cluster.mcp-pike-ovs-noha.openstack
++  - cluster.mcp-common-noha.init_options
++  - cluster.mcp-ovs-dpdk-noha.infra
++  - cluster.mcp-ovs-dpdk-noha.openstack
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/compute.yml b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/compute.yml
+similarity index 93%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/compute.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/compute.yml
+index 53ba7459..a4d6b8dd 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/compute.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/compute.yml
+@@ -10,8 +10,8 @@ classes:
+   - system.nova.compute.nfv.hugepages
+   - system.neutron.compute.nfv.dpdk
+   - service.neutron.compute.single
+-  - cluster.mcp-pike-common-noha.openstack_compute
+-  - cluster.mcp-pike-ovs-dpdk-noha
++  - cluster.mcp-common-noha.openstack_compute
++  - cluster.mcp-ovs-dpdk-noha
+ parameters:
+   neutron:
+     compute:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/control.yml b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/control.yml
+similarity index 87%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/control.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/control.yml
+index 4be308d0..bbd4d7cc 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/control.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/control.yml
+@@ -8,8 +8,8 @@
+ ---
+ classes:
+   - system.neutron.control.openvswitch.single
+-  - cluster.mcp-pike-common-noha.openstack_control
+-  - cluster.mcp-pike-ovs-dpdk-noha
++  - cluster.mcp-common-noha.openstack_control
++  - cluster.mcp-ovs-dpdk-noha
+ parameters:
+   neutron:
+     server:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/gateway.yml b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/gateway.yml
+similarity index 90%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/gateway.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/gateway.yml
+index e7c07752..2f9aee6f 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/gateway.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/gateway.yml
+@@ -7,9 +7,9 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.openstack_gateway
++  - cluster.mcp-common-noha.openstack_gateway
+   - service.neutron.gateway.single
+-  - cluster.mcp-pike-ovs-dpdk-noha
++  - cluster.mcp-ovs-dpdk-noha
+ parameters:
+   neutron:
+     gateway:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/init.yml b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/init.yml
+similarity index 91%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/init.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/init.yml
+index 9ef4b1b3..835d15a4 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-dpdk-noha/openstack/init.yml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.openstack_init
++  - cluster.mcp-common-noha.openstack_init
+ parameters:
+   _param:
+     neutron_tenant_network_types: "flat,vlan"
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/config.yml b/mcp/reclass/classes/cluster/mcp-ovs-noha/infra/config.yml
+similarity index 91%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/config.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-noha/infra/config.yml
+index 4f742820..6835a262 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/infra/config.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-noha/infra/config.yml
+@@ -8,8 +8,8 @@
+ ---
+ classes:
+   - system.reclass.storage.system.openstack_gateway_single
+-  - cluster.mcp-pike-common-noha.infra.config
+-  - cluster.mcp-pike-ovs-noha
++  - cluster.mcp-common-noha.infra.config
++  - cluster.mcp-ovs-noha
+   - cluster.all-mcp-arch-common.infra.config_pdf
+ parameters:
+   reclass:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/infra/init.yml b/mcp/reclass/classes/cluster/mcp-ovs-noha/infra/init.yml
+similarity index 86%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/infra/init.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-noha/infra/init.yml
+index d8cb0159..56406176 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/infra/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-noha/infra/init.yml
+@@ -7,8 +7,8 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.infra
++  - cluster.mcp-common-noha.infra
+
+ parameters:
+   _param:
+-    cluster_name: mcp-pike-ovs-dpdk-noha
++    cluster_name: mcp-ovs-noha
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/init.yml b/mcp/reclass/classes/cluster/mcp-ovs-noha/init.yml
+similarity index 79%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/init.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-noha/init.yml
+index 8d3a7a58..a453af50 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-dpdk-noha/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-noha/init.yml
+@@ -8,6 +8,6 @@
+ ---
+ classes:
+   - system.linux.system.single
+-  - cluster.mcp-pike-common-noha.init_options
+-  - cluster.mcp-pike-ovs-dpdk-noha.infra
+-  - cluster.mcp-pike-ovs-dpdk-noha.openstack
++  - cluster.mcp-common-noha.init_options
++  - cluster.mcp-ovs-noha.infra
++  - cluster.mcp-ovs-noha.openstack
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/compute.yml b/mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/compute.yml
+similarity index 90%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/compute.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/compute.yml
+index 1a8bbd80..beddc4ae 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/compute.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/compute.yml
+@@ -8,8 +8,8 @@
+ ---
+ classes:
+   - service.neutron.compute.single
+-  - cluster.mcp-pike-common-noha.openstack_compute
+-  - cluster.mcp-pike-ovs-noha
++  - cluster.mcp-common-noha.openstack_compute
++  - cluster.mcp-ovs-noha
+ parameters:
+   linux:
+     network:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/control.yml b/mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/control.yml
+similarity index 86%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/control.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/control.yml
+index 9b699b6b..939cb283 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/control.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/control.yml
+@@ -8,5 +8,5 @@
+ ---
+ classes:
+   - system.neutron.control.openvswitch.single
+-  - cluster.mcp-pike-common-noha.openstack_control
+-  - cluster.mcp-pike-ovs-noha
++  - cluster.mcp-common-noha.openstack_control
++  - cluster.mcp-ovs-noha
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/gateway.yml b/mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/gateway.yml
+similarity index 91%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/gateway.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/gateway.yml
+index ff0b79a1..b5dfcd40 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/gateway.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/gateway.yml
+@@ -7,9 +7,9 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.openstack_gateway
++  - cluster.mcp-common-noha.openstack_gateway
+   - service.neutron.gateway.single
+-  - cluster.mcp-pike-ovs-noha
++  - cluster.mcp-ovs-noha
+ parameters:
+   linux:
+     network:
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/init.yml b/mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/init.yml
+similarity index 91%
+rename from mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/init.yml
+rename to mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/init.yml
+index e94c4a00..79e23182 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-ovs-noha/openstack/init.yml
++++ b/mcp/reclass/classes/cluster/mcp-ovs-noha/openstack/init.yml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-common-noha.openstack_init
++  - cluster.mcp-common-noha.openstack_init
+ parameters:
+   _param:
+     neutron_tenant_network_types: "flat,vxlan"
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/init.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/init.yml.j2
+index 7f3839e8..21639e3b 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/init.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/init.yml.j2
+@@ -15,7 +15,7 @@ parameters:
+   _param:
+     apt_mk_version: nightly
+     mcp_repo_version: 1.1
+-    salt_version: 2016.11
++    salt_version: 2017.7
+     cluster_domain: ${_param:cluster_name}.local
+     # stacklight_environment: ${_param:cluster_domain}
+     reclass_data_revision: master
+diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
+index 238ae95a..793a7efa 100644
+--- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
++++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/maas.yml
+@@ -42,7 +42,7 @@ parameters:
+         network_discovery: 'enabled'
+         default_min_hwe_kernel: ${_param:hwe_kernel}
+     cluster:
+-      saltstack_repo_xenial: "http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.11/ xenial main"
++      saltstack_repo_xenial: "http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2017.7/ xenial main"
+   linux:
+     network:
+       interface:
+diff --git a/mcp/reclass/classes/system b/mcp/reclass/classes/system
+index 198b5b74..3d227a7e 160000
+--- a/mcp/reclass/classes/system
++++ b/mcp/reclass/classes/system
+@@ -1 +1 @@
+-Subproject commit 198b5b7459c9f602ded773e966888705d866f6dd
++Subproject commit 3d227a7e3be6d3da6a459cc8254637be2228d1fb
+diff --git a/mcp/reclass/nodes/cfg01.mcp-pike-odl-noha.local.yml b/mcp/reclass/nodes/cfg01.mcp-odl-noha.local.yml
+similarity index 88%
+rename from mcp/reclass/nodes/cfg01.mcp-pike-odl-noha.local.yml
+rename to mcp/reclass/nodes/cfg01.mcp-odl-noha.local.yml
+index a4a21ba6..4fd32724 100644
+--- a/mcp/reclass/nodes/cfg01.mcp-pike-odl-noha.local.yml
++++ b/mcp/reclass/nodes/cfg01.mcp-odl-noha.local.yml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-odl-noha.infra.config
++  - cluster.mcp-odl-noha.infra.config
+ parameters:
+   _param:
+     linux_system_codename: xenial
+@@ -15,4 +15,4 @@ parameters:
+   linux:
+     system:
+       name: cfg01
+-      domain: mcp-pike-odl-noha.local
++      domain: mcp-odl-noha.local
+diff --git a/mcp/reclass/nodes/cfg01.mcp-pike-ovn-noha.local.yml b/mcp/reclass/nodes/cfg01.mcp-ovn-noha.local.yml
+similarity index 88%
+rename from mcp/reclass/nodes/cfg01.mcp-pike-ovn-noha.local.yml
+rename to mcp/reclass/nodes/cfg01.mcp-ovn-noha.local.yml
+index 0df357a2..6ae0367b 100644
+--- a/mcp/reclass/nodes/cfg01.mcp-pike-ovn-noha.local.yml
++++ b/mcp/reclass/nodes/cfg01.mcp-ovn-noha.local.yml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-ovn-noha.infra.config
++  - cluster.mcp-ovn-noha.infra.config
+ parameters:
+   _param:
+     linux_system_codename: xenial
+@@ -15,4 +15,4 @@ parameters:
+   linux:
+     system:
+       name: cfg01
+-      domain: mcp-pike-ovn-noha.local
++      domain: mcp-ovn-noha.local
+diff --git a/mcp/reclass/nodes/cfg01.mcp-pike-ovs-noha.local.yml b/mcp/reclass/nodes/cfg01.mcp-ovs-dpdk-noha.local.yml
+similarity index 88%
+rename from mcp/reclass/nodes/cfg01.mcp-pike-ovs-noha.local.yml
+rename to mcp/reclass/nodes/cfg01.mcp-ovs-dpdk-noha.local.yml
+index 793e7c0d..30b61848 100644
+--- a/mcp/reclass/nodes/cfg01.mcp-pike-ovs-noha.local.yml
++++ b/mcp/reclass/nodes/cfg01.mcp-ovs-dpdk-noha.local.yml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-ovs-noha.infra.config
++  - cluster.mcp-ovs-dpdk-noha.infra.config
+ parameters:
+   _param:
+     linux_system_codename: xenial
+@@ -15,4 +15,4 @@ parameters:
+   linux:
+     system:
+       name: cfg01
+-      domain: mcp-pike-ovs-noha.local
++      domain: mcp-ovs-dpdk-noha.local
+diff --git a/mcp/reclass/nodes/cfg01.mcp-pike-ovs-dpdk-noha.local.yml b/mcp/reclass/nodes/cfg01.mcp-ovs-noha.local.yml
+similarity index 86%
+rename from mcp/reclass/nodes/cfg01.mcp-pike-ovs-dpdk-noha.local.yml
+rename to mcp/reclass/nodes/cfg01.mcp-ovs-noha.local.yml
+index 394a9f6b..658061b2 100644
+--- a/mcp/reclass/nodes/cfg01.mcp-pike-ovs-dpdk-noha.local.yml
++++ b/mcp/reclass/nodes/cfg01.mcp-ovs-noha.local.yml
+@@ -7,7 +7,7 @@
+ ##############################################################################
+ ---
+ classes:
+-  - cluster.mcp-pike-ovs-dpdk-noha.infra.config
++  - cluster.mcp-ovs-noha.infra.config
+ parameters:
+   _param:
+     linux_system_codename: xenial
+@@ -15,4 +15,4 @@ parameters:
+   linux:
+     system:
+       name: cfg01
+-      domain: mcp-pike-ovs-dpdk-noha.local
++      domain: mcp-ovs-noha.local
+diff --git a/mcp/scripts/salt.sh b/mcp/scripts/salt.sh
+index 2224d660..14581bac 100755
+--- a/mcp/scripts/salt.sh
++++ b/mcp/scripts/salt.sh
+@@ -80,9 +80,9 @@ ssh ${SSH_OPTS} "${SSH_SALT}" bash -s -e << SALT_INSTALL_END
+   export DEBIAN_FRONTEND=noninteractive
+   echo 'Dpkg::Use-Pty "0";' > /etc/apt/apt.conf.d/90silence-dpkg
+   OLD_DOMAIN=\$(grep -sPzo "id: cfg01\.\K(\S*)" /etc/salt/minion.d/minion.conf) || true
+-  BOOTSTRAP_SALTSTACK_OPTS=" -r -dX stable 2016.11 " \
++  BOOTSTRAP_SALTSTACK_OPTS=" -r -dX stable 2017.7 " \
+     MASTER_HOSTNAME=cfg01.${CLUSTER_DOMAIN} DISTRIB_REVISION=nightly \
+-      EXTRA_FORMULAS="nfs panko gnocchi" \
++      EXTRA_FORMULAS="nfs panko gnocchi oslo-templates" \
+         ./salt-master-init.sh
+   salt-key -Ay
+
