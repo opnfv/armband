@@ -13,8 +13,6 @@ Subject: [PATCH] salt-formulas: Add & enable armband formula
 - prereq: install qemu-efi;
 - prereq: install vgabios;
 - prereq: fix missing link for vgabios binary blob;
-- nova patch: Add video type virtio for AArch64 (backport from [1]);
-- nova patch: libvirt driver: AArch64: ACPI depends on AAVMF;
 - nova conf: cpu_model=cortex-a57 (only for virtual deploys);
 - nova conf: virt_type=qemu (only for virtual deploys);
 - nova compute conf: virt_type=qemu (only for virtual deploys);
@@ -26,16 +24,16 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/openstack_ha                |   1 +
- mcp/config/states/openstack_noha              |   2 +
- mcp/config/states/virtual_control_plane       |   1 +
- .../files/nova-libvirt-aarch64-rollup.diff    | 106 ++++++++++++++++++
- mcp/salt-formulas/armband/init.sls            |   7 ++
- mcp/salt-formulas/armband/nova_config.sls     |  35 ++++++
- mcp/salt-formulas/armband/nova_libvirt.sls    |   7 ++
- mcp/salt-formulas/armband/qemu_efi.sls        |   2 +
- mcp/salt-formulas/armband/vgabios.sls         |   7 ++
- 9 files changed, 168 insertions(+)
+ mcp/config/states/openstack_ha                |  1 +
+ mcp/config/states/openstack_noha              |  2 ++
+ mcp/config/states/virtual_control_plane       |  1 +
+ .../files/nova-libvirt-aarch64-rollup.diff    | 27 ++++++++++++++
+ mcp/salt-formulas/armband/init.sls            |  7 ++++
+ mcp/salt-formulas/armband/nova_config.sls     | 35 +++++++++++++++++++
+ mcp/salt-formulas/armband/nova_libvirt.sls    |  7 ++++
+ mcp/salt-formulas/armband/qemu_efi.sls        |  2 ++
+ mcp/salt-formulas/armband/vgabios.sls         |  7 ++++
+ 9 files changed, 89 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/init.sls
  create mode 100644 mcp/salt-formulas/armband/nova_config.sls
@@ -79,89 +77,10 @@ index c391cfe6..02a813c9 100755
  salt -C 'kvm* or cmp*' state.apply salt
 diff --git a/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
 new file mode 100644
-index 00000000..c987a4ce
+index 00000000..1ecbf297
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/nova-libvirt-aarch64-rollup.diff
-@@ -0,0 +1,106 @@
-+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
-+Date: Thu, 24 Aug 2017 10:57:28 +0200
-+Subject: [PATCH] libvirt: AArch64: ACPI depends on AAVMF
-+
-+On AArch64, ACPI should be added to domain XML only if guest UEFI
-+(AAVMF) is also used.
-+
-+[ Alexandru.Avadanii@enea.com ]
-+- pike rebase: minor context adj
-+
-+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
-+Signed-off-by: Ciprian Barbu <ciprian.barbu@enea.com>
-+
-+---
-+
-+diff --git a/nova/virt/libvirt/driver.py b/nova/virt/libvirt/driver.py
-+--- a/nova/virt/libvirt/driver.py
-++++ b/nova/virt/libvirt/driver.py
-+@@ -4314,7 +4314,10 @@
-+
-+         if (virt_type not in ("lxc", "uml", "parallels", "xen") or
-+                 (virt_type == "xen" and guest.os_type == fields.VMMode.HVM)):
-+-            guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
-++            guestarch = libvirt_utils.get_arch(image_meta)
-++            if (guestarch not in (fields.Architecture.ARMV7, fields.Architecture.AARCH64) or
-++                image_meta.properties.get('hw_firmware_type') == 'uefi'):
-++                    guest.features.append(vconfig.LibvirtConfigGuestFeatureACPI())
-+             guest.features.append(vconfig.LibvirtConfigGuestFeatureAPIC())
-+
-+         if (virt_type in ("qemu", "kvm") and
-+--
-+
-+From f0f09530ee9169eb29bc28d4f118676d7dc6640e Mon Sep 17 00:00:00 2001
-+From: Kevin Zhao <kevin.zhao@arm.com>
-+Date: Tue, 15 Aug 2017 09:52:09 +0000
-+Subject: [PATCH] Add video type virtio for AArch64
-+
-+Currently only "virtio" type is supported on AArch64, and the
-+other "virrus", "qxl" and "vga" don't work on AArch64 according to
-+libvirt upstream:
-+https://www.redhat.com/archives/libvir-list/2016-September/msg00546.html
-+Then this patch adds the virtio for AArch64 and tweaks the related test cases.
-+
-+Closes-bug: #1710766
-+
-+[ Alexandru.Avadanii@enea.com ]
-+Dropped test changes so it applies cleanly on Newton without more backports.
-+
-+Change-Id: Iba8a1e671f2b5759b3d9178aa1871d0cf888b26b
-+Signed-off-by: Kevin Zhao <kevin.zhao@arm.com>
-+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
-+---
-+
-+--- a/nova/virt/libvirt/driver.py
-++++ b/nova/virt/libvirt/driver.py
-+@@ -4342,7 +4342,8 @@ def _check_number_of_serial_console(self, num_ports):
-+                 allowed=ALLOWED_QEMU_SERIAL_PORTS, virt_type=virt_type)
-+
-+     def _add_video_driver(self, guest, image_meta, flavor):
-+-        VALID_VIDEO_DEVICES = ("vga", "cirrus", "vmvga", "xen", "qxl")
-++        VALID_VIDEO_DEVICES = ("vga", "cirrus", "vmvga",
-++                               "xen", "qxl", "virtio")
-+         video = vconfig.LibvirtConfigGuestVideo()
-+         # NOTE(ldbragst): The following logic sets the video.type
-+         # depending on supported defaults given the architecture,
-+@@ -4360,6 +4361,10 @@ def _add_video_driver(self, guest, image_meta, flavor):
-+             # NOTE(ldbragst): PowerKVM doesn't support 'cirrus' be default
-+             # so use 'vga' instead when running on Power hardware.
-+             video.type = 'vga'
-++        elif guestarch in (fields.Architecture.AARCH64):
-++            # NOTE(kevinz): Only virtio device type is supported by AARCH64
-++            # so use 'virtio' instead when running on AArch64 hardware.
-++            video.type = 'virtio'
-+         elif CONF.spice.enabled:
-+             video.type = 'qxl'
-+         if image_meta.properties.get('hw_video_model'):
-+--
-+
-+From dbd4c20de002784a4ffc07b173e82dd84a3af01c Mon Sep 17 00:00:00 2001
+@@ -0,0 +1,27 @@
 +From: Charalampos Kominos <Charalampos.Kominos@enea.com>
 +Date: Wed, 2 May 2018 14:20:47 +0200
 +Subject: [PATCH] Allow libvirt to honor root device naming
