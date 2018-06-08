@@ -1,0 +1,38 @@
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+: Copyright (c) 2018 Enea AB and others.
+:
+: All rights reserved. This program and the accompanying materials
+: are made available under the terms of the Apache License, Version 2.0
+: which accompanies this distribution, and is available at
+: http://www.apache.org/licenses/LICENSE-2.0
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Fri, 8 Jun 2018 14:06:41 +0200
+Subject: [PATCH] linux.system.repo: hack: Add Pike repos for Queens
+
+Mirantis repository for Queens lacks certain packages for arm64,
+try using the Pike repos to fetch them instead.
+
+This is a temporary workaround until the Queens repos get populated
+with all required arm64 binaries.
+
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ linux/system/repo/mcp/mirror/v1/openstack.yml | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/linux/system/repo/mcp/mirror/v1/openstack.yml b/linux/system/repo/mcp/mirror/v1/openstack.yml
+index 933bf53a..810589e0 100644
+--- a/linux/system/repo/mcp/mirror/v1/openstack.yml
++++ b/linux/system/repo/mcp/mirror/v1/openstack.yml
+@@ -13,3 +13,10 @@ parameters:
+           - pin: 'release o=Mirantis'
+             priority: 1100
+             package: '*'
++        mirantis_openstack_pike:
++          source: "deb http://mirror.fuel-infra.org/mcp-repos/pike/${_param:linux_system_codename} pike main"
++          key_url: "http://mirror.fuel-infra.org/mcp-repos/pike/${_param:linux_system_codename}/archive-mcppike.key"
++          pin:
++          - pin: 'release l=pike'
++            priority: 1100
++            package: '*'
