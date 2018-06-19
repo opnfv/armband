@@ -23,7 +23,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/mcp/config/labs/local/idf-virtual1.yaml b/mcp/config/labs/local/idf-virtual1.yaml
-index 79a5fa04..8a5fbb91 100644
+index 402af985..2d449c8e 100644
 --- a/mcp/config/labs/local/idf-virtual1.yaml
 +++ b/mcp/config/labs/local/idf-virtual1.yaml
 @@ -42,10 +42,10 @@ idf:
@@ -40,7 +40,7 @@ index 79a5fa04..8a5fbb91 100644
        dns:
          - 8.8.8.8
          - 8.8.4.4
-@@ -61,16 +61,16 @@ idf:
+@@ -63,16 +63,16 @@ idf:
          # Ordered-list, index should be in sync with node index in PDF
          - interfaces: &interfaces
              # Ordered-list, index should be in sync with interface index in PDF
