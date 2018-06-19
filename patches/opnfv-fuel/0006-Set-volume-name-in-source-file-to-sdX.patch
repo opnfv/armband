@@ -17,7 +17,7 @@ Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2 b/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
-index 52f5f910..e0c9a628 100644
+index 1870cc46..6378f77d 100644
 --- a/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
 +++ b/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
 @@ -130,7 +130,7 @@ parameters:
