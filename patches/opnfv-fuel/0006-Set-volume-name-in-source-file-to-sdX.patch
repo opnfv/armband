@@ -17,18 +17,18 @@ Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2 b/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
-index ceb3622b..49318588 100644
+index 38fe06a8..71bd80de 100644
 --- a/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
 +++ b/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
-@@ -127,7 +127,7 @@ parameters:
-     server:
+@@ -84,7 +84,7 @@ parameters:
+       <<: *db_conn_recycle_time
        cacert: /etc/ssl/certs/mcp_os_cacert
        openrc_extra:
 -        volume_device_name: vdc
 +        volume_device_name: sdc
-   haproxy:
-     proxy:
-       listen:
+   glance:
+     server:
+       <<: *db_conn_recycle_time
 diff --git a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
 index f458281c..e17a5f16 100644
 --- a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
