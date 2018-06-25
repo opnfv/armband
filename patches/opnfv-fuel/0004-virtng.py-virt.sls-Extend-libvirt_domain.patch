@@ -150,13 +150,13 @@ index 00000000..78eb0bff
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index fbc671f3..51c9f437 100644
+index 4d22c617..e6827aa2 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -14,3 +14,5 @@
+@@ -12,3 +12,5 @@
+ /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/env: 0011-system.repo-Debian-Add-keyserver-proxy-support.patch
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
- /usr/share/salt-formulas/env: 0016-Set-boot-source-selections.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
