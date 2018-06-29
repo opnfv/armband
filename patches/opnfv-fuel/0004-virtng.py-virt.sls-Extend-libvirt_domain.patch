@@ -150,10 +150,10 @@ index 00000000..78eb0bff
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index bd57ecdb..1d8a8910 100644
+index 3d9cb815..a26c9621 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -13,3 +13,5 @@
+@@ -14,3 +14,5 @@
  /usr/share/salt-formulas/env: 0011-system.repo-Debian-Add-keyserver-proxy-support.patch
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
  /usr/share/salt-formulas/env: 0016-Set-boot-source-selections.patch
