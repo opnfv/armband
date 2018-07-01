@@ -12,9 +12,9 @@ Subject: [PATCH] Set volume name in source file to sdX
 
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 ---
- .../cluster/mcp-pike-common-ha/openstack_control.yml.j2     | 2 +-
- .../cluster/mcp-pike-common-noha/openstack_control.yml      | 6 ++++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ .../classes/cluster/mcp-pike-common-ha/openstack_control.yml.j2 | 2 +-
+ .../classes/cluster/mcp-pike-common-noha/openstack_control.yml  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-common-ha/openstack_control.yml.j2
 index 6f7b33e3..dfc212e2 100644
@@ -30,19 +30,15 @@ index 6f7b33e3..dfc212e2 100644
      server:
        control:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml
-index 1c94738a..74667e21 100644
+index 1c94738a..5c8be6bc 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-noha/openstack_control.yml
-@@ -58,6 +58,12 @@ parameters:
+@@ -57,7 +57,7 @@ parameters:
+     server:
        admin_email: ${_param:admin_email}
        openrc_extra:
-         volume_device_name: vdc
+-        volume_device_name: vdc
 +        volume_device_name: sdc
-+      pkgs:
-+        - keystone
-+        - python-psycopg2
-+        - python-mysqldb
-+        - python-openstackclient
    glance:
      server:
        storage:
