@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_5674c59b",
+        "filename": "INFO.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-07-23T12:46:00Z",
+      "side": 1,
+      "message": "I don\u0027t think so, but I may be wrong. Aric, do you know if we need it?",
+      "parentUuid": "9a561d44_762589aa",
+      "revId": "0f726d40362099c9bd8bd04fc86abfe90528622f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_362b1184",
         "filename": "INFO.yaml",
         "patchSetId": 2
@@ -30,6 +48,30 @@
       "writtenOn": "2018-07-23T12:15:40Z",
       "side": 1,
       "message": "are we still in incubation?",
+      "range": {
+        "startLine": 5,
+        "startChar": 18,
+        "endLine": 5,
+        "endChar": 28
+      },
+      "revId": "0f726d40362099c9bd8bd04fc86abfe90528622f",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_164b6d5a",
+        "filename": "INFO.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-07-23T12:46:00Z",
+      "side": 1,
+      "message": "Yes, we haven\u0027t went through the process of graduation yet.",
+      "parentUuid": "9a561d44_362b1184",
       "range": {
         "startLine": 5,
         "startChar": 18,
