@@ -23,11 +23,11 @@ specific values.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../0103-virtng-module-Extend-libvirt_domain.patch | 54 ++++++++++++++++++++++
- ...4-salt-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++++
- mcp/patches/patches.list                           |  2 +
- .../classes/cluster/mcp-common-ha/infra/kvm.yml    | 15 ++++++
- .../classes/cluster/mcp-odl-ha/infra/kvm.yml.j2    |  3 ++
+ ...-virtng-module-Extend-libvirt_domain.patch | 54 +++++++++++++++++++
+ ...t-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++
+ mcp/patches/patches.list                      |  2 +
+ .../cluster/mcp-common-ha/infra/kvm.yml       | 15 ++++++
+ .../cluster/mcp-odl-ha/infra/kvm.yml.j2       |  3 ++
  5 files changed, 125 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
  create mode 100644 mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
