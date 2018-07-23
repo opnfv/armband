@@ -23,51 +23,30 @@ realtime_discussion:
     server: 'freenode.net'
     channel: '#opnfv-armband'
 meetings:
-    - type: 'gotomeeting+irc'
-      agenda:  # eg: 'https://wiki.opnfv.org/display/'
-      url:  # eg: 'https://global.gotomeeting.com/join/819733085'
+    - type: 'zoom+irc'
+      agenda: 'https://wiki.opnfv.org/display/meetings/Armband'
+      url: 'https://zoom.us/j/5014627785'
       server: 'freenode.net'
-      channel: '#opnfv-meeting'
-      repeats: 'weekly'
-      time:  # eg: '16:00 UTC'
+      channel: '#opnfv-armband'
+      repeats: 'bi-weekly'
+      time: '14:00 UTC'
 repositories:
     - 'armband'
 committers:
     - <<: *opnfv_armband_ptl
-    - name: 'Bin Hu'
-      email: 'bh526r@att.com'
-      company: 'att.com'
-      id: 'bh526r'
-    - name: 'Jerin Jacob'
-      email: 'jerin.jacob@caviumnetworks.com'
-      company: 'caviumnetworks.com'
-      id: 'jerinjacob'
     - name: 'Alexandru Avadanii'
       email: 'Alexandru.Avadanii@enea.com'
       company: 'enea.com'
       id: 'AlexandruAvadanii'
-    - name: 'Florin Dumitrascu'
-      email: 'florin.dumitrascu@gmail.com'
-      company: 'gmail.com'
-      id: 'florindumitrascu'
-    - name: 'Mazdak Rajabinasab'
-      email: 'mazdak.rajabinasab@gmail.com'
-      company: 'gmail.com'
-      id: 'Mazdak'
-    - name: 'Josep Puigdemont'
-      email: 'josep.puigdemont@gmail.com'
-      company: 'gmail.com'
-      id: 'joseppc'
-    - name: 'Ciprian Barbu'
-      email: 'ciprian.barbu@enea.com'
-      company: 'enea.com'
-      id: 'ciprian.barbu.enea'
     - name: 'Cristina Pauna'
       email: 'cristina.pauna@enea.com'
       company: 'enea.com'
       id: 'cristinapauna'
 tsc:
     # yamllint disable rule:line-length
-    approval: 'http//meetbot.opnfv.org/meetings/opnfv-meeting/2015/opnfv-meeting.2015-09-08-13.59.html
-http//lists.opnfv.org/pipermail/opnfv-tsc/2016-March/002322.html'
+    approval: 'http://meetbot.opnfv.org/meetings/opnfv-meeting/2015/opnfv-meeting.2015-09-08-13.59.html
+               https://lists.opnfv.org/g/opnfv-tsc/message/002322
+               https://lists.opnfv.org/g/opnfv-tech-discuss/message/7303
+               https://lists.opnfv.org/g/opnfv-tech-discuss/message/12867
+               https://lists.opnfv.org/g/opnfv-tsc/message/4462'
     # yamllint enable rule:line-length
