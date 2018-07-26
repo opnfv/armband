@@ -22,7 +22,7 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index 6f935445..f685ab87 100755
+index 674a1bfd..0b24acd6 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -23,6 +23,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
@@ -32,9 +32,9 @@ index 6f935445..f685ab87 100755
 +salt -C 'kvm* or cmp*' state.apply opnfv.adduser
  salt -C 'kvm*' state.apply linux.network,linux.system.kernel
  wait_for 5.0 "salt -C 'kvm* or cmp*' state.apply salt.minion"
- wait_for 5.0 "salt -C 'cmp*' state.apply linux.system"
+ wait_for 5.0 "salt -C 'cmp*' state.apply linux.system,linux.network"
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 64d73953..d8c4e776 100755
+index cc227a97..51823a0c 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -39,6 +39,7 @@ vcp_nodes=$(salt --out yaml 'kvm01*' pillar.get salt:control:cluster:internal:no
