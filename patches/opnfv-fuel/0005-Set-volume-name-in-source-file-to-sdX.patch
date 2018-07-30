@@ -17,10 +17,10 @@ Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2 b/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
-index 0189e038..ea758c4b 100644
+index 28d727ea..edf91162 100644
 --- a/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
 +++ b/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
-@@ -84,7 +84,7 @@ parameters:
+@@ -89,7 +89,7 @@ parameters:
        <<: *db_conn_recycle_time
        cacert: /etc/ssl/certs/mcp_os_cacert
        openrc_extra:
@@ -30,10 +30,10 @@ index 0189e038..ea758c4b 100644
      server:
        <<: *db_conn_recycle_time
 diff --git a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
-index f458281c..e17a5f16 100644
+index 0eeff7c0..0c7b5472 100644
 --- a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
 +++ b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
-@@ -72,7 +72,7 @@ parameters:
+@@ -77,7 +77,7 @@ parameters:
      server:
        admin_email: ${_param:admin_email}
        openrc_extra:

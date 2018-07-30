@@ -42,7 +42,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 73c44bb6..4ac5d6d5 100755
+index f0809042..91c7e2f7 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
@@ -51,13 +51,13 @@ index 73c44bb6..4ac5d6d5 100755
  salt -I 'nova:compute' state.sls nova
 +wait_for 5.0 "salt -I 'nova:compute' state.sls armband"
 
- salt -I 'redis:cluster:role:master' state.sls redis
- salt -I 'redis:server' state.sls redis
+ salt -I 'barbican:server' state.sls barbican -b 1
+ salt -I 'barbican:client' state.sls barbican
 diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
-index 70db238b..52d643df 100755
+index 02530236..95f95a7b 100755
 --- a/mcp/config/states/openstack_noha
 +++ b/mcp/config/states/openstack_noha
-@@ -54,3 +54,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
+@@ -57,3 +57,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
  salt -I 'ceilometer:agent' state.sls ceilometer
 
  salt -I 'horizon:server' state.sls horizon
