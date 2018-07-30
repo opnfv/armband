@@ -33,15 +33,15 @@ to pick up the changes, so we'll run it before rebooting kvm nodes.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/baremetal_init              |   1 +
- .../files/salt-minion-aarch64-rollup.diff     | 101 ++++++++++++++++++
- mcp/salt-formulas/armband/salt_minion.sls     |   7 ++
+ mcp/config/states/baremetal_init                   |   1 +
+ .../armband/files/salt-minion-aarch64-rollup.diff  | 101 +++++++++++++++++++++
+ mcp/salt-formulas/armband/salt_minion.sls          |   7 ++
  3 files changed, 109 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/salt_minion.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index 891eae36..54ffb873 100755
+index 891eae3..54ffb87 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
 @@ -35,6 +35,7 @@ wait_for 30.0 "salt -C 'kvm* or cmp*' test.ping"
@@ -54,7 +54,7 @@ index 891eae36..54ffb873 100755
 
 diff --git a/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
 new file mode 100644
-index 00000000..9e74c240
+index 0000000..9e74c24
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
 @@ -0,0 +1,101 @@
@@ -161,7 +161,7 @@ index 00000000..9e74c240
 + def purge(vm_, dirs=False):
 diff --git a/mcp/salt-formulas/armband/salt_minion.sls b/mcp/salt-formulas/armband/salt_minion.sls
 new file mode 100644
-index 00000000..cc5c9242
+index 0000000..cc5c924
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/salt_minion.sls
 @@ -0,0 +1,7 @@

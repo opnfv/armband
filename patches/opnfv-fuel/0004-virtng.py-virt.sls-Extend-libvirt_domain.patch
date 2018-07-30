@@ -23,18 +23,18 @@ specific values.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ...-virtng-module-Extend-libvirt_domain.patch | 54 +++++++++++++++++++
- ...t-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++
- mcp/patches/patches.list                      |  2 +
- .../cluster/mcp-pike-common-ha/infra/kvm.yml  | 15 ++++++
- .../cluster/mcp-pike-odl-ha/infra/kvm.yml.j2  |  3 ++
+ .../0103-virtng-module-Extend-libvirt_domain.patch | 54 ++++++++++++++++++++++
+ ...4-salt-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++++
+ mcp/patches/patches.list                           |  2 +
+ .../cluster/mcp-pike-common-ha/infra/kvm.yml       | 15 ++++++
+ .../cluster/mcp-pike-odl-ha/infra/kvm.yml.j2       |  3 ++
  5 files changed, 125 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
  create mode 100644 mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 
 diff --git a/mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch b/mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
 new file mode 100644
-index 00000000..706b67da
+index 0000000..706b67d
 --- /dev/null
 +++ b/mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
 @@ -0,0 +1,54 @@
@@ -94,7 +94,7 @@ index 00000000..706b67da
 +         for dev in kwargs['boot_dev'].split():
 diff --git a/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch b/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 new file mode 100644
-index 00000000..78eb0bff
+index 0000000..78eb0bf
 --- /dev/null
 +++ b/mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
 @@ -0,0 +1,51 @@
@@ -150,7 +150,7 @@ index 00000000..78eb0bff
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index bd57ecdb..1d8a8910 100644
+index bd57ecd..1d8a891 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
 @@ -13,3 +13,5 @@
@@ -160,7 +160,7 @@ index bd57ecdb..1d8a8910 100644
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
-index df230452..3548155f 100644
+index df23045..3548155 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/mcp-pike-common-ha/infra/kvm.yml
 @@ -52,21 +52,33 @@ parameters:
@@ -208,7 +208,7 @@ index df230452..3548155f 100644
            net_profile: default_ext
        cluster:
 diff --git a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2 b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
-index 5fc4776d..b19789e3 100644
+index 5fc4776..b19789e 100644
 --- a/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
 +++ b/mcp/reclass/classes/cluster/mcp-pike-odl-ha/infra/kvm.yml.j2
 @@ -19,6 +19,9 @@ parameters:
