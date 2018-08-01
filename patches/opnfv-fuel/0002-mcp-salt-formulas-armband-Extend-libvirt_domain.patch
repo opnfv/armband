@@ -33,10 +33,10 @@ to pick up the changes, so we'll run it before rebooting kvm nodes.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- mcp/config/states/baremetal_init              |   1 +
- .../files/salt-minion-aarch64-rollup.diff     | 101 ++++++++++++++++++
- mcp/salt-formulas/armband/salt_minion.sls     |   7 ++
- 3 files changed, 109 insertions(+)
+ mcp/config/states/baremetal_init              |  1 +
+ .../files/salt-minion-aarch64-rollup.diff     | 70 +++++++++++++++++++
+ mcp/salt-formulas/armband/salt_minion.sls     |  7 ++
+ 3 files changed, 78 insertions(+)
  create mode 100644 mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
  create mode 100644 mcp/salt-formulas/armband/salt_minion.sls
 
@@ -54,41 +54,10 @@ index 3e5f659f..674a1bfd 100755
 
 diff --git a/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff b/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
 new file mode 100644
-index 00000000..9e74c240
+index 00000000..1a2e9a3c
 --- /dev/null
 +++ b/mcp/salt-formulas/armband/files/salt-minion-aarch64-rollup.diff
-@@ -0,0 +1,101 @@
-+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
-+Date: Sun Aug 20 18:18:53 2017 +0200
-+Subject: [PATCH] cloud.py: Allow AArch64 arch in salt bootstrap
-+
-+Recent changes in salt bootstrap script from [1] whitelist a
-+fixed pool of known architectures. Add "arm64" to that list on the
-+fly, as part of `config.gather_bootstrap_script`.
-+
-+NOTE: This change will be leveraged by passing a custom DEB repo to
-+the bootstrap script with `-R linux.enea.com/saltstack`.
-+
-+[1] http://bootstrap.saltstack.com
-+
-+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
-+---
-+
-+diff --git a/salt/utils/cloud.py b/salt/utils/cloud.py
-+--- a/salt/utils/cloud.py
-++++ b/salt/utils/cloud.py
-+@@ -2772,6 +2772,9 @@
-+     if not script_content:
-+         raise ValueError('No content in bootstrap script !')
-+
-++    # NOTE(armband): edit bootstrap script on the fly to allow AArch64
-++    script_content = script_content.replace('"amd64")', '"amd64"|"arm64")')
-++
-+     # Get the path to the built-in deploy scripts directory
-+     builtin_deploy_dir = os.path.join(
-+         os.path.dirname(__file__),
-+--
-+
+@@ -0,0 +1,70 @@
 +From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 +Date: Sun Aug 20 18:18:53 2017 +0200
 +Subject: [PATCH] libvirt_domain.jinja: Add AArch64 support
