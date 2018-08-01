@@ -46,12 +46,12 @@ index f8ef86b3..40849e66 100755
 
  # Propagate APT proxy config created by curtin on baremetal nodes to VCP VMs
 diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2 b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2
-index fb1dcacd..530f85e1 100644
+index 15fbf285..51edd16e 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2
 +++ b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2
-@@ -13,6 +13,9 @@ parameters:
-   _param:
-     openstack_version: queens
+@@ -15,6 +15,9 @@ parameters:
+
+     banner_company_name: OPNFV
 
 +    opnfv_user_username: opnfv
 +    opnfv_user_password: $1$5/pIEHT1$XFBhNWW4Q8gYd19hczgPF1

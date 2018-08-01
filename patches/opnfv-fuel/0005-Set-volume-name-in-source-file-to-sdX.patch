@@ -30,10 +30,10 @@ index a7e8fcde..81a8a2af 100644
      server:
        <<: *db_conn_recycle_time
 diff --git a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
-index ed1d0649..e137e2c7 100644
+index 48f99ca5..bcc6695c 100644
 --- a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
 +++ b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
-@@ -79,7 +79,7 @@ parameters:
+@@ -80,7 +80,7 @@ parameters:
      server:
        admin_email: ${_param:admin_email}
        openrc_extra:
