@@ -1,0 +1,128 @@
+From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+Date: Wed, 1 Aug 2018 22:56:13 +0200
+Subject: [PATCH] [scripts] Leverage upstream arm64 bootstrap supp
+
+bootstrap-salt.sh now has arm64 support [1], so drop our obsoleted
+workaround.
+
+JIRA: ARMBAND-399
+
+[1] https://github.com/saltstack/salt-bootstrap/pull/1251
+
+Change-Id: I8b06520b2c41564ed2eda338e7633ce1637bb866
+Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+---
+ ...Use-keystone-v3-endpoints-by-default.patch |  4 +-
+ ...er-setup-Group-APT-install-formulas.patch} |  4 +-
+ ...-setup.sh-Allow-arm64-salt-bootstrap.patch | 59 -------------------
+ 3 files changed, 4 insertions(+), 63 deletions(-)
+ rename mcp/patches/scripts/{0003-salt-master-setup-Group-APT-install-formulas.patch => 0001-salt-master-setup-Group-APT-install-formulas.patch} (98%)
+ delete mode 100644 mcp/patches/scripts/0001-salt-master-setup.sh-Allow-arm64-salt-bootstrap.patch
+
+diff --git a/mcp/patches/reclass-system-salt-model/0001-Use-keystone-v3-endpoints-by-default.patch b/mcp/patches/reclass-system-salt-model/0001-Use-keystone-v3-endpoints-by-default.patch
+index 514ea59e..7c36437f 100644
+--- a/mcp/patches/reclass-system-salt-model/0001-Use-keystone-v3-endpoints-by-default.patch
++++ b/mcp/patches/reclass-system-salt-model/0001-Use-keystone-v3-endpoints-by-default.patch
+@@ -20,10 +20,10 @@ Change-Id: I7e9a1b180f4e0ddb24ec72ed9f08c9e2580c7897
+  1 file changed, 1 insertion(+), 1 deletion(-)
+ 
+ diff --git a/keystone/client/single.yml b/keystone/client/single.yml
+-index a79ed7ec..86b4e09e 100644
++index ad2d55a1..120a2359 100644
+ --- a/keystone/client/single.yml
+ +++ b/keystone/client/single.yml
+-@@ -4,7 +4,7 @@ classes:
++@@ -5,7 +5,7 @@ classes:
+  - system.keystone.client.service.glance
+  - system.keystone.client.service.heat
+  - system.keystone.client.service.heat-cfn
+diff --git a/mcp/patches/scripts/0003-salt-master-setup-Group-APT-install-formulas.patch b/mcp/patches/scripts/0001-salt-master-setup-Group-APT-install-formulas.patch
+similarity index 98%
+rename from mcp/patches/scripts/0003-salt-master-setup-Group-APT-install-formulas.patch
+rename to mcp/patches/scripts/0001-salt-master-setup-Group-APT-install-formulas.patch
+index d5a9bf3c..9106a13b 100644
+--- a/mcp/patches/scripts/0003-salt-master-setup-Group-APT-install-formulas.patch
++++ b/mcp/patches/scripts/0001-salt-master-setup-Group-APT-install-formulas.patch
+@@ -23,7 +23,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+  2 files changed, 13 insertions(+), 5 deletions(-)
+ 
+ diff --git a/salt-master-init.sh b/salt-master-init.sh
+-index a4ec138..db90a22 100755
++index 343324c..48a05b9 100755
+ --- a/salt-master-init.sh
+ +++ b/salt-master-init.sh
+ @@ -24,6 +24,12 @@ options() {
+@@ -40,7 +40,7 @@ index a4ec138..db90a22 100755
+      export YELLOW='\033[1;33m'
+      export BLUE='\033[0;35m'
+ diff --git a/salt-master-setup.sh b/salt-master-setup.sh
+-index 0dd3036..a0c6311 100755
++index cba21fb..c2decde 100755
+ --- a/salt-master-setup.sh
+ +++ b/salt-master-setup.sh
+ @@ -347,15 +347,17 @@ install_salt_formula_pkg()
+diff --git a/mcp/patches/scripts/0001-salt-master-setup.sh-Allow-arm64-salt-bootstrap.patch b/mcp/patches/scripts/0001-salt-master-setup.sh-Allow-arm64-salt-bootstrap.patch
+deleted file mode 100644
+index 498743b7..00000000
+--- a/mcp/patches/scripts/0001-salt-master-setup.sh-Allow-arm64-salt-bootstrap.patch
++++ /dev/null
+@@ -1,59 +0,0 @@
+-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+-: Copyright (c) 2018 Mirantis Inc., Enea AB and others.
+-:
+-: All rights reserved. This program and the accompanying materials
+-: are made available under the terms of the Apache License, Version 2.0
+-: which accompanies this distribution, and is available at
+-: http://www.apache.org/licenses/LICENSE-2.0
+-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+-From: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+-Date: Fri, 1 Sep 2017 00:48:26 +0200
+-Subject: [PATCH] salt-master-setup.sh: Allow arm64 salt-bootstrap
+-
+-Upstream commit [1] broke Salt bootstrap on AArch64, by
+-introducing an architecture condition that is too strict to allow
+-Debian package installation (even if we provide our own repo).
+-
+-Add "arm64" to the list of supported architectures. This needs
+-to be done on the fly, as the bootstrap script is fetched using
+-`curl` from <salt-master-setup.sh>.
+-
+-[1] https://github.com/saltstack/salt-bootstrap/commit/caa6d7d
+-
+-Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
+----
+- salt-master-setup.sh | 8 ++++----
+- 1 file changed, 4 insertions(+), 4 deletions(-)
+-
+-diff --git a/salt-master-setup.sh b/salt-master-setup.sh
+-index cba21fb..0dd3036 100755
+---- a/salt-master-setup.sh
+-+++ b/salt-master-setup.sh
+-@@ -237,12 +237,12 @@ install_salt_master_pkg()
+-       debian)
+-           $SUDO apt-get install -y git
+- 	  which reclass || $SUDO apt install -qqq -y reclass
+--          curl -L https://bootstrap.saltstack.com | $SUDO sh -s -- -M ${BOOTSTRAP_SALTSTACK_OPTS} &>/dev/null || true
+-+          curl -L https://bootstrap.saltstack.com | sed 's@"amd64")@"amd64"|"arm64")@g' | $SUDO sh -s -- -M ${BOOTSTRAP_SALTSTACK_OPTS} &>/dev/null || true
+-         ;;
+-       rhel)
+-           yum install -y git
+-           which reclass || $SUDO yum install -y reclass
+--          curl -L https://bootstrap.saltstack.com | $SUDO sh -s -- -M ${BOOTSTRAP_SALTSTACK_OPTS} &>/dev/null || true
+-+          curl -L https://bootstrap.saltstack.com | sed 's@"amd64")@"amd64"|"arm64")@g' | $SUDO sh -s -- -M ${BOOTSTRAP_SALTSTACK_OPTS} &>/dev/null || true
+-         ;;
+-     esac
+-     
+-@@ -310,10 +310,10 @@ install_salt_minion_pkg()
+-
+-     case $PLATFORM_FAMILY in
+-       debian)
+--          curl -L https://bootstrap.saltstack.com | $SUDO sh -s -- ${BOOTSTRAP_SALTSTACK_OPTS} &>/dev/null || true
+-+          curl -L https://bootstrap.saltstack.com | sed 's@"amd64")@"amd64"|"arm64")@g' | $SUDO sh -s -- ${BOOTSTRAP_SALTSTACK_OPTS} &>/dev/null || true
+-       ;;
+-       rhel)
+--          curl -L https://bootstrap.saltstack.com | $SUDO sh -s -- ${BOOTSTRAP_SALTSTACK_OPTS} &>/dev/null || true
+-+          curl -L https://bootstrap.saltstack.com | sed 's@"amd64")@"amd64"|"arm64")@g' | $SUDO sh -s -- ${BOOTSTRAP_SALTSTACK_OPTS} &>/dev/null || true
+-       ;;
+-     esac
+-
