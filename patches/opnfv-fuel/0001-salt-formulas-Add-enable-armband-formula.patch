@@ -42,11 +42,11 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index f0809042..91c7e2f7 100755
+index a32111f6..6fff4368 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
-@@ -52,6 +52,7 @@ salt -I 'neutron:server' state.sls neutron -b 1
- salt -I 'neutron:gateway' state.sls neutron.gateway
+@@ -55,6 +55,7 @@ if salt 'cmp*' match.pillar 'neutron:compute' --out yaml --static  | grep -q -e
+ fi
 
  salt -I 'nova:compute' state.sls nova
 +wait_for 5.0 "salt -I 'nova:compute' state.sls armband"
