@@ -150,17 +150,17 @@ index 00000000..78eb0bff
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index baa15d79..c9dbe24a 100644
+index 2f910715..5ebc1d30 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -10,3 +10,5 @@
- /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
+@@ -11,3 +11,5 @@
  /usr/share/salt-formulas/env: 0011-system.repo-Debian-Add-keyserver-proxy-support.patch
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
+ /usr/share/salt-formulas/env: 0016-Disable-glance-signature-verification.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
-index 868f324f..73875b87 100644
+index 62af0893..bda52803 100644
 --- a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
 +++ b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
 @@ -52,21 +52,33 @@ parameters:

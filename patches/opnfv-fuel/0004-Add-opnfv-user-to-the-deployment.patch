@@ -22,17 +22,17 @@ Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
 diff --git a/mcp/config/states/baremetal_init b/mcp/config/states/baremetal_init
-index 674a1bfd..0b24acd6 100755
+index 14d6a570..1317900a 100755
 --- a/mcp/config/states/baremetal_init
 +++ b/mcp/config/states/baremetal_init
-@@ -23,6 +23,7 @@ salt -C 'kvm* or cmp*' file.replace $debian_ip_source \
+@@ -27,6 +27,7 @@ salt -C "${cluster_nodes_query}" file.replace $debian_ip_source \
    repl="\n        if not __salt__['pkg.version']('vlan'):\n            __salt__['pkg.install']('vlan')"
 
- salt -C 'kvm* or cmp*' pkg.install bridge-utils
-+salt -C 'kvm* or cmp*' state.apply opnfv.adduser
- salt -C 'kvm*' state.apply linux.network,linux.system.kernel
- wait_for 5.0 "salt -C 'kvm* or cmp*' state.apply salt.minion"
- wait_for 5.0 "salt -C 'cmp*' state.apply linux.system,linux.network"
+ salt -C "${cluster_nodes_query}" pkg.install bridge-utils
++salt -C "${control_nodes_query}" state.apply opnfv.adduser
+ salt -C "${control_nodes_query}" state.apply linux.network,linux.system.kernel
+ wait_for 5.0 "salt -C '${cluster_nodes_query}' state.apply salt.minion"
+ wait_for 5.0 "salt -C '${compute_nodes_query}' state.apply linux.system,linux.network"
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
 index cc227a97..51823a0c 100755
 --- a/mcp/config/states/virtual_control_plane
@@ -46,10 +46,10 @@ index cc227a97..51823a0c 100755
 
  # Propagate APT proxy config created by curtin on baremetal nodes to VCP VMs
 diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2 b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2
-index 19475c71..1a3c84fc 100644
+index 987c5eb2..afeadc80 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2
 +++ b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2
-@@ -10,6 +10,9 @@ classes:
+@@ -11,6 +11,9 @@ classes:
    - cluster.all-mcp-arch-common.opnfv
  parameters:
    _param:
