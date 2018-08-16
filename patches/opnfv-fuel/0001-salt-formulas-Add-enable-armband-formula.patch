@@ -42,7 +42,7 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
  create mode 100644 mcp/salt-formulas/armband/vgabios.sls
 
 diff --git a/mcp/config/states/openstack_ha b/mcp/config/states/openstack_ha
-index 12d6ae65..c122ca0a 100755
+index d7d8cbd4..73c74ee0 100755
 --- a/mcp/config/states/openstack_ha
 +++ b/mcp/config/states/openstack_ha
 @@ -56,6 +56,7 @@ if salt 'cmp*' match.pillar 'neutron:compute:backend:engine:ovn' \
@@ -54,17 +54,17 @@ index 12d6ae65..c122ca0a 100755
  salt -I 'barbican:server' state.sls barbican -b 1
  salt -I 'barbican:client' state.sls barbican
 diff --git a/mcp/config/states/openstack_noha b/mcp/config/states/openstack_noha
-index 02530236..95f95a7b 100755
+index 9a42d481..9ca32d0f 100755
 --- a/mcp/config/states/openstack_noha
 +++ b/mcp/config/states/openstack_noha
 @@ -57,3 +57,5 @@ salt -I 'ceilometer:server' state.sls ceilometer
  salt -I 'ceilometer:agent' state.sls ceilometer
 
- salt -I 'horizon:server' state.sls horizon
+ salt -I 'horizon:server' state.sls apache,horizon
 +
 +salt -I 'nova:compute' state.sls armband
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index 8105b266..cc227a97 100755
+index 8ea5047a..f8ef86b3 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -27,6 +27,7 @@ if [ "${ERASE_ENV}" -eq 1 ]; then

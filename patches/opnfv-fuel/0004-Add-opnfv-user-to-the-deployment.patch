@@ -34,7 +34,7 @@ index 14d6a570..1317900a 100755
  wait_for 5.0 "salt -C '${cluster_nodes_query}' state.apply salt.minion"
  wait_for 5.0 "salt -C '${compute_nodes_query}' state.apply linux.system,linux.network"
 diff --git a/mcp/config/states/virtual_control_plane b/mcp/config/states/virtual_control_plane
-index cc227a97..51823a0c 100755
+index f8ef86b3..40849e66 100755
 --- a/mcp/config/states/virtual_control_plane
 +++ b/mcp/config/states/virtual_control_plane
 @@ -39,6 +39,7 @@ vcp_nodes=$(salt --out yaml 'kvm01*' pillar.get salt:control:cluster:internal:no
@@ -46,13 +46,13 @@ index cc227a97..51823a0c 100755
 
  # Propagate APT proxy config created by curtin on baremetal nodes to VCP VMs
 diff --git a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2 b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2
-index 987c5eb2..afeadc80 100644
+index fb1dcacd..530f85e1 100644
 --- a/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2
 +++ b/mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2
-@@ -11,6 +11,9 @@ classes:
-   - cluster.all-mcp-arch-common.opnfv
- parameters:
+@@ -13,6 +13,9 @@ parameters:
    _param:
+     openstack_version: queens
+
 +    opnfv_user_username: opnfv
 +    opnfv_user_password: $1$5/pIEHT1$XFBhNWW4Q8gYd19hczgPF1
 +
