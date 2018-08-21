@@ -23,11 +23,11 @@ specific values.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- ...-virtng-module-Extend-libvirt_domain.patch | 54 +++++++++++++++++++
- ...t-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++
- mcp/patches/patches.list                      |  2 +
- .../cluster/mcp-common-ha/infra/kvm.yml       | 15 ++++++
- .../cluster/mcp-odl-ha/infra/kvm.yml.j2       |  3 ++
+ .../0103-virtng-module-Extend-libvirt_domain.patch | 54 ++++++++++++++++++++++
+ ...4-salt-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++++
+ mcp/patches/patches.list                           |  2 +
+ .../classes/cluster/mcp-common-ha/infra/kvm.yml    | 15 ++++++
+ .../classes/cluster/mcp-odl-ha/infra/kvm.yml.j2    |  3 ++
  5 files changed, 125 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
  create mode 100644 mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
@@ -150,13 +150,13 @@ index 00000000..78eb0bff
 +
 + #salt_control_seed_{{ cluster_name }}_{{ node_name }}:
 diff --git a/mcp/patches/patches.list b/mcp/patches/patches.list
-index 2f910715..5ebc1d30 100644
+index baa15d79..c9dbe24a 100644
 --- a/mcp/patches/patches.list
 +++ b/mcp/patches/patches.list
-@@ -11,3 +11,5 @@
+@@ -10,3 +10,5 @@
+ /usr/share/salt-formulas/env: 0010-maas-region-allow-timeout-override.patch
  /usr/share/salt-formulas/env: 0011-system.repo-Debian-Add-keyserver-proxy-support.patch
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
- /usr/share/salt-formulas/env: 0016-Disable-glance-signature-verification.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
 diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml

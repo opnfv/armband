@@ -14,10 +14,10 @@ Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 Signed-off-by: Guillermo Herrero <Guillermo.Herrero@enea.com>
 ---
- mcp/config/states/baremetal_init                           | 1 +
- mcp/config/states/virtual_control_plane                    | 1 +
- .../classes/cluster/all-mcp-arch-common/init.yml.j2        | 3 +++
- mcp/salt-formulas/opnfv/adduser.sls                        | 7 +++++++
+ mcp/config/states/baremetal_init                            | 1 +
+ mcp/config/states/virtual_control_plane                     | 1 +
+ mcp/reclass/classes/cluster/all-mcp-arch-common/init.yml.j2 | 3 +++
+ mcp/salt-formulas/opnfv/adduser.sls                         | 7 +++++++
  4 files changed, 12 insertions(+)
  create mode 100644 mcp/salt-formulas/opnfv/adduser.sls
 
