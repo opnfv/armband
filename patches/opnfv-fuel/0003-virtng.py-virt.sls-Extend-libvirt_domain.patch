@@ -23,11 +23,11 @@ specific values.
 
 Signed-off-by: Alexandru Avadanii <Alexandru.Avadanii@enea.com>
 ---
- .../0103-virtng-module-Extend-libvirt_domain.patch | 54 ++++++++++++++++++++++
- ...4-salt-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++++
- mcp/patches/patches.list                           |  2 +
- .../classes/cluster/mcp-common-ha/infra/kvm.yml    | 15 ++++++
- .../classes/cluster/mcp-odl-ha/infra/kvm.yml.j2    |  3 ++
+ ...-virtng-module-Extend-libvirt_domain.patch | 54 +++++++++++++++++++
+ ...t-control-virt-Extend-libvirt_domain.patch | 51 ++++++++++++++++++
+ mcp/patches/patches.list                      |  2 +
+ .../cluster/mcp-common-ha/infra/kvm.yml.j2    | 15 ++++++
+ .../cluster/mcp-odl-ha/infra/kvm.yml.j2       |  3 ++
  5 files changed, 125 insertions(+)
  create mode 100644 mcp/patches/0103-virtng-module-Extend-libvirt_domain.patch
  create mode 100644 mcp/patches/0104-salt-control-virt-Extend-libvirt_domain.patch
@@ -159,10 +159,10 @@ index baa15d79..c9dbe24a 100644
  /usr/share/salt-formulas/env: 0015-Set-ovs-bridges-as-L3-interfaces.patch
 +/usr/share/salt-formulas/env: 0103-virtng-module-Extend-libvirt_domain.patch
 +/usr/share/salt-formulas/env: 0104-salt-control-virt-Extend-libvirt_domain.patch
-diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
+diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml.j2 b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml.j2
 index 62af0893..bda52803 100644
---- a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
-+++ b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml
+--- a/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-common-ha/infra/kvm.yml.j2
 @@ -52,21 +52,33 @@ parameters:
          openstack.control:
            cpu: 4
