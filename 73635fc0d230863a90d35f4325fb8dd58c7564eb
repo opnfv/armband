@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a682502_4f1271b5",
+        "filename": "docs/conf.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-09-11T10:32:27Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be armband?",
+      "range": {
+        "startLine": 8,
+        "startChar": 21,
+        "endLine": 8,
+        "endChar": 25
+      },
+      "revId": "73635fc0d230863a90d35f4325fb8dd58c7564eb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
