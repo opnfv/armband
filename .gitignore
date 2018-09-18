@@ -3,3 +3,5 @@ build.log
 config.mk
 ci/clean_cache.sh
 *.sw?
+.tox
+docs/_build/*
