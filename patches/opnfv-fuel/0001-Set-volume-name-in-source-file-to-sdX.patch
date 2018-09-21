@@ -13,14 +13,14 @@ Subject: [PATCH] Set volume name in source file to sdX
 Signed-off-by: Charalampos Kominos <Charalampos.Kominos@enea.com>
 ---
  .../classes/cluster/mcp-common-ha/openstack_control.yml.j2      | 2 +-
- .../classes/cluster/mcp-common-noha/openstack_control.yml       | 2 +-
+ .../classes/cluster/mcp-common-noha/openstack_control.yml.j2    | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2 b/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
-index a7e8fcde..81a8a2af 100644
+index 25521f9c..03610a64 100644
 --- a/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
 +++ b/mcp/reclass/classes/cluster/mcp-common-ha/openstack_control.yml.j2
-@@ -91,7 +91,7 @@ parameters:
+@@ -92,7 +92,7 @@ parameters:
        <<: *db_conn_recycle_time
        cacert: /etc/ssl/certs/mcp_os_cacert
        openrc_extra:
@@ -29,11 +29,11 @@ index a7e8fcde..81a8a2af 100644
    glance:
      server:
        <<: *db_conn_recycle_time
-diff --git a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
-index dd4b9c4f..d235ef4a 100644
---- a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
-+++ b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml
-@@ -80,7 +80,7 @@ parameters:
+diff --git a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml.j2 b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml.j2
+index d1caafe4..2f7e39d8 100644
+--- a/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml.j2
++++ b/mcp/reclass/classes/cluster/mcp-common-noha/openstack_control.yml.j2
+@@ -85,7 +85,7 @@ parameters:
      server:
        admin_email: ${_param:admin_email}
        openrc_extra:
