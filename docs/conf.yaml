@@ -8,3 +8,5 @@
 ---
 project_cfg: opnfv
 project: armband
+version: "Gambia"
+release: "Gambia"
