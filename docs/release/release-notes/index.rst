@@ -4,10 +4,6 @@
 
 .. _armband-releasenotes:
 
-*****************************
-Release notes for Fuel\@OPNFV
-*****************************
-
 .. toctree::
    :numbered:
    :maxdepth: 2

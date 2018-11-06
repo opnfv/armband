@@ -12,7 +12,6 @@ continuous integration, lab provisioning, and testing processes of each
 standard release OPNFV, such that the release can be available on both
 Intel Architecture-based and ARM Architecture-based servers.
 
-The armband repo contains the patches necessary for Fuel installer to run on
-aarch64 hardware. For more information on how to install the Fraser release
+For more information on how to install the latest release
 of OPNFV when using Fuel as a deployment tool check
-:ref:`fuel-release-installation-label`
+:ref:`fuel-installation`

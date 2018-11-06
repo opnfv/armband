@@ -2,11 +2,7 @@
 .. http://creativecommons.org/licenses/by/4.0
 .. (c) Open Platform for NFV Project, Inc. and its contributors
 
-.. _armband-release-installation-label:
-
-****************************************
-Installation instruction for Fuel\@OPNFV
-****************************************
+.. _armband-installation:
 
 .. toctree::
    :numbered:
