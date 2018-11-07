@@ -16,4 +16,6 @@ standard release OPNFV, such that the release can be available on both
 Intel Architecture-based and ARM Architecture-based servers.
 
 Currently the installer supported on ``aarch64`` is OPNFV Fuel. For more
-information on Fuel release notes check :ref:`fuel-releasenotes`.
+information on Fuel release notes check `OPNFV Fuel Release Notes on RTD`_.
+
+.. _`OPNFV Fuel Release Notes on RTD`: https://opnfv-fuel.readthedocs.io/en/latest/release/release-notes
