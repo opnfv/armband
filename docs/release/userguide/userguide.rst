@@ -17,4 +17,6 @@ standard release OPNFV, such that the release can be available on both
 Intel Architecture-based and ARM Architecture-based servers.
 
 For more information on how to use OPNFV Fuel latest release after it
-was deployed check :ref:`fuel-userguide`.
+was deployed check `OPNFV Fuel User Guide on RTD`_.
+
+.. _`OPNFV Fuel User Guide on RTD`: https://opnfv-fuel.readthedocs.io/en/stable-gambia/release/userguide

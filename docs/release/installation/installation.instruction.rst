@@ -17,4 +17,6 @@ Intel Architecture-based and ARM Architecture-based servers.
 
 For more information on how to install the latest release
 of OPNFV when using Fuel as a deployment tool check
-:ref:`fuel-installation`.
+`OPNFV Fuel Installation Instruction on RTD`_.
+
+.. _`OPNFV Fuel Installation Instruction on RTD`: https://opnfv-fuel.readthedocs.io/en/stable-gambia/release/installation
