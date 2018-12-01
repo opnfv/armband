@@ -1,4 +1,4 @@
 [submodule "opnfv-fuel"]
 	path = upstream/fuel
 	url = https://gerrit.opnfv.org/gerrit/fuel
-	branch = master
+	branch = stable/gambia
